@@ -1,0 +1,56 @@
+import type { profile as En } from "../en/profile";
+import type { LocaleCatalog } from "../../types";
+
+export const profile: LocaleCatalog<typeof En> = {
+  promoProfTitle: "Хорошие инструменты находят хорошие руки.",
+  promoProfBody:
+    "Спасибо, что вы с Paparats! Вместе мы поддерживаем хорошее ПО и независимых авторов.",
+  timeSaved: "Сэкономлено времени",
+  // TODO(i18n): n => `${n} ч`
+  hours: "TODO",
+  proActiveHint: "Больше инструментов. Больше возможностей.",
+  profileSub: "Управляйте аккаунтом, устройствами и настройками.",
+  editProfile: "Редактировать",
+  // TODO(i18n): d => `С нами с ${d}`
+  memberSince: "TODO",
+  tabPreferences: "Настройки",
+  tabSecurity: "Безопасность",
+  tabDevices: "Устройства",
+  tabData: "Данные и приватность",
+  accountInfo: "Сведения об аккаунте",
+  name: "Имя",
+  email: "Электронная почта",
+  country: "Страна",
+  timezone: "Часовой пояс",
+  usage: "Статистика",
+  acrossApps: "По всем приложениям",
+  appsInstalled: "Установлено приложений",
+  updatesInstalled: "Установлено обновлений",
+  storageUsed: "Занято места",
+  recentActivity: "Недавние действия",
+  // TODO(i18n): n => `Обновлено ${n}`
+  actUpdated: "TODO",
+  // TODO(i18n): n => `Установлено ${n}`
+  actInstalled: "TODO",
+  profileSaved: "Профиль сохранён",
+  password: "Пароль",
+  passwordHint: "Изменён 4 месяца назад.",
+  changePassword: "Изменить…",
+  twoFactor: "Двухфакторная аутентификация",
+  twoFactorHint: "Приложение-аутентификатор или ключ безопасности.",
+  sessions: "Активные сеансы",
+  sessionsHint: "Выполнен вход на 2 устройствах.",
+  signOutAll: "Выйти везде",
+  thisDevice: "Это устройство",
+  // TODO(i18n): d => `Активность: ${d}`
+  lastActive: "TODO",
+  removeDevice: "Убрать",
+  exportData: "Экспорт данных",
+  exportHint: "Библиотека, коллекции и настройки в ZIP-архиве.",
+  exportBtn: "Экспортировать…",
+  deleteAccount: "Удалить аккаунт",
+  deleteHint: "Удаляет аккаунт и облачные данные. Установленные приложения останутся на этом ПК.",
+  deleteBtn: "Удалить…",
+  prefTheme: "Тема",
+  prefLanguage: "Язык",
+};

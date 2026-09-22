@@ -1,0 +1,15 @@
+export const about = {
+  youUpToDate: "You’re up to date!",
+  checking: "Checking…",
+  checkUpdates: "Check for updates",
+  aboutBody1: "Paparats is a curated app store for modern tools and utilities.",
+  aboutBody2: "We believe in useful software, privacy, and a more open ecosystem.",
+  website: "Website",
+  docs: "Documentation",
+  support: "Get support",
+  report: "Report an issue",
+  copyright: "© 2026 Paparats. All rights reserved.",
+  terms: "Terms of Service",
+  privacyPolicy: "Privacy Policy",
+  licenses: "Licenses",
+};

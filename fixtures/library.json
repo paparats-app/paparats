@@ -1,0 +1,136 @@
+{
+  "installed": [
+    {
+      "appId": "vscode",
+      "version": "1.92.2",
+      "lastUsed": "2026-09-15"
+    },
+    {
+      "appId": "flow",
+      "version": "1.20.0",
+      "lastUsed": "2026-09-15"
+    },
+    {
+      "appId": "obsidian",
+      "version": "1.8.9",
+      "lastUsed": "2026-09-14"
+    },
+    {
+      "appId": "everything",
+      "version": "1.4.1.1028",
+      "lastUsed": "2026-09-14"
+    },
+    {
+      "appId": "notepadpp",
+      "version": "8.8.2",
+      "lastUsed": "2026-09-13"
+    },
+    {
+      "appId": "sharex",
+      "version": "17.0.0",
+      "lastUsed": "2026-09-12"
+    },
+    {
+      "appId": "localsend",
+      "version": "1.17.0",
+      "lastUsed": "2026-09-11"
+    },
+    {
+      "appId": "vlc",
+      "version": "3.0.20",
+      "lastUsed": "2026-09-10"
+    },
+    {
+      "appId": "powertoys",
+      "version": "0.94.0",
+      "lastUsed": "2026-09-09"
+    },
+    {
+      "appId": "rustdesk",
+      "version": "1.3.2",
+      "lastUsed": "2026-09-08"
+    },
+    {
+      "appId": "krita",
+      "version": "5.2.9",
+      "lastUsed": "2026-09-05"
+    },
+    {
+      "appId": "sevenzip",
+      "version": "25.01",
+      "lastUsed": "2026-09-02"
+    },
+    {
+      "appId": "shell",
+      "version": "1.9.14",
+      "lastUsed": "2026-09-13"
+    },
+    {
+      "appId": "czkawka",
+      "version": "9.0.0",
+      "lastUsed": "2026-09-06"
+    }
+  ],
+  "favorites": [
+    "obsidian",
+    "everything",
+    "vlc"
+  ],
+  "collections": [
+    {
+      "id": "all",
+      "icon": "layout-grid",
+      "label": {
+        "en": "All apps",
+        "be": "Усе праграмы",
+        "ru": "Все приложения"
+      },
+      "apps": null
+    },
+    {
+      "id": "work",
+      "icon": "briefcase",
+      "label": {
+        "en": "Work",
+        "be": "Праца",
+        "ru": "Работа"
+      },
+      "apps": [
+        "vscode",
+        "obsidian",
+        "notepadpp",
+        "everything",
+        "powertoys"
+      ]
+    },
+    {
+      "id": "creative",
+      "icon": "palette",
+      "label": {
+        "en": "Creative",
+        "be": "Творчасць",
+        "ru": "Творчество"
+      },
+      "apps": [
+        "krita",
+        "sharex",
+        "vlc"
+      ]
+    },
+    {
+      "id": "utilities",
+      "icon": "wrench",
+      "label": {
+        "en": "Utilities",
+        "be": "Утыліты",
+        "ru": "Утилиты"
+      },
+      "apps": [
+        "everything",
+        "sevenzip",
+        "localsend",
+        "rustdesk"
+      ]
+    }
+  ]
+}

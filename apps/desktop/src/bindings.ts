@@ -10,6 +10,64 @@ export const commands = {
 };
 
 /* Types */
+/**  Settings › About. */
+export type AboutInfo = {
+  version: string;
+  build: string;
+};
+
+/**  Everything the account surfaces need, in one snapshot. */
+export type Account = {
+  signedIn: boolean;
+  profile: Profile;
+  devices: Device[];
+  activity: Activity[];
+  usage: UsageStats;
+  subscription: Subscription;
+  twoFactor: boolean;
+};
+
+export type Activity = {
+  kind: ActivityKind;
+  appId: string;
+  version: string;
+  date: string;
+};
+
+export type ActivityKind = "installed" | "updated";
+
+/**
+ *  One catalog entry. `channel` is the publishing channel (absent = official catalog);
+ *  `also_in` lists other channels that offer the same app (the source rule picks the most trusted).
+ */
+export type App = {
+  id: string;
+  name: string;
+  publisher: string;
+  category: CategoryId;
+  /**  Monogram tile colour, `#rrggbb` (placeholder until publisher icons are wired). */
+  tint: string;
+  /**  Two-letter monogram shown on the tile. */
+  mono: string;
+  /**  Latest version in the catalog. */
+  version: string;
+  /**  Full download size of the latest version, in megabytes. */
+  sizeMb: number;
+  /**  Release date of the latest version. */
+  updated: string;
+  license: string;
+  portable: boolean;
+  /**  Participates in Paparats Pro. */
+  pro: boolean;
+  proNote: Localized<string> | null;
+  tagline: Localized<string>;
+  long: Localized<string>;
+  channel: string | null;
+  alsoIn: string[];
+  /**  Publisher icon URL from the catalog CDN; absent = monogram tile. */
+  iconUrl: string | null;
+};
+
 /**
  *  Error returned by every Tauri command. Serialised as `{ kind, message }` so the UI can branch
  *  on `kind` without parsing text.
@@ -23,6 +81,445 @@ export type AppError =
 export type AppInfo = {
   name: string;
   version: string;
+};
+
+/**  Featured-app slide on Browse. */
+export type BrowseHero = {
+  appId: string;
+  title1: Localized<string>;
+  title2: Localized<string>;
+  body: Localized<string>;
+  note: Localized<string>;
+};
+
+/**  Everything the discovery screens need, in one snapshot. */
+export type Catalog = {
+  apps: App[];
+  categories: Category[];
+  collections: Collection[];
+  heroSlides: HeroSlide[];
+  browseHeroes: BrowseHero[];
+  /**  App ids for the "Featured apps" rows. */
+  featured: string[];
+  /**  App ids for "New and notable". */
+  notable: string[];
+  /**  App ids shown under "Popular apps with Pro features". */
+  proApps: string[];
+  updates: UpdateManifest[];
+  /**  Fallback release notes for versions without a manifest (version history). */
+  genericNotes: Localized<string[]>;
+  reviewPool: Review[];
+};
+
+export type Category = {
+  id: CategoryId;
+  /**  Number of apps in the full catalog (shown on tiles), not just the ones in this data set. */
+  catalogCount: number;
+  /**  Lucide icon name in kebab-case, e.g. `"laptop"`. */
+  icon: string;
+  /**  Tint behind the category photograph, `#rrggbb`. */
+  hue: string;
+};
+
+/**  The nine fixed store categories. Labels and descriptions are UI copy (i18n catalogs). */
+export type CategoryId =
+  | "productivity"
+  | "development"
+  | "design"
+  | "media"
+  | "utilities"
+  | "system"
+  | "lifestyle"
+  | "games"
+  | "education";
+
+/**  A distribution channel (named `ChannelInfo` because `Channel` is taken by the Tauri IPC runtime). */
+export type ChannelInfo = {
+  id: string;
+  name: string;
+  kind: ChannelKind;
+  trust: TrustLevel;
+  author: string;
+  /**  Address without scheme, e.g. `nilesoft.org/paparats`. */
+  addr: string;
+  /**  Short code including the `@`, e.g. `@nilesoft`. */
+  handle: string;
+  tint: string;
+  mono: string;
+  subscribers: number;
+  /**  Last successful sync; `None` = never synced. */
+  synced: string | null;
+  files: FileHost;
+  /**  Where problem reports go (Paparats keeps a copy). */
+  support: string;
+  desc: Localized<string>;
+  /**  Date of the manual Paparats review (verified channels). */
+  reviewed: string | null;
+  /**  Date the channel stopped answering; `None` = reachable. */
+  outage: string | null;
+};
+
+export type ChannelKind = "catalog" | "developer" | "curated";
+
+/**  Result of looking a channel up by address, host or `@handle`. */
+export type ChannelLookup =
+  | { kind: "found"; channel: ChannelInfo }
+  | { kind: "alreadySubscribed"; channel: ChannelInfo }
+  | { kind: "notFound" };
+
+/**  The user's relationship with a followed channel. */
+export type ChannelSubscription = {
+  channelId: string;
+  /**  Followed but switched off: its apps are hidden and its updates are not fetched. */
+  paused: boolean;
+  /**  The user chose "Keep" on the stale callout. */
+  staleAcknowledged: boolean;
+};
+
+/**  Editorial collection on Home / Browse ("Essential Windows Apps", …). */
+export type Collection = {
+  id: string;
+  icon: string;
+  title: Localized<string>;
+  sub: Localized<string>;
+  apps: string[];
+};
+
+export type Device = {
+  id: string;
+  name: string;
+  os: string;
+  lastActive: string;
+  /**  The PC this client runs on. */
+  current: boolean;
+};
+
+export type DownloadItem = {
+  appId: string;
+  version: string;
+  kind: DownloadKind;
+  state: DownloadState;
+  /**  0–100. */
+  progress: number;
+  sizeMb: number;
+};
+
+/**  Whether a download installs an app for the first time or updates an installed one. */
+export type DownloadKind = "install" | "update";
+
+/**  Payload of the `download://state` event. */
+export type DownloadPhase =
+  | { kind: "queued" }
+  | { kind: "downloading" }
+  | { kind: "paused" }
+  | { kind: "installing" }
+  /**  Terminal: the app is recorded in the inventory at `version`. */
+  | { kind: "installed"; version: string; update: boolean }
+  /**  Terminal: removed from the queue by the user. */
+  | { kind: "cancelled" }
+  /**  Terminal: hash mismatch, network or installer error. */
+  | { kind: "failed"; message: string };
+
+/**  Payload of the `download://progress` event (≥ 10 Hz while downloading). */
+export type DownloadProgress = {
+  appId: string;
+  /**  0–100. */
+  progress: number;
+  receivedMb: number;
+  sizeMb: number;
+};
+
+export type DownloadRequest = {
+  appId: string;
+  version: string;
+  /**  Bytes to transfer, in megabytes (update manifest size for updates, full size otherwise). */
+  sizeMb: number;
+  kind: DownloadKind;
+};
+
+/**  The whole queue, in order: running items first, then queued ones. */
+export type DownloadSnapshot = {
+  items: DownloadItem[];
+  /**  Current "Parallel downloads" limit. */
+  concurrency: number;
+  online: boolean;
+};
+
+/**  Lifecycle of a queue entry: `queued → downloading (pausable) → installing → gone`. */
+export type DownloadState = "queued" | "downloading" | "paused" | "installing";
+
+export type DownloadStateChange = {
+  appId: string;
+  phase: DownloadPhase;
+};
+
+/**  Where a channel's binaries are served from. */
+export type FileHost =
+  /**  Paparats CDN. */
+  | "paparats"
+  /**  Author's server plus a Paparats mirror. */
+  | "mirrored"
+  /**  Author's server only. */
+  | "author";
+
+export type HeroSlide = {
+  kicker: Localized<string>;
+  title1: Localized<string>;
+  title2: Localized<string>;
+  body: Localized<string>;
+  cta: Localized<string>;
+  quote: Localized<string>;
+  target: HeroTarget;
+};
+
+/**  Where a Home hero slide's call to action leads. */
+export type HeroTarget = "browse" | "library" | "categories" | "subscription";
+
+export type Idea = {
+  id: string;
+  kind: IdeaKind;
+  /**  Category of a `New` idea. */
+  category: CategoryId | null;
+  /**  App an `App` idea improves. */
+  appId: string | null;
+  /**  Display name of the author; absent when `mine`. */
+  author: string | null;
+  /**  Proposed by the signed-in user. */
+  mine: boolean;
+  date: string;
+  votes: number;
+  /**  The signed-in user has voted. */
+  voted: boolean;
+  status: IdeaStatus;
+  title: Text;
+  body: Text;
+  comments: IdeaComment[];
+  /**  Channel of the developer who took the idea. */
+  dev: string | null;
+  /**  Developer name for catalog publishers without a channel. */
+  devName: string | null;
+  takenAt: string | null;
+  releasedAt: string | null;
+  /**  App that shipped a `New` idea (an `App` idea ships in `app_id`). */
+  releasedAppId: string | null;
+  releasedVersion: string | null;
+  /**  The author dismissed the "Your idea became an app" note. */
+  releaseNoteDismissed: boolean;
+};
+
+/**  Who is acting on the board: the signed-in user, or a channel developer (developer view). */
+export type IdeaActor = { kind: "user" } | { kind: "developer"; channelId: string };
+
+export type IdeaComment = {
+  /**  Display name; absent for the signed-in user's own comments (`mine`). */
+  author: string | null;
+  /**  Channel the commenter speaks for → "Developer · <Channel>" badge. */
+  dev: string | null;
+  /**  Written by the signed-in user. */
+  mine: boolean;
+  date: string;
+  text: Text;
+};
+
+/**  "Suggest an idea" dialog payload. */
+export type IdeaDraft = {
+  kind: IdeaKind;
+  appId: string | null;
+  category: CategoryId | null;
+  title: string;
+  body: string;
+};
+
+/**  `New` — an app nobody has built yet; `App` — an improvement to an existing app. */
+export type IdeaKind = "new" | "app";
+
+export type IdeaStatus = "open" | "work" | "released";
+
+/**  An app found on this PC (inventory), with the version that is installed. */
+export type InstalledApp = {
+  appId: string;
+  version: string;
+  lastUsed: string;
+};
+
+export type Library = {
+  installed: InstalledApp[];
+  favorites: string[];
+  collections: LibraryCollection[];
+};
+
+/**  A user collection in the Library. `apps: None` means "all installed apps". */
+export type LibraryCollection = {
+  id: string;
+  icon: string;
+  label: Text;
+  apps: string[] | null;
+};
+
+/**  UI languages. All three are first-class. */
+export type Locale = "en" | "be" | "ru";
+
+/**  One value per UI language. */
+export type Localized<T> = {
+  en: T;
+  be: T;
+  ru: T;
+};
+
+/**
+ *  A subscription plan. Names, subtitles and feature lists are UI copy (i18n catalogs, keyed by
+ *  `id`); the price is data and is formatted with `Intl.NumberFormat` (currency).
+ */
+export type Plan = {
+  id: PlanId;
+  /**  Price per period in major units, e.g. `4.99`. */
+  amount: number;
+  /**  ISO 4217 code, e.g. `"USD"`. */
+  currency: string;
+  period: PlanPeriod;
+  badge: PlanBadge | null;
+  /**  Number of feature lines in the i18n catalog for this plan. */
+  featureCount: number;
+};
+
+export type PlanBadge = "mostPopular" | "save18";
+
+export type PlanId = "free" | "monthly" | "yearly";
+
+export type PlanPeriod = "forever" | "month" | "year";
+
+/**  Storefront facts that are not personal: plans, ecosystem numbers, client build. */
+export type PlatformInfo = {
+  platformStats: PlatformStats;
+  plans: Plan[];
+  about: AboutInfo;
+};
+
+/**  Ecosystem numbers (Subscription › right column). Shown as "50+", "10,000+". */
+export type PlatformStats = {
+  developers: number;
+  apps: number;
+  proMembers: number;
+};
+
+export type Profile = {
+  name: string;
+  email: string;
+  /**  Account creation date ("Member since …"). */
+  since: string;
+  country: Localized<string>;
+  timezone: Localized<string>;
+};
+
+/**  Editable part of the profile. */
+export type ProfilePatch = {
+  name: string;
+  email: string;
+};
+
+/**
+ *  Where a report went: the Paparats team only (official catalog) or the channel author with a
+ *  copy to Paparats.
+ */
+export type ReportReceipt =
+  { kind: "paparats" } | { kind: "author"; channelName: string; author: string };
+
+/**  What a problem report is about. */
+export type ReportTarget = {
+  appId: string | null;
+  channelId: string;
+};
+
+/**  A user review. The mock data set shares one pool across apps. */
+export type Review = {
+  author: string;
+  date: string;
+  stars: number;
+  helpful: number;
+  text: Localized<string>;
+};
+
+/**  Result of "Check for updates" (the Paparats client itself). */
+export type SelfUpdateCheck = { kind: "upToDate" } | { kind: "available"; version: string };
+
+/**
+ *  Every persisted setting. Field names match the settings-row ids of the design
+ *  (`README.md` › Settings); defaults match the prototype.
+ */
+export type Settings = {
+  theme: ThemePreference;
+  locale: Locale;
+  startup: boolean;
+  tray: boolean;
+  recommend: boolean;
+  animations: boolean;
+  auto: boolean;
+  schedule: UpdateSchedule;
+  metered: boolean;
+  notifyReady: boolean;
+  location: string;
+  /**  "Parallel downloads": 1, 2 or 4. */
+  parallel: number;
+  keep: boolean;
+  perUser: boolean;
+  shortcuts: boolean;
+  openAfter: boolean;
+  nUpdates: boolean;
+  nNew: boolean;
+  nSound: boolean;
+  crash: boolean;
+  dev: boolean;
+  portable: boolean;
+  /**  Developer mode tool: act as the Nilesoft channel on the Ideas board. */
+  viewAsDeveloper: boolean;
+  /**  Developer mode tool: pretend the network is down. */
+  simulateOffline: boolean;
+};
+
+/**  The user's Paparats Pro state. Pro is active when `plan != free` or a gift is running. */
+export type Subscription = {
+  plan: PlanId;
+  /**  Next renewal of a paid plan. */
+  renewsOn: string | null;
+  /**  Pro granted as a thank-you for a released idea ("Paparats Pro · gift"), active until then. */
+  giftUntil: string | null;
+};
+
+/**  Result of "Sync now". */
+export type SyncOutcome = { kind: "synced"; at: string } | { kind: "unreachable"; days: number };
+
+/**
+ *  Text that is either translated by its author (catalog content) or written once in whatever
+ *  language the user typed (user-generated ideas and comments).
+ */
+export type Text = Localized<string> | string;
+
+export type ThemePreference = "light" | "dark" | "system";
+
+/**  How much Paparats vouches for a channel. Ordered from most to least trusted. */
+export type TrustLevel =
+  /**  The Paparats catalog: curated, tested and signed by Paparats. */
+  | "official"
+  /**  Author reviewed by Paparats; files mirrored by Paparats. */
+  | "verified"
+  /**  Anyone can publish; files come straight from the author's server. */
+  | "community";
+
+/**  Release notes and download size of the latest version of an app (the update manifest). */
+export type UpdateManifest = {
+  appId: string;
+  /**  Size of the update download, in megabytes (may differ from the full install size). */
+  downloadMb: number;
+  notes: Localized<string[]>;
+};
+
+export type UpdateSchedule = "hourly" | "daily" | "weekly";
+
+/**  Personal usage numbers (Profile › Usage stats). */
+export type UsageStats = {
+  /**  Updates installed through Paparats over the account's lifetime. */
+  updatesInstalled: number;
+  timeSavedHours: number;
 };
 
 /* Tauri Specta runtime */

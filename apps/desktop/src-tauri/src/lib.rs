@@ -5,14 +5,39 @@ mod error;
 
 pub use error::{AppError, AppResult};
 
+use paparats_core as core;
 use tauri_specta::{Builder, collect_commands};
 
 /// Where `export_bindings` writes the generated TypeScript, relative to this crate.
 pub const BINDINGS_PATH: &str = "../src/bindings.ts";
 
-/// The single registry of commands and events shared by the app and the bindings exporter.
+/// The single registry of commands, events and domain types shared by the app and the bindings
+/// exporter. Domain types are registered explicitly so the UI can import every one of them from
+/// `bindings.ts`, even before a command returns it.
 pub fn specta_builder() -> Builder<tauri::Wry> {
-    Builder::<tauri::Wry>::new().commands(collect_commands![commands::app_info])
+    Builder::<tauri::Wry>::new()
+        .commands(collect_commands![commands::app_info])
+        .typ::<core::Catalog>()
+        .typ::<core::ChannelInfo>()
+        .typ::<core::ChannelSubscription>()
+        .typ::<core::ChannelLookup>()
+        .typ::<core::SyncOutcome>()
+        .typ::<core::ReportTarget>()
+        .typ::<core::ReportReceipt>()
+        .typ::<core::Idea>()
+        .typ::<core::IdeaDraft>()
+        .typ::<core::IdeaActor>()
+        .typ::<core::Account>()
+        .typ::<core::ProfilePatch>()
+        .typ::<core::PlatformInfo>()
+        .typ::<core::Library>()
+        .typ::<core::DownloadRequest>()
+        .typ::<core::DownloadSnapshot>()
+        .typ::<core::DownloadProgress>()
+        .typ::<core::DownloadStateChange>()
+        .typ::<core::Settings>()
+        .typ::<core::SelfUpdateCheck>()
+        .typ::<core::Locale>()
 }
 
 /// Writes `apps/desktop/src/bindings.ts`.

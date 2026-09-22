@@ -1,0 +1,34 @@
+import type { library as En } from "../en/library";
+import type { LocaleCatalog } from "../../types";
+
+export const library: LocaleCatalog<typeof En> = {
+  quoteLibrary: "Найлепшыя інструменты — тыя, пра знаходку якіх забываеш.",
+  librarySub: "Усе вашы праграмы ў адным месцы.",
+  installApp: "Усталяваць праграму",
+  tabInstalled: "Усталяваныя",
+  tabFavorites: "Абраныя",
+  tabCollections: "Калекцыі",
+  sortRecent: "Нядаўна выкарыстаныя",
+  listView: "Спіс",
+  gridView: "Сетка",
+  libraryStats: "Статыстыка",
+  installedApps: "Усталяваных праграм",
+  favorites: "Абраных",
+  totalSize: "Агульны памер",
+  quickFilters: "Хуткія фільтры",
+  updatesAvailableShort: "Ёсць абнаўленні",
+  newCollection: "Новая калекцыя",
+  // TODO(i18n): n => `Усталявана ${n} ${pl(n, 'праграма', 'праграмы', 'праграм')}`
+  installedCount: "TODO",
+  uninstall: "Выдаліць",
+  openFolder: "Адкрыць тэчку",
+  backToCollections: "Усе калекцыі",
+  downloads: "Загрузкі",
+  noFavorites: "Пакуль няма абраных",
+  noFavoritesHint: "Націсніце зорку на любой праграме, каб яна з’явілася тут.",
+  emptyLibrary: "Бібліятэка пустая",
+  emptyLibraryHint: "Усталяваныя праграмы з’явяцца тут.",
+  noDownloads: "Няма актыўных загрузак",
+  noDownloadsHint: "Загрузкі і абнаўленні ў працэсе з’явяцца тут.",
+  browseApps: "Да каталога",
+};

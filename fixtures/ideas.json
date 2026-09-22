@@ -1,0 +1,368 @@
+{
+  "ideas": [
+    {
+      "id": "clip",
+      "kind": "new",
+      "category": "utilities",
+      "appId": null,
+      "author": "Alena K.",
+      "mine": false,
+      "date": "2026-09-04",
+      "votes": 214,
+      "voted": false,
+      "status": "open",
+      "title": {
+        "en": "Clipboard history with pinned snippets",
+        "be": "Гісторыя буфера абмену з закладкамі",
+        "ru": "История буфера обмена с закреплёнными фрагментами"
+      },
+      "body": {
+        "en": "A tray app that remembers everything I copy — text, images, files — with search and a handful of pinned snippets that never expire. Windows’ own history forgets everything on reboot and pins only a few items.",
+        "be": "Праграма ў трэі, якая памятае ўсё скапіяванае — тэкст, выявы, файлы — з пошукам і некалькімі закладкамі, якія не знікаюць. Убудаваная гісторыя Windows забывае ўсё пасля перазагрузкі і замацоўвае толькі некалькі элементаў.",
+        "ru": "Приложение в трее, которое помнит всё скопированное — текст, изображения, файлы — с поиском и несколькими закреплёнными фрагментами, которые не исчезают. Встроенная история Windows забывает всё после перезагрузки и закрепляет лишь несколько элементов."
+      },
+      "comments": [
+        {
+          "author": "Dzmitry P.",
+          "dev": null,
+          "mine": false,
+          "date": "2026-09-06",
+          "text": {
+            "en": "Ditto does part of this, but it hasn’t had a real update in years. A modern take would be welcome.",
+            "be": "Ditto робіць частку гэтага, але гадамі не абнаўляўся па-сапраўднаму. Сучасная версія была б дарэчы.",
+            "ru": "Ditto делает часть этого, но годами не обновлялся по-настоящему. Современная версия была бы кстати."
+          }
+        },
+        {
+          "author": "Maryna V.",
+          "dev": null,
+          "mine": false,
+          "date": "2026-09-09",
+          "text": {
+            "en": "Pinned snippets synced between my two PCs would make this a day-one install.",
+            "be": "Сінхранізацыя закладак між маімі двума ПК — і я ўсталюю гэта ў першы ж дзень.",
+            "ru": "Синхронизация закреплённых фрагментов между моими двумя ПК — и я установлю это в первый же день."
+          }
+        }
+      ],
+      "dev": null,
+      "devName": null,
+      "takenAt": null,
+      "releasedAt": null,
+      "releasedAppId": null,
+      "releasedVersion": null,
+      "releaseNoteDismissed": false
+    },
+    {
+      "id": "iconpacks",
+      "kind": "app",
+      "category": null,
+      "appId": "shell",
+      "author": "Dzmitry P.",
+      "mine": false,
+      "date": "2026-09-08",
+      "votes": 96,
+      "voted": false,
+      "status": "open",
+      "title": {
+        "en": "Icon packs for the context menu",
+        "be": "Наборы іконак для кантэкстнага меню",
+        "ru": "Наборы иконок для контекстного меню"
+      },
+      "body": {
+        "en": "Let us pick an icon set for Shell menus — Fluent, Segoe or a custom folder — instead of setting an icon on every item by hand.",
+        "be": "Дайце выбраць набор іконак для меню Shell — Fluent, Segoe або сваю тэчку — замест таго, каб задаваць іконку кожнаму пункту ўручную.",
+        "ru": "Дайте выбрать набор иконок для меню Shell — Fluent, Segoe или свою папку — вместо того чтобы задавать иконку каждому пункту вручную."
+      },
+      "comments": [
+        {
+          "author": "Nilesoft",
+          "dev": "nilesoft",
+          "mine": false,
+          "date": "2026-09-10",
+          "text": {
+            "en": "Good timing — we’re rebuilding the theme engine for 2.0. Vote if you want this in the first beta.",
+            "be": "Добры момант — мы перарабляем рухавік тэм для 2.0. Галасуйце, калі хочаце гэта ў першай бэта-версіі.",
+            "ru": "Хороший момент — мы переделываем движок тем для 2.0. Голосуйте, если хотите это в первой бете."
+          }
+        }
+      ],
+      "dev": null,
+      "devName": null,
+      "takenAt": null,
+      "releasedAt": null,
+      "releasedAppId": null,
+      "releasedVersion": null,
+      "releaseNoteDismissed": false
+    },
+    {
+      "id": "battery",
+      "kind": "new",
+      "category": "system",
+      "appId": null,
+      "author": null,
+      "mine": true,
+      "date": "2026-08-12",
+      "votes": 341,
+      "voted": true,
+      "status": "work",
+      "title": {
+        "en": "Battery health monitor for laptops",
+        "be": "Манітор стану батарэі для ноўтбукаў",
+        "ru": "Монитор состояния батареи для ноутбуков"
+      },
+      "body": {
+        "en": "Wear level, charge cycles and a charge-limit switch in one small window. Windows already has the data — it just needs a decent face.",
+        "be": "Ступень зносу, цыклы зарадкі і пераключальнік ліміту зарадкі ў адным невялікім акне. У Windows гэтыя даныя ўжо ёсць — ім не хапае толькі прыстойнага інтэрфейсу.",
+        "ru": "Степень износа, циклы зарядки и переключатель лимита заряда в одном небольшом окне. В Windows эти данные уже есть — им не хватает лишь приличного интерфейса."
+      },
+      "comments": [
+        {
+          "author": "Sergey Tkachenko",
+          "dev": "winaero",
+          "mine": false,
+          "date": "2026-08-20",
+          "text": {
+            "en": "Taking this. Charge limiting depends on vendor firmware, so v1 will cover Dell, Lenovo and ASUS.",
+            "be": "Бяру. Ліміт зарадкі залежыць ад прашыўкі вытворцы, таму v1 ахопіць Dell, Lenovo і ASUS.",
+            "ru": "Беру. Лимит заряда зависит от прошивки производителя, поэтому v1 охватит Dell, Lenovo и ASUS."
+          }
+        },
+        {
+          "author": "Alena K.",
+          "dev": null,
+          "mine": false,
+          "date": "2026-08-21",
+          "text": {
+            "en": "Please show the wear level in the tray icon too.",
+            "be": "Пакажыце, калі ласка, ступень зносу і ў іконцы ў трэі.",
+            "ru": "Покажите, пожалуйста, степень износа и в иконке в трее."
+          }
+        }
+      ],
+      "dev": "winaero",
+      "devName": null,
+      "takenAt": "2026-08-20",
+      "releasedAt": null,
+      "releasedAppId": null,
+      "releasedVersion": null,
+      "releaseNoteDismissed": false
+    },
+    {
+      "id": "multisend",
+      "kind": "app",
+      "category": null,
+      "appId": "localsend",
+      "author": "Kasia L.",
+      "mine": false,
+      "date": "2026-07-30",
+      "votes": 158,
+      "voted": false,
+      "status": "work",
+      "title": {
+        "en": "Send a file to several devices at once",
+        "be": "Адпраўка файла на некалькі прылад адразу",
+        "ru": "Отправка файла на несколько устройств сразу"
+      },
+      "body": {
+        "en": "Select two or three devices and send in one go — handy when moving photos to a phone and a laptop.",
+        "be": "Выбраць дзве-тры прылады і адправіць за раз — зручна, калі пераносіш фота на тэлефон і ноўтбук.",
+        "ru": "Выбрать два-три устройства и отправить за раз — удобно, когда переносишь фото на телефон и ноутбук."
+      },
+      "comments": [],
+      "dev": null,
+      "devName": "Tien Do Nam",
+      "takenAt": "2026-08-15",
+      "releasedAt": null,
+      "releasedAppId": null,
+      "releasedVersion": null,
+      "releaseNoteDismissed": false
+    },
+    {
+      "id": "ctxmenu",
+      "kind": "new",
+      "category": "system",
+      "appId": null,
+      "author": "Kasia L.",
+      "mine": false,
+      "date": "2026-04-02",
+      "votes": 412,
+      "voted": false,
+      "status": "released",
+      "title": {
+        "en": "A context menu editor without registry hacks",
+        "be": "Рэдактар кантэкстнага меню без хакаў рэестра",
+        "ru": "Редактор контекстного меню без хаков реестра"
+      },
+      "body": {
+        "en": "One place to hide the junk in the right-click menu, nest my own commands and keep it all in a text file I can back up.",
+        "be": "Адно месца, дзе можна схаваць лішняе з меню правай кнопкі, укласці свае каманды і трымаць усё ў тэкставым файле, які лёгка захаваць.",
+        "ru": "Одно место, где можно скрыть лишнее из меню правой кнопки, вложить свои команды и держать всё в текстовом файле, который легко сохранить."
+      },
+      "comments": [
+        {
+          "author": "Nilesoft",
+          "dev": "nilesoft",
+          "mine": false,
+          "date": "2026-09-13",
+          "text": {
+            "en": "Shipped in Shell 1.9.15 — nested menus, plain-text config, themes. Thank you all for the votes.",
+            "be": "Выйшла ў Shell 1.9.15 — укладзеныя меню, тэкставая канфігурацыя, тэмы. Дзякуй усім за галасы.",
+            "ru": "Вышло в Shell 1.9.15 — вложенные меню, текстовая конфигурация, темы. Спасибо всем за голоса."
+          }
+        }
+      ],
+      "dev": "nilesoft",
+      "devName": null,
+      "takenAt": "2026-05-11",
+      "releasedAt": "2026-09-13",
+      "releasedAppId": "shell",
+      "releasedVersion": "1.9.15",
+      "releaseNoteDismissed": false
+    },
+    {
+      "id": "graphdark",
+      "kind": "app",
+      "category": null,
+      "appId": "obsidian",
+      "author": "Maryna V.",
+      "mine": false,
+      "date": "2026-06-14",
+      "votes": 77,
+      "voted": false,
+      "status": "released",
+      "title": {
+        "en": "Graph view that follows the dark theme",
+        "be": "Граф, які прытрымліваецца цёмнай тэмы",
+        "ru": "Граф, который следует тёмной теме"
+      },
+      "body": {
+        "en": "The graph stays bright in dark mode and hurts at night. Let it inherit the theme colours.",
+        "be": "Граф застаецца светлым у цёмным рэжыме і рэжа вочы ўначы. Хай ён бярэ колеры з тэмы.",
+        "ru": "Граф остаётся светлым в тёмном режиме и режет глаза ночью. Пусть он берёт цвета из темы."
+      },
+      "comments": [],
+      "dev": null,
+      "devName": "Dynalist Inc.",
+      "takenAt": "2026-07-02",
+      "releasedAt": "2026-08-21",
+      "releasedAppId": null,
+      "releasedVersion": "1.8.10",
+      "releaseNoteDismissed": false
+    },
+    {
+      "id": "pomodoro",
+      "kind": "new",
+      "category": "productivity",
+      "appId": null,
+      "author": "Maryna V.",
+      "mine": false,
+      "date": "2026-09-13",
+      "votes": 23,
+      "voted": false,
+      "status": "open",
+      "title": {
+        "en": "Pomodoro timer in the system tray",
+        "be": "Таймер Pomodoro ў сістэмным трэі",
+        "ru": "Таймер Pomodoro в системном трее"
+      },
+      "body": {
+        "en": "A timer that lives in the tray, blocks a list of sites during focus and keeps a simple daily log. No account, no cloud.",
+        "be": "Таймер, які жыве ў трэі, блакуе спіс сайтаў падчас фокусу і вядзе простую дзённую статыстыку. Без уліковага запісу і воблака.",
+        "ru": "Таймер, который живёт в трее, блокирует список сайтов во время фокуса и ведёт простую дневную статистику. Без аккаунта и облака."
+      },
+      "comments": [],
+      "dev": null,
+      "devName": null,
+      "takenAt": null,
+      "releasedAt": null,
+      "releasedAppId": null,
+      "releasedVersion": null,
+      "releaseNoteDismissed": false
+    },
+    {
+      "id": "scrollcap",
+      "kind": "app",
+      "category": null,
+      "appId": "sharex",
+      "author": "Alena K.",
+      "mine": false,
+      "date": "2026-09-01",
+      "votes": 183,
+      "voted": false,
+      "status": "open",
+      "title": {
+        "en": "Scrolling capture for long pages",
+        "be": "Здымак з пракруткай для доўгіх старонак",
+        "ru": "Снимок с прокруткой для длинных страниц"
+      },
+      "body": {
+        "en": "Capture a whole web page or chat by scrolling automatically and stitching the frames. Today it takes three tries to get right.",
+        "be": "Здымак усёй вэб-старонкі або чата: аўтаматычная пракрутка і склейка кадраў. Сёння гэта атрымліваецца з трэцяй спробы.",
+        "ru": "Снимок всей веб-страницы или чата: автоматическая прокрутка и склейка кадров. Сегодня это получается с третьей попытки."
+      },
+      "comments": [
+        {
+          "author": "Dzmitry P.",
+          "dev": null,
+          "mine": false,
+          "date": "2026-09-03",
+          "text": {
+            "en": "ShareX has stitching, but it’s hidden and flaky — a proper one-click mode would be great.",
+            "be": "У ShareX ёсць склейка, але яна схаваная і ненадзейная — патрэбны нармальны рэжым у адзін клік.",
+            "ru": "В ShareX есть склейка, но она спрятана и ненадёжна — нужен нормальный режим в один клик."
+          }
+        }
+      ],
+      "dev": null,
+      "devName": null,
+      "takenAt": null,
+      "releasedAt": null,
+      "releasedAppId": null,
+      "releasedVersion": null,
+      "releaseNoteDismissed": false
+    },
+    {
+      "id": "slounik",
+      "kind": "new",
+      "category": "education",
+      "appId": null,
+      "author": null,
+      "mine": true,
+      "date": "2026-03-18",
+      "votes": 268,
+      "voted": true,
+      "status": "released",
+      "title": {
+        "en": "Offline Belarusian dictionary",
+        "be": "Афлайн-слоўнік беларускай мовы",
+        "ru": "Офлайн-словарь белорусского языка"
+      },
+      "body": {
+        "en": "Explanatory and translation dictionaries in one app that works without the internet. Both orthographies, word of the day, search as you type.",
+        "be": "Тлумачальны і перакладныя слоўнікі ў адной праграме, якая працуе без інтэрнэту. Абодва правапісы, слова дня, пошук падчас уводу.",
+        "ru": "Толковый и переводные словари в одном приложении, которое работает без интернета. Оба правописания, слово дня, поиск по мере ввода."
+      },
+      "comments": [
+        {
+          "author": "Алесь М.",
+          "dev": "bysoft",
+          "mine": false,
+          "date": "2026-09-12",
+          "text": {
+            "en": "Слоўнік 2.4 is out with both orthographies and a word of the day. Дзякуй за ідэю!",
+            "be": "Слоўнік 2.4 выйшаў з абодвума правапісамі і словам дня. Дзякуй за ідэю!",
+            "ru": "Слоўнік 2.4 вышел с обоими правописаниями и словом дня. Дзякуй за ідэю!"
+          }
+        }
+      ],
+      "dev": "bysoft",
+      "devName": null,
+      "takenAt": "2026-04-05",
+      "releasedAt": "2026-09-12",
+      "releasedAppId": "slounik",
+      "releasedVersion": "2.4.0",
+      "releaseNoteDismissed": false
+    }
+  ]
+}

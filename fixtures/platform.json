@@ -1,0 +1,37 @@
+{
+  "platformStats": {
+    "developers": 50,
+    "apps": 200,
+    "proMembers": 10000
+  },
+  "plans": [
+    {
+      "id": "free",
+      "amount": 0,
+      "currency": "USD",
+      "period": "forever",
+      "badge": null,
+      "featureCount": 5
+    },
+    {
+      "id": "monthly",
+      "amount": 4.99,
+      "currency": "USD",
+      "period": "month",
+      "badge": "mostPopular",
+      "featureCount": 5
+    },
+    {
+      "id": "yearly",
+      "amount": 49,
+      "currency": "USD",
+      "period": "year",
+      "badge": "save18",
+      "featureCount": 5
+    }
+  ],
+  "about": {
+    "version": "1.2.3",
+    "build": "20260915"
+  }
+}

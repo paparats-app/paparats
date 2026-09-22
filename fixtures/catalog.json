@@ -1,0 +1,1503 @@
+{
+  "apps": [
+    {
+      "id": "obsidian",
+      "name": "Obsidian",
+      "publisher": "Dynalist Inc.",
+      "category": "productivity",
+      "tint": "#6f5bd8",
+      "mono": "Ob",
+      "version": "1.8.10",
+      "sizeMb": 105,
+      "updated": "2026-08-21",
+      "license": "Freeware",
+      "portable": true,
+      "pro": true,
+      "proNote": {
+        "en": "Sync, publish, advanced plugins",
+        "be": "Сінхранізацыя, публікацыя, пашыраныя плагіны",
+        "ru": "Синхронизация, публикация, расширенные плагины"
+      },
+      "tagline": {
+        "en": "Your knowledge, your way.",
+        "be": "Вашы веды — па-вашаму.",
+        "ru": "Ваши знания — по-вашему."
+      },
+      "long": {
+        "en": "A private, local-first notebook where every note is a Markdown file on your disk. Link notes together, see the graph, and extend the app with community plugins.",
+        "be": "Прыватны нататнік, дзе кожная нататка — гэта файл Markdown на вашым дыску. Звязвайце нататкі, глядзіце граф і расшырайце праграму плагінамі супольнасці.",
+        "ru": "Личный блокнот, где каждая заметка — файл Markdown на вашем диске. Связывайте заметки, смотрите граф и расширяйте приложение плагинами сообщества."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "sharex",
+      "name": "ShareX",
+      "publisher": "ShareX Team",
+      "category": "utilities",
+      "tint": "#2f7de1",
+      "mono": "Sx",
+      "version": "17.1.0",
+      "sizeMb": 8.6,
+      "updated": "2026-09-10",
+      "license": "GPL-3.0",
+      "portable": true,
+      "pro": true,
+      "proNote": {
+        "en": "Cloud upload, advanced workflows",
+        "be": "Загрузка ў воблака, пашыраныя сцэнары",
+        "ru": "Загрузка в облако, расширенные сценарии"
+      },
+      "tagline": {
+        "en": "Capture. Share. Get things done.",
+        "be": "Здымайце. Дзяліцеся. Рабіце справы.",
+        "ru": "Снимайте. Делитесь. Делайте дела."
+      },
+      "long": {
+        "en": "Screenshots, screen recordings and GIFs with a long chain of after-capture actions: annotate, blur, upload, copy a link. Open source and fully scriptable.",
+        "be": "Скрыншоты, запіс экрана і GIF з доўгім ланцужком дзеянняў пасля здымка: анатацыі, размыццё, загрузка, капіяванне спасылкі. Адкрыты код і поўная аўтаматызацыя.",
+        "ru": "Скриншоты, запись экрана и GIF с длинной цепочкой действий после захвата: аннотации, размытие, загрузка, копирование ссылки. Открытый код и полная автоматизация."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "vlc",
+      "name": "VLC media player",
+      "publisher": "VideoLAN",
+      "category": "media",
+      "tint": "#e8842e",
+      "mono": "VL",
+      "version": "3.0.21",
+      "sizeMb": 41,
+      "updated": "2026-09-04",
+      "license": "GPL-2.0",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "All your media, no limitations.",
+        "be": "Усё ваша медыя без абмежаванняў.",
+        "ru": "Все ваши медиа без ограничений."
+      },
+      "long": {
+        "en": "Plays practically every audio and video format, disc, stream and webcam without extra codecs. Free, open source, and free of ads and tracking.",
+        "be": "Прайгравае практычна любы аўдыя- і відэафармат, дыскі, стрымы і вэб-камеры без дадатковых кодэкаў. Бясплатна, з адкрытым кодам, без рэкламы і сачэння.",
+        "ru": "Воспроизводит практически любой аудио- и видеоформат, диски, потоки и веб-камеры без дополнительных кодеков. Бесплатно, с открытым кодом, без рекламы и слежки."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "powertoys",
+      "name": "PowerToys",
+      "publisher": "Microsoft",
+      "category": "system",
+      "tint": "#3d7fd4",
+      "mono": "PT",
+      "version": "0.94.0",
+      "sizeMb": 248,
+      "updated": "2026-09-03",
+      "license": "MIT",
+      "portable": false,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Small tools. A bigger workflow.",
+        "be": "Малыя інструменты. Вялікі эфект.",
+        "ru": "Маленькие инструменты. Большой эффект."
+      },
+      "long": {
+        "en": "A set of power-user utilities from Microsoft: FancyZones window layouts, the PowerToys Run launcher, Color Picker, Text Extractor, Keyboard Manager and more.",
+        "be": "Набор утыліт для дасведчаных карыстальнікаў ад Microsoft: раскладкі вокнаў FancyZones, лаўнчар PowerToys Run, піпетка колеру, распазнаванне тэксту, перапрызначэнне клавіш і іншае.",
+        "ru": "Набор утилит для опытных пользователей от Microsoft: раскладки окон FancyZones, лаунчер PowerToys Run, пипетка цвета, извлечение текста, переназначение клавиш и многое другое."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "notepadpp",
+      "name": "Notepad++",
+      "publisher": "Don Ho",
+      "category": "development",
+      "tint": "#6faa55",
+      "mono": "N+",
+      "version": "8.8.3",
+      "sizeMb": 6.1,
+      "updated": "2026-09-08",
+      "license": "GPL-3.0",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "A faster, smarter text editor.",
+        "be": "Хутчэйшы і разумнейшы тэкставы рэдактар.",
+        "ru": "Более быстрый и умный текстовый редактор."
+      },
+      "long": {
+        "en": "A lightweight source-code editor with syntax highlighting for dozens of languages, tabs, macros and a plugin ecosystem. Starts instantly and handles huge files.",
+        "be": "Лёгкі рэдактар кода з падсветкай сінтаксісу для дзясяткаў моў, укладкамі, макрасамі і плагінамі. Запускаецца імгненна і працуе з велізарнымі файламі.",
+        "ru": "Лёгкий редактор кода с подсветкой синтаксиса для десятков языков, вкладками, макросами и плагинами. Запускается мгновенно и справляется с огромными файлами."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "everything",
+      "name": "Everything",
+      "publisher": "voidtools",
+      "category": "utilities",
+      "tint": "#d9782c",
+      "mono": "Ev",
+      "version": "1.4.1.1028",
+      "sizeMb": 1.8,
+      "updated": "2026-05-20",
+      "license": "Freeware",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Find anything. Instantly.",
+        "be": "Знаходзьце што заўгодна. Імгненна.",
+        "ru": "Находите что угодно. Мгновенно."
+      },
+      "long": {
+        "en": "Indexes every file name on NTFS volumes in seconds and finds matches as you type. Tiny, fast, and far quicker than Windows Search.",
+        "be": "Індэксуе назвы ўсіх файлаў на тамах NTFS за секунды і знаходзіць супадзенні падчас уводу. Малы, хуткі і значна шпарчэйшы за пошук Windows.",
+        "ru": "Индексирует имена всех файлов на томах NTFS за секунды и находит совпадения по мере ввода. Крошечный, быстрый и намного шустрее поиска Windows."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "vscode",
+      "name": "Visual Studio Code",
+      "publisher": "Microsoft",
+      "category": "development",
+      "tint": "#2f7fd6",
+      "mono": "VS",
+      "version": "1.93.0",
+      "sizeMb": 95,
+      "updated": "2026-09-12",
+      "license": "Freeware",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Code editing. Redefined.",
+        "be": "Рэдагаванне кода. Па-новаму.",
+        "ru": "Редактирование кода. По-новому."
+      },
+      "long": {
+        "en": "A free, extensible code editor with IntelliSense, built-in Git, debugging and a marketplace of thousands of extensions. Runs everywhere, feels native on Windows.",
+        "be": "Бясплатны пашыраемы рэдактар кода з IntelliSense, убудаваным Git, адладкай і каталогам з тысячамі пашырэнняў. Працуе ўсюды, а на Windows адчуваецца родным.",
+        "ru": "Бесплатный расширяемый редактор кода с IntelliSense, встроенным Git, отладкой и каталогом из тысяч расширений. Работает везде, на Windows ощущается родным."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "files",
+      "name": "Files",
+      "publisher": "Files Community",
+      "category": "system",
+      "tint": "#3f74c9",
+      "mono": "Fi",
+      "version": "3.9.4",
+      "sizeMb": 88,
+      "updated": "2026-08-19",
+      "license": "MIT",
+      "portable": false,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "A modern file manager for Windows.",
+        "be": "Сучасны файлавы менеджар для Windows.",
+        "ru": "Современный файловый менеджер для Windows."
+      },
+      "long": {
+        "en": "Tabs, dual pane, tags, Git integration and a clean Fluent design. Everything File Explorer should have been.",
+        "be": "Укладкі, дзве панэлі, тэгі, інтэграцыя з Git і чысты дызайн Fluent. Усё, чым мусіў быць Праваднік.",
+        "ru": "Вкладки, две панели, теги, интеграция с Git и чистый дизайн Fluent. Всё, чем должен был быть Проводник."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "flow",
+      "name": "Flow Launcher",
+      "publisher": "Flow-Launcher Team",
+      "category": "productivity",
+      "tint": "#2f86d6",
+      "mono": "Fl",
+      "version": "1.20.0",
+      "sizeMb": 92,
+      "updated": "2026-08-28",
+      "license": "MIT",
+      "portable": true,
+      "pro": true,
+      "proNote": {
+        "en": "Cloud plugins, settings sync",
+        "be": "Хмарныя плагіны, сінхранізацыя налад",
+        "ru": "Облачные плагины, синхронизация настроек"
+      },
+      "tagline": {
+        "en": "A powerful launcher for Windows.",
+        "be": "Магутны лаўнчар для Windows.",
+        "ru": "Мощный лаунчер для Windows."
+      },
+      "long": {
+        "en": "Press Alt+Space and type: launch apps, search files, run calculations, control the system and reach the web. Hundreds of plugins, themes included.",
+        "be": "Націсніце Alt+Space і набірайце: запускайце праграмы, шукайце файлы, лічыце, кіруйце сістэмай і шукайце ў сеціве. Сотні плагінаў і тэмы ў камплекце.",
+        "ru": "Нажмите Alt+Space и печатайте: запускайте приложения, ищите файлы, считайте, управляйте системой и ищите в сети. Сотни плагинов и темы в комплекте."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "localsend",
+      "name": "LocalSend",
+      "publisher": "Tien Do Nam",
+      "category": "utilities",
+      "tint": "#2fa48a",
+      "mono": "LS",
+      "version": "1.17.0",
+      "sizeMb": 24,
+      "updated": "2026-09-01",
+      "license": "Apache-2.0",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Share files privately across devices.",
+        "be": "Дзяліцеся файламі прыватна між прыладамі.",
+        "ru": "Делитесь файлами приватно между устройствами."
+      },
+      "long": {
+        "en": "An open-source AirDrop alternative: send files and text to nearby Windows, Android, iOS, macOS and Linux devices over your local network. No internet, no account, encrypted.",
+        "be": "Альтэрнатыва AirDrop з адкрытым кодам: адпраўляйце файлы і тэкст на суседнія прылады Windows, Android, iOS, macOS і Linux праз лакальную сетку. Без інтэрнэту, без уліковага запісу, з шыфраваннем.",
+        "ru": "Альтернатива AirDrop с открытым кодом: отправляйте файлы и текст на соседние устройства Windows, Android, iOS, macOS и Linux по локальной сети. Без интернета, без аккаунта, с шифрованием."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "krita",
+      "name": "Krita",
+      "publisher": "Krita Foundation",
+      "category": "design",
+      "tint": "#c94f8a",
+      "mono": "Kr",
+      "version": "5.2.9",
+      "sizeMb": 143,
+      "updated": "2026-07-08",
+      "license": "GPL-3.0",
+      "portable": true,
+      "pro": true,
+      "proNote": {
+        "en": "Advanced brushes, cloud backup",
+        "be": "Пашыраныя пэндзлі, рэзервовыя копіі ў воблаку",
+        "ru": "Расширенные кисти, облачные копии"
+      },
+      "tagline": {
+        "en": "Professional painting. Made for everyone.",
+        "be": "Прафесійны жывапіс. Для кожнага.",
+        "ru": "Профессиональная живопись. Для каждого."
+      },
+      "long": {
+        "en": "A free digital painting studio built by artists: brush engines, stabilisers, layers, animation and HDR support. Made for concept art, comics and illustration.",
+        "be": "Бясплатная студыя лічбавага жывапісу, зробленая мастакамі: рухавікі пэндзляў, стабілізатары, слаі, анімацыя і HDR. Для канцэпт-арту, коміксаў і ілюстрацыі.",
+        "ru": "Бесплатная студия цифровой живописи, созданная художниками: движки кистей, стабилизаторы, слои, анимация и HDR. Для концепт-арта, комиксов и иллюстрации."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "rustdesk",
+      "name": "RustDesk",
+      "publisher": "Purslane Ltd.",
+      "category": "utilities",
+      "tint": "#2a6fd6",
+      "mono": "Rd",
+      "version": "1.3.2",
+      "sizeMb": 24,
+      "updated": "2026-09-06",
+      "license": "AGPL-3.0",
+      "portable": true,
+      "pro": true,
+      "proNote": {
+        "en": "More devices, self-hosting",
+        "be": "Больш прылад, самастойны хостынг",
+        "ru": "Больше устройств, самостоятельный хостинг"
+      },
+      "tagline": {
+        "en": "Secure remote access for everyone.",
+        "be": "Бяспечны аддалены доступ для ўсіх.",
+        "ru": "Безопасный удалённый доступ для всех."
+      },
+      "long": {
+        "en": "An open-source remote desktop that works out of the box: end-to-end encrypted, no configuration, no account required. Host your own relay server when you need full control.",
+        "be": "Аддалены працоўны стол з адкрытым кодам, які працуе адразу: скразное шыфраванне, без налад і без уліковага запісу. Разгарніце свой рэлей-сервер, калі патрэбны поўны кантроль.",
+        "ru": "Удалённый рабочий стол с открытым кодом, который работает сразу: сквозное шифрование, без настройки и без аккаунта. Разверните свой relay-сервер, когда нужен полный контроль."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "sevenzip",
+      "name": "7-Zip",
+      "publisher": "Igor Pavlov",
+      "category": "utilities",
+      "tint": "#5b6b7a",
+      "mono": "7z",
+      "version": "25.01",
+      "sizeMb": 1.6,
+      "updated": "2026-08-03",
+      "license": "LGPL-2.1",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Archives, compressed the right way.",
+        "be": "Архівы, сціснутыя як трэба.",
+        "ru": "Архивы, сжатые как надо."
+      },
+      "long": {
+        "en": "Packs and unpacks 7z, zip, rar, tar, gz and dozens more with the best compression ratios around. Integrates into the Explorer context menu.",
+        "be": "Пакуе і распакоўвае 7z, zip, rar, tar, gz і дзясяткі іншых фарматаў з найлепшай ступенню сціску. Убудоўваецца ў кантэкстнае меню Правадніка.",
+        "ru": "Упаковывает и распаковывает 7z, zip, rar, tar, gz и десятки других форматов с лучшей степенью сжатия. Встраивается в контекстное меню Проводника."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "obs",
+      "name": "OBS Studio",
+      "publisher": "OBS Project",
+      "category": "media",
+      "tint": "#4a5560",
+      "mono": "OB",
+      "version": "31.1.2",
+      "sizeMb": 135,
+      "updated": "2026-08-25",
+      "license": "GPL-2.0",
+      "portable": false,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Record and stream like a pro.",
+        "be": "Запісвайце і вядзіце стрымы як прафесіянал.",
+        "ru": "Записывайте и ведите стримы как профессионал."
+      },
+      "long": {
+        "en": "Scenes, sources, filters and a mixer for live streaming and screen recording. Works with every major platform and captures games with almost no overhead.",
+        "be": "Сцэны, крыніцы, фільтры і мікшар для стрымаў і запісу экрана. Працуе з усімі буйнымі платформамі і захоплівае гульні практычна без нагрузкі.",
+        "ru": "Сцены, источники, фильтры и микшер для стримов и записи экрана. Работает со всеми крупными платформами и захватывает игры практически без нагрузки."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "keepassxc",
+      "name": "KeePassXC",
+      "publisher": "KeePassXC Team",
+      "category": "utilities",
+      "tint": "#4c9a3c",
+      "mono": "Kx",
+      "version": "2.7.10",
+      "sizeMb": 42,
+      "updated": "2026-07-22",
+      "license": "GPL-3.0",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Your passwords, offline and yours.",
+        "be": "Вашы паролі — афлайн і толькі вашы.",
+        "ru": "Ваши пароли — офлайн и только ваши."
+      },
+      "long": {
+        "en": "A password manager that keeps an encrypted database on your disk, not in someone’s cloud. Browser integration, TOTP, SSH agent and hardware keys.",
+        "be": "Менеджар пароляў, які трымае зашыфраваную базу на вашым дыску, а не ў чужым воблаку. Інтэграцыя з браўзерам, TOTP, SSH-агент і апаратныя ключы.",
+        "ru": "Менеджер паролей, который хранит зашифрованную базу на вашем диске, а не в чужом облаке. Интеграция с браузером, TOTP, SSH-агент и аппаратные ключи."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "audacity",
+      "name": "Audacity",
+      "publisher": "Muse Group",
+      "category": "media",
+      "tint": "#3865c9",
+      "mono": "Au",
+      "version": "3.7.4",
+      "sizeMb": 62,
+      "updated": "2026-06-30",
+      "license": "GPL-3.0",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Record, edit and mix audio.",
+        "be": "Запісвайце, рэдагуйце і зводзьце аўдыя.",
+        "ru": "Записывайте, редактируйте и сводите аудио."
+      },
+      "long": {
+        "en": "The classic multi-track audio editor: record from any input, clean up noise, apply effects and export to every common format.",
+        "be": "Класічны шматдарожкавы аўдыярэдактар: запіс з любога ўваходу, ачыстка шуму, эфекты і экспарт у любы распаўсюджаны фармат.",
+        "ru": "Классический многодорожечный аудиоредактор: запись с любого входа, очистка шума, эффекты и экспорт в любой распространённый формат."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "bitwarden",
+      "name": "Bitwarden",
+      "publisher": "Bitwarden Inc.",
+      "category": "utilities",
+      "tint": "#2a63d4",
+      "mono": "Bw",
+      "version": "2026.8.1",
+      "sizeMb": 118,
+      "updated": "2026-08-27",
+      "license": "GPL-3.0",
+      "portable": false,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Passwords, synced and open source.",
+        "be": "Паролі — сінхранізаваныя і з адкрытым кодам.",
+        "ru": "Пароли — синхронизированные и с открытым кодом."
+      },
+      "long": {
+        "en": "An open-source password manager with end-to-end encryption, passkeys and sync across all your devices. Free for personal use, self-hostable.",
+        "be": "Менеджар пароляў з адкрытым кодам, скразным шыфраваннем, passkeys і сінхранізацыяй на ўсіх прыладах. Бясплатна для асабістага карыстання, можна разгарнуць у сябе.",
+        "ru": "Менеджер паролей с открытым кодом, сквозным шифрованием, passkeys и синхронизацией на всех устройствах. Бесплатно для личного использования, можно развернуть у себя."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "inkscape",
+      "name": "Inkscape",
+      "publisher": "Inkscape Project",
+      "category": "design",
+      "tint": "#4a6b8a",
+      "mono": "Ik",
+      "version": "1.4.2",
+      "sizeMb": 128,
+      "updated": "2026-05-16",
+      "license": "GPL-3.0",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Draw freely. Vector graphics for all.",
+        "be": "Малюйце свабодна. Вектарная графіка для ўсіх.",
+        "ru": "Рисуйте свободно. Векторная графика для всех."
+      },
+      "long": {
+        "en": "A professional vector editor for logos, icons, diagrams and print. Native SVG, powerful path tools and extensions.",
+        "be": "Прафесійны вектарны рэдактар для лагатыпаў, іконак, схем і друку. Родны SVG, магутныя інструменты контураў і расшырэнні.",
+        "ru": "Профессиональный векторный редактор для логотипов, иконок, схем и печати. Родной SVG, мощные инструменты контуров и расширения."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "flux",
+      "name": "f.lux",
+      "publisher": "f.lux Software LLC",
+      "category": "lifestyle",
+      "tint": "#d87a3a",
+      "mono": "fx",
+      "version": "4.120",
+      "sizeMb": 1.2,
+      "updated": "2026-06-18",
+      "license": "Freeware",
+      "portable": false,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Warmer screens after sunset.",
+        "be": "Цяплейшы экран пасля заходу сонца.",
+        "ru": "Тёплый экран после захода солнца."
+      },
+      "long": {
+        "en": "Adjusts your display colour temperature to the time of day, so evenings are easier on the eyes and sleep. Set your location once and forget it.",
+        "be": "Падладжвае колеравую тэмпературу экрана пад час сутак, каб вечарамі вачам было лягчэй, а сон — лепшым. Задайце месцазнаходжанне адзін раз і забудзьце.",
+        "ru": "Подстраивает цветовую температуру экрана под время суток, чтобы вечером глазам было легче, а сон — крепче. Укажите местоположение один раз и забудьте."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "anki",
+      "name": "Anki",
+      "publisher": "Ankitects",
+      "category": "education",
+      "tint": "#3b7dd8",
+      "mono": "An",
+      "version": "25.02.4",
+      "sizeMb": 160,
+      "updated": "2026-08-11",
+      "license": "AGPL-3.0",
+      "portable": false,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Remember anything with spaced repetition.",
+        "be": "Запамінайце што заўгодна з інтэрвальнымі паўтарэннямі.",
+        "ru": "Запоминайте что угодно с интервальными повторениями."
+      },
+      "long": {
+        "en": "Flashcards that schedule themselves: Anki shows each card exactly when you are about to forget it. Images, audio, LaTeX and thousands of shared decks.",
+        "be": "Карткі, якія самі складаюць расклад: Anki паказвае кожную роўна тады, калі вы вось-вось яе забудзеце. Выявы, аўдыя, LaTeX і тысячы агульных калод.",
+        "ru": "Карточки, которые сами составляют расписание: Anki показывает каждую ровно тогда, когда вы вот-вот её забудете. Картинки, аудио, LaTeX и тысячи общих колод."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "stellarium",
+      "name": "Stellarium",
+      "publisher": "Stellarium Team",
+      "category": "education",
+      "tint": "#3c4f8a",
+      "mono": "St",
+      "version": "25.2",
+      "sizeMb": 330,
+      "updated": "2026-07-01",
+      "license": "GPL-2.0",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "A planetarium on your desktop.",
+        "be": "Планетарый на вашым стале.",
+        "ru": "Планетарий на вашем столе."
+      },
+      "long": {
+        "en": "A realistic 3D sky with over a million stars, planets, constellations from many cultures and telescope control. See exactly what is above you tonight.",
+        "be": "Рэалістычнае 3D-неба з мільёнам зорак, планетамі, сузор’ямі розных культур і кіраваннем тэлескопам. Глядзіце, што сёння над вамі.",
+        "ru": "Реалистичное 3D-небо с миллионом звёзд, планетами, созвездиями разных культур и управлением телескопом. Смотрите, что сегодня над вами."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "mindustry",
+      "name": "Mindustry",
+      "publisher": "Anuke",
+      "category": "games",
+      "tint": "#c9a23a",
+      "mono": "Mi",
+      "version": "146",
+      "sizeMb": 60,
+      "updated": "2026-05-30",
+      "license": "GPL-3.0",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Build factories. Defend them.",
+        "be": "Будуйце заводы. Абараняйце іх.",
+        "ru": "Стройте заводы. Защищайте их."
+      },
+      "long": {
+        "en": "A tower-defence factory game: design conveyor chains, automate production and hold the line against waves of enemies. Open source, with mods and co-op.",
+        "be": "Гульня пра заводы і абарону: праектуйце ланцужкі канвеераў, аўтаматызуйце вытворчасць і трымайце абарону ад хваляў ворагаў. Адкрыты код, моды і кааператыў.",
+        "ru": "Игра про заводы и оборону: проектируйте цепочки конвейеров, автоматизируйте производство и держите оборону от волн врагов. Открытый код, моды и кооператив."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "joplin",
+      "name": "Joplin",
+      "publisher": "Joplin",
+      "category": "productivity",
+      "tint": "#1e6fc0",
+      "mono": "Jo",
+      "version": "3.3.4",
+      "sizeMb": 210,
+      "updated": "2026-08-30",
+      "license": "AGPL-3.0",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Notes and to-dos, encrypted and synced.",
+        "be": "Нататкі і задачы — зашыфраваныя і сінхранізаваныя.",
+        "ru": "Заметки и задачи — зашифрованные и синхронизированные."
+      },
+      "long": {
+        "en": "An open-source notebook with Markdown, a web clipper, end-to-end encryption and sync through Nextcloud, WebDAV, OneDrive or Dropbox.",
+        "be": "Нататнік з адкрытым кодам: Markdown, вэб-кліпер, скразное шыфраванне і сінхранізацыя праз Nextcloud, WebDAV, OneDrive або Dropbox.",
+        "ru": "Блокнот с открытым кодом: Markdown, веб-клиппер, сквозное шифрование и синхронизация через Nextcloud, WebDAV, OneDrive или Dropbox."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "ditto",
+      "name": "Ditto",
+      "publisher": "Scott Brogden",
+      "category": "productivity",
+      "tint": "#3a8f6a",
+      "mono": "Di",
+      "version": "3.24.246",
+      "sizeMb": 6,
+      "updated": "2026-07-15",
+      "license": "GPL-2.0",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Clipboard history that just works.",
+        "be": "Гісторыя буфера абмену, якая проста працуе.",
+        "ru": "История буфера обмена, которая просто работает."
+      },
+      "long": {
+        "en": "Saves everything you copy — text, images, files — and pastes it back with a hotkey and a quick search. Optional sync between PCs over the network.",
+        "be": "Захоўвае ўсё, што вы капіюеце — тэкст, выявы, файлы, — і ўстаўляе гарачай клавішай з хуткім пошукам. Неабавязковая сінхранізацыя між ПК па сетцы.",
+        "ru": "Сохраняет всё, что вы копируете — текст, картинки, файлы, — и вставляет по горячей клавише с быстрым поиском. Необязательная синхронизация между ПК по сети."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "supertuxkart",
+      "name": "SuperTuxKart",
+      "publisher": "STK Team",
+      "category": "games",
+      "tint": "#d64a3a",
+      "mono": "Tk",
+      "version": "1.4",
+      "sizeMb": 720,
+      "updated": "2026-04-14",
+      "license": "GPL-3.0",
+      "portable": false,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Kart racing, free and friendly.",
+        "be": "Картынг — бясплатны і добразычлівы.",
+        "ru": "Картинг — бесплатный и дружелюбный."
+      },
+      "long": {
+        "en": "An open-source kart racer with story mode, split-screen and online multiplayer. Family-friendly and completely free of purchases.",
+        "be": "Гонкі на картах з адкрытым кодам: сюжэтны рэжым, падзелены экран і анлайн-мультыплэер. Для ўсёй сям’і і без ніякіх покупак.",
+        "ru": "Гонки на картах с открытым кодом: сюжетный режим, разделённый экран и онлайн-мультиплеер. Для всей семьи и без каких-либо покупок."
+      },
+      "channel": null,
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "shell",
+      "name": "Nilesoft Shell",
+      "publisher": "Nilesoft",
+      "category": "system",
+      "tint": "#3b6fd1",
+      "mono": "Sh",
+      "version": "1.9.15",
+      "sizeMb": 3.2,
+      "updated": "2026-09-13",
+      "license": "Freeware",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Your context menu, your rules.",
+        "be": "Ваша кантэкстнае меню — вашы правілы.",
+        "ru": "Ваше контекстное меню — ваши правила."
+      },
+      "long": {
+        "en": "Replaces the Windows context menu with one you define: nest items, hide clutter, add your own commands and themes. Everything lives in one plain-text config.",
+        "be": "Замяняе кантэкстнае меню Windows на тое, якое вы задаяце самі: укладзеныя пункты, схаваны лішак, свае каманды і тэмы. Усё — у адным тэкставым файле налад.",
+        "ru": "Заменяет контекстное меню Windows на то, которое вы задаёте сами: вложенные пункты, скрытый мусор, свои команды и темы. Всё — в одном текстовом файле настроек."
+      },
+      "channel": "nilesoft",
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "czkawka",
+      "name": "Czkawka",
+      "publisher": "Rafał Mikrut",
+      "category": "utilities",
+      "tint": "#3f8fa8",
+      "mono": "Cz",
+      "version": "9.0.0",
+      "sizeMb": 28,
+      "updated": "2026-09-02",
+      "license": "MIT",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Find duplicates, empty folders and junk.",
+        "be": "Знаходзьце дублікаты, пустыя тэчкі і смецце.",
+        "ru": "Находите дубликаты, пустые папки и мусор."
+      },
+      "long": {
+        "en": "A fast, open-source cleaner: duplicate files, similar images and videos, empty folders, broken shortcuts and oversized files. Nothing is removed without your say-so.",
+        "be": "Хуткі чысцільшчык з адкрытым кодам: дублікаты файлаў, падобныя выявы і відэа, пустыя тэчкі, зламаныя ярлыкі і вялікія файлы. Нічога не выдаляецца без вашай згоды.",
+        "ru": "Быстрый чистильщик с открытым кодом: дубликаты файлов, похожие изображения и видео, пустые папки, битые ярлыки и огромные файлы. Ничего не удаляется без вашего согласия."
+      },
+      "channel": "fossfriends",
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "imageglass",
+      "name": "ImageGlass",
+      "publisher": "Dương Diệu Pháp",
+      "category": "media",
+      "tint": "#2a9d8f",
+      "mono": "IG",
+      "version": "9.3.1",
+      "sizeMb": 32,
+      "updated": "2026-08-20",
+      "license": "GPL-3.0",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "A lightweight, versatile image viewer.",
+        "be": "Лёгкі і ўніверсальны праглядальнік выяў.",
+        "ru": "Лёгкий и универсальный просмотрщик изображений."
+      },
+      "long": {
+        "en": "Opens more than 80 formats — including WebP, AVIF, HEIC and RAW — in a clean, fast window. Slideshows, colour picker, quick crop and keyboard-first navigation.",
+        "be": "Адкрывае больш за 80 фарматаў — уключна з WebP, AVIF, HEIC і RAW — у чыстым хуткім акне. Слайд-шоу, піпетка колеру, хуткая абрэзка і навігацыя з клавіятуры.",
+        "ru": "Открывает более 80 форматов — включая WebP, AVIF, HEIC и RAW — в чистом быстром окне. Слайд-шоу, пипетка цвета, быстрая обрезка и навигация с клавиатуры."
+      },
+      "channel": "fossfriends",
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "rufus",
+      "name": "Rufus",
+      "publisher": "Pete Batard",
+      "category": "system",
+      "tint": "#4b7bb5",
+      "mono": "Ru",
+      "version": "4.7",
+      "sizeMb": 1.5,
+      "updated": "2026-07-24",
+      "license": "GPL-3.0",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Bootable USB drives, the easy way.",
+        "be": "Загрузачныя USB-назапашвальнікі — проста.",
+        "ru": "Загрузочные USB-накопители — просто."
+      },
+      "long": {
+        "en": "Turns an ISO into a bootable USB stick in a couple of clicks: Windows installers, Linux live systems, firmware tools. Tiny, portable and quick.",
+        "be": "Перетварае ISO ў загрузачную флэшку за пару клікаў: усталёўшчыкі Windows, live-сістэмы Linux, утыліты для прашывак. Малы, партатыўны і хуткі.",
+        "ru": "Превращает ISO в загрузочную флешку за пару кликов: установщики Windows, live-системы Linux, утилиты для прошивок. Крошечный, портативный и быстрый."
+      },
+      "channel": "fossfriends",
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "winaerotweaker",
+      "name": "Winaero Tweaker",
+      "publisher": "Winaero",
+      "category": "system",
+      "tint": "#c27a2f",
+      "mono": "Wt",
+      "version": "1.63",
+      "sizeMb": 4.1,
+      "updated": "2026-08-30",
+      "license": "Freeware",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Hundreds of hidden Windows settings.",
+        "be": "Сотні схаваных налад Windows.",
+        "ru": "Сотни скрытых настроек Windows."
+      },
+      "long": {
+        "en": "One window for the switches Windows hides: classic context menus, taskbar tweaks, accent colours, telemetry toggles and more — each with an explanation and an undo.",
+        "be": "Адно акно для пераключальнікаў, якія Windows хавае: класічныя кантэкстныя меню, налады панэлі задач, колеры акцэнту, тэлеметрыя і іншае — кожны з тлумачэннем і адменай.",
+        "ru": "Одно окно для переключателей, которые Windows скрывает: классические контекстные меню, настройки панели задач, цвета акцента, телеметрия и многое другое — каждый с пояснением и отменой."
+      },
+      "channel": "winaero",
+      "alsoIn": [
+        "paparats"
+      ],
+      "iconUrl": null
+    },
+    {
+      "id": "mpv",
+      "name": "mpv",
+      "publisher": "mpv-player",
+      "category": "media",
+      "tint": "#5a3f9a",
+      "mono": "mv",
+      "version": "0.40.0",
+      "sizeMb": 78,
+      "updated": "2026-09-14",
+      "license": "GPL-2.0",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "A minimalist, powerful media player.",
+        "be": "Мінімалістычны і магутны медыяплэер.",
+        "ru": "Минималистичный и мощный медиаплеер."
+      },
+      "long": {
+        "en": "Command-line roots, a clean on-screen controller and best-in-class video output: high-quality scaling, HDR, frame interpolation and scripting in Lua and JavaScript.",
+        "be": "Карані ў камандным радку, чысты экранны кантролер і найлепшы вывад відэа: якасны скейлінг, HDR, інтэрпаляцыя кадраў і скрыпты на Lua і JavaScript.",
+        "ru": "Корни в командной строке, чистый экранный контроллер и лучший вывод видео: качественный скейлинг, HDR, интерполяция кадров и скрипты на Lua и JavaScript."
+      },
+      "channel": "mpvbuilds",
+      "alsoIn": [],
+      "iconUrl": null
+    },
+    {
+      "id": "slounik",
+      "name": "Слоўнік",
+      "publisher": "Алесь М.",
+      "category": "education",
+      "tint": "#b8432f",
+      "mono": "Сл",
+      "version": "2.4.0",
+      "sizeMb": 96,
+      "updated": "2026-09-12",
+      "license": "MIT",
+      "portable": true,
+      "pro": false,
+      "proNote": null,
+      "tagline": {
+        "en": "Belarusian dictionaries, offline.",
+        "be": "Беларускія слоўнікі — афлайн.",
+        "ru": "Белорусские словари — офлайн."
+      },
+      "long": {
+        "en": "Explanatory, orthographic and translation dictionaries of Belarusian in one offline app. Search as you type, both orthographies, word of the day.",
+        "be": "Тлумачальны, арфаграфічны і перакладныя слоўнікі беларускай мовы ў адной афлайн-праграме. Пошук падчас уводу, абодва правапісы, слова дня.",
+        "ru": "Толковый, орфографический и переводные словари белорусского языка в одном офлайн-приложении. Поиск по мере ввода, оба правописания, слово дня."
+      },
+      "channel": "bysoft",
+      "alsoIn": [],
+      "iconUrl": null
+    }
+  ],
+  "categories": [
+    {
+      "id": "productivity",
+      "catalogCount": 142,
+      "icon": "laptop",
+      "hue": "#2f7a58"
+    },
+    {
+      "id": "development",
+      "catalogCount": 118,
+      "icon": "code",
+      "hue": "#2c5d8a"
+    },
+    {
+      "id": "design",
+      "catalogCount": 93,
+      "icon": "palette",
+      "hue": "#8a3e78"
+    },
+    {
+      "id": "media",
+      "catalogCount": 87,
+      "icon": "play",
+      "hue": "#a3562c"
+    },
+    {
+      "id": "utilities",
+      "catalogCount": 164,
+      "icon": "wrench",
+      "hue": "#4f6070"
+    },
+    {
+      "id": "system",
+      "catalogCount": 76,
+      "icon": "layout-grid",
+      "hue": "#2f5f9a"
+    },
+    {
+      "id": "lifestyle",
+      "catalogCount": 54,
+      "icon": "leaf",
+      "hue": "#3f7a4a"
+    },
+    {
+      "id": "games",
+      "catalogCount": 38,
+      "icon": "gamepad-2",
+      "hue": "#7a4a2f"
+    },
+    {
+      "id": "education",
+      "catalogCount": 47,
+      "icon": "graduation-cap",
+      "hue": "#5a5a9a"
+    }
+  ],
+  "collections": [
+    {
+      "id": "essential",
+      "icon": "laptop",
+      "title": {
+        "en": "Essential Windows Apps",
+        "be": "Неабходныя праграмы для Windows",
+        "ru": "Необходимые приложения для Windows"
+      },
+      "sub": {
+        "en": "A great start for any setup.",
+        "be": "Добры старт для любога ПК.",
+        "ru": "Отличный старт для любого ПК."
+      },
+      "apps": [
+        "powertoys",
+        "everything",
+        "sevenzip",
+        "files",
+        "vlc",
+        "bitwarden"
+      ]
+    },
+    {
+      "id": "creators",
+      "icon": "palette",
+      "title": {
+        "en": "For Creators",
+        "be": "Для творцаў",
+        "ru": "Для творцов"
+      },
+      "sub": {
+        "en": "Design. Build. Create.",
+        "be": "Малюйце. Мантуйце. Стварайце.",
+        "ru": "Рисуйте. Монтируйте. Создавайте."
+      },
+      "apps": [
+        "krita",
+        "inkscape",
+        "obs",
+        "audacity",
+        "sharex"
+      ]
+    },
+    {
+      "id": "developers",
+      "icon": "code",
+      "title": {
+        "en": "For Developers",
+        "be": "Для распрацоўшчыкаў",
+        "ru": "Для разработчиков"
+      },
+      "sub": {
+        "en": "Sharper tools for sharper code.",
+        "be": "Вастрэйшыя інструменты для вастрэйшага коду.",
+        "ru": "Острее инструменты — чище код."
+      },
+      "apps": [
+        "vscode",
+        "notepadpp",
+        "obsidian",
+        "flow",
+        "keepassxc",
+        "powertoys"
+      ]
+    },
+    {
+      "id": "work",
+      "icon": "briefcase",
+      "title": {
+        "en": "Work Smarter",
+        "be": "Працуйце разумней",
+        "ru": "Работайте умнее"
+      },
+      "sub": {
+        "en": "Tools for what matters.",
+        "be": "Інструменты для важнага.",
+        "ru": "Инструменты для важного."
+      },
+      "apps": [
+        "obsidian",
+        "flow",
+        "everything",
+        "localsend",
+        "rustdesk",
+        "bitwarden"
+      ]
+    }
+  ],
+  "heroSlides": [
+    {
+      "kicker": {
+        "en": "Discover",
+        "be": "Адкрывайце",
+        "ru": "Открывайте"
+      },
+      "title1": {
+        "en": "Great tools",
+        "be": "Лепшыя інструменты",
+        "ru": "Лучшие инструменты"
+      },
+      "title2": {
+        "en": "hide in plain sight.",
+        "be": "хаваюцца на віду.",
+        "ru": "прячутся на виду."
+      },
+      "body": {
+        "en": "Paparats is a curated app store for Windows. Useful apps. No ads. No telemetry. More possibilities.",
+        "be": "Paparats — адабраны ўручную каталог праграм для Windows. Карысныя праграмы. Без рэкламы. Без тэлеметрыі. Больш магчымасцей.",
+        "ru": "Paparats — магазин приложений для Windows с ручным отбором. Полезные программы. Без рекламы. Без телеметрии. Больше возможностей."
+      },
+      "cta": {
+        "en": "Explore apps",
+        "be": "Глядзець праграмы",
+        "ru": "Смотреть приложения"
+      },
+      "quote": {
+        "en": "Sometimes the most valuable things are just waiting to be found.",
+        "be": "Часам самае каштоўнае проста чакае, каб яго знайшлі.",
+        "ru": "Иногда самое ценное просто ждёт, когда его найдут."
+      },
+      "target": "browse"
+    },
+    {
+      "kicker": {
+        "en": "Tools for real life",
+        "be": "Інструменты для жыцця",
+        "ru": "Инструменты для жизни"
+      },
+      "title1": {
+        "en": "Your favorite",
+        "be": "Любімыя праграмы —",
+        "ru": "Любимые приложения —"
+      },
+      "title2": {
+        "en": "apps, together.",
+        "be": "разам.",
+        "ru": "вместе."
+      },
+      "body": {
+        "en": "Discover useful tools for work, creativity and everyday life. One store. One subscription. More done.",
+        "be": "Адкрывайце карысныя інструменты для працы, творчасці і штодзённага жыцця. Адна крама. Адна падпіска. Больш зробленага.",
+        "ru": "Открывайте полезные инструменты для работы, творчества и повседневной жизни. Один магазин. Одна подписка. Больше сделано."
+      },
+      "cta": {
+        "en": "Explore apps",
+        "be": "Глядзець праграмы",
+        "ru": "Смотреть приложения"
+      },
+      "quote": {
+        "en": "Better tools. Brighter days.",
+        "be": "Лепшыя інструменты. Святлейшыя дні.",
+        "ru": "Лучшие инструменты. Светлее дни."
+      },
+      "target": "library"
+    },
+    {
+      "kicker": {
+        "en": "Curated for Windows",
+        "be": "Адабрана для Windows",
+        "ru": "Отобрано для Windows"
+      },
+      "title1": {
+        "en": "Small apps.",
+        "be": "Малыя праграмы.",
+        "ru": "Маленькие приложения."
+      },
+      "title2": {
+        "en": "Big possibilities.",
+        "be": "Вялікія магчымасці.",
+        "ru": "Большие возможности."
+      },
+      "body": {
+        "en": "Hand-picked software for people who want more from their PC.",
+        "be": "Адабранае ўручную ПЗ для тых, хто хоча большага ад свайго ПК.",
+        "ru": "Отобранное вручную ПО для тех, кто хочет большего от своего ПК."
+      },
+      "cta": {
+        "en": "Explore apps",
+        "be": "Глядзець праграмы",
+        "ru": "Смотреть приложения"
+      },
+      "quote": {
+        "en": "Native · Safe · Useful · No ads",
+        "be": "Родныя · Бяспечныя · Карысныя · Без рэкламы",
+        "ru": "Родные · Безопасные · Полезные · Без рекламы"
+      },
+      "target": "categories"
+    },
+    {
+      "kicker": {
+        "en": "Paparats Pro",
+        "be": "Paparats Pro",
+        "ru": "Paparats Pro"
+      },
+      "title1": {
+        "en": "One subscription.",
+        "be": "Адна падпіска.",
+        "ru": "Одна подписка."
+      },
+      "title2": {
+        "en": "More possibilities.",
+        "be": "Больш магчымасцей.",
+        "ru": "Больше возможностей."
+      },
+      "body": {
+        "en": "Support the people who build the tools you use every day. One plan unlocks Pro in every participating app.",
+        "be": "Падтрымайце тых, хто робіць інструменты, якімі вы карыстаецеся кожны дзень. Адзін план адкрывае Pro ва ўсіх праграмах-удзельніках.",
+        "ru": "Поддержите тех, кто делает инструменты, которыми вы пользуетесь каждый день. Один план открывает Pro во всех приложениях-участниках."
+      },
+      "cta": {
+        "en": "See plans",
+        "be": "Глядзець планы",
+        "ru": "Смотреть планы"
+      },
+      "quote": {
+        "en": "90% goes to the authors.",
+        "be": "90% ідзе аўтарам.",
+        "ru": "90% получают авторы."
+      },
+      "target": "subscription"
+    }
+  ],
+  "browseHeroes": [
+    {
+      "appId": "obsidian",
+      "title1": {
+        "en": "Focus",
+        "be": "Засяродзьцеся",
+        "ru": "Сосредоточьтесь"
+      },
+      "title2": {
+        "en": "on what matters.",
+        "be": "на галоўным.",
+        "ru": "на главном."
+      },
+      "body": {
+        "en": "Obsidian helps you think clearly, connect ideas and build knowledge that lasts.",
+        "be": "Obsidian дапамагае думаць ясна, звязваць ідэі і будаваць веды, якія застаюцца.",
+        "ru": "Obsidian помогает думать ясно, связывать идеи и строить знания, которые остаются."
+      },
+      "note": {
+        "en": "Your ideas belong here.",
+        "be": "Вашым ідэям тут месца.",
+        "ru": "Вашим идеям здесь место."
+      }
+    },
+    {
+      "appId": "krita",
+      "title1": {
+        "en": "Paint",
+        "be": "Малюйце",
+        "ru": "Рисуйте"
+      },
+      "title2": {
+        "en": "without limits.",
+        "be": "без абмежаванняў.",
+        "ru": "без ограничений."
+      },
+      "body": {
+        "en": "Krita gives illustrators a full studio — brushes, layers, animation — for free.",
+        "be": "Krita дае ілюстратарам поўную студыю — пэндзлі, слаі, анімацыю — бясплатна.",
+        "ru": "Krita даёт иллюстраторам полную студию — кисти, слои, анимацию — бесплатно."
+      },
+      "note": {
+        "en": "Made by artists.",
+        "be": "Зроблена мастакамі.",
+        "ru": "Сделано художниками."
+      }
+    },
+    {
+      "appId": "rustdesk",
+      "title1": {
+        "en": "Your PC,",
+        "be": "Ваш ПК —",
+        "ru": "Ваш ПК —"
+      },
+      "title2": {
+        "en": "from anywhere.",
+        "be": "адкуль заўгодна.",
+        "ru": "откуда угодно."
+      },
+      "body": {
+        "en": "RustDesk connects you to your machines securely, with no account and no cloud lock-in.",
+        "be": "RustDesk бяспечна злучае вас з вашымі машынамі — без уліковага запісу і прывязкі да воблака.",
+        "ru": "RustDesk безопасно соединяет вас с вашими машинами — без аккаунта и привязки к облаку."
+      },
+      "note": {
+        "en": "Open source. Self-hostable.",
+        "be": "Адкрыты код. Свой сервер.",
+        "ru": "Открытый код. Свой сервер."
+      }
+    }
+  ],
+  "featured": [
+    "obsidian",
+    "sharex",
+    "vlc",
+    "powertoys",
+    "notepadpp",
+    "everything"
+  ],
+  "notable": [
+    "shell",
+    "localsend",
+    "czkawka",
+    "rustdesk"
+  ],
+  "proApps": [
+    "obsidian",
+    "sharex",
+    "krita",
+    "rustdesk",
+    "flow"
+  ],
+  "updates": [
+    {
+      "appId": "vscode",
+      "downloadMb": 87,
+      "notes": {
+        "en": [
+          "Improved performance and stability",
+          "Better support for Python and C++",
+          "Updated extensions marketplace"
+        ],
+        "be": [
+          "Палепшаная хуткасць і стабільнасць",
+          "Лепшая падтрымка Python і C++",
+          "Абноўлены каталог пашырэнняў"
+        ],
+        "ru": [
+          "Улучшены производительность и стабильность",
+          "Лучшая поддержка Python и C++",
+          "Обновлён каталог расширений"
+        ]
+      }
+    },
+    {
+      "appId": "obsidian",
+      "downloadMb": 12,
+      "notes": {
+        "en": [
+          "New editor improvements",
+          "Better sync reliability",
+          "Bug fixes"
+        ],
+        "be": [
+          "Паляпшэнні рэдактара",
+          "Надзейнейшая сінхранізацыя",
+          "Выпраўленні памылак"
+        ],
+        "ru": [
+          "Улучшения редактора",
+          "Более надёжная синхронизация",
+          "Исправления ошибок"
+        ]
+      }
+    },
+    {
+      "appId": "sharex",
+      "downloadMb": 8,
+      "notes": {
+        "en": [
+          "New annotation tools",
+          "Faster GIF encoding",
+          "Fixed upload retries"
+        ],
+        "be": [
+          "Новыя інструменты анатацый",
+          "Хутчэйшае кадаванне GIF",
+          "Выпраўлены паўторы загрузкі"
+        ],
+        "ru": [
+          "Новые инструменты аннотаций",
+          "Быстрее кодирование GIF",
+          "Исправлены повторы загрузки"
+        ]
+      }
+    },
+    {
+      "appId": "notepadpp",
+      "downloadMb": 5,
+      "notes": {
+        "en": [
+          "Dark mode refinements",
+          "Faster large-file search",
+          "Security fixes"
+        ],
+        "be": [
+          "Дапрацаваны цёмны рэжым",
+          "Хутчэйшы пошук у вялікіх файлах",
+          "Выпраўленні бяспекі"
+        ],
+        "ru": [
+          "Доработан тёмный режим",
+          "Быстрее поиск в больших файлах",
+          "Исправления безопасности"
+        ]
+      }
+    },
+    {
+      "appId": "vlc",
+      "downloadMb": 40,
+      "notes": {
+        "en": [
+          "HDR tone-mapping fixes",
+          "Updated codecs",
+          "Subtitle rendering improvements"
+        ],
+        "be": [
+          "Выпраўлены тон-мапінг HDR",
+          "Абноўленыя кодэкі",
+          "Лепшы рэндэр субцітраў"
+        ],
+        "ru": [
+          "Исправлен тон-маппинг HDR",
+          "Обновлены кодеки",
+          "Улучшен рендер субтитров"
+        ]
+      }
+    },
+    {
+      "appId": "shell",
+      "downloadMb": 3,
+      "notes": {
+        "en": [
+          "Windows 11 24H2 compatibility",
+          "New “modern” theme",
+          "Fixed submenu flicker"
+        ],
+        "be": [
+          "Сумяшчальнасць з Windows 11 24H2",
+          "Новая тэма «modern»",
+          "Выпраўлена мігценне падменю"
+        ],
+        "ru": [
+          "Совместимость с Windows 11 24H2",
+          "Новая тема «modern»",
+          "Исправлено мерцание подменю"
+        ]
+      }
+    }
+  ],
+  "genericNotes": {
+    "en": [
+      "Stability and performance improvements",
+      "Bug fixes"
+    ],
+    "be": [
+      "Паляпшэнні стабільнасці і хуткасці",
+      "Выпраўленні памылак"
+    ],
+    "ru": [
+      "Улучшения стабильности и производительности",
+      "Исправления ошибок"
+    ]
+  },
+  "reviewPool": [
+    {
+      "author": "Alena K.",
+      "date": "2026-09-02",
+      "stars": 5,
+      "helpful": 42,
+      "text": {
+        "en": "Does exactly what it says. Fast, quiet, no bloat.",
+        "be": "Робіць роўна тое, што абяцае. Хутка, ціха, без лішняга.",
+        "ru": "Делает ровно то, что обещает. Быстро, тихо, без лишнего."
+      }
+    },
+    {
+      "author": "Dzmitry P.",
+      "date": "2026-08-19",
+      "stars": 4,
+      "helpful": 17,
+      "text": {
+        "en": "Solid tool. Wish the onboarding were a bit clearer, but after a day it clicks.",
+        "be": "Надзейны інструмент. Хацелася б ясней пачатак, але за дзень усё становіцца зразумела.",
+        "ru": "Надёжный инструмент. Хотелось бы понятнее начало, но за день всё становится ясно."
+      }
+    },
+    {
+      "author": "Maria S.",
+      "date": "2026-07-30",
+      "stars": 5,
+      "helpful": 31,
+      "text": {
+        "en": "Installed through Paparats in one click, updates arrive on time. Exactly how software should work.",
+        "be": "Усталявала праз Paparats адным клікам, абнаўленні прыходзяць у час. Так і мусіць працаваць ПЗ.",
+        "ru": "Установила через Paparats в один клик, обновления приходят вовремя. Так и должно работать ПО."
+      }
+    },
+    {
+      "author": "Ihar V.",
+      "date": "2026-07-11",
+      "stars": 3,
+      "helpful": 8,
+      "text": {
+        "en": "Good, but heavier on memory than I expected on an older laptop.",
+        "be": "Добра, але на старым ноўтбуку есць больш памяці, чым чакаў.",
+        "ru": "Хорошо, но на старом ноутбуке ест больше памяти, чем ожидал."
+      }
+    },
+    {
+      "author": "Kasia L.",
+      "date": "2026-06-24",
+      "stars": 5,
+      "helpful": 26,
+      "text": {
+        "en": "Replaced two paid apps for me. The free tier is genuinely useful.",
+        "be": "Замяніла мне дзве платныя праграмы. Бясплатная версія сапраўды карысная.",
+        "ru": "Заменила мне два платных приложения. Бесплатная версия действительно полезна."
+      }
+    },
+    {
+      "author": "Pavel R.",
+      "date": "2026-06-03",
+      "stars": 4,
+      "helpful": 12,
+      "text": {
+        "en": "Clean and dependable. Portable build is a nice touch.",
+        "be": "Акуратна і надзейна. Партатыўная зборка — прыемны бонус.",
+        "ru": "Аккуратно и надёжно. Портативная сборка — приятный бонус."
+      }
+    }
+  ]
+}

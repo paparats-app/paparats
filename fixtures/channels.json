@@ -1,0 +1,153 @@
+{
+  "channels": [
+    {
+      "id": "paparats",
+      "name": "Paparats",
+      "kind": "catalog",
+      "trust": "official",
+      "author": "Paparats",
+      "addr": "paparats.app/catalog",
+      "handle": "@paparats",
+      "tint": "#1f6f52",
+      "mono": "Pp",
+      "subscribers": 10400,
+      "synced": "2026-09-15",
+      "files": "paparats",
+      "support": "paparats.app/support",
+      "desc": {
+        "en": "The curated Paparats catalog: hand-picked apps for Windows, signed builds, no ads, no telemetry. Your default source.",
+        "be": "Адабраны каталог Paparats: праграмы для Windows, выбраныя ўручную, падпісаныя зборкі, без рэкламы і тэлеметрыі. Ваша крыніца па змаўчанні.",
+        "ru": "Отобранный каталог Paparats: приложения для Windows, выбранные вручную, подписанные сборки, без рекламы и телеметрии. Ваш источник по умолчанию."
+      },
+      "reviewed": null,
+      "outage": null
+    },
+    {
+      "id": "nilesoft",
+      "name": "Nilesoft",
+      "kind": "developer",
+      "trust": "verified",
+      "author": "Nilesoft",
+      "addr": "nilesoft.org/paparats",
+      "handle": "@nilesoft",
+      "tint": "#3b6fd1",
+      "mono": "Ni",
+      "subscribers": 1840,
+      "synced": "2026-09-14",
+      "files": "mirrored",
+      "support": "nilesoft.org/support",
+      "desc": {
+        "en": "Official builds from the Nilesoft team — Shell, the context-menu customiser, and its companion tools. Updates arrive the day they ship.",
+        "be": "Афіцыйныя зборкі ад каманды Nilesoft — Shell, наладжвальнік кантэкстнага меню, і суправаджальныя інструменты. Абнаўленні прыходзяць у дзень выпуску.",
+        "ru": "Официальные сборки от команды Nilesoft — Shell, настройщик контекстного меню, и сопутствующие инструменты. Обновления приходят в день выпуска."
+      },
+      "reviewed": "2026-03-12",
+      "outage": null
+    },
+    {
+      "id": "fossfriends",
+      "name": "FOSS Friends",
+      "kind": "curated",
+      "trust": "verified",
+      "author": "Kasia L.",
+      "addr": "fossfriends.dev/channel",
+      "handle": "@fossfriends",
+      "tint": "#7a52c9",
+      "mono": "FF",
+      "subscribers": 3120,
+      "synced": "2026-09-15",
+      "files": "mirrored",
+      "support": "fossfriends.dev/contact",
+      "desc": {
+        "en": "A curator’s pick of open-source Windows tools that deserve more attention. Every app is tested on a clean PC before it lands here.",
+        "be": "Падборка інструментаў з адкрытым кодам для Windows, якія заслугоўваюць большай увагі. Кожная праграма праверана на чыстым ПК, перш чым трапіць сюды.",
+        "ru": "Подборка инструментов с открытым кодом для Windows, которые заслуживают большего внимания. Каждое приложение проверено на чистом ПК, прежде чем попасть сюда."
+      },
+      "reviewed": "2026-05-02",
+      "outage": "2026-08-30"
+    },
+    {
+      "id": "winaero",
+      "name": "Winaero",
+      "kind": "developer",
+      "trust": "community",
+      "author": "Sergey Tkachenko",
+      "addr": "winaero.com/paparats",
+      "handle": "@winaero",
+      "tint": "#c27a2f",
+      "mono": "Wa",
+      "subscribers": 960,
+      "synced": null,
+      "files": "author",
+      "support": "winaero.com/contact",
+      "desc": {
+        "en": "Winaero Tweaker and friends — hundreds of hidden Windows settings in one place, straight from the author.",
+        "be": "Winaero Tweaker і сябры — сотні схаваных налад Windows у адным месцы, напрамую ад аўтара.",
+        "ru": "Winaero Tweaker и друзья — сотни скрытых настроек Windows в одном месте, напрямую от автора."
+      },
+      "reviewed": null,
+      "outage": null
+    },
+    {
+      "id": "mpvbuilds",
+      "name": "mpv builds",
+      "kind": "developer",
+      "trust": "community",
+      "author": "shinchiro",
+      "addr": "mpv.io/paparats",
+      "handle": "@mpv",
+      "tint": "#5a3f9a",
+      "mono": "mp",
+      "subscribers": 2210,
+      "synced": null,
+      "files": "author",
+      "support": "github.com/shinchiro/mpv-winbuild-cmake/issues",
+      "desc": {
+        "en": "Stable and nightly Windows builds of mpv, the minimalist media player. Updated several times a week.",
+        "be": "Стабільныя і нічныя зборкі mpv для Windows — мінімалістычнага медыяплэера. Абнаўляюцца некалькі разоў на тыдзень.",
+        "ru": "Стабильные и ночные сборки mpv для Windows — минималистичного медиаплеера. Обновляются несколько раз в неделю."
+      },
+      "reviewed": null,
+      "outage": null
+    },
+    {
+      "id": "bysoft",
+      "name": "Софт па-беларуску",
+      "kind": "curated",
+      "trust": "community",
+      "author": "Алесь М.",
+      "addr": "bysoft.by/kanal",
+      "handle": "@bysoft",
+      "tint": "#b8432f",
+      "mono": "Бы",
+      "subscribers": 540,
+      "synced": null,
+      "files": "author",
+      "support": "bysoft.by/kantakt",
+      "desc": {
+        "en": "Apps with a Belarusian interface, collected by volunteers. Tools for work and study in your own language.",
+        "be": "Праграмы з беларускім інтэрфейсам, сабраныя валанцёрамі. Інструменты для працы і вучобы на роднай мове.",
+        "ru": "Приложения с белорусским интерфейсом, собранные волонтёрами. Инструменты для работы и учёбы на родном языке."
+      },
+      "reviewed": null,
+      "outage": null
+    }
+  ],
+  "subscriptions": [
+    {
+      "channelId": "paparats",
+      "paused": false,
+      "staleAcknowledged": false
+    },
+    {
+      "channelId": "nilesoft",
+      "paused": false,
+      "staleAcknowledged": false
+    },
+    {
+      "channelId": "fossfriends",
+      "paused": false,
+      "staleAcknowledged": false
+    }
+  ]
+}

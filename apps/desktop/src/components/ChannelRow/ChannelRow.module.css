@@ -1,0 +1,125 @@
+/* Channel rows — prototype lines 830–850 (Sources) and 1388–1396 (catalog). Put them in a
+   bordered card whose rows are separated by 1px `--line` (e.g. `SettingsCard`). */
+.item {
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+.row {
+  display: flex;
+  gap: var(--sp-14);
+  align-items: center;
+  padding: var(--sp-14) var(--sp-20);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+.identity {
+  display: flex;
+  flex: 1;
+  gap: var(--sp-14);
+  align-items: center;
+  min-width: 0;
+}
+
+.identityButton {
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-8);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.identityButton:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.paused {
+  opacity: 0.55;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.nameLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-8);
+  align-items: center;
+}
+
+.name {
+  font-size: var(--fs-title);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.meta {
+  margin-top: var(--sp-3);
+  overflow: hidden;
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sync {
+  color: var(--text3);
+  font-size: var(--fs-secondary-sm);
+  white-space: nowrap;
+}
+
+.syncWarn {
+  color: var(--warn);
+}
+
+.alwaysOn {
+  padding: 0 var(--sp-4);
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+  white-space: nowrap;
+}
+
+.chevron.chevron {
+  --btn-r: var(--r-8);
+}
+
+.stale.stale {
+  margin: -4px var(--sp-20) var(--sp-14) 78px;
+}
+
+/* ---- Catalog variant ------------------------------------------------------------------- */
+.catalog {
+  gap: var(--sp-12);
+  padding: var(--sp-12) var(--sp-14);
+}
+
+.catalog .identity {
+  gap: var(--sp-12);
+}
+
+.catalog .name {
+  font-size: var(--fs-body);
+}
+
+.catalog .meta {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-secondary-sm);
+}
+
+.learn.learn {
+  --btn-r: var(--r-8);
+  --btn-px: var(--sp-10);
+}
+
+.subscribe.subscribe {
+  --btn-r: var(--r-8);
+  font-weight: 600;
+}

@@ -2,14 +2,12 @@ import type { report as En } from "../en/report";
 import type { LocaleCatalog } from "../../types";
 
 export const report: LocaleCatalog<typeof En> = {
-  // TODO(i18n): x => `Проблема с ${x}`
-  reportTitle: "TODO",
-  // TODO(i18n): (a, c) => `Сообщение уйдёт автору канала ${c} (${a}). Paparats получит копию, чтобы замечать каналы с повторяющимися проблемами.`
-  reportRoute: "TODO",
+  reportTitle: "Проблема с {{name}}",
+  reportRoute:
+    "Сообщение уйдёт автору канала {{channel}} ({{author}}). Paparats получит копию, чтобы замечать каналы с повторяющимися проблемами.",
   reportRouteOfficial: "Сообщение уйдёт команде Paparats.",
   reportPlaceholder: "Что пошло не так?",
   send: "Отправить",
-  // TODO(i18n): c => `Отправлено в ${c} · копия в Paparats`
-  reportSent: "TODO",
+  reportSent: "Отправлено в {{channel}} · копия в Paparats",
   reportSentOfficial: "Отправлено в Paparats",
 };

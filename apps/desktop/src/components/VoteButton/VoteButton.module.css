@@ -1,0 +1,69 @@
+/* Vote button — prototype lines 1230 (card) and 1287 (detail). */
+.vote {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0;
+  border: 1px solid var(--line2);
+  background: var(--card2);
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+.vote:hover {
+  filter: brightness(1.12);
+}
+
+.vote:active {
+  transform: translateY(1px);
+}
+
+.vote:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.voted {
+  border-color: var(--mint);
+  background: var(--mint);
+  color: var(--ink);
+}
+
+.card {
+  gap: 1px;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-10);
+}
+
+.detail {
+  gap: var(--sp-3);
+  width: 72px;
+  height: 76px;
+  border-radius: var(--r-14);
+}
+
+.count {
+  font-size: var(--fs-body);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.detail .count {
+  font-size: var(--fs-h2);
+  letter-spacing: var(--ls-tight);
+}
+
+.verb {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}

@@ -1,0 +1,89 @@
+/* Promo cards — prototype lines 538–541 (updates) and 907–910 (profile). Dark in both themes. */
+/* Content-box like the prototype: the min-heights (330 / 172) exclude the 1px border. */
+.card {
+  position: relative;
+  box-sizing: content-box;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--promo-ground);
+  color: var(--on-image);
+  font-family: var(--font-sans);
+}
+
+.art {
+  position: absolute;
+}
+
+.title {
+  font-weight: 600;
+  letter-spacing: var(--ls-h2);
+  text-wrap: balance;
+}
+
+.body {
+  color: var(--on-image-2);
+  text-wrap: pretty;
+}
+
+/* ---- Updates aside: artwork on top, text at the bottom ---------------------------------- */
+.updates {
+  min-height: 330px;
+}
+
+.updates .art {
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 180px;
+  background: var(--art) center / cover no-repeat;
+}
+
+.updates .text {
+  position: absolute;
+  right: var(--sp-20);
+  bottom: var(--sp-18);
+  left: var(--sp-20);
+}
+
+.updates .title {
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+.updates .body {
+  margin-top: var(--sp-8);
+  font-size: var(--fs-secondary);
+}
+
+/* ---- Profile: artwork on the right 54%, text on the left -------------------------------- */
+.profile {
+  min-height: 172px;
+}
+
+.profile .art {
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 54%;
+  background: var(--art) right center / cover no-repeat;
+  /* Mask stops: #000 is the opaque mask value, not a colour (the one allowed literal). */
+  mask-image: linear-gradient(90deg, transparent 0%, #000 42%);
+}
+
+.profile .text {
+  position: relative;
+  max-width: 420px;
+  padding: var(--sp-24) var(--sp-26);
+}
+
+.profile .title {
+  font-size: 23px;
+  line-height: 1.2;
+}
+
+.profile .body {
+  margin-top: var(--sp-10);
+  font-size: 13.5px;
+  line-height: 1.5;
+}

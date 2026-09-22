@@ -8,4 +8,4 @@ export const nav = {
   settings: "Settings",
   profile: "Profile",
   ideas: "Ideas",
-};
+} as const;

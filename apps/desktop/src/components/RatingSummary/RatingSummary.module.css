@@ -1,0 +1,127 @@
+/* Ratings summary card — prototype lines 1051–1067. */
+.card {
+  box-sizing: border-box;
+  padding: var(--sp-18) var(--sp-20);
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-10);
+}
+
+.average {
+  font-size: 44px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.count {
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+}
+
+.stars.stars {
+  margin-top: var(--sp-8);
+}
+
+.histogram {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  margin-top: var(--sp-16);
+}
+
+.bar {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) 34px;
+  gap: var(--sp-10);
+  align-items: center;
+  color: var(--text2);
+  font-size: var(--fs-meta);
+  font-variant-numeric: tabular-nums;
+}
+
+.track {
+  height: 6px;
+  overflow: hidden;
+  border-radius: var(--r-3);
+  background: var(--card2);
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  border-radius: var(--r-3);
+  background: var(--mint);
+}
+
+.pct {
+  text-align: right;
+}
+
+.rate {
+  margin-top: var(--sp-16);
+  padding-top: var(--sp-14);
+  border-top: 1px solid var(--line);
+}
+
+.rateTitle {
+  margin-bottom: var(--sp-8);
+  font-size: var(--fs-secondary);
+  font-weight: 600;
+}
+
+.rateStars {
+  display: flex;
+  gap: var(--sp-2);
+}
+
+/* 30px button with a 32px hit target. */
+.rateStar {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-6);
+  background: none;
+  color: var(--text3);
+  cursor: pointer;
+}
+
+.rateStar::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+}
+
+.rateStar svg {
+  fill: currentColor;
+}
+
+.rateOn {
+  color: var(--mint);
+}
+
+.rateStar:hover {
+  color: var(--mint2);
+}
+
+.rateStar:active {
+  transform: scale(0.94);
+}
+
+.rateStar:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}

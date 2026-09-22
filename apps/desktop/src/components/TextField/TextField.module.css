@@ -1,0 +1,48 @@
+/* Text inputs — 38/40px, radius 9, `--input` ground, 1px `--line2`, focus `--mint`, error `--danger`. */
+.input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  height: 38px;
+  padding: 0 var(--sp-12);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-9);
+  background: var(--input);
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-variant-numeric: tabular-nums;
+  outline: none;
+}
+
+.lg {
+  height: var(--control-h);
+  padding: 0 var(--sp-14);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.input::placeholder {
+  color: var(--text3);
+}
+
+.input:hover:not(:disabled, :focus) {
+  border-color: var(--text3);
+}
+
+/* The design's focus indicator for text fields is the mint border. */
+.input:focus {
+  border-color: var(--mint);
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

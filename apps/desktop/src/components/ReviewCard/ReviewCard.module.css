@@ -1,0 +1,58 @@
+/* Review card — prototype lines 1070–1078. */
+.card {
+  box-sizing: border-box;
+  padding: var(--sp-16) var(--sp-18);
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+.head {
+  display: flex;
+  gap: var(--sp-10);
+  align-items: center;
+}
+
+.avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-full);
+  background: var(--card2);
+  color: var(--text2);
+  font-size: var(--fs-meta);
+  font-weight: 700;
+}
+
+.who {
+  flex: 1;
+  min-width: 0;
+}
+
+.author {
+  font-size: var(--fs-body);
+  font-weight: 600;
+}
+
+.date {
+  color: var(--text3);
+  font-size: var(--fs-meta);
+}
+
+.text {
+  margin: var(--sp-12) 0 0;
+  color: var(--text2);
+  font-size: var(--fs-body);
+  line-height: var(--lh-long);
+  text-wrap: pretty;
+}
+
+.helpful {
+  margin-top: var(--sp-10);
+  color: var(--text3);
+  font-size: var(--fs-secondary-sm);
+}

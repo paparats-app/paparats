@@ -1,0 +1,109 @@
+/* Ideas board card — prototype lines 1229–1245. */
+.card {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: var(--sp-16);
+  box-sizing: border-box;
+  padding: var(--sp-16) var(--sp-18) var(--sp-14);
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+  color: var(--text);
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: border-color var(--dur-dots) var(--ease-standard);
+}
+
+.card:hover {
+  border-color: var(--line2);
+}
+
+.main {
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--sp-12);
+}
+
+.text {
+  min-width: 0;
+}
+
+/* Carries the title's own size so the heading's line box does not add half a pixel. */
+.titleWrap {
+  margin: 0;
+  font: inherit;
+  font-size: 15.5px;
+  line-height: 1.3;
+}
+
+.title {
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-4);
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: 15.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: left;
+  cursor: pointer;
+}
+
+.title:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.excerpt {
+  margin: var(--sp-4) 0 0;
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.take.take {
+  --btn-r: var(--r-8);
+  font-weight: 600;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-8) var(--sp-10);
+  align-items: center;
+  margin-top: var(--sp-10);
+  color: var(--text3);
+  font-size: var(--fs-secondary-sm);
+}
+
+.developer {
+  display: inline-flex;
+  gap: var(--sp-6);
+  align-items: center;
+  color: var(--text2);
+}
+
+.devDot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-4);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.comments {
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+}

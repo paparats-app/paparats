@@ -1,0 +1,130 @@
+/* Profile header card — prototype lines 876–892. */
+.card {
+  display: flex;
+  gap: var(--sp-22);
+  align-items: center;
+  box-sizing: border-box;
+  padding: var(--sp-24);
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+.avatarWrap {
+  position: relative;
+  flex: none;
+}
+
+/* 96px inside the 1px border (content-box, as the prototype renders it): 98px overall. */
+.avatar {
+  display: grid;
+  place-items: center;
+  box-sizing: content-box;
+  width: 96px;
+  height: 96px;
+  border: 1px solid var(--line2);
+  border-radius: var(--r-full);
+  background: var(--card2);
+  font-size: var(--fs-page);
+  font-weight: 600;
+  letter-spacing: var(--ls-tight);
+}
+
+.camera {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 2px solid var(--card);
+  border-radius: var(--r-full);
+  background: var(--mint);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+/* 32px hit target around the 30px badge. */
+.camera::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+}
+
+.camera:hover {
+  background: var(--mint2);
+}
+
+.camera:active {
+  transform: translateY(1px);
+}
+
+.camera:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.identity {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+}
+
+.email {
+  margin-top: var(--sp-6);
+  color: var(--text2);
+  font-size: var(--fs-body);
+}
+
+.since {
+  display: flex;
+  gap: var(--sp-8);
+  align-items: center;
+  margin-top: var(--sp-8);
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+}
+
+/* ---- Edit mode ------------------------------------------------------------------------- */
+.form {
+  display: flex;
+  flex: 1;
+  gap: var(--sp-22);
+  align-items: center;
+  min-width: 0;
+}
+
+.fields {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-12);
+  min-width: 0;
+}
+
+/* The prototype's profile labels are quieter than dialog labels: 12px `--text2`, 6px gap. */
+.field label {
+  margin-bottom: var(--sp-6);
+  color: var(--text2);
+  font-size: var(--fs-meta);
+  font-weight: 400;
+}
+
+.formActions {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: var(--sp-8);
+}

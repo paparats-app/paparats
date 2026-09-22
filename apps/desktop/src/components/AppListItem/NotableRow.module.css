@@ -1,0 +1,74 @@
+/* Browse › New and notable row — prototype lines 328–334. */
+.row {
+  display: flex;
+  gap: var(--sp-14);
+  align-items: center;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: var(--sp-14) var(--sp-16);
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--card);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+.identity {
+  display: flex;
+  flex: 1;
+  gap: var(--sp-14);
+  align-items: center;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-8);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.identity:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.name {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: var(--fs-title);
+  font-weight: 600;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tagline {
+  max-width: 100%;
+  margin-top: var(--sp-2);
+  overflow: hidden;
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-6) var(--sp-4);
+  max-width: 100%;
+  margin-top: var(--sp-6);
+}
+
+.action.action {
+  --btn-px: var(--sp-18);
+}

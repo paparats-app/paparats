@@ -1,4 +1,9 @@
-/* Temporary M0 base styles — replaced by tokens.css + the shell in M1. */
+/*
+ * Base document styles (after tokens.css). Components style themselves with CSS Modules; this file
+ * only sets the page ground, type defaults, focus, selection, scrollbars and the prototype's shared
+ * keyframes (Paparats Prototype.dc.html lines 15–33).
+ */
+
 html,
 body,
 #root {
@@ -7,10 +12,188 @@ body,
 }
 
 body {
-  background: #0b171b;
-  color: #e6ecec;
-  font-family: "Onest", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
   font-feature-settings: "tnum";
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  /* The window never scrolls; the shell's content column does. */
   overflow: hidden;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: var(--mint);
+}
+
+a:hover {
+  color: var(--mint2);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text3);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+/* ---- Focus: no browser outlines; keyboard focus gets the 2px mint ring -------------------- */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+::selection {
+  background: color-mix(in srgb, var(--mint) 32%, transparent);
+}
+
+/* ---- Scrollbars (prototype line 20) -------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--knob-off);
+  border: 2px solid var(--bg);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* ---- Shared keyframes (prototype lines 21–32). CSS Modules reference them as global(name). -- */
+@keyframes pp-sway {
+  from {
+    transform: rotate(-1.5deg);
+  }
+
+  to {
+    transform: rotate(1.3deg);
+  }
+}
+
+@keyframes pp-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.07);
+  }
+}
+
+@keyframes pp-glow {
+  0%,
+  100% {
+    opacity: 0.82;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes pp-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pp-ring {
+  from {
+    transform: scale(0.4);
+    opacity: 0.9;
+  }
+
+  to {
+    transform: scale(7);
+    opacity: 0;
+  }
+}
+
+@keyframes pp-drift {
+  from {
+    transform: translate(0, 0);
+  }
+
+  to {
+    transform: translate(18px, -30px);
+  }
+}
+
+@keyframes pp-twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes pp-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Screen enter: fade + 10px rise. Two names so alternating them restarts the animation. */
+@keyframes pp-enter-a {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pp-enter-b {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pp-step {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }

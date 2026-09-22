@@ -1,0 +1,118 @@
+/* Monogram / publisher icon tile. Sizes, radii and monogram sizes from the prototype markup. */
+.tile {
+  --tile: 48px;
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: var(--tile);
+  height: var(--tile);
+  overflow: hidden;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: var(--ls-tight);
+  color: var(--on-tint);
+  user-select: none;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+.floating {
+  box-shadow: var(--shadow-tile);
+}
+
+.s16 {
+  --tile: 16px;
+  border-radius: var(--r-4);
+  font-size: 8px;
+  letter-spacing: 0;
+}
+
+.s22 {
+  --tile: 22px;
+  border-radius: var(--r-6);
+  font-size: 10px;
+  letter-spacing: 0;
+}
+
+.s24 {
+  --tile: 24px;
+  border-radius: var(--r-7);
+  font-size: 10px;
+  letter-spacing: 0;
+}
+
+.s28 {
+  --tile: 28px;
+  border-radius: var(--r-7);
+  font-size: var(--fs-chip);
+  letter-spacing: 0;
+}
+
+.s34 {
+  --tile: 34px;
+  border-radius: var(--r-8);
+  font-size: var(--fs-meta);
+}
+
+.s36 {
+  --tile: 36px;
+  border-radius: var(--r-9);
+  font-size: var(--fs-secondary);
+}
+
+.s40 {
+  --tile: 40px;
+  border-radius: var(--r-10);
+  font-size: var(--fs-title);
+}
+
+.s44 {
+  --tile: 44px;
+  border-radius: var(--r-11);
+  font-size: var(--fs-title-lg);
+}
+
+.s48 {
+  --tile: 48px;
+  border-radius: var(--r-11);
+  font-size: 17px;
+}
+
+.s52 {
+  --tile: 52px;
+  border-radius: var(--r-12);
+  font-size: var(--fs-lead);
+}
+
+.s56 {
+  --tile: 56px;
+  border-radius: var(--r-13);
+  font-size: var(--fs-h2);
+}
+
+.s72 {
+  --tile: 72px;
+  border-radius: var(--r-16);
+  font-size: 26px;
+}
+
+.s96 {
+  --tile: 96px;
+  border-radius: var(--r-22);
+  font-size: var(--fs-page);
+  letter-spacing: -0.03em;
+}
+
+.s140 {
+  --tile: 140px;
+  border-radius: var(--r-32);
+  font-size: 52px;
+  letter-spacing: -0.03em;
+}

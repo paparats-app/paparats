@@ -3,10 +3,8 @@ export const ideas = {
   suggestIdea: "Suggest an idea",
   ideaNew: "New app",
   ideaImprove: "Improve an app",
-  // TODO(i18n): a => `For ${a}`
-  ideaForApp: "TODO",
-  // TODO(i18n): c => `New app · ${c}`
-  ideaNewIn: "TODO",
+  ideaForApp: "For {{app}}",
+  ideaNewIn: "New app · {{category}}",
   tabAllIdeas: "All",
   tabNewApps: "New apps",
   tabExistingApps: "Existing apps",
@@ -20,13 +18,11 @@ export const ideas = {
   sortNew: "Newest",
   vote: "Vote",
   voted: "Voted",
-  // TODO(i18n): n => (n === 1 ? '1 comment' : `${n} comments`)
-  commentsCount: "TODO",
+  commentsCount_one: "{{count, number}} comment",
+  commentsCount_other: "{{count, number}} comments",
   you: "You",
-  // TODO(i18n): c => `${c} is on it`
-  onIt: "TODO",
-  // TODO(i18n): (a, v) => `Released as ${a} ${v}`
-  releasedAs: "TODO",
+  onIt: "{{channel}} is on it",
+  releasedAs: "Released as {{app}} {{version}}",
   howItWorks: "How it works",
   how1T: "Propose",
   how1B: "A tool you miss, or an improvement to an app you already use.",
@@ -39,13 +35,11 @@ export const ideas = {
   yourIdeas: "Your ideas",
   noMyIdeas: "You haven’t proposed anything yet.",
   ideaReleasedTitle: "Your idea became an app",
-  // TODO(i18n): (title, dev, app) => `“${title}” is now available as ${app}, by ${dev}. Thank you — 3 months of Paparats Pro are waiting for you.`
-  ideaReleasedBody: "TODO",
+  ideaReleasedBody:
+    "“{{title}}” is now available as {{app}}, by {{channel}}. Thank you — 3 months of Paparats Pro are waiting for you.",
   activateBonus: "Activate 3 months of Pro",
-  // TODO(i18n): d => `Paparats Pro is active until ${d}`
-  bonusActive: "TODO",
-  // TODO(i18n): a => `Open ${a}`
-  openAppBtn: "TODO",
+  bonusActive: "Paparats Pro is active until {{date}}",
+  openAppBtn: "Open {{app}}",
   gotIt: "Got it",
   ideaTitle: "Title",
   ideaTitlePlaceholder: "A short, clear name for the idea",
@@ -58,27 +52,24 @@ export const ideas = {
   ideaFooter:
     "Developers see new ideas right away. If yours ships, you get 3 months of Paparats Pro.",
   takeShort: "Take",
-  // TODO(i18n): c => `It will be pinned to ${c}. The author and everyone who voted will be notified.`
-  takeHint: "TODO",
-  // TODO(i18n): c => `In work at ${c}`
-  takenByOther: "TODO",
-  // TODO(i18n): (a, n) => `${a} and ${n} voters will be notified. The author gets 3 months of Paparats Pro.`
-  releaseNote: "TODO",
+  takeHint: "It will be pinned to {{channel}}. The author and everyone who voted will be notified.",
+  takenByOther: "In work at {{channel}}",
+  releaseNote_one:
+    "{{author}} and {{count, number}} voter will be notified. The author gets 3 months of Paparats Pro.",
+  releaseNote_other:
+    "{{author}} and {{count, number}} voters will be notified. The author gets 3 months of Paparats Pro.",
   statusOpenHint: "Open to developers. The more votes, the sooner someone picks it up.",
-  // TODO(i18n): (c, d) => `${c} has been on it since ${d}.`
-  statusWorkHint: "TODO",
-  // TODO(i18n): (a, d) => `Shipped as ${a} on ${d}.`
-  statusReleasedHint: "TODO",
+  statusWorkHint: "{{channel}} has been on it since {{date}}.",
+  statusReleasedHint: "Shipped as {{app}} on {{date}}.",
   tlProposed: "Proposed",
   tlWork: "In work",
   tlReleased: "Released",
   tlPending: "Not yet",
-  // TODO(i18n): c => `Developer view · ${c}`
-  devView: "TODO",
+  devView: "Developer view · {{channel}}",
   devViewHint: "You see what a channel author sees: take open ideas and mark them released.",
   inWorkN: "In work",
   releasedN: "Released",
   forYourApps: "For your apps",
   noIdeas: "Nothing here yet",
   noIdeasHint: "Be the first to suggest something.",
-};
+} as const;

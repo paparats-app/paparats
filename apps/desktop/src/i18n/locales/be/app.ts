@@ -13,34 +13,37 @@ export const app: LocaleCatalog<typeof En> = {
   moreIn: "Яшчэ ў калекцыі",
   proFeatures: "Pro-функцыі",
   proHint: "Уваходзяць у Paparats Pro.",
-  // TODO(i18n): n => `Скрыншот ${n}`
-  shotLabel: "TODO",
+  shotLabel: "Скрыншот {{index, number}}",
   yes: "Так",
   no: "Не",
   reviews: "Ацэнкі і водгукі",
-  // TODO(i18n): n => `${n} ${pl(n, 'ацэнка', 'ацэнкі', 'ацэнак')}`
-  ratingsCount: "TODO",
+  ratingsCount_one: "{{count, number}} ацэнка",
+  ratingsCount_few: "{{count, number}} ацэнкі",
+  ratingsCount_many: "{{count, number}} ацэнак",
+  ratingsCount_other: "{{count, number}} ацэнкі",
   rateApp: "Ацаніце праграму",
   thanksRating: "Дзякуй за ацэнку",
   writeReview: "Напісаць водгук",
-  // TODO(i18n): n => `${n} ${pl(n, 'палічыў', 'палічылі', 'палічылі')} карысным`
-  helpful: "TODO",
+  helpful_one: "{{count, number}} палічыў карысным",
+  helpful_few: "{{count, number}} палічылі карысным",
+  helpful_many: "{{count, number}} палічылі карысным",
+  helpful_other: "{{count, number}} палічылі карысным",
   versionHistory: "Гісторыя версій",
   current: "Актуальная",
   showAll: "Паказаць усе версіі",
   showLess: "Схаваць",
-  // TODO(i18n): v => `Выпушчана ў версіі ${v}`
-  releasedInVersion: "TODO",
+  releasedInVersion: "Выпушчана ў версіі {{version}}",
   grewFromIdea: "Вырасла з ідэі",
   seeIdea: "Да ідэі",
-  // TODO(i18n): n => `${n} ${pl(n, 'ідэя', 'ідэі', 'ідэй')} для гэтай праграмы`
-  ideasForApp: "TODO",
+  ideasForApp_one: "{{count, number}} ідэя для гэтай праграмы",
+  ideasForApp_few: "{{count, number}} ідэі для гэтай праграмы",
+  ideasForApp_many: "{{count, number}} ідэй для гэтай праграмы",
+  ideasForApp_other: "{{count, number}} ідэі для гэтай праграмы",
   suggestImprovement: "Прапанаваць паляпшэнне",
-  // TODO(i18n): c => `Таксама ёсць у канале ${c}.`
-  alsoIn: "TODO",
+  alsoIn: "Таксама ёсць у канале {{channels}}.",
   srcRule: "Paparats усталёўвае і абнаўляе з самага даверанага канала, дзе ёсць праграма.",
-  // TODO(i18n): c => `З канала ${c} (правераны). Paparats праверыў аўтара і люструе файлы; сама праграма застаецца адказнасцю аўтара.`
-  srcVerifiedNote: "TODO",
-  // TODO(i18n): c => `З канала ${c} (супольнасць). Не праверана Paparats; загружаецца з сервера аўтара.`
-  srcCommunityNote: "TODO",
+  srcVerifiedNote:
+    "З канала {{channel}} (правераны). Paparats праверыў аўтара і люструе файлы; сама праграма застаецца адказнасцю аўтара.",
+  srcCommunityNote:
+    "З канала {{channel}} (супольнасць). Не праверана Paparats; загружаецца з сервера аўтара.",
 };

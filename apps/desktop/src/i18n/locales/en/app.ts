@@ -10,34 +10,31 @@ export const app = {
   moreIn: "More in",
   proFeatures: "Pro features",
   proHint: "Included with Paparats Pro.",
-  // TODO(i18n): n => `Screenshot ${n}`
-  shotLabel: "TODO",
+  shotLabel: "Screenshot {{index, number}}",
   yes: "Yes",
   no: "No",
   reviews: "Ratings and reviews",
-  // TODO(i18n): n => `${n} ratings`
-  ratingsCount: "TODO",
+  ratingsCount_one: "{{count, number}} rating",
+  ratingsCount_other: "{{count, number}} ratings",
   rateApp: "Rate this app",
   thanksRating: "Thanks for your rating",
   writeReview: "Write a review",
-  // TODO(i18n): n => `${n} found this helpful`
-  helpful: "TODO",
+  helpful_one: "{{count, number}} found this helpful",
+  helpful_other: "{{count, number}} found this helpful",
   versionHistory: "Version history",
   current: "Current",
   showAll: "Show all versions",
   showLess: "Show less",
-  // TODO(i18n): v => `Released in ${v}`
-  releasedInVersion: "TODO",
+  releasedInVersion: "Released in {{version}}",
   grewFromIdea: "Grew from an idea",
   seeIdea: "See the idea",
-  // TODO(i18n): n => (n === 1 ? '1 idea for this app' : `${n} ideas for this app`)
-  ideasForApp: "TODO",
+  ideasForApp_one: "{{count, number}} idea for this app",
+  ideasForApp_other: "{{count, number}} ideas for this app",
   suggestImprovement: "Suggest an improvement",
-  // TODO(i18n): c => `Also offered by ${c}.`
-  alsoIn: "TODO",
+  alsoIn: "Also offered by {{channels}}.",
   srcRule: "Paparats installs and updates from the most trusted channel that offers an app.",
-  // TODO(i18n): c => `From ${c}, a verified channel. Paparats reviewed the author and mirrors the files; the app itself is the author’s.`
-  srcVerifiedNote: "TODO",
-  // TODO(i18n): c => `From ${c}, a community channel. Not reviewed by Paparats; downloaded from the author’s server.`
-  srcCommunityNote: "TODO",
-};
+  srcVerifiedNote:
+    "From {{channel}}, a verified channel. Paparats reviewed the author and mirrors the files; the app itself is the author’s.",
+  srcCommunityNote:
+    "From {{channel}}, a community channel. Not reviewed by Paparats; downloaded from the author’s server.",
+} as const;

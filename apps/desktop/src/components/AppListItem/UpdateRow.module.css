@@ -1,0 +1,134 @@
+/* Updates row — prototype lines 484–502. */
+.row {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--card);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+.main {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 80px 130px 36px;
+  gap: var(--sp-16);
+  align-items: center;
+  padding: var(--sp-12) var(--sp-14) var(--sp-12) var(--sp-16);
+}
+
+.tile,
+.identity {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tile {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--r-11);
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-radius: var(--r-6);
+}
+
+.identity:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.nameLine {
+  display: flex;
+  gap: var(--sp-8);
+  align-items: center;
+  min-width: 0;
+}
+
+.name {
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--fs-title);
+  font-weight: 600;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.version {
+  margin-top: var(--sp-2);
+  overflow: hidden;
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.size {
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.action.action {
+  --btn-px: var(--sp-10);
+}
+
+.expand.expand {
+  width: 36px;
+}
+
+.panel {
+  padding: var(--sp-14) var(--sp-16) var(--sp-14) 80px;
+  border-top: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.overline {
+  margin-bottom: var(--sp-8);
+  color: var(--text3);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  letter-spacing: var(--ls-overline);
+  text-transform: uppercase;
+}
+
+.notes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.note {
+  display: flex;
+  gap: var(--sp-10);
+  align-items: baseline;
+  color: var(--text2);
+  font-size: var(--fs-body);
+}
+
+.bullet {
+  position: relative;
+  top: -2px;
+  flex: none;
+  width: 5px;
+  height: 5px;
+  border-radius: var(--r-3);
+  background: var(--text3);
+}
+
+.link.link {
+  margin-top: var(--sp-12);
+}

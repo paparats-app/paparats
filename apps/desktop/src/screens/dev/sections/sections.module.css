@@ -1,0 +1,154 @@
+/* Layout of individual gallery specimens. */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-10);
+}
+
+.iconGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: var(--sp-6);
+}
+
+.iconCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-6);
+  min-width: 0;
+  padding: var(--sp-10) var(--sp-4) var(--sp-8);
+  border-radius: var(--r-8);
+  background: var(--card);
+  color: var(--text);
+}
+
+.iconName {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--text3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.baselineRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--sp-12);
+}
+
+.tileCell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-6);
+}
+
+/* The Updates row's expand chevron: 36×34. */
+.expand {
+  width: 36px;
+}
+
+.splitGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--sp-12);
+}
+
+.narrow {
+  max-width: 260px;
+}
+
+.filterList {
+  display: flex;
+  flex-direction: column;
+  width: 180px;
+}
+
+.filterPanel {
+  width: 186px;
+  padding: var(--sp-16) var(--sp-18) var(--sp-18);
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+}
+
+.twoCols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-12);
+}
+
+.skeletonCards {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--grid-gap);
+}
+
+.skeletonWide {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--grid-gap);
+}
+
+.menuHost {
+  min-height: 32px;
+}
+
+.popoverBody {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+  padding: var(--sp-8) var(--sp-10);
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  line-height: var(--lh-body);
+}
+
+.modalField {
+  margin-top: var(--sp-14);
+}
+
+.modalFields {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-16);
+  margin-top: var(--sp-2);
+}
+
+.proHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-10);
+}
+
+.mintIcon {
+  color: var(--mint2);
+}
+
+.proName {
+  flex: 1;
+  font-size: var(--fs-title-lg);
+  font-weight: 600;
+}
+
+.statRows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-12);
+  min-width: 180px;
+}
+
+.statTiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-8);
+}
+
+.scrollX {
+  overflow-x: auto;
+}

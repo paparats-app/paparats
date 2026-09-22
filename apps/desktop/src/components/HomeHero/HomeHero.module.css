@@ -1,0 +1,153 @@
+/* Home hero carousel slide — prototype lines 201–216. Dark imagery in both themes. */
+.hero {
+  position: relative;
+  /* Content-box like the prototype: 326px inside the 1px border (328px overall). */
+  height: 326px;
+  box-sizing: content-box;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--hero-gradient);
+  color: var(--on-image);
+  font-family: var(--font-sans);
+}
+
+/* First-launch exit glow (FIRST_LAUNCH_SPEC "Exit transition" step 4), prototype line 202. */
+.glow {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 50% 50%,
+    color-mix(in srgb, var(--glow-peach) 80%, transparent) 0%,
+    color-mix(in srgb, var(--brand-flower) 40%, transparent) 26%,
+    transparent 60%
+  );
+  mix-blend-mode: screen;
+  opacity: 0;
+  transition: opacity 2s var(--ease-standard);
+}
+
+.glowOn {
+  opacity: 1;
+  transition: opacity 0.9s var(--ease-standard) 0.35s;
+}
+
+.photo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 66%;
+  background: var(--photo) right center / cover no-repeat;
+  /* Mask stops: #000 is the opaque mask value, not a colour (the one allowed literal). */
+  mask-image: linear-gradient(90deg, transparent 0%, #000 42%);
+}
+
+.content {
+  position: absolute;
+  top: 40px;
+  left: 44px;
+  max-width: 560px;
+}
+
+.kicker {
+  color: var(--on-image-kicker);
+  font-size: var(--fs-chip);
+  font-weight: 500;
+  letter-spacing: var(--ls-kicker);
+  text-transform: uppercase;
+}
+
+.title {
+  margin: var(--sp-14) 0 0;
+  font-size: var(--fs-hero);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+}
+
+.line {
+  display: block;
+  white-space: nowrap;
+}
+
+.body {
+  max-width: 400px;
+  margin: var(--sp-18) 0 0;
+  color: var(--on-image-body);
+  font-size: var(--fs-title);
+  line-height: var(--lh-long);
+  text-wrap: pretty;
+}
+
+.cta.cta {
+  margin-top: var(--sp-22);
+}
+
+.quote {
+  position: absolute;
+  top: 160px;
+  right: 40px;
+  max-width: 250px;
+  color: var(--on-image-motto);
+  font-size: var(--fs-title);
+  line-height: var(--lh-body);
+  text-align: right;
+  text-shadow: var(--on-image-shadow);
+  text-wrap: balance;
+}
+
+.controls {
+  position: absolute;
+  right: 28px;
+  bottom: var(--sp-22);
+  display: flex;
+  gap: var(--sp-12);
+  align-items: center;
+}
+
+/* 24px glyph box, 32px hit target. */
+.arrow {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-6);
+  background: none;
+  color: var(--on-image-meta);
+  cursor: pointer;
+}
+
+.arrow::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+}
+
+.arrow:hover {
+  color: var(--on-image);
+}
+
+.arrow:active {
+  transform: translateY(1px);
+}
+
+.arrow:focus-visible {
+  outline: var(--focus-ring-w) solid var(--cta-mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+[data-motion="off"] .glow {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow {
+    transition: none;
+  }
+}

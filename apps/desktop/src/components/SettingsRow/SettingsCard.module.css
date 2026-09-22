@@ -1,0 +1,12 @@
+/* Settings card — prototype lines 759–794 (rows: border-top 1px `--line`). */
+.card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+  color: var(--text);
+}
+
+.card > * + * {
+  border-top: 1px solid var(--line);
+}

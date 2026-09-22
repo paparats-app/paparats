@@ -1,0 +1,35 @@
+/* Form field frame — label 13px/600, 8px to the control, message 12.5px/1.4 (prototype dialogs). */
+.field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.label {
+  margin-bottom: var(--sp-8);
+  color: var(--text);
+  font-size: var(--fs-secondary);
+  font-weight: 600;
+}
+
+.hint,
+.error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-8);
+  margin-top: var(--sp-8);
+  font-size: var(--fs-secondary-sm);
+  line-height: var(--lh-body);
+}
+
+.hint {
+  color: var(--text3);
+}
+
+.error {
+  color: var(--danger);
+}
+
+.errorIcon {
+  margin-top: var(--sp-2);
+}

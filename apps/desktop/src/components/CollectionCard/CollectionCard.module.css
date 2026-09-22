@@ -1,0 +1,96 @@
+/* Collection cards — prototype lines 243–247 (store) and 583–587 (library). */
+.card {
+  display: flex;
+  gap: var(--sp-14);
+  align-items: center;
+  min-width: 0;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+}
+
+.card:hover {
+  border-color: var(--line2);
+  background: var(--card2);
+}
+
+.card:active {
+  transform: translateY(1px);
+}
+
+.card:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.store {
+  padding: var(--sp-16);
+}
+
+.library {
+  padding: var(--sp-18) var(--sp-20);
+}
+
+.tile {
+  display: grid;
+  flex: none;
+  place-items: center;
+  border-radius: var(--r-10);
+  background: var(--card2);
+  color: var(--text);
+}
+
+.store .tile {
+  width: 56px;
+  height: 56px;
+}
+
+.library .tile {
+  width: 48px;
+  height: 48px;
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.title {
+  font-weight: 600;
+}
+
+.store .title {
+  font-size: var(--fs-title);
+  line-height: 1.25;
+}
+
+.library .title {
+  font-size: var(--fs-title-lg);
+}
+
+.sub {
+  color: var(--text2);
+}
+
+.store .sub {
+  margin-top: var(--sp-3);
+  font-size: var(--fs-secondary-sm);
+}
+
+.library .sub {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-secondary);
+}
+
+.chevron {
+  flex: none;
+  color: var(--text3);
+}

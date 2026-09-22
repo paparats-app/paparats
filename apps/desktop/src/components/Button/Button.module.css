@@ -1,0 +1,264 @@
+/* Buttons — sizes, radii and colours from the prototype's inline styles (README "Button"). */
+.button {
+  --btn-h: 36px;
+  --btn-r: var(--r-8);
+  --btn-px: var(--sp-16);
+  --btn-fs: var(--fs-body);
+  position: relative;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-8);
+  min-width: 0;
+  box-sizing: border-box;
+  height: var(--btn-h);
+  padding: 0 var(--btn-px);
+  border: 1px solid transparent;
+  border-radius: var(--btn-r);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--btn-fs);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.button:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.button:active:not(:disabled, [aria-busy="true"]) {
+  transform: translateY(1px);
+}
+
+.button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* The label clips for the ellipsis, so it needs a full line box: at line-height 1 the descenders
+   of "Copy", "Sync" were cut off. */
+.label {
+  min-width: 0;
+  overflow: hidden;
+  line-height: var(--lh-body);
+  text-overflow: ellipsis;
+}
+
+/* ---- Sizes ------------------------------------------------------------------------------ */
+.xs {
+  --btn-h: var(--control-h-xs);
+  --btn-r: var(--r-7);
+  --btn-px: var(--sp-12);
+  --btn-fs: var(--fs-secondary);
+  gap: var(--sp-6);
+}
+
+.compact {
+  --btn-h: 32px;
+  --btn-r: var(--r-7);
+  --btn-px: var(--sp-14);
+  --btn-fs: var(--fs-secondary);
+  gap: var(--sp-6);
+}
+
+.sm {
+  --btn-h: var(--control-h-sm);
+  --btn-r: var(--r-8);
+  --btn-px: var(--sp-14);
+  --btn-fs: var(--fs-secondary);
+}
+
+.md {
+  --btn-h: 36px;
+  --btn-r: var(--r-8);
+  --btn-px: var(--sp-16);
+  --btn-fs: var(--fs-body);
+}
+
+.field {
+  --btn-h: 38px;
+  --btn-r: var(--r-9);
+  --btn-px: var(--sp-16);
+  --btn-fs: var(--fs-body);
+}
+
+.lg {
+  --btn-h: var(--control-h);
+  --btn-r: var(--r-10);
+  --btn-px: var(--sp-20);
+  --btn-fs: var(--fs-title);
+  gap: var(--sp-10);
+}
+
+.xl {
+  --btn-h: 42px;
+  --btn-r: var(--r-10);
+  --btn-px: var(--sp-22);
+  --btn-fs: var(--fs-title);
+  gap: var(--sp-10);
+}
+
+.pill {
+  --btn-r: var(--r-full);
+}
+
+.pill.lg,
+.pill.xl {
+  --btn-px: var(--sp-24);
+}
+
+.fullWidth {
+  display: flex;
+  width: 100%;
+}
+
+/* ---- Variants --------------------------------------------------------------------------- */
+/* Fills and ghosts have no border in the prototype; the 1px only belongs to outlined variants
+   (a transparent one would make a text button 2px wider than the design). */
+.primary,
+.primaryOnImage,
+.ghost {
+  border-width: 0;
+}
+
+.primary {
+  background: var(--mint);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.primary:hover:not(:disabled) {
+  background: var(--mint2);
+}
+
+.secondary {
+  border-color: var(--line2);
+  background: var(--card2);
+  color: var(--text);
+}
+
+.secondary:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+
+.ghost {
+  color: var(--text2);
+}
+
+.ghost:hover:not(:disabled) {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.outline {
+  border-color: var(--line2);
+  color: var(--text2);
+}
+
+.outline:hover:not(:disabled) {
+  border-color: var(--text3);
+  color: var(--text);
+}
+
+.destructive {
+  border-color: var(--danger-border);
+  color: var(--danger);
+}
+
+.destructive:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+}
+
+.onImage {
+  border-color: var(--ghost-on-image-border);
+  background: var(--ghost-on-image-bg);
+  color: var(--on-image);
+}
+
+/* The prototype doubles the ground on hover (.06 → .12). */
+.onImage:hover:not(:disabled) {
+  background:
+    linear-gradient(var(--ghost-on-image-bg), var(--ghost-on-image-bg)), var(--ghost-on-image-bg);
+}
+
+.primaryOnImage {
+  background: var(--cta-mint);
+  color: var(--cta-ink);
+  font-weight: 600;
+}
+
+.primaryOnImage:hover:not(:disabled) {
+  background: var(--cta-mint-hover);
+}
+
+.onImage:focus-visible,
+.primaryOnImage:focus-visible {
+  outline-color: var(--cta-mint);
+}
+
+.link {
+  --btn-h: auto;
+  --btn-px: 0;
+  gap: var(--sp-6);
+  border: 0;
+  color: var(--mint2);
+}
+
+.link:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+/* ---- Tones (text colour on neutral grounds; after the variants so they win) -------------- */
+.toneProgress {
+  color: var(--mint2);
+}
+
+.toneQuiet {
+  color: var(--text2);
+}
+
+.toneMuted {
+  color: var(--text3);
+}
+
+/* ---- Icon-only & loading ---------------------------------------------------------------- */
+.iconOnly {
+  width: var(--btn-h);
+  padding: 0;
+}
+
+.round {
+  --btn-r: var(--r-full);
+}
+
+.loading {
+  cursor: progress;
+}
+
+.spinner {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+[data-motion="off"] .spinner {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}

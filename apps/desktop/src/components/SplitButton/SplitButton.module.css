@@ -1,0 +1,121 @@
+/* Action + secondary part in one 1px `--line2` group on `--card2` (prototype AppCard / app page). */
+.group {
+  --split-h: 32px;
+  --split-r: var(--r-7);
+  --split-inner-r: calc(var(--r-7) - 1px);
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line2);
+  border-radius: var(--split-r);
+  background: var(--card2);
+}
+
+.compact {
+  --split-h: 32px;
+  --split-r: var(--r-7);
+  --split-inner-r: calc(var(--r-7) - 1px);
+}
+
+.lg {
+  --split-h: var(--control-h);
+  --split-r: var(--r-8);
+  --split-inner-r: calc(var(--r-8) - 1px);
+}
+
+.action,
+.secondary {
+  position: relative;
+  box-sizing: border-box;
+  height: var(--split-h);
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-family: var(--font-sans);
+  cursor: pointer;
+}
+
+.action:focus-visible,
+.secondary:focus-visible {
+  z-index: 1;
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.action:active:not(:disabled),
+.secondary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.action:disabled,
+.secondary:disabled {
+  cursor: default;
+}
+
+.action {
+  flex: 1;
+  min-width: 0;
+  padding: 0 var(--sp-8);
+  border-start-start-radius: var(--split-inner-r);
+  border-end-start-radius: var(--split-inner-r);
+  color: var(--text);
+  font-size: var(--fs-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lg .action {
+  padding: 0 var(--sp-12);
+  font-size: var(--fs-body);
+  font-weight: 600;
+}
+
+.action:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+.action:disabled {
+  opacity: 0.6;
+}
+
+.primary {
+  background: var(--mint);
+  color: var(--ink);
+}
+
+.progress {
+  color: var(--mint2);
+}
+
+.quiet {
+  color: var(--text2);
+}
+
+.muted {
+  color: var(--text3);
+}
+
+.secondary {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--split-h);
+  border-left: 1px solid var(--line2);
+  border-start-end-radius: var(--split-inner-r);
+  border-end-end-radius: var(--split-inner-r);
+  color: var(--text2);
+}
+
+.secondary:hover:not(:disabled) {
+  background: var(--hover);
+}
+
+.secondary[aria-pressed="true"] {
+  color: var(--mint2);
+}
+
+.secondary:disabled {
+  opacity: 0.5;
+}

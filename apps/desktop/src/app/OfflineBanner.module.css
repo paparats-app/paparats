@@ -1,0 +1,32 @@
+/* Offline banner — prototype lines 126–133. */
+.banner {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sp-12);
+  margin: var(--sp-2) var(--content-pad-x) var(--sp-16);
+  padding: var(--sp-10) var(--sp-14);
+  border: 1px solid var(--offline-border);
+  border-radius: var(--r-10);
+  background: var(--offline-ground);
+  color: var(--text);
+  font-size: 13.5px;
+}
+
+.icon {
+  flex: none;
+  color: var(--danger);
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  font-weight: 600;
+}
+
+.hint {
+  color: var(--text2);
+}

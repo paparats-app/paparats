@@ -1,0 +1,48 @@
+/* Navigation / search skeleton (prototype lines 134–151). */
+.block {
+  flex: none;
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+.r6 {
+  border-radius: var(--r-6);
+}
+
+.r10 {
+  border-radius: var(--r-10);
+}
+
+.r12 {
+  border-radius: var(--r-12);
+}
+
+.still {
+  background: var(--card2);
+}
+
+.shimmer {
+  background: linear-gradient(90deg, var(--card) 25%, var(--card2) 50%, var(--card) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
+[data-motion="off"] .shimmer {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer {
+    animation: none;
+  }
+}

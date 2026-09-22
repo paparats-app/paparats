@@ -1,0 +1,44 @@
+.card {
+  box-sizing: border-box;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--card);
+  color: var(--text);
+}
+
+.r12 {
+  border-radius: var(--r-12);
+}
+
+.pnone {
+  padding: 0;
+}
+
+.psm {
+  padding: var(--sp-12);
+}
+
+.pmd {
+  padding: var(--sp-16) var(--sp-18);
+}
+
+.plg {
+  padding: var(--sp-18) var(--sp-20);
+}
+
+.pxl {
+  padding: var(--sp-24);
+}
+
+.interactive:hover {
+  border-color: var(--line2);
+}
+
+.mint {
+  background: linear-gradient(160deg, var(--mint-soft) 0%, var(--card) 70%);
+}
+
+.clip {
+  overflow: hidden;
+}

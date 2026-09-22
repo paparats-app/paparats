@@ -1,0 +1,41 @@
+/* Content-box like the prototype: min-width excludes the 6px side padding, so a one-digit
+   badge renders 34×22 (soft/neutral 32×20), a pill rather than a circle. */
+.pill {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  box-sizing: content-box;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 var(--sp-6);
+  border-radius: var(--r-11);
+  font-size: var(--fs-meta);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.solid {
+  background: var(--mint);
+  color: var(--ink);
+}
+
+.soft,
+.neutral {
+  min-width: 20px;
+  height: 20px;
+  border-radius: var(--r-10);
+  font-size: var(--fs-chip);
+}
+
+.soft {
+  background: var(--mint-soft);
+  color: var(--mint2);
+}
+
+.neutral {
+  background: var(--card2);
+  color: var(--text2);
+  font-weight: 600;
+}

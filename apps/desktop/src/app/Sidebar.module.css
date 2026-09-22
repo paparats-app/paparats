@@ -1,0 +1,150 @@
+/* Sidebar — prototype lines 60–124 (README "Left sidebar"). */
+.sidebar {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  padding: 35px var(--sp-14) var(--sp-20);
+  border-right: 1px solid var(--line);
+  background: var(--side);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-10);
+  margin-bottom: var(--sp-22);
+  padding: 0 var(--sp-6);
+  border: 0;
+  border-radius: var(--r-8);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mark {
+  display: block;
+  flex: none;
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  filter: var(--mark-filter);
+}
+
+.brandText {
+  line-height: var(--lh-tight);
+}
+
+.brandName {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: var(--ls-h2);
+}
+
+.brandNative {
+  display: block;
+  margin-top: var(--sp-3);
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+  letter-spacing: 0.02em;
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Nav item: 42px, radius 8, padding 0 14, gap 12, 20px icon, 15px/500. Hover is instant. */
+.item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+  width: 100%;
+  height: var(--nav-item-h);
+  margin-bottom: var(--sp-3);
+  padding: 0 var(--sp-14);
+  border: 0;
+  border-radius: var(--r-8);
+  background: transparent;
+  color: var(--text2);
+  font: inherit;
+  font-size: var(--fs-title);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.active,
+.active:hover {
+  background: var(--nav);
+  color: var(--text);
+}
+
+/* The 3px mint bar pinned to the left edge of the active item. */
+.active::before {
+  content: "";
+  position: absolute;
+  top: 11px;
+  bottom: 11px;
+  left: 0;
+  width: 3px;
+  border-radius: var(--r-3);
+  background: var(--mint);
+}
+
+.label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.divider {
+  height: 1px;
+  margin: var(--sp-12) var(--sp-6) var(--sp-16);
+  background: var(--line);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.watermark {
+  position: absolute;
+  bottom: 106px;
+  left: -6px;
+  width: 202px;
+  opacity: var(--watermark-opacity);
+  pointer-events: none;
+}
+
+.footer {
+  position: relative;
+  padding: 0 var(--sp-6);
+  line-height: 1.35;
+}
+
+.footerName {
+  font-size: var(--fs-body);
+  font-weight: 600;
+}
+
+.tagline {
+  max-width: 170px;
+  margin-top: var(--sp-2);
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  text-wrap: pretty;
+}

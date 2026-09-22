@@ -24,20 +24,21 @@ export const sources: LocaleCatalog<typeof En> = {
   kindCatalog: "Каталог",
   kindDeveloper: "Разработчик",
   kindCurated: "Подборка",
-  // TODO(i18n): a => `от ${a}`
-  byAuthor: "TODO",
-  // TODO(i18n): n => `${n.toLocaleString('ru')} ${pl(n, 'подписчик', 'подписчика', 'подписчиков')}`
-  subscribersCount: "TODO",
-  // TODO(i18n): r => `Синхронизировано ${r}`
-  syncedRel: "TODO",
+  byAuthor: "от {{author}}",
+  subscribersCount_one: "{{count, number}} подписчик",
+  subscribersCount_few: "{{count, number}} подписчика",
+  subscribersCount_many: "{{count, number}} подписчиков",
+  subscribersCount_other: "{{count, number}} подписчика",
+  syncedRel: "Синхронизировано {{when}}",
   neverSynced: "Ещё не синхронизирован",
-  // TODO(i18n): n => `${n} ${pl(n, 'канал', 'канала', 'каналов')}`
-  channelsCount: "TODO",
+  channelsCount_one: "{{count, number}} канал",
+  channelsCount_few: "{{count, number}} канала",
+  channelsCount_many: "{{count, number}} каналов",
+  channelsCount_other: "{{count, number}} канала",
   notFound: "По этому адресу канала нет",
   notFoundHint: "Проверьте ссылку или попросите у автора короткий код.",
   alreadySubscribed: "Вы уже подписаны на этот канал.",
-  // TODO(i18n): c => `Добавить ${c}?`
-  confirmChannelTitle: "TODO",
+  confirmChannelTitle: "Добавить {{channel}}?",
   confirmChannelBody:
     "Это канал сообщества. Paparats не проверял его приложения — они приходят напрямую с сервера автора и не входят в Paparats Pro. Добавляйте только каналы, автору которых доверяете.",
   addrCopied: "Адрес скопирован",
@@ -53,14 +54,16 @@ export const sources: LocaleCatalog<typeof En> = {
   hostMirrored: "Автор + зеркало Paparats",
   hostPaparats: "CDN Paparats",
   reviewedLabel: "Проверка",
-  // TODO(i18n): d => `Команда Paparats, ${d}`
-  reviewedBy: "TODO",
+  reviewedBy: "Команда Paparats, {{date}}",
   notReviewed: "Не проверен",
   supportLabel: "Поддержка",
-  // TODO(i18n): n => `Недоступен ${n} ${pl(n, 'день', 'дня', 'дней')}`
-  unreachableFor: "TODO",
-  // TODO(i18n): (c, n) => `${c} не отвечает ${n} ${pl(n, 'день', 'дня', 'дней')}`
-  staleTitle: "TODO",
-  // TODO(i18n): c => `${c} всё ещё недоступен`
-  stillUnreachable: "TODO",
+  unreachableFor_one: "Недоступен {{count, number}} день",
+  unreachableFor_few: "Недоступен {{count, number}} дня",
+  unreachableFor_many: "Недоступен {{count, number}} дней",
+  unreachableFor_other: "Недоступен {{count, number}} дня",
+  staleTitle_one: "{{channel}} не отвечает {{count, number}} день.",
+  staleTitle_few: "{{channel}} не отвечает {{count, number}} дня.",
+  staleTitle_many: "{{channel}} не отвечает {{count, number}} дней.",
+  staleTitle_other: "{{channel}} не отвечает {{count, number}} дня.",
+  stillUnreachable: "{{channel}} всё ещё недоступен",
 };

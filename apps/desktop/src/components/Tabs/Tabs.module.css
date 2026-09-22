@@ -1,0 +1,93 @@
+.list {
+  display: flex;
+  min-width: 0;
+}
+
+.tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-8);
+  box-sizing: border-box;
+  padding: 0 var(--sp-14);
+  border: 0;
+  background: transparent;
+  color: var(--text2);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.tab:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.tab:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.tab:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.tab:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.active {
+  color: var(--text);
+}
+
+/* ---- Boxed strip (Library, Ideas) ------------------------------------------------------- */
+.boxed {
+  display: inline-flex;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--card);
+}
+
+.boxed .tab {
+  height: var(--control-h-sm);
+  border-radius: var(--r-8);
+}
+
+.boxed .active {
+  background: var(--card2);
+}
+
+/* ---- Underline tabs (Profile) ----------------------------------------------------------- */
+.underline {
+  gap: var(--sp-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.underline .tab {
+  height: var(--nav-item-h);
+}
+
+.underline .tab::after {
+  content: "";
+  position: absolute;
+  right: var(--sp-10);
+  bottom: -1px;
+  left: var(--sp-10);
+  height: 2px;
+  border-radius: var(--r-2);
+  background: transparent;
+}
+
+.underline .active::after {
+  background: var(--mint);
+}
+
+/* Keep the ring inside the strip's rule. */
+.underline .tab:focus-visible {
+  outline-offset: calc(-1 * var(--focus-ring-w));
+}

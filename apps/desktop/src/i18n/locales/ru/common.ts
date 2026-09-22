@@ -19,8 +19,10 @@ export const common: LocaleCatalog<typeof En> = {
   free: "Бесплатно",
   pro: "Pro",
   learnMore: "Подробнее",
-  // TODO(i18n): n => `${n} ${pl(n, 'приложение', 'приложения', 'приложений')}`
-  appsCount: "TODO",
+  appsCount_one: "{{count, number}} приложение",
+  appsCount_few: "{{count, number}} приложения",
+  appsCount_many: "{{count, number}} приложений",
+  appsCount_other: "{{count, number}} приложения",
   q1: "«",
   q2: "»",
   featured: "Рекомендуемые",
@@ -34,8 +36,7 @@ export const common: LocaleCatalog<typeof En> = {
   whatsNew: "Что нового",
   upToDate: "Всё обновлено",
   upToDateHint: "Paparats проверяет обновления каждый час в фоне.",
-  // TODO(i18n): r => `Обновлено ${r}`
-  updatedRel: "TODO",
+  updatedRel: "Обновлено {{when}}",
   addFavorite: "В избранное",
   removeFavorite: "Убрать из избранного",
   active: "Активна",
@@ -50,18 +51,15 @@ export const common: LocaleCatalog<typeof En> = {
   off: "Выкл.",
   version: "Версия",
   tabAccount: "Аккаунт",
-  // TODO(i18n): q => `Результаты для «${q}»`
-  resultsFor: "TODO",
+  resultsFor: "Результаты для «{{query}}»",
   noResults: "Ничего не найдено",
   details: "Сведения",
   portable: "Портативная",
   mottoA: "Маленькие приложения. Большие возможности.",
   mottoB: "Те же инструменты. Новые возможности.",
   mottoC: "Хорошие инструменты. Светлее дни.",
-  // TODO(i18n): n => `Открываем ${n}…`
-  opening: "TODO",
-  // TODO(i18n): n => `${n} удалено`
-  uninstalled: "TODO",
+  opening: "Открываем {{app}}…",
+  uninstalled: "{{app}} удалено",
   downloading: "Загрузка",
   queued: "В очереди",
   paused: "Приостановлено",
@@ -69,10 +67,8 @@ export const common: LocaleCatalog<typeof En> = {
   resume: "Продолжить",
   pauseAll: "Приостановить всё",
   resumeAll: "Продолжить всё",
-  // TODO(i18n): (d, n) => `Обновляется ${d} из ${n}`
-  updatingProgress: "TODO",
-  // TODO(i18n): (a, b) => `${a} из ${b}`
-  ofSize: "TODO",
+  updatingProgress: "Обновляется {{current, number}} из {{total, number}}",
+  ofSize: "{{downloaded}} из {{size}}",
   offline: "Вы офлайн",
   unavailableOffline: "Офлайн",
   offlineUpdates: "Без сети проверить обновления нельзя.",
@@ -85,9 +81,16 @@ export const common: LocaleCatalog<typeof En> = {
   staleBody:
     "Установленные приложения работают. Обновления из этого канала приостановлены, пока он не ответит.",
   keepChannel: "Оставить",
-  // TODO(i18n): n => `${n} ${pl(n, 'голос', 'голоса', 'голосов')}`
-  votesCount: "TODO",
-  // TODO(i18n): a => `от ${a}`
-  ideaBy: "TODO",
+  votesCount_one: "{{count, number}} голос",
+  votesCount_few: "{{count, number}} голоса",
+  votesCount_many: "{{count, number}} голосов",
+  votesCount_other: "{{count, number}} голоса",
+  ideaBy: "от {{author}}",
   developer: "Разработчик",
+  close: "Закрыть",
+  moreActions: "Другие действия",
+  previous: "Предыдущий",
+  next: "Следующий",
+  slideOf: "Слайд {{index, number}} из {{total, number}}",
+  installingNow: "Установка…",
 };

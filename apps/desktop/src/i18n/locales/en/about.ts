@@ -12,4 +12,10 @@ export const about = {
   terms: "Terms of Service",
   privacyPolicy: "Privacy Policy",
   licenses: "Licenses",
-};
+  principles: {
+    p1: "Curated quality apps",
+    p2: "No ads. No telemetry",
+    p3: "Support independent developers",
+    p4: "Discover hidden gems",
+  },
+} as const;

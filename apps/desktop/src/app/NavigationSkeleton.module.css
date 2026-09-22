@@ -1,0 +1,19 @@
+.skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-22);
+}
+
+.cards,
+.wide {
+  display: grid;
+  gap: var(--grid-gap);
+}
+
+.cards {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.wide {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}

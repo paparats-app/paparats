@@ -1,0 +1,101 @@
+/* Browse filter panel — prototype lines 371–409. */
+.panel {
+  box-sizing: border-box;
+  padding: var(--sp-16) var(--sp-18) var(--sp-18);
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--fs-title-lg);
+  font-weight: 600;
+}
+
+.clear {
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-4);
+  background: none;
+  color: var(--mint2);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.clear:hover {
+  filter: brightness(1.15);
+}
+
+.clear:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.search.search {
+  margin-top: var(--sp-12);
+}
+
+.groups {
+  margin-top: var(--sp-14);
+}
+
+/* The prototype's 1px `--line` divider with 12px above and below. */
+.group + .group {
+  margin-top: var(--sp-12);
+  padding-top: var(--sp-12);
+  border-top: 1px solid var(--line);
+}
+
+.groupLabel {
+  font-size: var(--fs-secondary);
+  font-weight: 600;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--sp-4);
+}
+
+.dotLabel {
+  display: flex;
+  gap: var(--sp-10);
+  align-items: center;
+  min-width: 0;
+}
+
+.dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-3);
+}
+
+.dotText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.count {
+  flex: none;
+  color: var(--text3);
+  font-size: var(--fs-meta);
+}

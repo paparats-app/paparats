@@ -1,0 +1,82 @@
+/* Browse featured hero — prototype lines 291–301. `--tint` is the app's data colour. */
+.hero {
+  position: relative;
+  /* Content-box like the prototype: 250px inside the 1px border (252px overall). */
+  height: 250px;
+  box-sizing: content-box;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: radial-gradient(ellipse at 78% 50%, var(--tint) 0%, var(--featured-ground) 62%);
+  color: var(--on-image);
+  font-family: var(--font-sans);
+}
+
+.content {
+  position: absolute;
+  top: var(--sp-30);
+  left: 32px;
+  max-width: 420px;
+}
+
+.kicker {
+  color: var(--on-image-kicker);
+  font-size: var(--fs-chip);
+  font-weight: 500;
+  letter-spacing: var(--ls-kicker);
+  text-transform: uppercase;
+}
+
+.title {
+  margin: var(--sp-12) 0 0;
+  font-size: var(--fs-page);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+}
+
+.line {
+  display: block;
+  white-space: nowrap;
+}
+
+.body {
+  max-width: 340px;
+  margin: var(--sp-12) 0 0;
+  color: var(--on-image-body);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.cta.cta {
+  --btn-px: var(--sp-20);
+  margin-top: var(--sp-16);
+  gap: var(--sp-10);
+  font-weight: 600;
+}
+
+.tile.tile {
+  position: absolute;
+  top: 55px;
+  right: 150px;
+}
+
+.note {
+  position: absolute;
+  top: 80px;
+  right: var(--sp-30);
+  width: 100px;
+  color: var(--on-image-motto);
+  font-size: var(--fs-title);
+  font-style: italic;
+  line-height: 1.45;
+  text-align: right;
+  text-wrap: balance;
+}
+
+.dots.dots {
+  position: absolute;
+  right: 28px;
+  bottom: var(--sp-20);
+}

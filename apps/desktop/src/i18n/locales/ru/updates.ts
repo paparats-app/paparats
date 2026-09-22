@@ -7,8 +7,10 @@ export const updates: LocaleCatalog<typeof En> = {
     "Обновления приносят новые функции, лучшую производительность и меньше шероховатостей.",
   updateAll: "Обновить всё",
   updatesSub: "Держите приложения в актуальном состоянии.",
-  // TODO(i18n): n => `${pl(n, 'Доступно', 'Доступны', 'Доступно')} ${n} ${pl(n, 'обновление', 'обновления', 'обновлений')}`
-  updatesAvailable: "TODO",
+  updatesAvailable_one: "Доступно {{count, number}} обновление",
+  updatesAvailable_few: "Доступны {{count, number}} обновления",
+  updatesAvailable_many: "Доступно {{count, number}} обновлений",
+  updatesAvailable_other: "Доступны {{count, number}} обновления",
   viewDetails: "Подробнее",
   hideDetails: "Скрыть",
   autoUpdates: "Автоматические обновления",

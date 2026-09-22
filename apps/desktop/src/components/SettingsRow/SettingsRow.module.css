@@ -1,0 +1,142 @@
+/* Settings rows — prototype lines 761–792. */
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--sp-24);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--sp-16) var(--sp-20);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+.label {
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--fs-title);
+  font-weight: 600;
+}
+
+.hint {
+  margin-top: var(--sp-2);
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  text-wrap: pretty;
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.select.select {
+  min-width: 150px;
+}
+
+/* ---- language: label on top, grid under it -------------------------------------------- */
+.stacked {
+  display: block;
+}
+
+.languages {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-8);
+  max-width: 560px;
+  margin-top: var(--sp-12);
+}
+
+.language {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--sp-10);
+  height: var(--control-h);
+  box-sizing: border-box;
+  padding: 0 var(--sp-14);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-8);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.language:hover {
+  border-color: var(--text2);
+}
+
+.language:active {
+  transform: translateY(1px);
+}
+
+.language:focus-visible,
+.linkRow:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* A link row spans its card edge to edge and the card clips (radius 12): the ring goes inside. */
+.linkRow:focus-visible {
+  outline-offset: calc(-1 * var(--focus-ring-w));
+}
+
+.languageOn,
+.languageOn:hover {
+  border-color: var(--mint);
+  background: var(--mint-soft);
+}
+
+.check {
+  flex: none;
+  color: var(--mint2);
+}
+
+.code {
+  color: var(--text3);
+  font-size: var(--fs-meta);
+}
+
+/* ---- link: the whole row is the button ------------------------------------------------- */
+.linkRow {
+  border: 0;
+  background: none;
+  font: inherit;
+  font-family: var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+}
+
+.linkRow:hover {
+  background: var(--hover);
+}
+
+.linkLabel {
+  display: inline-flex;
+  flex: none;
+  gap: var(--sp-6);
+  align-items: center;
+  color: var(--mint2);
+  font-size: var(--fs-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ---- note: icon + title + body ---------------------------------------------------------- */
+.note {
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: var(--sp-12);
+}
+
+.noteIcon {
+  flex: none;
+  margin-top: 1px;
+  color: var(--mint2);
+}

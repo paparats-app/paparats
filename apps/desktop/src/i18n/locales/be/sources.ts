@@ -24,20 +24,21 @@ export const sources: LocaleCatalog<typeof En> = {
   kindCatalog: "Каталог",
   kindDeveloper: "Распрацоўшчык",
   kindCurated: "Падборка",
-  // TODO(i18n): a => `ад ${a}`
-  byAuthor: "TODO",
-  // TODO(i18n): n => `${n.toLocaleString('ru')} ${pl(n, 'падпісчык', 'падпісчыкі', 'падпісчыкаў')}`
-  subscribersCount: "TODO",
-  // TODO(i18n): r => `Сінхранізавана ${r}`
-  syncedRel: "TODO",
+  byAuthor: "ад {{author}}",
+  subscribersCount_one: "{{count, number}} падпісчык",
+  subscribersCount_few: "{{count, number}} падпісчыкі",
+  subscribersCount_many: "{{count, number}} падпісчыкаў",
+  subscribersCount_other: "{{count, number}} падпісчыкі",
+  syncedRel: "Сінхранізавана {{when}}",
   neverSynced: "Яшчэ не сінхранізавана",
-  // TODO(i18n): n => `${n} ${pl(n, 'канал', 'каналы', 'каналаў')}`
-  channelsCount: "TODO",
+  channelsCount_one: "{{count, number}} канал",
+  channelsCount_few: "{{count, number}} каналы",
+  channelsCount_many: "{{count, number}} каналаў",
+  channelsCount_other: "{{count, number}} каналы",
   notFound: "Па гэтым адрасе канала няма",
   notFoundHint: "Праверце спасылку або папрасіце ў аўтара кароткі код.",
   alreadySubscribed: "Вы ўжо падпісаны на гэты канал.",
-  // TODO(i18n): c => `Дадаць ${c}?`
-  confirmChannelTitle: "TODO",
+  confirmChannelTitle: "Дадаць {{channel}}?",
   confirmChannelBody:
     "Гэта канал супольнасці. Paparats не правяраў яго праграмы — яны прыходзяць напрамую з сервера аўтара і не ўваходзяць у Paparats Pro. Дадавайце толькі каналы, аўтару якіх давяраеце.",
   addrCopied: "Адрас скапіяваны",
@@ -53,14 +54,16 @@ export const sources: LocaleCatalog<typeof En> = {
   hostMirrored: "Аўтар + люстэрка Paparats",
   hostPaparats: "CDN Paparats",
   reviewedLabel: "Праверка",
-  // TODO(i18n): d => `Каманда Paparats, ${d}`
-  reviewedBy: "TODO",
+  reviewedBy: "Каманда Paparats, {{date}}",
   notReviewed: "Не правераны",
   supportLabel: "Падтрымка",
-  // TODO(i18n): n => `Недаступны ${n} ${pl(n, 'дзень', 'дні', 'дзён')}`
-  unreachableFor: "TODO",
-  // TODO(i18n): (c, n) => `${c} не адказвае ${n} ${pl(n, 'дзень', 'дні', 'дзён')}`
-  staleTitle: "TODO",
-  // TODO(i18n): c => `${c} усё яшчэ недаступны`
-  stillUnreachable: "TODO",
+  unreachableFor_one: "Недаступны {{count, number}} дзень",
+  unreachableFor_few: "Недаступны {{count, number}} дні",
+  unreachableFor_many: "Недаступны {{count, number}} дзён",
+  unreachableFor_other: "Недаступны {{count, number}} дні",
+  staleTitle_one: "{{channel}} не адказвае {{count, number}} дзень.",
+  staleTitle_few: "{{channel}} не адказвае {{count, number}} дні.",
+  staleTitle_many: "{{channel}} не адказвае {{count, number}} дзён.",
+  staleTitle_other: "{{channel}} не адказвае {{count, number}} дні.",
+  stillUnreachable: "{{channel}} усё яшчэ недаступны",
 };

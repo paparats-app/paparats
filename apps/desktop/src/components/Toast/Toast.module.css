@@ -1,0 +1,47 @@
+/* Toast (prototype lines 1350–1354). */
+.toast {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-10);
+  max-width: 420px;
+  box-sizing: border-box;
+  padding: var(--sp-12) var(--sp-16);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-10);
+  background: var(--card);
+  color: var(--text);
+  font-size: var(--fs-body);
+  font-weight: 500;
+  line-height: var(--lh-body);
+  box-shadow: var(--shadow-toast);
+  animation: toast-in var(--dur-enter) var(--ease-enter) both;
+}
+
+.floating {
+  position: fixed;
+  right: var(--sp-24);
+  bottom: var(--sp-22);
+  z-index: 20;
+}
+
+.badge {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--r-full);
+  background: var(--mint-soft);
+  color: var(--mint2);
+}
+
+.message {
+  min-width: 0;
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}

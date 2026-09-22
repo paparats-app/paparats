@@ -1,0 +1,81 @@
+/* Empty states (search, Updates, Library, Ideas). */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-6);
+  padding: 60px 0;
+  text-align: center;
+}
+
+.md {
+  padding: 50px var(--sp-20);
+}
+
+.framed {
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--card);
+}
+
+.media {
+  margin-bottom: var(--sp-10);
+}
+
+.md .media {
+  margin-bottom: var(--sp-8);
+}
+
+.circle {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-full);
+  background: var(--mint-soft);
+  color: var(--mint2);
+}
+
+.danger {
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  color: var(--danger);
+}
+
+.logo {
+  display: block;
+  width: 72px;
+  opacity: 0.25;
+  filter: var(--mark-filter);
+}
+
+.md .logo {
+  width: 64px;
+}
+
+.title {
+  color: var(--text);
+  font-size: var(--fs-lead);
+  font-weight: 600;
+}
+
+.md .title {
+  font-size: var(--fs-title-lg);
+}
+
+.hint {
+  max-width: 360px;
+  color: var(--text2);
+  text-wrap: pretty;
+}
+
+.md .hint {
+  font-size: var(--fs-secondary);
+}
+
+.action {
+  margin-top: var(--sp-14);
+}
+
+.lg .action {
+  margin-top: var(--sp-16);
+}

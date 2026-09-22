@@ -1,0 +1,36 @@
+.badge {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-2) var(--sp-8) var(--sp-2) var(--sp-6);
+  border-radius: var(--r-10);
+  font-size: var(--fs-chip);
+  font-weight: 600;
+  line-height: var(--lh-body);
+  white-space: nowrap;
+}
+
+.sm {
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+.lg {
+  padding: var(--sp-3) 9px var(--sp-3) 7px;
+}
+
+.official {
+  background: var(--mint-soft);
+  color: var(--mint2);
+}
+
+.verified {
+  background: var(--card2);
+  color: var(--text);
+}
+
+.community {
+  background: var(--warn-soft);
+  color: var(--warn);
+}

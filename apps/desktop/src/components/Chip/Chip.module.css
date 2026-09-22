@@ -1,0 +1,74 @@
+/* Tag chips — 11px/500, radius 10 (prototype AppCard / library row / app page meta). */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  box-sizing: border-box;
+  padding: var(--sp-2) 9px;
+  border: 0;
+  border-radius: var(--r-10);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-chip);
+  font-weight: 500;
+  line-height: var(--lh-body);
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+.neutral {
+  background: var(--card2);
+  color: var(--text2);
+}
+
+.mint {
+  background: var(--mint-soft);
+  color: var(--mint2);
+}
+
+.outline {
+  padding: 1px var(--sp-8) 1px 7px;
+  border: 1px solid var(--line2);
+  background: transparent;
+  color: var(--text2);
+}
+
+.withLeading {
+  gap: var(--sp-6);
+  padding-left: var(--sp-4);
+}
+
+.dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: var(--r-3);
+}
+
+.text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.interactive {
+  cursor: pointer;
+}
+
+.interactive:hover {
+  color: var(--text);
+}
+
+.interactive.outline:hover {
+  border-color: var(--text3);
+}
+
+.interactive:active {
+  transform: translateY(1px);
+}
+
+.interactive:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}

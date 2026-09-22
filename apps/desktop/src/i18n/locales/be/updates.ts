@@ -6,8 +6,10 @@ export const updates: LocaleCatalog<typeof En> = {
   promoUpdBody: "Абнаўленні прыносяць новыя функцыі, лепшую хуткасць і менш шурпатасцяў.",
   updateAll: "Абнавіць усё",
   updatesSub: "Трымайце праграмы актуальнымі.",
-  // TODO(i18n): n => `${pl(n, 'Даступна', 'Даступны', 'Даступна')} ${n} ${pl(n, 'абнаўленне', 'абнаўленні', 'абнаўленняў')}`
-  updatesAvailable: "TODO",
+  updatesAvailable_one: "Даступна {{count, number}} абнаўленне",
+  updatesAvailable_few: "Даступны {{count, number}} абнаўленні",
+  updatesAvailable_many: "Даступна {{count, number}} абнаўленняў",
+  updatesAvailable_other: "Даступны {{count, number}} абнаўленні",
   viewDetails: "Падрабязнасці",
   hideDetails: "Схаваць",
   autoUpdates: "Аўтаматычныя абнаўленні",

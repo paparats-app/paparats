@@ -1,0 +1,28 @@
+/* Row actions (prototype lines 275, 333, 489, 605): every tone keeps the 1px `--line2` border.
+   Classes are doubled so they win over Button's own size/variant rules regardless of CSS order. */
+/* 13px/500 in every tone, the mint one included (Button's primary is 600); `strong` rows use 600. */
+.action.action {
+  border: 1px solid var(--line2);
+  font-weight: 500;
+}
+
+.action.action:hover:not(:disabled) {
+  filter: brightness(1.15);
+}
+
+.action.action:disabled {
+  opacity: 1;
+}
+
+.xs.xs {
+  --btn-r: var(--r-6);
+  --btn-px: var(--sp-14);
+}
+
+.strong.strong {
+  font-weight: 600;
+}
+
+.dense.dense {
+  --btn-px: var(--sp-8);
+}

@@ -3,15 +3,16 @@ import type { LocaleCatalog } from "../../types";
 
 export const idea: LocaleCatalog<typeof En> = {
   takeIdea: "Взять идею",
-  // TODO(i18n): c => `Закреплена за ${c} · автор уведомлён`
-  tookIdea: "TODO",
+  tookIdea: "Закреплена за {{channel}} · автор уведомлён",
   markReleased: "Отметить выпущенной",
   releaseIdea: "Выпуск идеи",
   releaseApp: "Какое приложение её реализует?",
   releaseVersion: "Версия",
   release: "Выпустить",
-  // TODO(i18n): n => `Выпущена · уведомлено ${n} ${pl(n, 'человек', 'человека', 'человек')}`
-  releasedMsg: "TODO",
+  releasedMsg_one: "Выпущена · уведомлено {{count, number}} человек",
+  releasedMsg_few: "Выпущена · уведомлено {{count, number}} человека",
+  releasedMsg_many: "Выпущена · уведомлено {{count, number}} человек",
+  releasedMsg_other: "Выпущена · уведомлено {{count, number}} человека",
   authorBonus: "Автор получил 3 месяца Paparats Pro.",
   discussion: "Обсуждение",
   commentPlaceholder: "Добавьте к обсуждению…",

@@ -6,13 +6,11 @@ export const profile: LocaleCatalog<typeof En> = {
   promoProfBody:
     "Спасибо, что вы с Paparats! Вместе мы поддерживаем хорошее ПО и независимых авторов.",
   timeSaved: "Сэкономлено времени",
-  // TODO(i18n): n => `${n} ч`
-  hours: "TODO",
+  hours: "{{hours, number}} ч",
   proActiveHint: "Больше инструментов. Больше возможностей.",
   profileSub: "Управляйте аккаунтом, устройствами и настройками.",
   editProfile: "Редактировать",
-  // TODO(i18n): d => `С нами с ${d}`
-  memberSince: "TODO",
+  memberSince: "С нами с {{date}}",
   tabPreferences: "Настройки",
   tabSecurity: "Безопасность",
   tabDevices: "Устройства",
@@ -28,10 +26,8 @@ export const profile: LocaleCatalog<typeof En> = {
   updatesInstalled: "Установлено обновлений",
   storageUsed: "Занято места",
   recentActivity: "Недавние действия",
-  // TODO(i18n): n => `Обновлено ${n}`
-  actUpdated: "TODO",
-  // TODO(i18n): n => `Установлено ${n}`
-  actInstalled: "TODO",
+  actUpdated: "Обновлено {{app}}",
+  actInstalled: "Установлено {{app}}",
   profileSaved: "Профиль сохранён",
   password: "Пароль",
   passwordHint: "Изменён 4 месяца назад.",
@@ -42,8 +38,7 @@ export const profile: LocaleCatalog<typeof En> = {
   sessionsHint: "Выполнен вход на 2 устройствах.",
   signOutAll: "Выйти везде",
   thisDevice: "Это устройство",
-  // TODO(i18n): d => `Активность: ${d}`
-  lastActive: "TODO",
+  lastActive: "Активность: {{when}}",
   removeDevice: "Убрать",
   exportData: "Экспорт данных",
   exportHint: "Библиотека, коллекции и настройки в ZIP-архиве.",

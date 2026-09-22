@@ -1,0 +1,55 @@
+/* Home › New and notable card — prototype lines 257–260. */
+.card {
+  display: flex;
+  gap: var(--sp-16);
+  align-items: center;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: var(--sp-18) var(--sp-20);
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+}
+
+.card:hover {
+  border-color: var(--line2);
+  background: var(--card2);
+}
+
+.card:active {
+  transform: translateY(1px);
+}
+
+.card:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.name {
+  font-size: var(--fs-title);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.tagline {
+  display: -webkit-box;
+  margin-top: var(--sp-4);
+  overflow: hidden;
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  line-height: var(--lh-body);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}

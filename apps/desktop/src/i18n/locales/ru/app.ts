@@ -13,34 +13,37 @@ export const app: LocaleCatalog<typeof En> = {
   moreIn: "Ещё в коллекции",
   proFeatures: "Pro-функции",
   proHint: "Входят в Paparats Pro.",
-  // TODO(i18n): n => `Скриншот ${n}`
-  shotLabel: "TODO",
+  shotLabel: "Скриншот {{index, number}}",
   yes: "Да",
   no: "Нет",
   reviews: "Оценки и отзывы",
-  // TODO(i18n): n => `${n} ${pl(n, 'оценка', 'оценки', 'оценок')}`
-  ratingsCount: "TODO",
+  ratingsCount_one: "{{count, number}} оценка",
+  ratingsCount_few: "{{count, number}} оценки",
+  ratingsCount_many: "{{count, number}} оценок",
+  ratingsCount_other: "{{count, number}} оценки",
   rateApp: "Оцените приложение",
   thanksRating: "Спасибо за оценку",
   writeReview: "Написать отзыв",
-  // TODO(i18n): n => `${n} ${pl(n, 'посчитал', 'посчитали', 'посчитали')} полезным`
-  helpful: "TODO",
+  helpful_one: "{{count, number}} посчитал полезным",
+  helpful_few: "{{count, number}} посчитали полезным",
+  helpful_many: "{{count, number}} посчитали полезным",
+  helpful_other: "{{count, number}} посчитали полезным",
   versionHistory: "История версий",
   current: "Текущая",
   showAll: "Показать все версии",
   showLess: "Скрыть",
-  // TODO(i18n): v => `Выпущена в версии ${v}`
-  releasedInVersion: "TODO",
+  releasedInVersion: "Выпущена в версии {{version}}",
   grewFromIdea: "Выросло из идеи",
   seeIdea: "К идее",
-  // TODO(i18n): n => `${n} ${pl(n, 'идея', 'идеи', 'идей')} для этого приложения`
-  ideasForApp: "TODO",
+  ideasForApp_one: "{{count, number}} идея для этого приложения",
+  ideasForApp_few: "{{count, number}} идеи для этого приложения",
+  ideasForApp_many: "{{count, number}} идей для этого приложения",
+  ideasForApp_other: "{{count, number}} идеи для этого приложения",
   suggestImprovement: "Предложить улучшение",
-  // TODO(i18n): c => `Также есть в канале ${c}.`
-  alsoIn: "TODO",
+  alsoIn: "Также есть в канале {{channels}}.",
   srcRule: "Paparats устанавливает и обновляет из самого доверенного канала, где есть приложение.",
-  // TODO(i18n): c => `Из канала ${c} (проверенный). Paparats проверил автора и зеркалирует файлы; само приложение остаётся ответственностью автора.`
-  srcVerifiedNote: "TODO",
-  // TODO(i18n): c => `Из канала ${c} (сообщество). Не проверено Paparats; загружается с сервера автора.`
-  srcCommunityNote: "TODO",
+  srcVerifiedNote:
+    "Из канала {{channel}} (проверенный). Paparats проверил автора и зеркалирует файлы; само приложение остаётся ответственностью автора.",
+  srcCommunityNote:
+    "Из канала {{channel}} (сообщество). Не проверено Paparats; загружается с сервера автора.",
 };

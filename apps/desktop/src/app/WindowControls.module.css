@@ -1,27 +1,39 @@
+/* Window controls — prototype lines 95–99 (README "Window controls"). */
 .controls {
   position: absolute;
   top: 0;
   right: 0;
+  z-index: 5;
   display: flex;
-  z-index: 50;
+  height: 32px;
 }
 
 .cell {
-  width: 46px;
-  height: 32px;
   display: grid;
   place-items: center;
+  width: 46px;
+  height: 100%;
+  padding: 0;
   border: 0;
   background: transparent;
-  color: inherit;
-  cursor: pointer;
+  color: var(--text2);
 }
 
 .cell:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--hover);
+  color: var(--text);
+}
+
+/* The cells touch the window edge: an outside ring would be clipped, so it sits inside. */
+.cell:focus-visible {
+  outline-offset: calc(-1 * var(--focus-ring-w));
+}
+
+.close {
+  border-top-right-radius: var(--window-radius);
 }
 
 .close:hover {
-  background: #c42b1c;
-  color: #fff;
+  background: var(--close-hover);
+  color: var(--on-danger);
 }

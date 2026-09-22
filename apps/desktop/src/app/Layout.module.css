@@ -1,0 +1,73 @@
+/* Window shell — prototype line 59: grid 244px + content column. The window is frameless;
+   Windows 11 draws the rounded corners, border and shadow (docs/decisions.md D4). */
+.frame {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Drag strip along the top edge, left of the three 46px window-control cells. Nothing
+   interactive lives in it: the sidebar starts at 35px and the top bar's search at 40px. */
+.drag {
+  position: absolute;
+  top: 0;
+  right: calc(3 * 46px);
+  left: 0;
+  z-index: 4;
+  height: 32px;
+}
+
+.column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: var(--content-pad);
+  scrollbar-width: thin;
+  scrollbar-color: var(--knob-off) transparent;
+}
+
+/* Screen enter: fade + 10px rise, 340ms (0 when motion is off). The keyframe names must not
+   camel-case to a class name (`localsConvention: camelCaseOnly`): `enter-a` would shadow `.enterA`. */
+.enterA {
+  animation: rise-a var(--dur-enter) var(--ease-enter) both;
+}
+
+.enterB {
+  animation: rise-b var(--dur-enter) var(--ease-enter) both;
+}
+
+@keyframes rise-a {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rise-b {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

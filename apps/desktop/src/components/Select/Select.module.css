@@ -1,0 +1,83 @@
+/* Native select, custom chevron — 34px radius 8, 1px `--line2`, `--bg` ground (README "Dropdown"). */
+.wrap {
+  --select-h: var(--control-h-sm);
+  --select-r: var(--r-8);
+  --select-pl: var(--sp-12);
+  --select-pr: 32px;
+  --select-chevron-x: 11px;
+  position: relative;
+  display: inline-flex;
+  flex: none;
+  min-width: 0;
+}
+
+.lg {
+  --select-h: var(--control-h);
+  --select-r: var(--r-9);
+  --select-pl: var(--sp-14);
+  --select-pr: 36px;
+  --select-chevron-x: 13px;
+}
+
+.fullWidth {
+  display: flex;
+  width: 100%;
+}
+
+.select {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  height: var(--select-h);
+  padding: 0 var(--select-pr) 0 var(--select-pl);
+  border: 1px solid var(--line2);
+  border-radius: var(--select-r);
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-secondary);
+  appearance: none;
+  cursor: pointer;
+}
+
+.lg .select {
+  font-size: var(--fs-body);
+}
+
+.card {
+  background: var(--card);
+}
+
+.input {
+  background: var(--input);
+}
+
+.select:hover:not(:disabled) {
+  border-color: var(--text3);
+}
+
+.select:focus-visible {
+  border-color: var(--mint);
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.select:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.select option {
+  background: var(--card);
+  color: var(--text);
+}
+
+.chevron {
+  position: absolute;
+  top: 50%;
+  right: var(--select-chevron-x);
+  color: var(--text2);
+  transform: translateY(-50%);
+  pointer-events: none;
+}

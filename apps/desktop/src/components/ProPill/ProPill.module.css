@@ -1,0 +1,23 @@
+.pill {
+  flex: none;
+  display: inline-block;
+  font-size: var(--fs-chip);
+  line-height: var(--lh-body);
+  white-space: nowrap;
+}
+
+.solid {
+  padding: var(--sp-2) var(--sp-8);
+  border-radius: var(--r-8);
+  background: var(--mint);
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.soft {
+  padding: 1px 7px;
+  border-radius: var(--r-9);
+  background: var(--mint-soft);
+  color: var(--mint2);
+  font-weight: 600;
+}

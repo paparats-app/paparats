@@ -1,0 +1,116 @@
+/* Library grid card — prototype lines 622–629. */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-12);
+  min-width: 0;
+  box-sizing: border-box;
+  padding: var(--sp-14);
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--card);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+.card:hover {
+  border-color: var(--line2);
+}
+
+.identity {
+  display: flex;
+  gap: var(--sp-12);
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-8);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.identity:focus-visible,
+.favorite:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.name,
+.sub {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.name {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.sub {
+  margin-top: var(--sp-3);
+  color: var(--text2);
+  font-size: var(--fs-meta);
+}
+
+.actions {
+  display: flex;
+  gap: var(--sp-6);
+}
+
+.action.action {
+  flex: 1;
+  width: auto;
+}
+
+.favorite {
+  display: grid;
+  flex: none;
+  place-items: center;
+  box-sizing: border-box;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--line2);
+  border-radius: var(--r-7);
+  background: var(--card2);
+  color: var(--text2);
+  cursor: pointer;
+}
+
+.favorite:hover {
+  color: var(--text);
+}
+
+.favorite:active {
+  transform: translateY(1px);
+}
+
+.favorite[aria-pressed="true"] {
+  color: var(--mint2);
+}
+
+.favorite[aria-pressed="true"] svg {
+  fill: currentColor;
+}
+
+.progress.progress {
+  position: absolute;
+  right: var(--sp-14);
+  bottom: 0;
+  left: var(--sp-14);
+  width: auto;
+}

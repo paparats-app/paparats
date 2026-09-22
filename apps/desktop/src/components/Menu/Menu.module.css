@@ -1,0 +1,65 @@
+/* Library overflow menu items (prototype lines 606–613). */
+.anchor {
+  position: relative;
+  display: inline-flex;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-10);
+  width: 100%;
+  box-sizing: border-box;
+  height: var(--control-h-sm);
+  padding: 0 var(--sp-10);
+  border: 0;
+  border-radius: var(--r-6);
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-secondary);
+  text-align: left;
+  cursor: pointer;
+}
+
+.item:hover:not(:disabled),
+.item:focus-visible {
+  background: var(--hover);
+}
+
+.item:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: calc(-1 * var(--focus-ring-w));
+}
+
+.item:active:not(:disabled) {
+  filter: brightness(0.96);
+}
+
+.item:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.icon {
+  color: var(--text2);
+}
+
+.destructive,
+.destructive .icon {
+  color: var(--danger);
+}
+
+.label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.divider {
+  height: 1px;
+  margin: var(--sp-4) var(--sp-6);
+  background: var(--line);
+}

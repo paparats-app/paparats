@@ -1,0 +1,117 @@
+/* Layout of the composite-component specimens. Composites are shown at the width they get in the
+   real screen (`DesignFrame`), so each theme panel scrolls them horizontally when narrower. */
+/* The scroller clips, so it bleeds 4px on each side to leave room for the 2px + 2px focus ring. */
+.frame {
+  box-sizing: border-box;
+  width: calc(100% + 2 * var(--sp-4));
+  margin: 0 calc(-1 * var(--sp-4));
+  padding: var(--sp-4) var(--sp-4) var(--sp-10);
+  overflow-x: auto;
+}
+
+.frameInner {
+  box-sizing: border-box;
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-10);
+}
+
+.stack6 {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+.grid {
+  display: grid;
+  gap: var(--grid-gap);
+}
+
+.cols2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cols3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.cols4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.cols5 {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.cols6 {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+/* A page-content ground so full-bleed banners and heroes read as on a screen. */
+.screen {
+  overflow: hidden;
+  padding: var(--sp-24) var(--sp-30);
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--bg);
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: var(--sp-24);
+  align-items: start;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-8);
+  align-items: center;
+}
+
+.updatesLine {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-14);
+  margin-top: var(--sp-18);
+  font-size: var(--fs-title-lg);
+}
+
+.updatesLine span:first-child {
+  font-weight: 500;
+}
+
+.updatesSize {
+  color: var(--on-image-quiet);
+  font-size: var(--fs-body);
+}
+
+.lead {
+  margin-top: var(--sp-6);
+  color: var(--on-image-lead);
+  font-size: var(--fs-lead);
+}
+
+.leadBody {
+  margin: var(--sp-12) 0 0;
+  color: var(--on-image-2);
+  font-size: var(--fs-body);
+  line-height: var(--lh-long);
+}
+
+.bannerButtons {
+  display: flex;
+  gap: var(--sp-10);
+  margin-top: var(--sp-18);
+}
+
+.reviews {
+  display: grid;
+  grid-template-columns: 270px minmax(0, 1fr);
+  gap: var(--sp-24);
+  align-items: start;
+}

@@ -1,0 +1,40 @@
+/* Benefit strip — prototype lines 693–697. */
+.strip {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+  color: var(--text);
+  font-family: var(--font-sans);
+  list-style: none;
+}
+
+/* Every cell draws a left rule; the first one hides under the card border. */
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: -1px;
+  padding: var(--sp-22) var(--sp-16);
+  border-left: 1px solid var(--line);
+  text-align: center;
+}
+
+.icon {
+  color: var(--mint2);
+}
+
+.title {
+  margin-top: var(--sp-10);
+  font-size: var(--fs-title);
+  font-weight: 600;
+}
+
+.sub {
+  margin-top: var(--sp-3);
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+}

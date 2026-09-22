@@ -1,0 +1,81 @@
+.stat {
+  min-width: 0;
+  color: var(--text);
+}
+
+.icon {
+  color: var(--text2);
+}
+
+.text {
+  min-width: 0;
+}
+
+.value {
+  font-variant-numeric: tabular-nums;
+}
+
+.label {
+  color: var(--text2);
+}
+
+/* ---- Row (Library stats, ecosystem) ------------------------------------------------------ */
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+}
+
+.row .value {
+  font-size: var(--fs-title-lg);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+}
+
+.row .label {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-meta);
+}
+
+/* ---- Tile (Profile usage) ---------------------------------------------------------------- */
+.tile,
+.compact {
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  background: var(--bg);
+}
+
+.tile {
+  padding: var(--sp-12);
+  border-radius: var(--r-10);
+}
+
+.tile .value {
+  margin-top: var(--sp-8);
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  line-height: 1;
+}
+
+.tile .label {
+  margin-top: var(--sp-4);
+  font-size: 11.5px;
+}
+
+/* ---- Compact (Ideas developer panel) ----------------------------------------------------- */
+.compact {
+  padding: var(--sp-10) var(--sp-12);
+  border-radius: var(--r-9);
+}
+
+.compact .value {
+  font-size: var(--fs-h2);
+  font-weight: 700;
+  letter-spacing: var(--ls-tight);
+}
+
+.compact .label {
+  margin-top: var(--sp-2);
+  font-size: 11.5px;
+  line-height: 1.3;
+}

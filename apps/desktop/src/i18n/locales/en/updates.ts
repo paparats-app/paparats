@@ -3,8 +3,8 @@ export const updates = {
   promoUpdBody: "Updates bring new features, better performance, and fewer rough edges.",
   updateAll: "Update all",
   updatesSub: "Keep your apps up to date.",
-  // TODO(i18n): n => (n === 1 ? '1 update available' : `${n} updates available`)
-  updatesAvailable: "TODO",
+  updatesAvailable_one: "{{count, number}} update available",
+  updatesAvailable_other: "{{count, number}} updates available",
   viewDetails: "View details",
   hideDetails: "Hide details",
   autoUpdates: "Automatic updates",
@@ -16,4 +16,4 @@ export const updates = {
   allUpdated: "All updates installed",
   updatedNow: "Updated just now",
   cancelAll: "Cancel all",
-};
+} as const;

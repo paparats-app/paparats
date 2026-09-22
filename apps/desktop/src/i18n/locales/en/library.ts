@@ -15,8 +15,8 @@ export const library = {
   quickFilters: "Quick filters",
   updatesAvailableShort: "Updates available",
   newCollection: "New collection",
-  // TODO(i18n): n => (n === 1 ? '1 app installed' : `${n} apps installed`)
-  installedCount: "TODO",
+  installedCount_one: "{{count, number}} app installed",
+  installedCount_other: "{{count, number}} apps installed",
   uninstall: "Uninstall",
   openFolder: "Open install folder",
   backToCollections: "All collections",
@@ -28,4 +28,4 @@ export const library = {
   noDownloads: "No active downloads",
   noDownloadsHint: "Downloads and updates in progress will show up here.",
   browseApps: "Browse apps",
-};
+} as const;

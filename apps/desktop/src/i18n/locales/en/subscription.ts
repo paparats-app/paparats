@@ -16,21 +16,63 @@ export const subscription = {
   yourImpact: "Your impact",
   impactBody: "Your subscription helps independent developers create and maintain great software.",
   popularPro: "Popular apps with Pro features",
-  // TODO(i18n): p => `Confirm ${p}`
-  confirmTitle: "TODO",
-  // TODO(i18n): (price, date) => `You will be charged ${price} today. Renews on ${date}. Cancel any time from Settings › Account.`
-  confirmBody: "TODO",
+  confirmTitle: "Confirm {{plan}}",
+  confirmBody:
+    "You will be charged {{price}} today. Renews on {{date}}. Cancel any time from Settings › Account.",
   confirm: "Confirm",
   planConfirmed: "Welcome to Paparats Pro",
   proActive: "Paparats Pro",
   manage: "Manage",
-  // TODO(i18n): d => `Renews on ${d}`
-  renewsOn: "TODO",
+  renewsOn: "Renews on {{date}}",
   proFree: "Free plan",
   upgrade: "Upgrade",
   switchYearly: "Switch to yearly",
   cancelPlan: "Cancel plan",
   proGift: "Paparats Pro · gift",
-  // TODO(i18n): d => `Idea bonus · active until ${d}`
-  giftUntil: "TODO",
-};
+  giftUntil: "Idea bonus · active until {{date}}",
+  plans: {
+    free: {
+      name: "Free",
+      sub: "Great to get started",
+      features: {
+        f1: "Access to free features in all apps",
+        f2: "No ads",
+        f3: "No telemetry",
+        f4: "Manual updates",
+        f5: "Community support",
+      },
+    },
+    monthly: {
+      name: "Paparats Pro",
+      sub: "Unlock the full experience",
+      features: {
+        f1: "Pro features in all apps",
+        f2: "Early access to new apps",
+        f3: "Automatic updates",
+        f4: "Priority support",
+        f5: "Support independent developers",
+      },
+    },
+    yearly: {
+      name: "Paparats Pro",
+      sub: "Better value",
+      features: {
+        f1: "Pro features in all apps",
+        f2: "Early access to new apps",
+        f3: "Automatic updates",
+        f4: "Priority support",
+        f5: "Support independent developers",
+      },
+    },
+  },
+  planNames: {
+    monthly: "Paparats Pro Monthly",
+    yearly: "Paparats Pro Yearly",
+  },
+  benefits: {
+    b1: { title: "Unlock Pro features", sub: "Get more from every app" },
+    b2: { title: "One simple plan", sub: "All apps, one subscription" },
+    b3: { title: "Support developers", sub: "Help independent creators" },
+    b4: { title: "A growing ecosystem", sub: "More great apps, faster" },
+  },
+} as const;

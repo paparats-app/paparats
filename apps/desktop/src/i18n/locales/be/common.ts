@@ -19,8 +19,10 @@ export const common: LocaleCatalog<typeof En> = {
   free: "Бясплатна",
   pro: "Pro",
   learnMore: "Даведацца больш",
-  // TODO(i18n): n => `${n} ${pl(n, 'праграма', 'праграмы', 'праграм')}`
-  appsCount: "TODO",
+  appsCount_one: "{{count, number}} праграма",
+  appsCount_few: "{{count, number}} праграмы",
+  appsCount_many: "{{count, number}} праграм",
+  appsCount_other: "{{count, number}} праграмы",
   q1: "«",
   q2: "»",
   featured: "Рэкамендаваныя",
@@ -34,8 +36,7 @@ export const common: LocaleCatalog<typeof En> = {
   whatsNew: "Што новага",
   upToDate: "Усё абноўлена",
   upToDateHint: "Paparats правярае абнаўленні кожную гадзіну ў фоне.",
-  // TODO(i18n): r => `Абноўлена ${r}`
-  updatedRel: "TODO",
+  updatedRel: "Абноўлена {{when}}",
   addFavorite: "У абраныя",
   removeFavorite: "Прыбраць з абраных",
   active: "Актыўна",
@@ -50,18 +51,15 @@ export const common: LocaleCatalog<typeof En> = {
   off: "Выкл.",
   version: "Версія",
   tabAccount: "Уліковы запіс",
-  // TODO(i18n): q => `Вынікі для «${q}»`
-  resultsFor: "TODO",
+  resultsFor: "Вынікі для «{{query}}»",
   noResults: "Нічога не знойдзена",
   details: "Звесткі",
   portable: "Партатыўная",
   mottoA: "Малыя праграмы. Вялікія магчымасці.",
   mottoB: "Тыя ж інструменты. Новыя магчымасці.",
   mottoC: "Добрыя інструменты. Святлейшыя дні.",
-  // TODO(i18n): n => `Адкрываем ${n}…`
-  opening: "TODO",
-  // TODO(i18n): n => `${n} выдалена`
-  uninstalled: "TODO",
+  opening: "Адкрываем {{app}}…",
+  uninstalled: "{{app}} выдалена",
   downloading: "Загрузка",
   queued: "У чарзе",
   paused: "Прыпынена",
@@ -69,10 +67,8 @@ export const common: LocaleCatalog<typeof En> = {
   resume: "Працягнуць",
   pauseAll: "Прыпыніць усё",
   resumeAll: "Працягнуць усё",
-  // TODO(i18n): (d, n) => `Абнаўляецца ${d} з ${n}`
-  updatingProgress: "TODO",
-  // TODO(i18n): (a, b) => `${a} з ${b}`
-  ofSize: "TODO",
+  updatingProgress: "Абнаўляецца {{current, number}} з {{total, number}}",
+  ofSize: "{{downloaded}} з {{size}}",
   offline: "Вы афлайн",
   unavailableOffline: "Афлайн",
   offlineUpdates: "Без сеткі праверыць абнаўленні нельга.",
@@ -85,9 +81,16 @@ export const common: LocaleCatalog<typeof En> = {
   staleBody:
     "Усталяваныя праграмы працуюць. Абнаўленні з гэтага канала прыпыненыя, пакуль ён не адкажа.",
   keepChannel: "Пакінуць",
-  // TODO(i18n): n => `${n} ${pl(n, 'голас', 'галасы', 'галасоў')}`
-  votesCount: "TODO",
-  // TODO(i18n): a => `ад ${a}`
-  ideaBy: "TODO",
+  votesCount_one: "{{count, number}} голас",
+  votesCount_few: "{{count, number}} галасы",
+  votesCount_many: "{{count, number}} галасоў",
+  votesCount_other: "{{count, number}} галасы",
+  ideaBy: "ад {{author}}",
   developer: "Распрацоўшчык",
+  close: "Закрыць",
+  moreActions: "Іншыя дзеянні",
+  previous: "Папярэдні",
+  next: "Наступны",
+  slideOf: "Слайд {{index, number}} з {{total, number}}",
+  installingNow: "Усталёўка…",
 };

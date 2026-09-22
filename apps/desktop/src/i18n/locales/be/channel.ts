@@ -3,14 +3,10 @@ import type { LocaleCatalog } from "../../types";
 
 export const channel: LocaleCatalog<typeof En> = {
   subscribed: "Вы падпісаны",
-  // TODO(i18n): c => `Вы падпісаліся на ${c}`
-  subscribedTo: "TODO",
-  // TODO(i18n): c => `Вы адпісаліся ад ${c}`
-  unsubscribedFrom: "TODO",
-  // TODO(i18n): c => `${c} прыпынены`
-  channelPausedMsg: "TODO",
-  // TODO(i18n): c => `${c} зноў уключаны`
-  channelResumedMsg: "TODO",
+  subscribedTo: "Вы падпісаліся на {{channel}}",
+  unsubscribedFrom: "Вы адпісаліся ад {{channel}}",
+  channelPausedMsg: "{{channel}} прыпынены",
+  channelResumedMsg: "{{channel}} зноў уключаны",
   proNotCovered: "Праграмы з гэтага канала не ўваходзяць у Paparats Pro.",
   officialNote: "Ваша крыніца па змаўчанні. Яе нельга выдаліць.",
   copyAddr: "Капіяваць адрас",

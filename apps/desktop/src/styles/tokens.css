@@ -2,9 +2,13 @@
  * Paparats design tokens — the single token layer (design_handoff_paparats_store/README.md ›
  * "Design tokens"). Components use only `var(--*)` from this file for colours, radii, shadows,
  * spacing and type sizes. The theme is chosen by `data-theme` on <html> ("dark" | "light").
+ *
+ * Theme blocks use bare `[data-theme]` selectors (not `:root[...]`) so any subtree can switch
+ * theme on its own — the /dev gallery renders a dark and a light panel side by side.
  */
 
-:root {
+:root,
+[data-theme="dark"] {
   /* ---- Theme: dark (default) ---------------------------------------------------------- */
   --bg: #0b171b;
   --side: linear-gradient(180deg, #0c191d 0%, #081215 100%);
@@ -26,15 +30,17 @@
   --frame: rgba(255, 255, 255, 0.09);
   --warn: #e0b25a;
   --warn-soft: rgba(224, 178, 90, 0.14);
-  /* Recommended-plan border (monthly card). */
-  --mint-border: rgba(95, 211, 154, 0.45);
+  /* Recommended-plan border (monthly card): the prototype's one value for both themes (line 1977). */
+  --mint-border: rgba(92, 201, 149, 0.45);
   /* Sidebar fern watermark and the logo mark filter differ per theme. */
   --watermark-opacity: 0.5;
   --mark-filter: none;
   /* Inactive carousel dot on photographic heroes. */
   --dot-idle: rgba(255, 255, 255, 0.35);
   color-scheme: dark;
+}
 
+:root {
   /* ---- Brand & on-image colours (theme-independent) ----------------------------------- */
   --brand-forest: #0f3d2e;
   --brand-coral: #e05b3c; /* the fern flower / star only */
@@ -51,6 +57,7 @@
   --on-image-meta: #b5bfb9; /* category count */
   --on-image-kicker: #a9c9b8;
   --on-image-quiet: #a9b3ad; /* Updates banner size line */
+  --on-image-lead: #e2e8e4; /* Subscription banner lead */
   --on-image-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
   --on-image-shadow-soft: 0 1px 10px rgba(0, 0, 0, 0.6);
   --cta-mint: #5fd39a; /* hero/banner CTAs sit on dark imagery in both themes */
@@ -65,6 +72,10 @@
   --scrim: rgba(0, 0, 0, 0.55); /* modal backdrop */
   --offline-ground: rgba(224, 122, 106, 0.1);
   --offline-border: rgba(224, 122, 106, 0.3);
+  --on-tint: #ffffff; /* monogram text and initials on app/channel tint tiles */
+  --knob: #ffffff; /* switch knob */
+  --promo-ground: #0f1614; /* Updates / Profile promo cards */
+  --glow-peach: #ffb282; /* core of the first-launch and hero glows (mixed with alpha) */
 
   /* ---- Typography --------------------------------------------------------------------- */
   --font-sans: "Onest", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
@@ -108,7 +119,11 @@
   --sp-26: 26px;
   --sp-30: 30px;
   --grid-gap: 12px;
-  --content-pad: 24px 30px 40px;
+  /* Content column padding (prototype line 134); page banners bleed through it. */
+  --content-pad-top: 8px;
+  --content-pad-x: 30px;
+  --content-pad-bottom: 40px;
+  --content-pad: var(--content-pad-top) var(--content-pad-x) var(--content-pad-bottom);
 
   /* ---- Radius ------------------------------------------------------------------------- */
   --r-2: 2px;
@@ -156,7 +171,7 @@
   --ease-standard: ease;
 }
 
-:root[data-theme="light"] {
+[data-theme="light"] {
   --bg: #eef2f1;
   --side: linear-gradient(180deg, #e6ecea 0%, #dde5e3 100%);
   --card: #ffffff;
@@ -177,14 +192,13 @@
   --frame: rgba(0, 0, 0, 0.12);
   --warn: #8a6414;
   --warn-soft: rgba(184, 134, 43, 0.14);
-  --mint-border: rgba(31, 138, 98, 0.45);
   --watermark-opacity: 0.18;
   --mark-filter: invert(1) hue-rotate(180deg) brightness(0.35) saturate(1.4);
   color-scheme: light;
 }
 
 /* "Subtle animations" off, or the OS asks for reduced motion: transitions become instant. */
-:root[data-motion="off"] {
+[data-motion="off"] {
   --dur-fast: 0s;
   --dur-dots: 0s;
   --dur-enter: 0ms;

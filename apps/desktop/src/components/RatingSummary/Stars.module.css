@@ -1,0 +1,17 @@
+.stars {
+  display: inline-flex;
+  flex: none;
+  gap: var(--sp-3);
+}
+
+.tight {
+  gap: var(--sp-2);
+}
+
+.on {
+  fill: var(--mint);
+}
+
+.off {
+  fill: var(--line2);
+}

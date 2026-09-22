@@ -16,8 +16,8 @@ export const common = {
   free: "Free",
   pro: "Pro",
   learnMore: "Learn more",
-  // TODO(i18n): n => (n === 1 ? '1 app' : `${n} apps`)
-  appsCount: "TODO",
+  appsCount_one: "{{count, number}} app",
+  appsCount_other: "{{count, number}} apps",
   q1: "“",
   q2: "”",
   featured: "Featured apps",
@@ -31,8 +31,7 @@ export const common = {
   whatsNew: "What’s new",
   upToDate: "Everything is up to date",
   upToDateHint: "Paparats checks for updates every hour in the background.",
-  // TODO(i18n): r => `Updated ${r}`
-  updatedRel: "TODO",
+  updatedRel: "Updated {{when}}",
   addFavorite: "Add to favorites",
   removeFavorite: "Remove from favorites",
   active: "Active",
@@ -47,18 +46,15 @@ export const common = {
   off: "Off",
   version: "Version",
   tabAccount: "Account",
-  // TODO(i18n): q => `Results for “${q}”`
-  resultsFor: "TODO",
+  resultsFor: "Results for “{{query}}”",
   noResults: "Nothing found",
   details: "Details",
   portable: "Portable",
   mottoA: "Small apps. Big possibilities.",
   mottoB: "Same tools. New possibilities.",
   mottoC: "Good tools. Brighter days.",
-  // TODO(i18n): n => `Opening ${n}…`
-  opening: "TODO",
-  // TODO(i18n): n => `${n} uninstalled`
-  uninstalled: "TODO",
+  opening: "Opening {{app}}…",
+  uninstalled: "{{app}} uninstalled",
   downloading: "Downloading",
   queued: "Queued",
   paused: "Paused",
@@ -66,10 +62,8 @@ export const common = {
   resume: "Resume",
   pauseAll: "Pause all",
   resumeAll: "Resume all",
-  // TODO(i18n): (d, n) => `Updating ${d} of ${n}`
-  updatingProgress: "TODO",
-  // TODO(i18n): (a, b) => `${a} of ${b}`
-  ofSize: "TODO",
+  updatingProgress: "Updating {{current, number}} of {{total, number}}",
+  ofSize: "{{downloaded}} of {{size}}",
   offline: "You’re offline",
   unavailableOffline: "Offline",
   offlineUpdates: "Can’t check for updates while offline.",
@@ -82,9 +76,14 @@ export const common = {
   staleBody:
     "Installed apps keep working. Updates from this channel are paused until it responds again.",
   keepChannel: "Keep",
-  // TODO(i18n): n => (n === 1 ? '1 vote' : `${n} votes`)
-  votesCount: "TODO",
-  // TODO(i18n): a => `by ${a}`
-  ideaBy: "TODO",
+  votesCount_one: "{{count, number}} vote",
+  votesCount_other: "{{count, number}} votes",
+  ideaBy: "by {{author}}",
   developer: "Developer",
-};
+  close: "Close",
+  moreActions: "More actions",
+  previous: "Previous",
+  next: "Next",
+  slideOf: "Slide {{index, number}} of {{total, number}}",
+  installingNow: "Installing…",
+} as const;

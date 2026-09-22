@@ -1,0 +1,89 @@
+/* Segmented control — `--bg` track, 1px `--line2`, radius 8, 2px padding, 30px options,
+   active `--card2` (Settings › Theme); larger dialog variant 36px / radius 10 / padding 3. */
+.track {
+  --seg-h: 30px;
+  --seg-r: var(--r-6);
+  display: inline-flex;
+  gap: var(--sp-2);
+  box-sizing: border-box;
+  padding: var(--sp-2);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-8);
+  background: var(--bg);
+}
+
+.md {
+  --seg-h: 36px;
+  --seg-r: var(--r-8);
+  padding: var(--sp-3);
+  border-color: var(--line);
+  border-radius: var(--r-10);
+}
+
+.card {
+  border-color: var(--line);
+  background: var(--card);
+}
+
+.fullWidth {
+  display: flex;
+  width: 100%;
+}
+
+.fullWidth .option {
+  flex: 1;
+}
+
+.option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-8);
+  box-sizing: border-box;
+  height: var(--seg-h);
+  padding: 0 var(--sp-14);
+  border: 0;
+  border-radius: var(--seg-r);
+  background: transparent;
+  color: var(--text2);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.md .option {
+  font-size: var(--fs-body);
+}
+
+.option:hover:not(:disabled) {
+  color: var(--text);
+}
+
+.option:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.option:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.option:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.active {
+  background: var(--card2);
+  color: var(--text);
+}
+
+/* List/grid view toggle: 32×30 icon cells, glyphs in `--text`. */
+.iconOnly {
+  width: 32px;
+  padding: 0;
+  color: var(--text);
+}

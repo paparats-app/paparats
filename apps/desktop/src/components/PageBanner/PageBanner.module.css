@@ -1,0 +1,102 @@
+/* Page banner — prototype lines 281–287 / 452–479 / 547–556 / 675–690. Dark in both themes. */
+.banner {
+  position: relative;
+  box-sizing: border-box;
+  min-height: 124px;
+  overflow: hidden;
+  padding: var(--sp-26) var(--sp-30) var(--sp-22);
+  border-bottom: 1px solid var(--line);
+  background: var(--banner-ground);
+  color: var(--on-image);
+  font-family: var(--font-sans);
+}
+
+/* Cancels the content column's padding (prototype: margin -8px -30px 22px). */
+.bleed {
+  margin: calc(-1 * var(--content-pad-top)) calc(-1 * var(--content-pad-x)) var(--sp-22);
+}
+
+.md {
+  min-height: 124px;
+}
+
+.lg {
+  min-height: 150px;
+}
+
+.xl {
+  min-height: 200px;
+  padding-bottom: var(--sp-24);
+}
+
+.photo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 58%;
+  background: var(--photo) right center / cover no-repeat;
+  /* Mask stops: #000 is the opaque mask value, not a colour (the one allowed literal). */
+  mask-image: linear-gradient(90deg, transparent 0%, #000 45%);
+}
+
+.inner {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: var(--sp-24);
+}
+
+.main {
+  min-width: 0;
+}
+
+.mainWide {
+  max-width: 560px;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--fs-page);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+}
+
+.subtitle {
+  margin-top: var(--sp-6);
+  color: var(--on-image-2);
+  font-size: var(--fs-title);
+}
+
+.side {
+  display: flex;
+  flex: none;
+}
+
+.row {
+  gap: var(--sp-22);
+  align-items: center;
+}
+
+.column {
+  flex-direction: column;
+  gap: var(--sp-14);
+  align-items: flex-end;
+}
+
+.motto {
+  max-width: 220px;
+  color: var(--on-image-motto);
+  font-size: var(--fs-chip);
+  line-height: 1.7;
+  letter-spacing: var(--ls-motto);
+  text-align: right;
+  text-shadow: var(--on-image-shadow);
+  text-transform: uppercase;
+}
+
+.mottoNarrow {
+  max-width: 200px;
+}

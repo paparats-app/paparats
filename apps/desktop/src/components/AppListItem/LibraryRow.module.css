@@ -1,0 +1,122 @@
+/* Library list row — prototype lines 599–615. */
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 240px 118px 92px 32px;
+  gap: var(--sp-14);
+  align-items: center;
+  box-sizing: border-box;
+  padding: var(--sp-10) var(--sp-12) var(--sp-10) var(--sp-14);
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--card);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+.tile,
+.identity {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tile {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-11);
+}
+
+.identity {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-radius: var(--r-6);
+}
+
+.identity:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.nameLine {
+  display: flex;
+  gap: var(--sp-8);
+  align-items: center;
+  min-width: 0;
+}
+
+.name {
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--fs-body);
+  font-weight: 600;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.star {
+  flex: none;
+  color: var(--mint2);
+  fill: currentColor;
+}
+
+.tagline {
+  margin-top: var(--sp-2);
+  overflow: hidden;
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tags {
+  display: flex;
+  gap: var(--sp-6);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.tag {
+  flex: none;
+}
+
+.status {
+  min-width: 0;
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+  line-height: 1.35;
+}
+
+.line {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sub {
+  color: var(--text3);
+}
+
+.subMint {
+  color: var(--mint2);
+}
+
+.more.more {
+  width: 32px;
+  padding: 0;
+}
+
+.progress.progress {
+  position: absolute;
+  right: var(--sp-12);
+  bottom: 0;
+  left: var(--sp-14);
+  width: auto;
+}

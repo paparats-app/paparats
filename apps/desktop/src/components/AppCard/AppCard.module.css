@@ -1,0 +1,135 @@
+/* Store grid card — prototype lines 224–233 (action card) and 716–720 (Pro link card). */
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-12);
+  min-width: 0;
+  box-sizing: border-box;
+  padding: var(--sp-12);
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--card);
+  color: var(--text);
+  font-family: var(--font-sans);
+}
+
+.card:hover {
+  border-color: var(--line2);
+}
+
+.identity {
+  display: flex;
+  gap: var(--sp-10);
+  align-items: flex-start;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-8);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+}
+
+button.identity {
+  cursor: pointer;
+}
+
+.identity:focus-visible,
+.linkCard:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.name {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: var(--fs-body);
+  font-weight: 600;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.publisher {
+  max-width: 100%;
+  margin-top: var(--sp-3);
+  overflow: hidden;
+  color: var(--text3);
+  font-size: var(--fs-meta);
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tagline {
+  display: -webkit-box;
+  margin-top: var(--sp-3);
+  overflow: hidden;
+  color: var(--text2);
+  font-size: var(--fs-meta);
+  line-height: 1.35;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+/* The prototype's category chip (margin-top 8) + channel chip (margin-left 4). */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-8) var(--sp-4);
+  max-width: 100%;
+  margin-top: var(--sp-8);
+}
+
+.actions {
+  display: flex;
+  margin-top: auto;
+}
+
+/* Busy states keep full strength (the tone carries the state). */
+.split button:disabled {
+  opacity: 1;
+}
+
+.progress.progress {
+  position: absolute;
+  right: var(--sp-12);
+  bottom: 0;
+  left: var(--sp-12);
+  width: auto;
+}
+
+/* ---- Link card (whole card is the button; Pro pill pinned bottom-right) ------------------ */
+.linkCard {
+  flex-direction: row;
+  gap: var(--sp-10);
+  align-items: flex-start;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.linkCard:active {
+  transform: translateY(1px);
+}
+
+.pillRoom {
+  padding-bottom: var(--sp-20);
+}
+
+.proPinned {
+  position: absolute;
+  right: var(--sp-10);
+  bottom: var(--sp-10);
+}

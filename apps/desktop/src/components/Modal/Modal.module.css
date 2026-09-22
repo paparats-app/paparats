@@ -1,0 +1,181 @@
+/* Dialogs (prototype lines 1355–1517): `--scrim` backdrop, `--card`, 1px `--line2`, radius 12. */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-24);
+  background: var(--scrim);
+  animation: fade-in var(--dur-enter) var(--ease-enter) both;
+}
+
+/* Content-box like the prototype: the 440–560px widths exclude the padding and the 1px border,
+   so a padded 440px dialog is 490px overall. The max sizes keep the whole box in the backdrop. */
+.dialog {
+  --dialog-pad: 0px;
+  display: flex;
+  flex-direction: column;
+  width: 440px;
+  max-width: calc(100% - 2 * var(--dialog-pad) - 2px);
+  max-height: calc(100% - 2 * var(--dialog-pad) - 2px);
+  box-sizing: content-box;
+  overflow: hidden;
+  border: 1px solid var(--line2);
+  border-radius: var(--r-12);
+  background: var(--card);
+  color: var(--text);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  box-shadow: var(--shadow-modal);
+  outline: none;
+  animation: rise-in var(--dur-enter) var(--ease-enter) both;
+}
+
+.w440 {
+  width: 440px;
+}
+
+.w460 {
+  width: 460px;
+}
+
+.w480 {
+  width: 480px;
+}
+
+.w560 {
+  width: 560px;
+}
+
+/* ---- Header ----------------------------------------------------------------------------- */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+  flex: none;
+}
+
+.titles {
+  flex: 1;
+  min-width: 0;
+}
+
+.title {
+  overflow: hidden;
+  font-size: var(--fs-lead);
+  font-weight: 600;
+  text-overflow: ellipsis;
+}
+
+.subtitle {
+  margin-top: var(--sp-2);
+  overflow: hidden;
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-9);
+}
+
+.iconMint {
+  background: var(--mint-soft);
+  color: var(--mint2);
+}
+
+.iconNeutral {
+  background: var(--card2);
+  color: var(--text);
+}
+
+.iconWarn {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+/* ---- Body & footer ---------------------------------------------------------------------- */
+.body {
+  min-height: 0;
+  overflow: auto;
+  color: var(--text2);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.body > p {
+  margin: 0;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+  flex: none;
+}
+
+.footerNote {
+  flex: 1;
+  min-width: 0;
+  color: var(--text3);
+  font-size: var(--fs-secondary-sm);
+  line-height: var(--lh-body);
+  text-wrap: pretty;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-8);
+  margin-left: auto;
+}
+
+/* ---- Layouts ---------------------------------------------------------------------------- */
+.confirm {
+  --dialog-pad: var(--sp-24);
+  padding: var(--dialog-pad);
+}
+
+.confirm .body {
+  margin-top: var(--sp-14);
+}
+
+.confirm .footer {
+  margin-top: var(--sp-22);
+}
+
+.form .header {
+  padding: var(--sp-20) var(--sp-24) 0;
+}
+
+.form .body {
+  padding: var(--sp-18) var(--sp-24) 0;
+}
+
+.form .footer {
+  padding: var(--sp-18) var(--sp-24) var(--sp-22);
+}
+
+.form .body:last-child {
+  padding-bottom: var(--sp-22);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}

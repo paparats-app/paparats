@@ -3,8 +3,7 @@ import type { LocaleCatalog } from "../../types";
 
 export const browse: LocaleCatalog<typeof En> = {
   searchFilters: "Поиск фильтров…",
-  // TODO(i18n): n => `Получить ${n}`
-  getApp: "TODO",
+  getApp: "Получить {{app}}",
   topCategories: "Популярные категории",
   featuredKicker: "Рекомендуем",
   browseSub: "Отобранные приложения для работы, творчества и повседневной жизни.",

@@ -1,7 +1,6 @@
 export const browse = {
   searchFilters: "Search filters…",
-  // TODO(i18n): n => `Get ${n}`
-  getApp: "TODO",
+  getApp: "Get {{app}}",
   topCategories: "Top categories",
   featuredKicker: "Featured",
   browseSub: "Curated apps for work, creativity and everyday life.",
@@ -14,4 +13,4 @@ export const browse = {
   platPortable: "Portable build",
   sortFeatured: "Featured",
   sortNewest: "Newest",
-};
+} as const;

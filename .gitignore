@@ -19,3 +19,6 @@ logs/
 Thumbs.db
 *.suo
 *.sw?
+
+# Claude Code worktrees / local state
+.claude/

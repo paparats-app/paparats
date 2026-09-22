@@ -1,0 +1,52 @@
+/* Hero dots — 6px idle, 18px active `--mint`, height 6, radius 3, `transition: width .2s`. */
+.dots {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+.dot {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-3);
+  background: var(--line2);
+  cursor: pointer;
+  transition: width var(--dur-dots) var(--ease-standard);
+}
+
+/* Hit target ≥ 32px tall without moving the dots. */
+.dot::before {
+  content: "";
+  position: absolute;
+  inset: -13px -4px;
+}
+
+.onImage .dot {
+  background: var(--dot-idle);
+}
+
+.dot:hover:not(.active) {
+  background: var(--text3);
+}
+
+.onImage .dot:hover:not(.active) {
+  background: var(--on-image-2);
+}
+
+.dot:active {
+  transform: scale(0.9);
+}
+
+.dot:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.dots .active {
+  width: 18px;
+  background: var(--mint);
+  cursor: default;
+}

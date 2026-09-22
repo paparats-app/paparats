@@ -1,0 +1,80 @@
+/* Filter-panel radio row: 16px circle, 1px `--line2` (checked `--mint`), 8px `--mint` dot. */
+.group {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-10);
+  padding: var(--sp-6) 0;
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  line-height: var(--lh-body);
+  cursor: pointer;
+  user-select: none;
+}
+
+.row:hover:not(.disabled) {
+  color: var(--text);
+}
+
+.native {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* 16px inside the 1px border (content-box, as the prototype renders it): 18px overall. */
+.circle {
+  flex: none;
+  display: grid;
+  place-items: center;
+  box-sizing: content-box;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--line2);
+  border-radius: var(--r-full);
+}
+
+.row:hover:not(.disabled) .circle:not(.checked) {
+  border-color: var(--text3);
+}
+
+.row:active:not(.disabled) .circle {
+  transform: scale(0.94);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-full);
+  background: transparent;
+}
+
+.checked {
+  border-color: var(--mint);
+}
+
+.checked .dot {
+  background: var(--mint);
+}
+
+.native:focus-visible + .circle {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.label {
+  min-width: 0;
+}
+
+.disabled {
+  cursor: default;
+  opacity: 0.6;
+}

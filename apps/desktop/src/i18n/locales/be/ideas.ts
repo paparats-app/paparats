@@ -6,10 +6,8 @@ export const ideas: LocaleCatalog<typeof En> = {
   suggestIdea: "Прапанаваць ідэю",
   ideaNew: "Новая праграма",
   ideaImprove: "Палепшыць праграму",
-  // TODO(i18n): a => `Для ${a}`
-  ideaForApp: "TODO",
-  // TODO(i18n): c => `Новая праграма · ${c}`
-  ideaNewIn: "TODO",
+  ideaForApp: "Для {{app}}",
+  ideaNewIn: "Новая праграма · {{category}}",
   tabAllIdeas: "Усе",
   tabNewApps: "Новыя праграмы",
   tabExistingApps: "Існуючыя",
@@ -23,13 +21,13 @@ export const ideas: LocaleCatalog<typeof En> = {
   sortNew: "Новыя",
   vote: "Галасаваць",
   voted: "Вы за",
-  // TODO(i18n): n => `${n} ${pl(n, 'каментар', 'каментары', 'каментароў')}`
-  commentsCount: "TODO",
+  commentsCount_one: "{{count, number}} каментар",
+  commentsCount_few: "{{count, number}} каментары",
+  commentsCount_many: "{{count, number}} каментароў",
+  commentsCount_other: "{{count, number}} каментары",
   you: "Вы",
-  // TODO(i18n): c => `${c} працуе над гэтым`
-  onIt: "TODO",
-  // TODO(i18n): (a, v) => `Выпушчана як ${a} ${v}`
-  releasedAs: "TODO",
+  onIt: "{{channel}} працуе над гэтым",
+  releasedAs: "Выпушчана як {{app}} {{version}}",
   howItWorks: "Як гэта працуе",
   how1T: "Прапануйце",
   how1B: "Інструмент, якога не хапае, або паляпшэнне праграмы, якой вы ўжо карыстаецеся.",
@@ -42,13 +40,11 @@ export const ideas: LocaleCatalog<typeof En> = {
   yourIdeas: "Вашы ідэі",
   noMyIdeas: "Вы пакуль нічога не прапанавалі.",
   ideaReleasedTitle: "Ваша ідэя стала праграмай",
-  // TODO(i18n): (title, dev, app) => `«${title}» цяпер даступная як ${app} — ад ${dev}. Дзякуй — вас чакаюць 3 месяцы Paparats Pro.`
-  ideaReleasedBody: "TODO",
+  ideaReleasedBody:
+    "«{{title}}» цяпер даступная як {{app}} — ад {{channel}}. Дзякуй — вас чакаюць 3 месяцы Paparats Pro.",
   activateBonus: "Актываваць 3 месяцы Pro",
-  // TODO(i18n): d => `Paparats Pro дзейнічае да ${d}`
-  bonusActive: "TODO",
-  // TODO(i18n): a => `Адкрыць ${a}`
-  openAppBtn: "TODO",
+  bonusActive: "Paparats Pro дзейнічае да {{date}}",
+  openAppBtn: "Адкрыць {{app}}",
   gotIt: "Зразумела",
   ideaTitle: "Назва",
   ideaTitlePlaceholder: "Кароткая і ясная назва ідэі",
@@ -61,23 +57,25 @@ export const ideas: LocaleCatalog<typeof En> = {
   ideaFooter:
     "Распрацоўшчыкі бачаць новыя ідэі адразу. Калі вашу выпусцяць, вы атрымаеце 3 месяцы Paparats Pro.",
   takeShort: "Узяць",
-  // TODO(i18n): c => `Ідэя будзе замацаваная за ${c}. Аўтар і ўсе, хто галасаваў, атрымаюць паведамленне.`
-  takeHint: "TODO",
-  // TODO(i18n): c => `У працы ў ${c}`
-  takenByOther: "TODO",
-  // TODO(i18n): (a, n) => `Паведамленне атрымаюць ${a} і яшчэ ${n} ${pl(n, 'чалавек', 'чалавекі', 'чалавек')}, якія галасавалі. Аўтар атрымае 3 месяцы Paparats Pro.`
-  releaseNote: "TODO",
+  takeHint:
+    "Ідэя будзе замацаваная за {{channel}}. Аўтар і ўсе, хто галасаваў, атрымаюць паведамленне.",
+  takenByOther: "У працы ў {{channel}}",
+  releaseNote_one:
+    "Паведамленне атрымаюць {{author}} і яшчэ {{count, number}} чалавек, якія галасавалі. Аўтар атрымае 3 месяцы Paparats Pro.",
+  releaseNote_few:
+    "Паведамленне атрымаюць {{author}} і яшчэ {{count, number}} чалавекі, якія галасавалі. Аўтар атрымае 3 месяцы Paparats Pro.",
+  releaseNote_many:
+    "Паведамленне атрымаюць {{author}} і яшчэ {{count, number}} чалавек, якія галасавалі. Аўтар атрымае 3 месяцы Paparats Pro.",
+  releaseNote_other:
+    "Паведамленне атрымаюць {{author}} і яшчэ {{count, number}} чалавекі, якія галасавалі. Аўтар атрымае 3 месяцы Paparats Pro.",
   statusOpenHint: "Адкрыта для распрацоўшчыкаў. Чым больш галасоў, тым хутчэй хтосьці возьмецца.",
-  // TODO(i18n): (c, d) => `У працы ў ${c} з ${d}.`
-  statusWorkHint: "TODO",
-  // TODO(i18n): (a, d) => `Выйшла як ${a} ${d}.`
-  statusReleasedHint: "TODO",
+  statusWorkHint: "У працы ў {{channel}} з {{date}}.",
+  statusReleasedHint: "Выйшла як {{app}} {{date}}.",
   tlProposed: "Прапанавана",
   tlWork: "У працы",
   tlReleased: "Выпушчана",
   tlPending: "Пакуль не",
-  // TODO(i18n): c => `Рэжым распрацоўшчыка · ${c}`
-  devView: "TODO",
+  devView: "Рэжым распрацоўшчыка · {{channel}}",
   devViewHint:
     "Вы бачыце тое, што бачыць аўтар канала: бярыце адкрытыя ідэі і адзначайце іх выпушчанымі.",
   inWorkN: "У працы",

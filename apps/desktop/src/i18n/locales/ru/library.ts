@@ -18,8 +18,10 @@ export const library: LocaleCatalog<typeof En> = {
   quickFilters: "Быстрые фильтры",
   updatesAvailableShort: "Есть обновления",
   newCollection: "Новая коллекция",
-  // TODO(i18n): n => `Установлено ${n} ${pl(n, 'приложение', 'приложения', 'приложений')}`
-  installedCount: "TODO",
+  installedCount_one: "Установлено {{count, number}} приложение",
+  installedCount_few: "Установлено {{count, number}} приложения",
+  installedCount_many: "Установлено {{count, number}} приложений",
+  installedCount_other: "Установлено {{count, number}} приложения",
   uninstall: "Удалить",
   openFolder: "Открыть папку",
   backToCollections: "Все коллекции",

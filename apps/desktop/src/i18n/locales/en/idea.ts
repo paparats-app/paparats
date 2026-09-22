@@ -1,18 +1,17 @@
 export const idea = {
   takeIdea: "Take this idea",
-  // TODO(i18n): c => `Pinned to ${c} · author notified`
-  tookIdea: "TODO",
+  tookIdea: "Pinned to {{channel}} · author notified",
   markReleased: "Mark as released",
   releaseIdea: "Release the idea",
   releaseApp: "Which app implements it?",
   releaseVersion: "Version",
   release: "Release",
-  // TODO(i18n): n => `Released · ${n} people notified`
-  releasedMsg: "TODO",
+  releasedMsg_one: "Released · {{count, number}} person notified",
+  releasedMsg_other: "Released · {{count, number}} people notified",
   authorBonus: "The author received 3 months of Paparats Pro.",
   discussion: "Discussion",
   commentPlaceholder: "Add to the discussion…",
   post: "Post",
   authorBadge: "Author",
   noComments: "No comments yet. Start the discussion.",
-};
+} as const;

@@ -1,0 +1,118 @@
+/* Screenshot viewer — prototype lines 1000–1014. `--tint` is the app's data colour; the label and
+   arrow overlays are the prototype's black washes, derived from `--scrim`. */
+.viewer {
+  font-family: var(--font-sans);
+}
+
+.main {
+  position: relative;
+  height: 400px;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  /* The prototype's `${tint}66` → 40% of the tint. */
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--tint) 40%, transparent) 0%,
+    var(--card) 75%
+  );
+}
+
+.rect {
+  position: absolute;
+  background: var(--on-image);
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* rgba(0,0,0,.4) = 73% of the .55 scrim. */
+.label {
+  position: absolute;
+  bottom: var(--sp-12);
+  left: var(--sp-14);
+  padding: var(--sp-4) var(--sp-10);
+  border-radius: var(--r-8);
+  background: color-mix(in srgb, var(--scrim) 73%, transparent);
+  color: var(--on-image);
+  font-size: var(--fs-meta);
+}
+
+/* rgba(0,0,0,.35) = 64% of the scrim; hover ≈ .6 = the scrim itself. */
+.nav {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--ghost-on-image-border);
+  border-radius: var(--r-full);
+  background: color-mix(in srgb, var(--scrim) 64%, transparent);
+  color: var(--on-image);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.nav:hover {
+  background: var(--scrim);
+}
+
+.nav:active {
+  transform: translateY(calc(-50% + 1px));
+}
+
+.nav:focus-visible,
+.thumb:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.prev {
+  left: var(--sp-12);
+}
+
+.next {
+  right: var(--sp-12);
+}
+
+.thumbs {
+  display: grid;
+  grid-template-columns: repeat(4, 168px);
+  gap: var(--sp-10);
+  margin-top: var(--sp-10);
+}
+
+/* The prototype's `${tint}55` → 33% of the tint. */
+.thumb {
+  position: relative;
+  height: 100px;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: var(--r-8);
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--tint) 33%, transparent) 0%,
+    var(--card) 80%
+  );
+  cursor: pointer;
+  transition: border-color var(--dur-dots) var(--ease-standard);
+}
+
+.thumb:hover {
+  border-color: var(--line2);
+}
+
+.thumbOn,
+.thumbOn:hover {
+  border-color: var(--mint);
+}

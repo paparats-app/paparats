@@ -10,8 +10,7 @@ export const firstLaunch = {
   later: "Later",
   createAccount: "No account? Create one",
   stepAppearance: "Appearance",
-  // TODO(i18n): n => `Signed in as ${n}`
-  signedInAs: "TODO",
+  signedInAs: "Signed in as {{email}}",
   emailPlaceholder: "name@example.com",
   passwordPlaceholder: "Password",
-};
+} as const;

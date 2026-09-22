@@ -1,0 +1,25 @@
+.pill {
+  flex: none;
+  display: inline-block;
+  padding: var(--sp-2) 9px;
+  border-radius: var(--r-10);
+  font-size: var(--fs-chip);
+  font-weight: 600;
+  line-height: var(--lh-body);
+  white-space: nowrap;
+}
+
+.open {
+  background: var(--card2);
+  color: var(--text2);
+}
+
+.work {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.released {
+  background: var(--mint-soft);
+  color: var(--mint2);
+}

@@ -1,0 +1,84 @@
+/* Stale-channel callout (prototype lines 841–849 and 1144–1153). */
+.callout {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+  padding: var(--sp-10) var(--sp-12);
+  border-radius: var(--r-9);
+  background: var(--warn-soft);
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+  line-height: var(--lh-body);
+}
+
+.md {
+  padding: var(--sp-12) var(--sp-14);
+  border-radius: var(--r-10);
+  font-size: var(--fs-secondary);
+  line-height: 1.45;
+}
+
+.icon {
+  color: var(--warn);
+}
+
+.text {
+  flex: 1;
+  min-width: 0;
+  text-wrap: pretty;
+}
+
+.title {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  flex: none;
+  gap: var(--sp-8);
+}
+
+.action {
+  box-sizing: border-box;
+  height: var(--control-h-xs);
+  padding: 0 var(--sp-12);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-7);
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-secondary-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.md .action {
+  height: 32px;
+  border-radius: var(--r-8);
+  font-size: var(--fs-secondary);
+}
+
+.action:hover {
+  border-color: var(--text3);
+}
+
+.action:active {
+  transform: translateY(1px);
+}
+
+.action:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.destructive {
+  color: var(--text2);
+}
+
+.destructive:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}

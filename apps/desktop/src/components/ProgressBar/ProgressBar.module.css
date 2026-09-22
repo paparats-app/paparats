@@ -1,0 +1,55 @@
+/* Progress bars (README v2 "Downloads"): 2 / 3 / 4 / 6px. */
+.track {
+  width: 100%;
+  height: 3px;
+  overflow: hidden;
+  background: var(--line);
+}
+
+.fill {
+  height: 100%;
+  background: var(--mint);
+  transition: width 0.25s linear;
+}
+
+.h2 {
+  height: 2px;
+}
+
+.h3 {
+  height: 3px;
+}
+
+.h4 {
+  height: 4px;
+  border-radius: var(--r-2);
+  background: var(--card2);
+}
+
+.h6 {
+  height: 6px;
+  border-radius: var(--r-3);
+}
+
+.h4 .fill,
+.h6 .fill {
+  border-radius: inherit;
+}
+
+.onImage {
+  background: color-mix(in srgb, var(--on-image) 14%, transparent);
+}
+
+.onImage .fill {
+  background: var(--cta-mint);
+}
+
+[data-motion="off"] .fill {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fill {
+    transition: none;
+  }
+}

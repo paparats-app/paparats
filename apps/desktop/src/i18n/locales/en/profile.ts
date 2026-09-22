@@ -3,13 +3,11 @@ export const profile = {
   promoProfBody:
     "Thanks for being part of Paparats! Together we support great software and independent creators.",
   timeSaved: "Time saved",
-  // TODO(i18n): n => `${n} h`
-  hours: "TODO",
+  hours: "{{hours, number}} h",
   proActiveHint: "More tools. Greater possibilities.",
   profileSub: "Manage your account, devices and preferences.",
   editProfile: "Edit profile",
-  // TODO(i18n): d => `Member since ${d}`
-  memberSince: "TODO",
+  memberSince: "Member since {{date}}",
   tabPreferences: "Preferences",
   tabSecurity: "Security",
   tabDevices: "Devices",
@@ -25,10 +23,8 @@ export const profile = {
   updatesInstalled: "Updates installed",
   storageUsed: "Storage used",
   recentActivity: "Recent activity",
-  // TODO(i18n): n => `Updated ${n}`
-  actUpdated: "TODO",
-  // TODO(i18n): n => `Installed ${n}`
-  actInstalled: "TODO",
+  actUpdated: "Updated {{app}}",
+  actInstalled: "Installed {{app}}",
   profileSaved: "Profile saved",
   password: "Password",
   passwordHint: "Last changed 4 months ago.",
@@ -39,8 +35,7 @@ export const profile = {
   sessionsHint: "2 devices signed in.",
   signOutAll: "Sign out everywhere",
   thisDevice: "This device",
-  // TODO(i18n): d => `Last active ${d}`
-  lastActive: "TODO",
+  lastActive: "Last active {{when}}",
   removeDevice: "Remove",
   exportData: "Export your data",
   exportHint: "Library, collections and settings as a ZIP archive.",
@@ -50,4 +45,4 @@ export const profile = {
   deleteBtn: "Delete…",
   prefTheme: "Theme",
   prefLanguage: "Language",
-};
+} as const;

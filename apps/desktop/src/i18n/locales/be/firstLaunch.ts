@@ -13,8 +13,7 @@ export const firstLaunch: LocaleCatalog<typeof En> = {
   later: "Пазней",
   createAccount: "Няма ўліковага запісу? Стварыць",
   stepAppearance: "Выгляд",
-  // TODO(i18n): n => `Уваход: ${n}`
-  signedInAs: "TODO",
+  signedInAs: "Уваход: {{email}}",
   emailPlaceholder: "name@example.com",
   passwordPlaceholder: "Пароль",
 };

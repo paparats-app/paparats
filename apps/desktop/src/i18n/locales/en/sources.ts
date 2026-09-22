@@ -21,20 +21,17 @@ export const sources = {
   kindCatalog: "Catalog",
   kindDeveloper: "Developer",
   kindCurated: "Curated",
-  // TODO(i18n): a => `by ${a}`
-  byAuthor: "TODO",
-  // TODO(i18n): n => `${n.toLocaleString('en-GB')} subscribers`
-  subscribersCount: "TODO",
-  // TODO(i18n): r => `Synced ${r}`
-  syncedRel: "TODO",
+  byAuthor: "by {{author}}",
+  subscribersCount_one: "{{count, number}} subscriber",
+  subscribersCount_other: "{{count, number}} subscribers",
+  syncedRel: "Synced {{when}}",
   neverSynced: "Not synced yet",
-  // TODO(i18n): n => (n === 1 ? '1 channel' : `${n} channels`)
-  channelsCount: "TODO",
+  channelsCount_one: "{{count, number}} channel",
+  channelsCount_other: "{{count, number}} channels",
   notFound: "No channel at this address",
   notFoundHint: "Check the link or ask the author for a short code.",
   alreadySubscribed: "You already follow this channel.",
-  // TODO(i18n): c => `Add ${c}?`
-  confirmChannelTitle: "TODO",
+  confirmChannelTitle: "Add {{channel}}?",
   confirmChannelBody:
     "This is a community channel. Paparats has not reviewed its apps — they come straight from the author’s server and are not covered by Paparats Pro. Add only channels whose author you trust.",
   addrCopied: "Address copied",
@@ -50,14 +47,12 @@ export const sources = {
   hostMirrored: "Author + Paparats mirror",
   hostPaparats: "Paparats CDN",
   reviewedLabel: "Review",
-  // TODO(i18n): d => `Paparats team, ${d}`
-  reviewedBy: "TODO",
+  reviewedBy: "Paparats team, {{date}}",
   notReviewed: "Not reviewed",
   supportLabel: "Support",
-  // TODO(i18n): n => `Unreachable for ${n} days`
-  unreachableFor: "TODO",
-  // TODO(i18n): (c, n) => `${c} hasn’t answered for ${n} days`
-  staleTitle: "TODO",
-  // TODO(i18n): c => `${c} is still unreachable`
-  stillUnreachable: "TODO",
-};
+  unreachableFor_one: "Unreachable for {{count, number}} day",
+  unreachableFor_other: "Unreachable for {{count, number}} days",
+  staleTitle_one: "{{channel}} hasn’t answered for {{count, number}} day.",
+  staleTitle_other: "{{channel}} hasn’t answered for {{count, number}} days.",
+  stillUnreachable: "{{channel}} is still unreachable",
+} as const;

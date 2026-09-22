@@ -1,0 +1,82 @@
+/* Search — top bar pill (466×40, radius 20, padding-left 44, 18px icon at 15/11) and the
+   filter panel's compact 32px field (README "SearchBox"). Focus: border `--mint`. */
+.wrap {
+  position: relative;
+  min-width: 0;
+}
+
+.topbar {
+  width: var(--topbar-search-w);
+  max-width: 100%;
+}
+
+.compact {
+  width: 100%;
+}
+
+.icon {
+  position: absolute;
+  pointer-events: none;
+}
+
+.topbar .icon {
+  top: 11px;
+  left: 15px;
+  color: var(--text2);
+}
+
+.compact .icon {
+  top: 9px;
+  left: 10px;
+  color: var(--text3);
+}
+
+.input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  border: 1px solid var(--line2);
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-sans);
+  outline: none;
+  appearance: none;
+}
+
+.topbar .input {
+  height: var(--control-h);
+  padding: 0 var(--sp-16) 0 44px;
+  border-radius: var(--r-20);
+  background: var(--input);
+  font-size: var(--fs-body);
+}
+
+.compact .input {
+  height: 32px;
+  padding: 0 var(--sp-10) 0 32px;
+  border-radius: var(--r-8);
+  background: var(--bg);
+  font-size: var(--fs-secondary);
+}
+
+.input::placeholder {
+  color: var(--text3);
+}
+
+.input::-webkit-search-cancel-button,
+.input::-webkit-search-decoration {
+  appearance: none;
+}
+
+.input:hover:not(:disabled, :focus) {
+  border-color: var(--text3);
+}
+
+.input:focus {
+  border-color: var(--mint);
+}
+
+.input:disabled {
+  opacity: 0.6;
+}

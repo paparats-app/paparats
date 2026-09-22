@@ -1,6 +1,6 @@
 [package]
 name = "paparats-install"
-description = "Installer strategies (MSI, EXE silent, MSIX, portable ZIP, simulated)."
+description = "Installer strategies (simulated today; MSI, EXE silent, MSIX, portable ZIP in M7)."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -10,6 +10,11 @@ publish.workspace = true
 
 [dependencies]
 paparats-core.workspace = true
+thiserror.workspace = true
+tokio = { workspace = true, features = ["sync", "time"] }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util", "rt", "macros"] }
 
 [lints]
 workspace = true

@@ -10,6 +10,16 @@ publish.workspace = true
 
 [dependencies]
 paparats-core.workspace = true
+paparats-install.workspace = true
+reqwest.workspace = true
+sha2.workspace = true
+thiserror.workspace = true
+tokio = { workspace = true, features = ["sync", "time", "fs", "io-util", "rt", "macros"] }
+tracing.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+tokio = { workspace = true, features = ["test-util", "net", "rt-multi-thread"] }
 
 [lints]
 workspace = true

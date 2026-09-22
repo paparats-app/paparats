@@ -29,6 +29,23 @@ tracing = "0.1"
 # Async runtime
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time"] }
 
+# Storage, network, crypto, dates
+rusqlite = { version = "0.40", features = ["bundled"] }
+# Schannel on Windows through native-tls: no OpenSSL, no aws-lc/ring build.
+reqwest = { version = "0.13", default-features = false, features = ["native-tls"] }
+# 0.11 is the version ed25519-dalek 3 already pulls in (one SHA-2 implementation in the tree).
+sha2 = "0.11"
+ed25519-dalek = "3"
+chrono = { version = "0.4", default-features = false, features = ["std"] }
+
+# Logging (local rolling file only)
+tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt", "std"] }
+tracing-appender = "0.2"
+
+# Tests
+tempfile = "3"
+getrandom = "0.3"
+
 # Typed IPC (tauri-specta and specta must stay on the same release candidate)
 specta = { version = "=2.0.0-rc.25", features = ["derive"] }
 specta-typescript = "=0.0.12"

@@ -79,6 +79,10 @@ pub struct ChannelInfo {
     pub outage: Option<IsoDate>,
 }
 
+/// A followed channel that has not answered for this many days gets the stale callout
+/// ("Keep" / "Unsubscribe").
+pub const STALE_AFTER_DAYS: u32 = 14;
+
 /// The user's relationship with a followed channel.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Type)]
 #[serde(rename_all = "camelCase")]

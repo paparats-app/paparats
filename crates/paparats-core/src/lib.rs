@@ -1,6 +1,7 @@
 //! Domain types shared by the Paparats client: apps, channels, ideas, plans, installed apps,
 //! update manifests. Serialisable with serde; exported to TypeScript through tauri-specta.
 
+pub mod dates;
 pub mod hosts;
 pub mod model;
 mod num;

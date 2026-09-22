@@ -1,0 +1,16 @@
+/* Temporary M0 base styles — replaced by tokens.css + the shell in M1. */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #0b171b;
+  color: #e6ecec;
+  font-family: "Onest", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  font-feature-settings: "tnum";
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}

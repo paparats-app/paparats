@@ -1,0 +1,27 @@
+.controls {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: flex;
+  z-index: 50;
+}
+
+.cell {
+  width: 46px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.cell:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.close:hover {
+  background: #c42b1c;
+  color: #fff;
+}

@@ -1,0 +1,21 @@
+# Dependencies & build output
+node_modules/
+dist/
+dist-ssr/
+/target/
+apps/desktop/src-tauri/gen/schemas/
+coverage/
+*.local
+
+# Logs
+*.log
+logs/
+
+# Editors / OS
+.idea/
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+*.suo
+*.sw?

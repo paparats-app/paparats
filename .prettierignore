@@ -1,0 +1,9 @@
+node_modules
+dist
+target
+pnpm-lock.yaml
+design_handoff_paparats_store
+apps/desktop/src-tauri/gen
+apps/desktop/src-tauri/icons
+fixtures
+*.md

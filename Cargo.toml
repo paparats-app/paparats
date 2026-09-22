@@ -1,0 +1,55 @@
+[workspace]
+resolver = "3"
+members = ["apps/desktop/src-tauri", "crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+license = "Proprietary"
+authors = ["Paparats"]
+publish = false
+
+[workspace.dependencies]
+# Internal crates
+paparats-core = { path = "crates/paparats-core" }
+paparats-catalog = { path = "crates/paparats-catalog" }
+paparats-download = { path = "crates/paparats-download" }
+paparats-install = { path = "crates/paparats-install" }
+paparats-inventory = { path = "crates/paparats-inventory" }
+paparats-storage = { path = "crates/paparats-storage" }
+paparats-account = { path = "crates/paparats-account" }
+
+# Serialization, errors, logging
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+tracing = "0.1"
+
+# Async runtime
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time"] }
+
+# Typed IPC (tauri-specta and specta must stay on the same release candidate)
+specta = { version = "=2.0.0-rc.25", features = ["derive"] }
+specta-typescript = "=0.0.12"
+tauri-specta = { version = "=2.0.0-rc.25", features = ["derive", "typescript"] }
+
+# Tauri
+tauri = { version = "2.11", features = [] }
+tauri-build = { version = "2.6", features = [] }
+tauri-plugin-window-state = "2.4"
+tauri-plugin-opener = "2.5"
+
+[workspace.lints.rust]
+unsafe_code = "deny"
+
+[workspace.lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

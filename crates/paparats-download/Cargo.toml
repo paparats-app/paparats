@@ -1,0 +1,15 @@
+[package]
+name = "paparats-download"
+description = "Download engine: queue, concurrency limit, pause/resume, SHA-256, progress events."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+publish.workspace = true
+
+[dependencies]
+paparats-core.workspace = true
+
+[lints]
+workspace = true

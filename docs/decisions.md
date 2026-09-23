@@ -3,6 +3,80 @@
 Product and engineering decisions taken where the handoff was silent or where we diverged from it.
 Newest last. Each entry: context → decision → consequence.
 
+Every entry that departs from the handoff says so and names the prototype or README behaviour it
+replaces. D58 and D62 list what the parity pass restored and what it kept on purpose. D64 collects
+the divergences from `STACK.md` that were still unrecorded at release. A superseded bullet stays
+in place, marked with the entry that replaced it.
+
+## Index
+
+| # | Decision | Milestone | Later changes |
+| --- | --- | --- | --- |
+| [D1](#d1--toolchain-versions-m0) | Toolchain versions | M0 | |
+| [D2](#d2--package-layout-m0) | Package layout | M0 | `export-bindings` became a Cargo example in M6 |
+| [D3](#d3--mock-switch-m0) | Mock switch | M0 | |
+| [D4](#d4--frameless-window-chrome-m0) | Frameless window chrome | M0 | |
+| [D5](#d5--developer-mode-tools-replace-the-prototypes-demo-toolbar-m1) | Developer-mode tools replace the prototype's demo toolbar | M1 | |
+| [D6](#d6--tauri-adapters-delegate-to-the-mock-services-until-their-commands-exist-m1) | Tauri adapters delegate to the mock services until their commands exist | M1 | superseded by D26 |
+| [D7](#d7--updated-just-now-clears-when-leaving-updates-m1) | "Updated just now" clears when leaving Updates | M1 | |
+| [D8](#d8--all-updates-installed-toast-only-ends-an-update-all-batch-m1) | "All updates installed" toast only ends an Update-all batch | M1 | |
+| [D9](#d9--shell-spacing-follows-the-prototype-markup-not-the-readme-prose-m1) | Shell spacing follows the prototype markup, not the README prose | M1 | |
+| [D10](#d10--navigation-return-path-in-router-state-back-is-a-navigation-m1) | Navigation: return path in router state, back() is a navigation | M1 | |
+| [D11](#d11--download-engine-semantics-m1-mock) | Download engine semantics (mock) | M1 | |
+| [D12](#d12--stricter-service-validation-than-the-prototype-m1-mock) | Stricter service validation than the prototype (mock) | M1 | |
+| [D13](#d13--i18n-conventions-m1) | i18n conventions | M1 | |
+| [D14](#d14--token-scoping-and-additions-m1) | Token scoping and additions | M1 | |
+| [D15](#d15--component-judgement-calls-m1) | Component judgement calls | M1 | |
+| [D16](#d16--sidebar-badges-and-avatar-m1) | Sidebar badges and avatar | M1 | avatar part closed by D46 |
+| [D17](#d17--startup-hydrates-settings-before-the-first-render-m1) | Startup hydrates settings before the first render | M1 | |
+| [D18](#d18--command-surface) | Command surface | M2–M3 (Rust core) | |
+| [D19](#d19--download-events-and-cadence) | Download events and cadence | M2–M3 (Rust core) | |
+| [D20](#d20--queue-semantics--the-typescript-mock) | Queue semantics = the TypeScript mock | M2–M3 (Rust core) | |
+| [D21](#d21--today-on-the-rust-side-is-the-local-clock) | "Today" on the Rust side is the local clock | M2–M3 (Rust core) | |
+| [D22](#d22--persistence-layout) | Persistence layout | M2–M3 (Rust core) | |
+| [D23](#d23--http-transfer-rules) | HTTP transfer rules | M2–M3 (Rust core) | |
+| [D24](#d24--placeholders-until-m6m7) | Placeholders until M6/M7 | M2–M3 (Rust core) | the update check replaced by the updater (D48) |
+| [D25](#d25--windows-manifest-embedded-by-the-linker) | Windows manifest embedded by the linker | M2–M3 (Rust core) | |
+| [D26](#d26--tauri-adapters-over-the-core-m2) | Tauri adapters over the core | M2 | |
+| [D27](#d27--store-cards-one-connected-card-prototype-colours) | Store cards: one connected card, prototype colours | M2 | category chip: D58 |
+| [D28](#d28--entries-into-browse-from-home) | Entries into Browse from Home | M2 | |
+| [D29](#d29--browse-hero-call-to-action) | Browse hero call to action | M2 | |
+| [D30](#d30--loading-and-missing-data) | Loading and missing data | M2 | |
+| [D31](#d31--app-page-and-report-dialog-details) | App page and report dialog details | M2 | paused size, star, Send: D58 |
+| [D32](#d32--accessibility-beyond-the-prototype) | Accessibility beyond the prototype | M2 | |
+| [D33](#d33--library-banner-subtitle) | Library banner subtitle | M3 | |
+| [D34](#d34--one-download-status-three-places) | One download status, three places | M3 | paused size: D58 |
+| [D35](#d35--updates-screen) | Updates screen | M3 | |
+| [D36](#d36--library-behaviour) | Library behaviour | M3 | menu animation, star: D58 |
+| [D37](#d37--parity-fixes-at-integration-m3) | Parity fixes at integration | M3 | |
+| [D38](#d38--subscription-and-the-plan-dialog) | Subscription and the plan dialog | M4 | plan pills: D58 |
+| [D39](#d39--settings) | Settings | M4 | last section: D58; Sign in after sign-out: D61 |
+| [D40](#d40--profile) | Profile | M4 | |
+| [D41](#d41--parity-fixes-and-shared-changes-at-integration-m4) | Parity fixes and shared changes at integration | M4 | |
+| [D42](#d42--settings--sources-and-the-channel-dialogs) | Settings › Sources and the channel dialogs | M5 | never-synced text: D58 |
+| [D43](#d43--channel-page) | Channel page | M5 | glyphs: D59 |
+| [D44](#d44--ideas-board-and-suggest-an-idea) | Ideas board and Suggest an idea | M5 | |
+| [D45](#d45--idea-page-and-the-release-dialog) | Idea page and the release dialog | M5 | inert Release / Post: D58 |
+| [D46](#d46--the-developer-channel-and-the-developer-view-avatar) | The developer channel and the developer-view avatar | M5 | |
+| [D47](#d47--shared-pieces-and-parity-fixes-at-integration-m5) | Shared pieces and parity fixes at integration | M5 | |
+| [D48](#d48--tray-start-on-login-single-instance-links-window-updater-signing) | Tray, start on login, single instance, links, window, updater, signing | M6 | `auth/callback`: D56 |
+| [D49](#d49--keyboard-focus-disabled-and-loading-states-m6) | Keyboard, focus, disabled and loading states | M6 | inert buttons: D58 |
+| [D50](#d50--the-first-launch-scene-and-onboarding) | The first-launch scene and onboarding | M6 | |
+| [D51](#d51--reconciling-the-m6-changes) | Reconciling the M6 changes | M6 | |
+| [D52](#d52--paparats_real-one-variable-read-once-wired-in-one-place) | `PAPARATS_REAL`: one variable, read once, wired in one place | M7 | |
+| [D53](#d53--the-real-inventory-paparats_realinventory) | The real inventory (`PAPARATS_REAL=inventory`) | M7 | |
+| [D54](#d54--signed-manifests-and-the-remote-catalog-paparats_realcatalog) | Signed manifests and the remote catalog (`PAPARATS_REAL=catalog`) | M7 | |
+| [D55](#d55--real-installers-paparats_realinstall) | Real installers (`PAPARATS_REAL=install`) | M7 | |
+| [D56](#d56--sign-in-in-the-browser-paparats_realaccount) | Sign-in in the browser (`PAPARATS_REAL=account`) | M7 | |
+| [D57](#d57--integration-m7) | Integration | M7 | |
+| [D58](#d58--parity-pass-the-prototypes-look-and-behaviour-restored) | Parity pass: the prototype's look and behaviour restored | M8 | |
+| [D59](#d59--icon-glyph-parity) | Icon glyph parity | M8 | `layout-grid`: D62 |
+| [D60](#d60--integration-m8-the-mock-world-off-the-startup-path-build-chunks) | Integration: the mock world off the startup path, build chunks | M8 | |
+| [D61](#d61--functional-acceptance-focus-rescue-sign-in-after-sign-out-row-icon-tiles) | Functional acceptance: focus rescue, Sign in after sign-out, row icon tiles | M8 | |
+| [D62](#d62--visual-acceptance-method-fixes-differences-kept) | Visual acceptance: method, fixes, differences kept | M8 | |
+| [D63](#d63--one-native-resize-listener-for-the-window-controls-m9) | One native resize listener for the window controls | M9 | |
+| [D64](#d64--divergences-from-stackmd-found-at-release) | Divergences from `STACK.md` found at release | Release | |
+
 ## D1 — Toolchain versions (M0)
 Tauri 2.11, React 19.1, TypeScript 6.0, Vite 8, ESLint 10, Vitest 5, react-router 8, i18next 26,
 Zustand 5, TanStack Query 5, lucide-react 1.x. tauri-specta and specta are pinned to the same
@@ -11,7 +85,9 @@ release candidate (`=2.0.0-rc.25`) because the RCs are not semver-compatible wit
 ## D2 — Package layout (M0)
 The repository root is both the pnpm workspace and the Cargo workspace. The Tauri crate is named
 `paparats-desktop` (lib `paparats_desktop_lib`); the bindings exporter is a second binary
-(`export-bindings`) so `pnpm specta` does not need to start the app.
+(`export-bindings`) so `pnpm specta` does not need to start the app. **Changed in M6:**
+`export-bindings` is a Cargo example (`src-tauri/examples/export_bindings.rs`), so the installer
+carries one executable; `pnpm specta` and `pnpm specta:check` run it with `--example`.
 
 ## D3 — Mock switch (M0)
 `PAPARATS_MOCK=1` is read by Vite at dev/build time (`__PAPARATS_MOCK__`). The UI also falls back to
@@ -1337,3 +1413,68 @@ subscribers (a failed registration is retried on the next subscription). Product
 not double-mount, but any unsubscribe during a resize had the same race. Regression test:
 `platform/window.test.ts` (a fake core that keeps a listener until the unlisten reaches it); after
 the fix, 0 of 6 cold starts warned.
+
+## Release
+
+### D64 — Divergences from `STACK.md` found at release
+At release, `docs/progress.md` (known gaps and deviations) and `STACK.md` were checked against
+this file. The earlier entries already covered the design deviations (D58, D62). This entry
+records what no earlier entry had.
+
+- **Tauri plugins.** `STACK.md` lists `notification`, `log` and `os`, and none of them is used.
+  Nothing sends a Windows notification (see the settings below). The core logs through `tracing`
+  to its own rolling file (`src-tauri/src/logging.rs`, 7 days, INFO and above; CLAUDE.md's
+  logging rule), and the UI's console is not captured. No code needs `os`. The tray uses Tauri's
+  `tray-icon` feature as `STACK.md` says.
+- **Theme "System"** follows the WebView's `prefers-color-scheme`, which WebView2 mirrors from
+  Windows live (`app/documentSettings.ts`). `STACK.md` named `window.theme()` +
+  `onThemeChanged`. The core reads the Windows setting only to paint the hidden window's
+  background before the first frame (D48).
+- **Settings that are stored but do nothing yet.** Every row persists and reads back, like the
+  prototype's switches, which also did nothing. Nothing acts on these rows yet:
+  - App recommendations;
+  - Automatic updates (also on the Updates screen), Check for updates (frequency), Download on
+    metered networks, Notify when updates are ready;
+  - Keep installers after install, Install for current user only (installs are always per user,
+    D55), Create desktop shortcuts, Open apps after install, Prefer portable builds;
+  - Updates installed, New apps in the catalog, Play a sound;
+  - Send crash reports;
+  - Install location, whose Change… is a no-op (D39).
+
+  Settings with behaviour: theme, language, start on login, minimize to tray, subtle animations,
+  parallel downloads, and the developer-mode rows.
+- **CI** (`.github/workflows/ci.yml`) does not use `tauri-apps/tauri-action`. The build job runs
+  `pnpm tauri build` itself and uploads the installer (and its `.sig` when the updater key
+  exists) with `actions/upload-artifact`. It creates no GitHub release, update bundle or
+  `latest.json`, because nothing publishes updates yet (D48). The workflow mirrors
+  `pnpm check` step by step. It was validated locally (YAML parsed, every step's command run on
+  the development PC) but has not run on GitHub: the repository has no remote yet.
+- **CSP images.** `img-src` is `'self' asset: data: blob:` and has no catalog CDN host
+  (`STACK.md` › Security posture), because no app carries an `iconUrl`: all 32 fixture apps draw
+  their monogram tile. A remote icon would be blocked, and `AppIcon` falls back to the monogram on
+  a load error. When the catalog starts serving icons, add its host to `img-src` together with
+  the allowlist (`paparats-core::hosts`).
+- **Missing WebView2 runtime.** The NSIS installer's download bootstrapper installs the runtime
+  where it is missing. The first-launch check and explanation that `STACK.md` › Risks suggests
+  was not built. A bare executable on a PC without WebView2 gets Tauri's own startup error.
+- **i18n files.** The catalogs are `locales/<lang>/<area>.ts`, one module per screen area (20 per
+  language) aggregated per language, instead of `STACK.md`'s `en.ts` / `be.ts` / `ru.ts`. The
+  same keys and one namespace; smaller files keep the three languages reviewable side by side
+  (`docs/i18n.md` §2).
+- **NSIS languages.** The installer offers English and Russian: NSIS has no Belarusian
+  translation. The app itself has all three languages.
+- **Test servers.** The integration tests (catalog, OAuth, downloads, the app on a local CDN) run
+  small hand-written HTTP servers on `tokio::net::TcpListener` rather than `wiremock` / `axum`
+  (`STACK.md` › Testing), with no extra dependency tree. No WebdriverIO / `tauri-driver`
+  end-to-end suite exists (`STACK.md`: optional, later). Instead:
+  - Vitest runs the 14 end-to-end flows through the whole shell on the mock services;
+  - the M9 acceptance drove the real WebView2 app over the DevTools protocol with scripts that
+    are not part of the repository.
+- **Budgets.** Only the installer size is measured and enforced: CI fails at 15 MB, and the
+  clean-clone release build is in `docs/progress.md` › Release. Cold start under 800 ms, idle RAM
+  under 130 MB, 60 fps transitions and ≥ 500 Mbps downloads (`STACK.md` › Budgets) were not
+  measured.
+- **Cyrillic width.** Onest is bundled from `@fontsource/onest`, because the app makes no
+  runtime font requests. It renders Russian ≈ 2–3 % narrower than the prototype's Google Fonts
+  build ('Образование' 87.7 vs 89.6 px, M8). English and Belarusian match, and row and card
+  heights are unaffected. Kept.

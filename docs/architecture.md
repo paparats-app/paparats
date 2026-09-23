@@ -173,11 +173,13 @@ Hooks (names are the contract):
 - `usePro()` — `{ isPro, isGift, planId, renewsOn, giftUntil }`.
 - `useFormat()` (from `i18n/format.ts`) — `size(mb)` "18.4 MB"/"18,4 МБ", `sizeGb(mb)`,
   `date(iso)` "15 September 2026", `month(iso)`, `relative(iso)` (days/weeks/months vs today),
-  `number(n)`, `plus(n)` "10,000+", `price(amount, currency)`, `percent(n)`,
-  `list(items)` "Nilesoft and Winaero". The same functions without React:
-  `@/i18n/createFormat › createFormat(locale, today)` (domain code, stores, tests). Chromium has
-  no Belarusian ICU data, so for `be` there it uses the hand-written CLDR patterns of
-  `i18n/belarusian.ts` (also i18next's `number` format; `docs/i18n.md` §5, D62).
+  `number(n)`, `fixed(n, digits)` "4.6", `plus(n)` "10,000+", `price(amount, currency)`,
+  `percent(n)`, `list(items)` "Nilesoft and Winaero". The same functions without React:
+  `@/i18n/createFormat › createFormat(locale, today)` (domain code, stores, tests).
+  `useNumberFormat()` is the number part alone (`number`, `fixed`, `plus`, `percent`, no
+  "today"), for presentational components (`RatingSummary`, `ReviewCard`, `IdeaCard`,
+  `VoteButton`). Chromium has no Belarusian ICU data, so for `be` there both use the hand-written
+  CLDR patterns of `i18n/belarusian.ts` (also i18next's `number` format; `docs/i18n.md` §5, D62).
 - Test-only helpers for hooks: `hooks/testing.tsx` (`createTestServices`, `renderWithServices`,
   `flush`, `resetStores`); not exported by the barrel.
 

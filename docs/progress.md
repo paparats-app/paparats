@@ -792,3 +792,36 @@ Known gaps:
   real installers (`PAPARATS_REAL`).
 - Relative times follow the real clock in the Tauri app, so the seeded data reads older than in the
   mock world (the current device "last active last week", channels "synced last week").
+
+## Release (2026-09-24)
+
+State of the product at release (HEAD after M9):
+
+- **Scope delivered** — all 13 screens (Home, Browse, Categories, Updates, Library, Ideas, Idea
+  detail, Subscription, Settings with 10 sections, Settings › About, Settings › Sources, Profile,
+  App detail, Channel page), the shell, global search, toasts, every dialog (plan confirmation, add
+  channel, trust confirmation, report a problem, suggest an idea, release an idea) and the
+  first-launch scene with onboarding — in dark and light, en/be/ru.
+- **End-to-end flows** — all 14 PASS in the browser build
+  (mock services) and in the real Tauri app on the Rust backend (M9 table above).
+- **Fidelity** — strict parity pass (D58, D59) and a visual acceptance of 224 states × 2 themes ×
+  3 locales × 1440/1280 against the prototype (D62); the remaining differences are localisation,
+  accessibility (focus rings, hit targets) or listed decisions.
+- **Platform** — frameless window with custom controls, tray and minimise to tray, start on login,
+  single instance, `paparats://` deep links, updater wiring (placeholder public key), per-user NSIS
+  installer (≈ 3.5 MB), signing hook active only when credentials exist.
+- **Real strategies** — registry/MSIX inventory, MSI / silent EXE / MSIX / portable ZIP installers
+  with Authenticode, Ed25519-signed catalog manifests, OAuth 2 PKCE sign-in with Credential
+  Manager, all behind `PAPARATS_REAL` (D52–D57).
+- **Resolved since M8's known gaps** — RatingSummary's inline STAR_PATH stars now use the Icon
+  glyph (M9); Belarusian number formatting in components; the app page starts fresh per visit.
+
+Release verification: a fresh `git clone` of HEAD built from scratch — `pnpm install
+--frozen-lockfile` (ok), `pnpm check` (exit 0: 138 files / 1 021 UI tests, 348 Rust tests + 6
+ignored, bindings up to date) and `pnpm tauri build` (exit 0,
+`target/release/bundle/nsis/Paparats_0.1.0_x64-setup.exe`, 3 667 458 bytes, unsigned without
+credentials). CI (`.github/workflows/ci.yml`) mirrors the gate and builds the installer.
+
+Open for production (not blockers for the client): real signing credentials and updater keys,
+production CDN/account endpoints, the Ideas/account backend (the client keeps them locally in the
+simulated world), and the known gaps listed per milestone above.

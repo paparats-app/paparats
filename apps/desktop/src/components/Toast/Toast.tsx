@@ -9,6 +9,11 @@ export interface ToastProps {
   icon?: IconName;
   /** Pinned bottom-right (`right 24 / bottom 22`); `false` renders in flow (gallery, tests). */
   floating?: boolean;
+  /**
+   * Announce itself (`role="status"`, polite). Hosts that keep their own live region mounted
+   * (`app/ToastHost`) pass `false`, so a toast that appears is announced exactly once.
+   */
+  live?: boolean;
   className?: string;
 }
 
@@ -17,11 +22,17 @@ export interface ToastProps {
  * `--shadow-toast`, 22px `--mint-soft` circle with a `--mint2` check, 14px/500 message. Enters
  * with a fade + 10px rise. Key it by toast id to replay the entrance for a new message.
  */
-export function Toast({ message, icon = "check", floating = true, className }: ToastProps) {
+export function Toast({
+  message,
+  icon = "check",
+  floating = true,
+  live = true,
+  className,
+}: ToastProps) {
   return (
     <div
-      role="status"
-      aria-live="polite"
+      role={live ? "status" : undefined}
+      aria-live={live ? "polite" : undefined}
       className={cx(styles.toast, floating && styles.floating, className)}
     >
       <span className={styles.badge} aria-hidden="true">

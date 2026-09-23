@@ -28,7 +28,8 @@
   border-color: var(--mint);
 }
 
-.textarea[aria-invalid="true"] {
+/* The focus border wins while focused, as in the text field. */
+.textarea[aria-invalid="true"]:not(:focus) {
   border-color: var(--danger);
 }
 

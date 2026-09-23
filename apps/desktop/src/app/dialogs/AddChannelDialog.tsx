@@ -9,7 +9,7 @@ import { Field } from "@/components/TextField";
 import { normaliseAddress } from "@/domain/channels";
 import { useChannelContext, useChannelFollow } from "@/hooks";
 import { useChannelActions } from "@/queries";
-import { channelIcon, useChannelMeta } from "@/screens/shared";
+import { channelIcon, useBusyAction, useChannelMeta } from "@/screens/shared";
 import type { ChannelId, ChannelInfo } from "@/services/types";
 import { useDialogStore } from "@/stores/useDialogStore";
 import { TrustConfirmDialog } from "./TrustConfirmDialog";
@@ -19,8 +19,10 @@ import styles from "./AddChannelDialog.module.css";
  * Add channel (prototype lines 1367–1403; logic `lookupChannel`, `subscribeChannel`, lines
  * 1772–1792 and 2209–2214): the address field with Add (Enter submits) and its inline errors, then
  * the catalog of channels not followed yet. A community channel asks for the trust confirmation
- * first; this dialog hides meanwhile and comes back, address and all, when that is cancelled.
- * Subscribing toasts "Subscribed to <Channel>" and closes the dialog.
+ * first; this dialog hides meanwhile and comes back, address and all, when that is cancelled —
+ * with the focus back on the Subscribe that asked (or in the address field). Subscribing toasts
+ * "Subscribed to <Channel>" and closes the dialog. Add and Subscribe show their busy state while
+ * they run; one lookup or subscription at a time.
  */
 export function AddChannelDialog() {
   const { t } = useTranslation();
@@ -32,42 +34,51 @@ export function AddChannelDialog() {
   const follow = useChannelFollow();
   const catalogId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
+  const returnRef = useRef<HTMLButtonElement>(null);
   const [address, setAddress] = useState("");
   const [error, setError] = useState<string | null>(null);
-  // The community channel waiting for the trust confirmation.
-  const [pending, setPending] = useState<ChannelId | null>(null);
-  const busy = useRef(false);
+  // The community channel waiting for the trust confirmation, and the catalog row whose
+  // Subscribe asked for it (null: the address field's Add).
+  const [pending, setPending] = useState<{ channelId: ChannelId; from: ChannelId | null } | null>(
+    null,
+  );
+  // Where the focus goes when the dialog comes back from a cancelled confirmation. Only set while
+  // this dialog is hidden, so it never moves the focus while it is open.
+  const [returnTo, setReturnTo] = useState<ChannelId | null>(null);
+  const [, runBusy] = useBusyAction();
+  // What is running: the address lookup, or one catalog row's subscription.
+  const [running, setRunning] = useState<"lookup" | ChannelId | null>(null);
 
   // Channels not followed yet, in catalog order (the prototype's `channelCatalog`).
   const catalog = ctx.channels.filter((c) => !ctx.isFollowed(c.id));
 
-  const subscribe = async (channel: ChannelInfo) => {
+  const subscribe = async (channel: ChannelInfo, from: ChannelId | null) => {
     if (channel.trust === "community") {
-      setPending(channel.id);
+      setPending({ channelId: channel.id, from });
       return;
     }
     if (await follow.subscribe(channel)) close();
   };
 
-  const run = async (task: () => Promise<void>) => {
-    if (busy.current) return;
-    busy.current = true;
-    try {
-      await task();
-    } finally {
-      busy.current = false;
-    }
-  };
+  const run = (what: "lookup" | ChannelId, task: () => Promise<void>) =>
+    runBusy(async () => {
+      setRunning(what);
+      try {
+        await task();
+      } finally {
+        setRunning(null);
+      }
+    });
 
   const submit = () =>
-    run(async () => {
+    run("lookup", async () => {
       if (!normaliseAddress(address)) return;
       // A failed lookup says nothing (the handoff has no copy for it).
       const result = await lookup(address).catch(() => null);
       if (!result) return;
       if (result.kind === "notFound") setError(t("sources.notFoundError"));
       else if (result.kind === "alreadySubscribed") setError(t("sources.alreadySubscribed"));
-      else await subscribe(result.channel);
+      else await subscribe(result.channel, null);
     });
 
   const onKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
@@ -96,7 +107,7 @@ export function AddChannelDialog() {
         icon={<ModalIcon name="rss" />}
         title={t("sources.addChannel")}
         closeLabel={t("common.close")}
-        initialFocusRef={inputRef}
+        initialFocusRef={returnTo === null ? inputRef : returnRef}
         className={styles.dialog}
       >
         <div className={styles.content}>
@@ -122,6 +133,7 @@ export function AddChannelDialog() {
                   variant="primary"
                   size="lg"
                   className={styles.add}
+                  loading={running === "lookup"}
                   onClick={() => void submit()}
                 >
                   {t("sources.add")}
@@ -150,7 +162,9 @@ export function AddChannelDialog() {
                     trust={channel.trust}
                     meta={meta(channel)}
                     onOpen={() => openChannel(channel.id)}
-                    onSubscribe={() => void run(() => subscribe(channel))}
+                    subscribing={running === channel.id}
+                    subscribeRef={returnTo === channel.id ? returnRef : undefined}
+                    onSubscribe={() => void run(channel.id, () => subscribe(channel, channel.id))}
                   />
                 ))
               ) : (
@@ -161,7 +175,13 @@ export function AddChannelDialog() {
         </div>
       </Modal>
       {pending !== null && (
-        <TrustConfirmDialog channelId={pending} onCancel={() => setPending(null)} />
+        <TrustConfirmDialog
+          channelId={pending.channelId}
+          onCancel={() => {
+            setReturnTo(pending.from);
+            setPending(null);
+          }}
+        />
       )}
     </>
   );

@@ -78,3 +78,29 @@ describe("ProfileHeader", () => {
     expect(screen.getByRole("button", { name: "Edit profile" })).toBeInTheDocument();
   });
 });
+
+describe("ProfileHeader saving", () => {
+  it("keeps Save busy and does not save twice while saving", async () => {
+    const onSave = vi.fn();
+    render(
+      <ProfileHeader
+        name="Serj Kaje"
+        email="s@example.com"
+        initials="SK"
+        memberSince="September 2024"
+        editing
+        saving
+        draft={{ name: "Serj", email: "s@example.com" }}
+        onDraftChange={() => {}}
+        onEdit={() => {}}
+        onSave={onSave}
+        onCancel={() => {}}
+      />,
+    );
+    const save = screen.getByRole("button", { name: "Save" });
+    expect(save).toHaveAttribute("aria-busy", "true");
+    await userEvent.click(save);
+    await userEvent.type(screen.getByLabelText("Name"), "{Enter}");
+    expect(onSave).not.toHaveBeenCalled();
+  });
+});

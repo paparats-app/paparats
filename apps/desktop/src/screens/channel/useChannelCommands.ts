@@ -10,23 +10,26 @@ import { useDialogStore } from "@/stores/useDialogStore";
 import { useUiStore } from "@/stores/useUiStore";
 
 export interface ChannelCommands {
-  /** Follows the channel; a community channel asks for the trust confirmation first. */
-  subscribe(): void;
+  /**
+   * Follows the channel; a community channel asks for the trust confirmation first (resolves at
+   * once, the dialog does the rest).
+   */
+  subscribe(): Promise<void>;
   /** Unfollows it and drops it from the Browse source filter. */
-  unsubscribe(): void;
+  unsubscribe(): Promise<void>;
   /**
    * Switches a followed channel on/off and drops it from the Browse source filter. Resolves
    * `false` when the service refused.
    */
   setPaused(paused: boolean): Promise<boolean>;
   /** "Keep" on the stale callout. */
-  keep(): void;
+  keep(): Promise<void>;
   /** Copies the channel address → "Address copied". */
   copyAddress(): void;
   /** Opens "Report a problem with <Channel>". */
   report(): void;
   /** "Channel synced" or "<Channel> is still unreachable". */
-  sync(): void;
+  sync(): Promise<void>;
 }
 
 const ignore = () => undefined;
@@ -40,10 +43,17 @@ export function useChannelCommands(channel: ChannelInfo): ChannelCommands {
   const notify = useUiStore((s) => s.notify);
 
   return {
-    subscribe: () => follow.follow(channel),
-    unsubscribe: () => void follow.unsubscribe(channel),
+    async subscribe() {
+      if (channel.trust === "community") follow.follow(channel);
+      else await follow.subscribe(channel);
+    },
+    async unsubscribe() {
+      await follow.unsubscribe(channel);
+    },
     setPaused: (paused) => follow.setPaused(channel, paused),
-    keep: () => void follow.keep(channel),
+    async keep() {
+      await follow.keep(channel);
+    },
     copyAddress() {
       copyToClipboard(channel.addr).then(() => notify(t("sources.addrCopied")), ignore);
     },
@@ -51,7 +61,7 @@ export function useChannelCommands(channel: ChannelInfo): ChannelCommands {
       openDialog({ kind: "report", target: { appId: null, channelId: channel.id } });
     },
     sync() {
-      sync(channel.id).then(
+      return sync(channel.id).then(
         (outcome) =>
           notify(
             outcome.kind === "synced"

@@ -2,6 +2,7 @@
 // page's Subscribe on a community channel), it follows the channel only once confirmed.
 import { act, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { vi } from "vitest";
 import { changeLocale } from "@/i18n";
 import { queryKeys } from "@/queries";
 import { ServiceError } from "@/services";
@@ -98,5 +99,22 @@ describe("TrustConfirmDialog", () => {
       within(dialog).getByText("Разработчик · от Sergey Tkachenko · 1 приложение"),
     ).toBeInTheDocument();
     expect(within(dialog).getByRole("button", { name: "Добавить канал" })).toBeInTheDocument();
+  });
+});
+
+describe("TrustConfirmDialog busy state", () => {
+  it("keeps Add channel busy and subscribes once while it runs", async () => {
+    const user = userEvent.setup();
+    const services = createTestServices();
+    const subscribe = vi
+      .spyOn(services.channels, "subscribe")
+      .mockImplementation(() => new Promise(() => {}));
+    await openConfirm("winaero", services);
+    const dialog = await screen.findByRole("dialog", { name: "Add Winaero?" });
+    const add = within(dialog).getByRole("button", { name: "Add channel" });
+    await user.click(add);
+    expect(add).toHaveAttribute("aria-busy", "true");
+    await user.click(add);
+    expect(subscribe).toHaveBeenCalledTimes(1);
   });
 });

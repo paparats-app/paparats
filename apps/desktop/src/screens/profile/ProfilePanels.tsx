@@ -9,6 +9,7 @@ import { useLocale } from "@/hooks";
 import { LANGUAGES } from "@/i18n/languages";
 import { useFormat } from "@/i18n/format";
 import { useAccountActions } from "@/queries";
+import { useBusyAction } from "@/screens/shared";
 import type { Device, Profile } from "@/services/types";
 import { useProfileStore } from "@/stores/useProfileStore";
 import { useSettingsStore } from "@/stores/useSettingsStore";
@@ -177,6 +178,7 @@ function DeviceRow({ device }: { device: Device }) {
   const { t } = useTranslation();
   const format = useFormat();
   const { removeDevice } = useAccountActions();
+  const [removing, runRemove] = useBusyAction();
   const ids = { name: useId(), remove: useId() };
   return (
     <li className={styles.device}>
@@ -200,9 +202,10 @@ function DeviceRow({ device }: { device: Device }) {
           size="compact"
           // "Remove Surface Laptop 7" for assistive tech; the visible label stays "Remove".
           aria-labelledby={`${ids.remove} ${ids.name}`}
+          loading={removing}
           onClick={() => {
             // No failure copy in the handoff: on an error the row simply stays.
-            removeDevice(device.id).catch(() => undefined);
+            void runRemove(() => removeDevice(device.id).catch(() => undefined));
           }}
         >
           {t("profile.removeDevice")}

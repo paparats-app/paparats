@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { useNav } from "@/app/navigation";
 import { AppIcon } from "@/components/AppIcon";
@@ -19,7 +19,8 @@ export interface IdeaStatusCardProps {
 /**
  * The status card (lines 1298–1314): the status pill and developer, the status hint, the released
  * app with the author's thank-you note, and in the developer view Take this idea, Mark as
- * released or "In work at <developer>".
+ * released or "In work at <developer>". A keyboard press on Take this idea moves the focus to the
+ * Mark as released that replaces it.
  */
 export function IdeaStatusCard({ idea, detail }: IdeaStatusCardProps) {
   const { t } = useTranslation();
@@ -28,9 +29,19 @@ export function IdeaStatusCard({ idea, detail }: IdeaStatusCardProps) {
   const openDialog = useDialogStore((s) => s.open);
   const [taking, setTaking] = useState(false);
   const { action, developer, releasedApp } = detail;
+  const markRef = useRef<HTMLButtonElement>(null);
+  const handoff = useRef(false);
+  const actionType = action?.type;
+  useLayoutEffect(() => {
+    if (!handoff.current || actionType === "take") return;
+    handoff.current = false;
+    markRef.current?.focus();
+  }, [actionType]);
 
-  const takeIdea = async () => {
+  const takeIdea = async (event: MouseEvent<HTMLButtonElement>) => {
     if (taking) return;
+    // Enter / Space fire the click with `detail` 0: only keyboard users get the focus moved.
+    handoff.current = event.detail === 0;
     setTaking(true);
     // Not taken (e.g. someone else took it first): the card shows the idea as it is.
     await take(idea);
@@ -95,7 +106,8 @@ export function IdeaStatusCard({ idea, detail }: IdeaStatusCardProps) {
             size="field"
             fullWidth
             className={styles.cta}
-            onClick={() => void takeIdea()}
+            loading={taking}
+            onClick={(event) => void takeIdea(event)}
           >
             {t("idea.takeIdea")}
           </Button>
@@ -106,6 +118,7 @@ export function IdeaStatusCard({ idea, detail }: IdeaStatusCardProps) {
       )}
       {action?.type === "release" && (
         <Button
+          ref={markRef}
           variant="primary"
           size="field"
           fullWidth

@@ -38,7 +38,11 @@ export interface ButtonProps extends ComponentPropsWithRef<"button"> {
   tone?: ButtonTone;
   leadingIcon?: ButtonIconSlot;
   trailingIcon?: ButtonIconSlot;
-  /** Shows a spinner in place of the leading icon and ignores clicks. */
+  /**
+   * Busy: sets `aria-busy` and ignores clicks at once. The spinner takes the leading icon's
+   * place; without a leading icon it covers the label (after a short delay, so a quick action
+   * does not flicker and the button keeps its width).
+   */
   loading?: boolean;
   fullWidth?: boolean;
   /** Fully rounded ends (hero CTAs). */
@@ -84,6 +88,8 @@ export function Button({
 }: ButtonProps) {
   const iconSize = BUTTON_ICON_SIZE[size];
   const hasLabel = children !== undefined && children !== null && children !== false;
+  const spinner = <Icon name="loader-circle" size={iconSize} className={styles.spinner} />;
+  const coverSpinner = loading && leadingIcon === undefined;
   const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     if (loading) {
       event.preventDefault();
@@ -103,20 +109,22 @@ export function Button({
         fullWidth && styles.fullWidth,
         pill && styles.pill,
         loading && styles.loading,
+        coverSpinner && styles.covered,
         className,
       )}
       data-variant={variant}
       data-size={size}
-      aria-busy={loading || undefined}
+      aria-busy={loading || rest["aria-busy"] || undefined}
       onClick={handleClick}
     >
-      {loading ? (
-        <Icon name="loader-circle" size={iconSize} className={styles.spinner} />
-      ) : (
-        slot(leadingIcon, iconSize)
-      )}
+      {loading && !coverSpinner ? spinner : slot(leadingIcon, iconSize)}
       {hasLabel && <span className={styles.label}>{children}</span>}
       {slot(trailingIcon, iconSize)}
+      {coverSpinner && (
+        <span className={styles.cover} aria-hidden="true">
+          {spinner}
+        </span>
+      )}
     </button>
   );
 }

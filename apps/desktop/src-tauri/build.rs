@@ -1,7 +1,14 @@
 use std::path::Path;
 
+// `APP_COMMANDS`: the app's own commands, shared with the crate (src/app_commands.rs).
+include!("src/app_commands.rs");
+
 fn main() {
-    let mut attributes = tauri_build::Attributes::new();
+    println!("cargo:rerun-if-changed=src/app_commands.rs");
+    // An app manifest: tauri-build generates `allow-<command>` for every app command, and only
+    // the ones capabilities/default.json grants can be invoked.
+    let mut attributes = tauri_build::Attributes::new()
+        .app_manifest(tauri_build::AppManifest::new().commands(APP_COMMANDS));
 
     // On Windows/MSVC the application manifest (Common Controls v6, same content as tauri-build's
     // default) is embedded by the linker for every target of this package — the app, the

@@ -50,8 +50,10 @@ export type SettingsRowProps = RowBase &
         actionLabel: string;
         onAction: () => void;
         destructive?: boolean;
-        /** Disables the button (e.g. Sign out while signed out or while it runs). */
+        /** Disables the button (e.g. Sign out while signed out). */
         disabled?: boolean;
+        /** The action is running: the button shows its busy state and ignores presses. */
+        busy?: boolean;
       }
     /** The whole row is a button with a `--mint2` label + chevron on the right. */
     | { type: "link"; actionLabel: string; onClick: () => void }
@@ -135,7 +137,7 @@ export function SettingsRow(props: SettingsRowProps) {
       return (
         <div className={cx(styles.row, className)}>
           {label(<span className={styles.mono}>{props.value}</span>)}
-          <Button size="compact" onClick={props.onChange}>
+          <Button size="compact" aria-describedby={titleId} onClick={props.onChange}>
             {t("settings.change")}
           </Button>
         </div>
@@ -148,6 +150,9 @@ export function SettingsRow(props: SettingsRowProps) {
             size="compact"
             variant={props.destructive ? "destructive" : "secondary"}
             disabled={props.disabled}
+            loading={props.busy}
+            // The row title says what "Change…" / "Clear" / "Sign out" acts on.
+            aria-describedby={titleId}
             onClick={props.onAction}
           >
             {props.actionLabel}

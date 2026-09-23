@@ -41,6 +41,12 @@
   scrollbar-color: var(--knob-off) transparent;
 }
 
+/* The column takes the focus after a navigation from inside it (the next Tab starts on the new
+   screen; arrows and Page Down scroll it). It is not a control: no ring around the whole page. */
+.content:focus-visible {
+  outline: none;
+}
+
 /* Screen enter: fade + 10px rise, 340ms (0 when motion is off). The keyframe names must not
    camel-case to a class name (`localsConvention: camelCaseOnly`): `enter-a` would shadow `.enterA`. */
 .enterA {

@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-ideas-dismiss-release-note"
+description = "Enables the ideas_dismiss_release_note command without any pre-configured scope."
+commands.allow = ["ideas_dismiss_release_note"]
+
+[[permission]]
+identifier = "deny-ideas-dismiss-release-note"
+description = "Denies the ideas_dismiss_release_note command without any pre-configured scope."
+commands.deny = ["ideas_dismiss_release_note"]

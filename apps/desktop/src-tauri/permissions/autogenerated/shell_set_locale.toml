@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-shell-set-locale"
+description = "Enables the shell_set_locale command without any pre-configured scope."
+commands.allow = ["shell_set_locale"]
+
+[[permission]]
+identifier = "deny-shell-set-locale"
+description = "Denies the shell_set_locale command without any pre-configured scope."
+commands.deny = ["shell_set_locale"]

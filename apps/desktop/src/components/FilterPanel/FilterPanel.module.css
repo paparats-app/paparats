@@ -27,6 +27,7 @@
 }
 
 .clear {
+  position: relative;
   padding: 0;
   border: 0;
   border-radius: var(--r-4);
@@ -37,6 +38,13 @@
   font-size: var(--fs-meta);
   font-weight: 500;
   cursor: pointer;
+}
+
+/* A 32px+ hit area around the 12px text link without changing its layout. */
+.clear::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--sp-8)) calc(-1 * var(--sp-6));
 }
 
 .clear:hover {

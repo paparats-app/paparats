@@ -11,7 +11,7 @@ import { Icon } from "@/components/Icon";
 import { PageBanner } from "@/components/PageBanner";
 import { useDialogStore } from "@/stores/useDialogStore";
 import { useIdeaActions } from "@/queries";
-import { useIdeaView } from "@/screens/shared";
+import { useBusyAction, useIdeaView } from "@/screens/shared";
 import type { Idea } from "@/services/types";
 import { IdeasAside } from "./IdeasAside";
 import { IdeasBoardList } from "./IdeasBoardList";
@@ -79,6 +79,7 @@ function ReleaseNote({ note, notes }: { note: Idea; notes: readonly Idea[] }) {
   const { go } = useNav();
   const view = useIdeaView();
   const activate = useActivateBonus();
+  const [activating, runActivate] = useBusyAction();
   const { dismissReleaseNote } = useIdeaActions();
   const titleId = useId();
   const app = view.releasedApp(note);
@@ -130,7 +131,8 @@ function ReleaseNote({ note, notes }: { note: Idea; notes: readonly Idea[] }) {
           variant="primary"
           className={styles.noteActivate}
           leadingIcon={<Icon name="crown" size={14} strokeWidth={2.2} />}
-          onClick={() => void activate(notes)}
+          loading={activating}
+          onClick={() => void runActivate(() => activate(notes))}
         >
           {t("ideas.activateBonus")}
         </Button>

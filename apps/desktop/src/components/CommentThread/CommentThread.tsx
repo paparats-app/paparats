@@ -26,6 +26,8 @@ export interface CommentComposer {
   avatarTint?: string;
   /** "Add to the discussion…" by default. */
   placeholder?: string;
+  /** The comment is being sent: Post shows its busy state and ignores presses. */
+  posting?: boolean;
 }
 
 export interface CommentThreadProps {
@@ -89,7 +91,7 @@ export function CommentThread({ comments, composer, emptyText, className }: Comm
           className={styles.composer}
           onSubmit={(event) => {
             event.preventDefault();
-            if (canPost) composer.onPost();
+            if (canPost && !composer.posting) composer.onPost();
           }}
         >
           <Avatar initials={composer.initials} tint={composer.avatarTint} />
@@ -108,6 +110,7 @@ export function CommentThread({ comments, composer, emptyText, className }: Comm
                 variant={canPost ? "primary" : "secondary"}
                 tone={canPost ? "default" : "muted"}
                 disabled={!canPost}
+                loading={composer.posting}
                 className={styles.post}
               >
                 {t("idea.post")}

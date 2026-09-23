@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
 import { AppIcon } from "@/components/AppIcon";
 import { Button } from "@/components/Button";
@@ -9,7 +9,7 @@ import { TRUST_KEY, TrustBadge } from "@/components/TrustBadge";
 import { WarnCallout } from "@/components/WarnCallout";
 import { pickLocalized } from "@/domain/text";
 import { useChannelContext, useLocale } from "@/hooks";
-import { KIND_KEY } from "@/screens/shared";
+import { KIND_KEY, useBusyAction } from "@/screens/shared";
 import type { ChannelInfo } from "@/services/types";
 import { ChannelDetails } from "./ChannelDetails";
 import { useChannelCommands, type ChannelCommands } from "./useChannelCommands";
@@ -30,6 +30,8 @@ export function ChannelHeader({ channel }: { channel: ChannelInfo }) {
   // Only a followed channel reports an outage (the prototype's `down = isSub ? downDays(c) : 0`).
   const downDays = subscribed ? ctx.downDays(channel.id) : 0;
   const stale = ctx.isStale(channel.id);
+  // Keep / Unsubscribe on the callout: one call at a time.
+  const [, runStale] = useBusyAction();
 
   return (
     <header className={styles.header}>
@@ -73,10 +75,13 @@ export function ChannelHeader({ channel }: { channel: ChannelInfo }) {
             actions={
               stale
                 ? [
-                    { label: t("common.keepChannel"), onClick: commands.keep },
+                    {
+                      label: t("common.keepChannel"),
+                      onClick: () => void runStale(commands.keep),
+                    },
                     {
                       label: t("common.unsubscribe"),
-                      onClick: commands.unsubscribe,
+                      onClick: () => void runStale(commands.unsubscribe),
                       destructive: true,
                     },
                   ]
@@ -113,9 +118,30 @@ interface ChannelActionRowProps {
 /**
  * Subscribe, or "Subscribed" + the Enabled/Paused switch + Unsubscribe (not for the official
  * catalog); then Copy address, Report a problem and, while followed, Sync now (lines 1133–1142).
+ * Subscribe, Unsubscribe and Sync now show their busy state and ignore presses while they run.
+ * A keyboard press on Subscribe / Unsubscribe hands the focus to what replaces the button.
  */
 function ChannelActionRow({ commands, subscribed, paused, official }: ChannelActionRowProps) {
   const { t } = useTranslation();
+  const [following, runFollow] = useBusyAction();
+  const [syncing, runSync] = useBusyAction();
+  const [pressed, setPressed] = useState<"subscribe" | "unsubscribe" | null>(null);
+  const subscribeRef = useRef<HTMLButtonElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const handoff = useRef(false);
+  const follow = (which: "subscribe" | "unsubscribe") => (event: MouseEvent<HTMLButtonElement>) => {
+    // Enter / Space fire the click with `detail` 0: only keyboard users get the focus moved.
+    handoff.current = event.detail === 0;
+    setPressed(which);
+    void runFollow(which === "subscribe" ? commands.subscribe : commands.unsubscribe).finally(() =>
+      setPressed(null),
+    );
+  };
+  useLayoutEffect(() => {
+    if (!handoff.current) return;
+    handoff.current = false;
+    (subscribed ? toggleRef : subscribeRef).current?.focus();
+  }, [subscribed]);
   // The switch shows the requested state at once (the prototype's instant toggle) until the
   // subscription carries it; a refused call reverts it (like Settings › Sources).
   const [requested, setRequested] = useState<boolean | null>(null);
@@ -138,6 +164,7 @@ function ChannelActionRow({ commands, subscribed, paused, official }: ChannelAct
           {!official && (
             <>
               <Button
+                ref={toggleRef}
                 variant="outline"
                 size="field"
                 role="switch"
@@ -152,7 +179,8 @@ function ChannelActionRow({ commands, subscribed, paused, official }: ChannelAct
                 variant="outline"
                 size="field"
                 className={styles.unsubscribe}
-                onClick={commands.unsubscribe}
+                loading={following && pressed === "unsubscribe"}
+                onClick={follow("unsubscribe")}
               >
                 {t("common.unsubscribe")}
               </Button>
@@ -161,11 +189,13 @@ function ChannelActionRow({ commands, subscribed, paused, official }: ChannelAct
         </>
       ) : (
         <Button
+          ref={subscribeRef}
           variant="primary"
           size="field"
           className={styles.subscribe}
           leadingIcon={<Icon name="plus" size={16} strokeWidth={2.2} />}
-          onClick={commands.subscribe}
+          loading={following && pressed === "subscribe"}
+          onClick={follow("subscribe")}
         >
           {t("common.subscribe")}
         </Button>
@@ -194,7 +224,8 @@ function ChannelActionRow({ commands, subscribed, paused, official }: ChannelAct
           size="field"
           className={styles.secondary}
           leadingIcon={<Icon name="rotate-ccw" size={15} strokeWidth={2} />}
-          onClick={commands.sync}
+          loading={syncing}
+          onClick={() => void runSync(commands.sync)}
         >
           {t("channel.syncNow")}
         </Button>

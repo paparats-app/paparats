@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-shell-window-ready"
+description = "Enables the shell_window_ready command without any pre-configured scope."
+commands.allow = ["shell_window_ready"]
+
+[[permission]]
+identifier = "deny-shell-window-ready"
+description = "Denies the shell_window_ready command without any pre-configured scope."
+commands.deny = ["shell_window_ready"]

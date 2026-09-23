@@ -607,3 +607,196 @@ D31 — the prototype kept it). The Library row keeps the prototype's two lines:
   `channel.notFoundHint`, `channel.notProvided`; `ideas.dismissNote`, `ideas.statusFilter`,
   `ideas.removeFilter`, `ideas.filtersLabel` (keeps the prototype's colon), `ideas.ideaKind`;
   `idea.progress`, `idea.notFound`, `idea.notFoundHint`.
+
+## Windows integration (M6)
+
+### D48 — Tray, start on login, single instance, links, window, updater, signing
+- **Native shell** (`src-tauri/src/shell.rs`, `window.rs`, `tray.rs`, `deep_link.rs`,
+  `autostart.rs`): the decisions live in a Tauri-free `Shell` (unit-tested with a recording host);
+  the UI talks to it through four commands that are not service methods, `shell_set_locale`,
+  `shell_set_minimize_to_tray`, `shell_window_ready`, `shell_take_deep_links`, and two typed events,
+  `shell://deep-link` and `shell://tray-action`. On the UI side `platform/shell.ts › nativeShell`
+  wraps them (no-ops outside Tauri, also active with `PAPARATS_MOCK=1`); `app/useNativeShell`
+  (providers) pushes the language and the tray setting at startup and on change and reports the
+  first frame; `app/useDeepLinks` and `app/useTrayActions` (layout) navigate.
+- **Tray**: always shown; the app icon, tooltip "Paparats", menu Open Paparats · Check for updates ·
+  (separator) · Quit; a left click shows and focuses the window. The menu is native and exists
+  before the UI loads, so its labels are Rust (`TrayLabels::for_locale`, en/be/ru); before the UI
+  reports its language the core reads `locale` from `settings.json`. "Check for updates" is the
+  About button's copy (a test compares it with `about.checkUpdates`). Tray › Check for updates shows
+  the window, opens Settings › About and runs the same check with the same toasts; the About
+  button's own "Checking…" state does not reflect a check started from the tray.
+- **Minimize to system tray** (`settings.tray`, default on): the close button and Alt+F4 (both
+  `CloseRequested`) hide the window; Quit in the tray exits. Minimise stays a taskbar minimise. The
+  core reads the stored value at startup, then follows the UI.
+- **Start on login**: tauri-plugin-autostart, value `Paparats` under `HKCU\…\Run` =
+  `<exe> --minimized` (the NSIS uninstaller removes the same value); `--minimized` starts hidden in
+  the tray. The Settings toggle → `SystemService.setAutostart` → the JS plugin, only when the entry
+  differs (the plugin fails to disable a missing entry). At startup, in release builds only, the
+  core brings the entry in line with the stored `startup`: missing (fresh install — the default is
+  on) or pointing at another executable → registered; `startup` off → removed; an entry turned off
+  in Task Manager is left alone. Development builds never register themselves at startup.
+- **Single instance**: a second launch forwards its arguments and exits; the running window comes
+  forward (not for a second `--minimized` launch); a `paparats://` argument goes through the
+  deep-link plugin.
+- **Links**: scheme `paparats` (`plugins.deep-link.desktop.schemes`), registered by the NSIS
+  installer and, in debug builds, at runtime (`register_all` points `HKCU\Software\Classes\paparats`
+  at the dev executable). Parsed in Rust: `app/<id>` and `channel/<id>` (ids: ASCII letters,
+  digits, `._-`, start alphanumeric, ≤ 64, lowercased; one segment; query/fragment ignored) open
+  that page — `go()` with the current page as the return path, any open dialog closed, the window
+  shown; `auth/callback` is recognised and ignored until PKCE (M7), never logged with its query;
+  anything else is ignored. Links wait in the core (at most 8) until the UI has listened and taken
+  them, so the link that started the app is not lost; later ones arrive as events.
+- **Window**: created hidden (`visible: false`) on `backgroundColor` = the dark `--bg`; the core
+  switches to the light `--bg` before anything shows when the stored theme is light (or System on a
+  light Windows). The UI reports its first frame (two animation frames, or 120 ms — WebView2 may not
+  run frames for a hidden window) and the core shows and focuses it; 5 s without that report shows
+  it anyway. window-state saves size, position and maximized; size and position are restored while
+  hidden, maximized when the window is first shown (tao 0.35 shows a hidden window it maximizes), and
+  a session that never showed the window keeps the saved maximized state on exit. First run: centred
+  1440×920, or maximized when that does not fit the monitor's work area. Snap Layouts: D4 stands.
+- **Capabilities**: an app manifest (`build.rs` + `src/app_commands.rs`) gives every app command an
+  `allow-<command>` permission, and `capabilities/default.json` grants exactly those plus the
+  single plugin commands the UI calls (events, the six window-chrome commands, `resources:close`,
+  opener open-url with its default URL scope, five store commands, autostart, `updater:check`); no
+  `*:default` sets. Tests keep `bindings.ts`, `app_commands.rs` and the capability in sync.
+  Dropped as unused: `core:window:allow-theme`, `window-state:default`, the opener's
+  reveal-in-folder.
+- **Updater**: tauri-plugin-updater (native-tls like D23, no zip), endpoint
+  `https://updates.paparats.app/latest.json` (first-party, `paparats-core::hosts`; a test checks
+  every endpoint). `SystemService.checkForAppUpdate` in Tauri mode is the JS `check()` (15 s
+  timeout), never before 1.2 s, and any failure reads as up to date; the core's placeholder command
+  `system_check_for_app_update` (D24) is gone. Nothing downloads or installs an update yet.
+  `plugins.updater.pubkey` is a marked placeholder: generate the real pair with
+  `pnpm tauri signer generate -w ~/.tauri/paparats-updater.key`, put the public key there and the
+  private key and its password into the CI secrets `TAURI_SIGNING_PRIVATE_KEY` /
+  `TAURI_SIGNING_PRIVATE_KEY_PASSWORD`. `createUpdaterArtifacts` lives in
+  `src-tauri/tauri.updater.conf.json`, merged only when that key is present (CI:
+  `pnpm tauri build --config src-tauri/tauri.updater.conf.json`), because the Tauri CLI fails a
+  build that creates updater artifacts without the private key — a plain `pnpm tauri build` must
+  keep working on any machine.
+- **Code signing**: `bundle.windows.signCommand` runs `node scripts/sign-windows.mjs %1` for the
+  app, the installer and the uninstaller. It signs with Azure Trusted Signing
+  (`AZURE_TENANT_ID`, `AZURE_CLIENT_ID`, `AZURE_CLIENT_SECRET`, `TRUSTED_SIGNING_ENDPOINT`,
+  `TRUSTED_SIGNING_ACCOUNT`, `TRUSTED_SIGNING_PROFILE`; `trusted-signing-cli` on PATH) or with a PFX
+  through signtool (`WINDOWS_CERTIFICATE_PFX`, `WINDOWS_CERTIFICATE_PASSWORD`, optional
+  `WINDOWS_TIMESTAMP_URL`, `SIGNTOOL_PATH`); with none it leaves the file unsigned and succeeds;
+  a half-configured method fails; `PAPARATS_REQUIRE_SIGNING=1` turns "unsigned" into a failure.
+  CI maps the same names from secrets (the PFX as `WINDOWS_CERTIFICATE_PFX_BASE64`), installs
+  `trusted-signing-cli` only when Azure is configured, and fails when the installer reaches 15 MB.
+
+### D49 — Keyboard, focus, disabled and loading states (M6)
+
+- **Rings.** Everything interactive has the 2px `--mint` `:focus-visible` ring at 2px offset,
+  except where that ring would be clipped or would contradict the design: controls inside a
+  clipping container (menu items, settings link rows, underline tabs, the Profile info rows — the
+  first one 1px further in, its top rule is clipped — the Update history header, the version
+  history toggle, the window controls at the window edge) draw it inset; text fields keep the prototype's
+  mint border (a text field matches `:focus-visible` on a mouse click too, so a ring would show on
+  every click); buttons and arrows on photographic banners use `--cta-mint` (in the light theme
+  `--mint` is a dark green that disappears on the dark photos). The modal body scrolls, so it keeps
+  4px of padding (taken back by a negative margin) for edge-to-edge fields' rings. The content
+  column takes focus after a navigation but draws no ring (it is not a control).
+- **Hit targets.** The prototype's 30px buttons (Recently updated, Take, Open, Retry) keep their
+  size and get a 32px target from `Button`'s `xs` size (the per-screen `::before` rules they had
+  were 30px on bordered buttons: an absolutely placed pseudo-element sits in the padding box).
+  Filter panel "Clear all" got a `::before` hit area. Carousel dots stay 6px with a 32px-tall,
+  gap-wide (14px) target: a 32px-wide one would cover the neighbouring dots; the prev/next arrows
+  are the full-size targets. Idea cards open from anywhere by mouse; their 20px title button is the
+  keyboard route.
+- **Disabled.** Inert states are native `disabled` (out of the tab order): Free/Windows filters,
+  the current plan, Post/Send while empty, Queued, Installing…. "Offline" keeps answering a press
+  with the offline toast (prototype), so it is `aria-disabled` and stays focusable.
+- **Loading.** `Button loading` = `aria-busy` + presses ignored at once; the spinner replaces the
+  leading icon, or — without one — fades in over the label after 150 ms (the label turns
+  transparent but stays the accessible name), so the mock services' 40 ms calls show no flicker
+  and no button changes width. Busy now: Confirm purchase, Send, Publish (already), Release, Add
+  channel (trust), Add (lookup) and catalog Subscribe, the channel page's Subscribe / Unsubscribe /
+  Sync now, Post, Save (profile), Take this idea, Activate 3 months of Pro, Remove (device), Sign
+  out; Check for updates keeps "Checking…" as its progress with `aria-busy` (prototype copy, no
+  spinner). There is no Sign in outside the first-launch scene.
+- **Focus management.** Dialogs trap Tab, pull back focus that leaves them (the sidebar is not
+  covered by the scrim, so a press there still works), close on Escape from anywhere and return the
+  focus to the opener; the add-channel dialog, back from a cancelled trust confirmation, focuses
+  the Subscribe that asked. A navigation from inside the content focuses the content column; from
+  the sidebar or the top bar the focus stays put. Keyboard presses (click `detail` 0) on buttons
+  that are replaced by their own result hand the focus on: Update all → Pause all, Cancel all →
+  Update all, Subscribe ↔ the Enabled switch / Unsubscribe, Take this idea → Mark as released
+  (Edit profile ↔ Name already did). The window controls moved to the end of the DOM (absolutely
+  placed, nothing moves): the tab order is sidebar → search → avatar → screen → window controls.
+- **Names.** Repeated short labels are described by their context without new copy: settings row
+  buttons by the row title, the catalog's Learn more / Subscribe by the channel, the plans'
+  Choose plan by the plan name and price. The toast host keeps one polite live region mounted.
+
+## First launch (M6)
+
+### D50 — The first-launch scene and onboarding
+- **When it plays.** `app/bootstrap.ts` calls `useFirstLaunchStore.launch()` after `initI18n`: the
+  scene plays unless `localStorage › paparats.firstRun` holds `{seen: true, …}` (FIRST_LAUNCH_SPEC
+  "Persistence"; read and written through `platform/storage › localStore`, which never throws).
+  The record is `{seen, locale, theme, at}`; a seen record skips the scene but does not restore
+  locale and theme from it — the settings service already persists both (in Tauri,
+  `settings.json`). In the app the record lives in the WebView2 profile
+  (`%LOCALAPPDATA%\com.paparats.desktop\EBWebView`; the dev server's origin has its own).
+  Settings › Advanced › Replay first launch (developer mode) starts a new run from `seed`. Tests never auto-play it (only `bootstrap()` launches).
+- **Scene.** The prototype's per-phase values (`renderVals` "// first launch") are data in
+  `screens/first-launch/scene.ts`; the component sets them as unitless custom properties and the
+  CSS module transitions them (seed → fern 120 ms → part 1400 → bloom 2800 → logo 4300 → lang
+  5400). Authored for 1440 × 920 and scaled by one factor `s = min(W/1440, H/920)`: the flower,
+  fireflies, logo and panel sit in a centred 1440 × 920 stage, the fern walls are pinned to the
+  bottom corners, the skip button and the step indicator keep their distance from the edges. The
+  exit target is x = +122 (half the sidebar) and y = 287 − H/2 (a fixed distance under the top
+  bar), which is the spec's (+122, −173) at 1440 × 920. Its night palette is the `--fl-*` group in
+  `tokens.css` (the same in both themes; gradient stops stay legacy `rgba()` — a `color-mix()`
+  stop would switch the gradient to Oklab interpolation).
+- **Finish.** Later / Sign in writes the record, turns the Home hero glow on (off at 1.7 s; its
+  gradient stops are legacy `rgba()` tokens `--fl-hero-glow-*`, like the scene's, so it blends in
+  sRGB as in the prototype) and
+  hands over to Home like the prototype's `finishIntro`: `beginNavigation({skeleton:false})` +
+  `navigate('/home')` (no skeleton; the 340 ms enter animation plays under the still-opaque
+  overlay), not `go()` — so "Updated just now" markers are not cleared (replay is only reachable
+  from Settings). The overlay fades after .4 s and unmounts at 1.5 s. The focus, still on the
+  finishing button, moves to the content column (as after a navigation from inside the content).
+  Sign in with a typed email calls `signIn(email, password)` and toasts "Signed in as <email>"
+  1.6 s later; with no email it names the current account only if one is signed in (the prototype
+  always named the profile email); a refused sign-in shows no toast. The account step is a
+  `<form noValidate>`, so Enter signs in (the prototype had no form). "No account? Create one"
+  opens `https://paparats.app/signup`. Replay remounts the scene at once (the prototype showed the
+  app for ≈ 40 ms first).
+- **No motion.** Reduced motion (the OS) or Subtle animations off starts at the language step with
+  every scene animation and transition off and no shock ring; the prototype kept the sway,
+  fireflies, glow and spin running. The OS setting is read once per run.
+- **Accessibility (no visual change).** The overlay is `role="dialog"` with `aria-modal` and a
+  label (`firstLaunch.sceneLabel`); the rest of the window is `inert` until the exit begins; the
+  focus enters the overlay, then each step's container; language and theme cards carry
+  `aria-pressed`; the indicator is an `<ol>` with `aria-current="step"`; `››` has a translated
+  label and title (the prototype's title was English only) and is disabled and hidden from
+  assistive tech once a step shows; the mark is `alt=""` (the name follows it). Back (30 px) and
+  "No account? Create one" (13 px text) keep their size and get an invisible 32 px hit area. In a
+  window smaller than 1440 × 920 (`s` < 1, down to 0.87 at the 1280 × 800 minimum) these hit
+  areas and one on `››` grow by 1/`s`, so they stay 32 px on screen; nothing changes at `s` ≥ 1.
+- **Frameless window.** As in the prototype the scene (z-index 40) covers the window controls. The
+  window must still move: an invisible `data-tauri-drag-region` strip covers the scene's top 32 px
+  (nothing interactive lives there; a click on it no longer skips). Closing and minimising during
+  onboarding go through Alt+F4 (with Minimize to system tray on, that hides the window like the ×
+  does) and the taskbar.
+- **Links during the scene.** A `paparats://` link that arrives while the scene covers the shell
+  (a fresh install opened from a link) waits; the page opens when the exit begins, after the
+  finish's own hand-over to Home, so Back returns to Home. Only the latest waiting link opens.
+
+## Integration (M6)
+
+### D51 — Reconciling the M6 changes
+- **Shared files edited by several engineers.** `app/Layout.tsx` carries all three: the
+  first-launch overlay as the frame's last child, `useDeepLinks` / `useTrayActions`, and the
+  keyboard work (window controls last in the column, the content column taking focus after a
+  navigation). The layout also moves the focus to the content column when the first-launch exit
+  begins — a passive effect, so it runs after the scene has lifted `inert`. `Modal`'s focus
+  containment ignores other `aria-modal` dialogs, the first-launch overlay included; no dialog can
+  be open while the scene plays (links close dialogs, Replay is a Settings row).
+- **Rules.** The first-launch module defined its night palette as literal custom properties on the
+  overlay; the group moved to `tokens.css` (`--fl-*`, theme-independent), so modules keep only
+  `var(--*)`. The hero carousels' `aria-roledescription` was a hard-coded English "carousel"; it is
+  `common.carousel` in en/be/ru now.
+- **Numbering.** The keyboard/focus decision kept D49; the first launch is D50 (its engineer wrote
+  no decision).

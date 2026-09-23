@@ -1,20 +1,24 @@
 //! Tauri commands: one per method of the TypeScript service contracts
-//! (`apps/desktop/src/services/contracts.ts`), named `<service>_<method>`. Every command is
+//! (`apps/desktop/src/services/contracts.ts`), named `<service>_<method>`, plus the native shell's
+//! `shell_*` commands. Every command is
 //! `async` (runs on the async runtime, never on the UI thread), returns `AppResult<T>` and is
 //! registered in `crate::specta_builder`. The logic lives in `crate::services`.
 
 use paparats_core::{
     Account, Catalog, ChannelInfo, ChannelLookup, ChannelSubscription, DownloadRequest,
-    DownloadSnapshot, Idea, IdeaActor, IdeaDraft, IsoDate, Library, PlanId, PlatformInfo,
-    ProfilePatch, ReportReceipt, ReportTarget, SelfUpdateCheck, SyncOutcome,
+    DownloadSnapshot, Idea, IdeaActor, IdeaDraft, IsoDate, Library, Locale, PlanId, PlatformInfo,
+    ProfilePatch, ReportReceipt, ReportTarget, SyncOutcome,
 };
 use serde::Serialize;
 use tauri::State;
 
+use crate::deep_link::DeepLinkTarget;
 use crate::error::AppResult;
 use crate::services::AppState;
+use crate::shell::Shell;
 
 type St<'a> = State<'a, AppState>;
+type Sh<'a> = State<'a, Shell>;
 
 /// Build information shown in Settings › About.
 #[derive(Debug, Clone, Serialize, specta::Type)]
@@ -346,8 +350,40 @@ pub async fn system_today(state: St<'_>) -> AppResult<IsoDate> {
     Ok(state.system_today())
 }
 
+// Settings › About › Check for updates runs in the UI through tauri-plugin-updater's `check()`
+// (`services/tauri/system.ts`); the core has no command for it.
+
+// --- native shell (tray, window, links) ----------------------------------------------------
+// Not service methods: the UI's `platform/shell.ts` tells the shell what it needs to know.
+
+/// The UI language, for the tray menu. Called at startup and on every change.
 #[tauri::command]
 #[specta::specta]
-pub async fn system_check_for_app_update(state: St<'_>) -> AppResult<SelfUpdateCheck> {
-    Ok(state.check_for_app_update().await)
+pub async fn shell_set_locale(shell: Sh<'_>, locale: Locale) -> AppResult<()> {
+    shell.set_locale(locale);
+    Ok(())
+}
+
+/// Settings › General › Minimize to system tray. Called at startup and on every change.
+#[tauri::command]
+#[specta::specta]
+pub async fn shell_set_minimize_to_tray(shell: Sh<'_>, enabled: bool) -> AppResult<()> {
+    shell.set_minimize_to_tray(enabled);
+    Ok(())
+}
+
+/// The UI has painted its first frame: the window may appear.
+#[tauri::command]
+#[specta::specta]
+pub async fn shell_window_ready(shell: Sh<'_>) -> AppResult<()> {
+    shell.window_ready();
+    Ok(())
+}
+
+/// The `paparats://` links that arrived before the UI listened; later ones come as
+/// `shell://deep-link` events.
+#[tauri::command]
+#[specta::specta]
+pub async fn shell_take_deep_links(shell: Sh<'_>) -> AppResult<Vec<DeepLinkTarget>> {
+    Ok(shell.take_deep_links())
 }

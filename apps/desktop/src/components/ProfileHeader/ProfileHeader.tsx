@@ -24,6 +24,8 @@ export interface ProfileHeaderProps {
   onEdit: () => void;
   onSave: () => void;
   onCancel: () => void;
+  /** The draft is being saved: Save shows its busy state and ignores presses. */
+  saving?: boolean;
   /** Inline field errors (e.g. an empty name). */
   errors?: Partial<Record<keyof ProfileDraft, string>>;
   /** The 30px camera badge; accessible name via `photoLabel`. */
@@ -51,6 +53,7 @@ export function ProfileHeader({
   onEdit,
   onSave,
   onCancel,
+  saving = false,
   errors,
   onChangePhoto,
   photoLabel,
@@ -61,7 +64,7 @@ export function ProfileHeader({
   const { t } = useTranslation();
   const submit = (event: FormEvent) => {
     event.preventDefault();
-    onSave();
+    if (!saving) onSave();
   };
   return (
     <section className={cx(styles.card, className)} aria-label={name}>
@@ -104,7 +107,7 @@ export function ProfileHeader({
             />
           </div>
           <div className={styles.formActions}>
-            <Button type="submit" variant="primary">
+            <Button type="submit" variant="primary" loading={saving}>
               {t("common.save")}
             </Button>
             <Button onClick={onCancel}>{t("common.cancel")}</Button>

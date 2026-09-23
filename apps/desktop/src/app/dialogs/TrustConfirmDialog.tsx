@@ -1,11 +1,10 @@
-import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { AppIcon } from "@/components/AppIcon";
 import { Button } from "@/components/Button";
 import { Modal, ModalIcon } from "@/components/Modal";
 import { TRUST_KEY, TrustBadge } from "@/components/TrustBadge";
 import { useChannelContext, useChannelFollow } from "@/hooks";
-import { useChannelMeta } from "@/screens/shared";
+import { useBusyAction, useChannelMeta } from "@/screens/shared";
 import type { ChannelId } from "@/services/types";
 import { useDialogStore } from "@/stores/useDialogStore";
 import styles from "./TrustConfirmDialog.module.css";
@@ -30,18 +29,16 @@ export function TrustConfirmDialog({ channelId, onCancel }: TrustConfirmDialogPr
   const channel = useChannelContext().byId[channelId];
   const { meta, ready } = useChannelMeta();
   const follow = useChannelFollow();
-  const confirming = useRef(false);
+  const [confirming, run] = useBusyAction();
 
   if (!channel || !ready) return null;
   const cancel = onCancel ?? close;
 
-  const confirm = async () => {
-    if (confirming.current) return;
-    confirming.current = true;
-    // A refused subscription keeps the dialog open without a toast (no failure copy).
-    if (await follow.subscribe(channel)) close();
-    confirming.current = false;
-  };
+  const confirm = () =>
+    run(async () => {
+      // A refused subscription keeps the dialog open without a toast (no failure copy).
+      if (await follow.subscribe(channel)) close();
+    });
 
   return (
     <Modal
@@ -53,7 +50,12 @@ export function TrustConfirmDialog({ channelId, onCancel }: TrustConfirmDialogPr
       footer={
         <>
           <Button onClick={cancel}>{t("common.cancel")}</Button>
-          <Button variant="primary" className={styles.confirm} onClick={() => void confirm()}>
+          <Button
+            variant="primary"
+            className={styles.confirm}
+            loading={confirming}
+            onClick={() => void confirm()}
+          >
             {t("sources.addChannel")}
           </Button>
         </>

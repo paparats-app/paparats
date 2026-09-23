@@ -10,7 +10,7 @@ import { IDEA_STATUS_KEY } from "@/components/IdeaCard";
 import { StatTile } from "@/components/StatTile";
 import { StatusPill } from "@/components/StatusPill";
 import { useFormat } from "@/i18n/format";
-import { useIdeaView } from "@/screens/shared";
+import { useBusyAction, useIdeaView } from "@/screens/shared";
 import { useActivateBonus } from "./useActivateBonus";
 import type { IdeasBoard } from "./useIdeasBoard";
 import styles from "./IdeasAside.module.css";
@@ -108,6 +108,7 @@ function YourIdeas({ board }: { board: IdeasBoard }) {
   const { go } = useNav();
   const view = useIdeaView();
   const activate = useActivateBonus();
+  const [activating, runActivate] = useBusyAction();
   const titleId = useId();
   const showRail =
     !board.bonusClaimed &&
@@ -152,7 +153,8 @@ function YourIdeas({ board }: { board: IdeasBoard }) {
           tone="progress"
           fullWidth
           className={styles.rail}
-          onClick={() => void activate([])}
+          loading={activating}
+          onClick={() => void runActivate(() => activate([]))}
         >
           {t("ideas.activateBonus")}
         </Button>

@@ -19,6 +19,8 @@ export const nativeWindow = {
   onResized(cb: () => void): () => void {
     if (!isTauri()) return () => undefined;
     const pending = getCurrentWindow().onResized(cb);
-    return () => void pending.then((un) => un());
+    return () => {
+      pending.then((un) => un()).catch(() => undefined);
+    };
   },
 };

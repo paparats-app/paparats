@@ -415,3 +415,102 @@ Known gaps (by milestone):
   checked by tests, not visually.
 - The main JS chunk is now ≈ 635 kB minified (≈ 192 kB gzip); the mock services and fixtures are
   still bundled in Tauri builds.
+
+## M6 — First launch and polish (2026-09-23)
+
+What exists now (decisions D48–D51 in `docs/decisions.md`):
+
+- **First launch** (`screens/first-launch`, D50). The Kupalle night scene over the whole window:
+  seed → fern (120 ms) → part (1400) → bloom (2800) → logo (4300) → lang (5400), with the spec's
+  layers, easings and durations (per-phase values in `scene.ts`, transitions in CSS), scaled by
+  `min(W/1440, H/920)`. A click on the scene or `››` skips to the language step. Steps: Language
+  (each card in its own language, applied at once), Appearance (Light / Dark / System miniatures,
+  applied at once), Account (email + password, Sign in, Later, "No account? Create one"); Back and
+  the step indicator. The finish writes `localStorage › paparats.firstRun` {seen, locale, theme,
+  at}, hands over to Home with the hero glow (1.7 s), fades the overlay (unmounted at 1.5 s), moves
+  the focus to the content column and, after Sign in, toasts "Signed in as …" at 1.6 s. It plays at
+  startup unless the record says it was seen (`bootstrap()` → `useFirstLaunchStore.launch()`) and
+  again from Settings › Advanced › Replay first launch; reduced motion or Subtle animations off
+  start at the language step with nothing moving. While it plays the rest of the window is inert,
+  an invisible drag strip keeps the frameless window movable, and a `paparats://` link waits for the
+  finish. New: `platform/storage.ts` (`localStore`), the `--fl-*` night palette in `tokens.css`.
+- **Windows integration** (`src-tauri/src/shell.rs`, `window.rs`, `tray.rs`, `deep_link.rs`,
+  `autostart.rs`; D48). Tray icon with Open Paparats · Check for updates · Quit in the UI language;
+  Minimize to system tray (the × and Alt+F4 hide the window); start on login through
+  tauri-plugin-autostart (`--minimized`, release builds only); a single instance (a second launch
+  brings the first window forward); `paparats://app/<id>` and `paparats://channel/<id>` (the link
+  that started the app is kept until the UI listens); the window created hidden on the theme's
+  background and shown after the first frame, with its size, position and maximized state kept;
+  capabilities narrowed to an app manifest (`allow-<command>` per command) plus single plugin
+  permissions; the updater check (`updates.paparats.app`, placeholder public key); the signing hook
+  `scripts/sign-windows.mjs` (Azure Trusted Signing or a PFX, unsigned without credentials); CI
+  signs when the secrets exist and fails an installer of 15 MB or more. `export-bindings` became a
+  Cargo example, so the installer carries one executable. UI side: `platform/shell.ts ›
+  nativeShell`, `app/useNativeShell` (providers), `app/useDeepLinks`, `app/useTrayActions`.
+- **Keyboard, focus, disabled and loading states** (D49). Every control has a visible
+  `:focus-visible` ring (inset where it would be clipped, the mint border on text fields,
+  `--cta-mint` on photos); 32 px hit targets for `xs` buttons from `Button`; `Modal` traps Tab,
+  pulls escaping focus back and closes on Escape from anywhere; a navigation from inside the content
+  focuses the content column; keyboard presses on buttons replaced by their result hand the focus
+  on; window controls last in the tab order. `Button loading` (spinner over the label after 150 ms,
+  width kept, `aria-busy`), `screens/shared › useBusyAction`, busy/double-submit guards on every
+  async action; "Offline" actions `aria-disabled` but still answering with the toast; one polite
+  live region for toasts; repeated labels described by their row / channel / plan.
+- **Integration** (D51). The three engineers' `Layout.tsx` edits merged; the first-launch palette
+  moved from the CSS module to `tokens.css`; the hero carousels' `aria-roledescription` translated
+  (`common.carousel`); the focus hand-over after the first launch and the waiting deep link added
+  (both tested).
+- **Tests.** Vitest: 131 files, 892 tests. M6: `scene.test.ts` (7), `useFirstLaunchStore.test.ts`
+  (12), `FirstLaunch.test.tsx` (15, fake timers, including a whole-shell run with the focus
+  hand-over), `app/nativeShell.test.tsx` (links, the link waiting for the first launch, tray
+  actions, tray language and first frame over `@tauri-apps/api/mocks`),
+  `services/tauri/system.test.ts`, `useBusyAction`, and a keyboard/a11y smoke test per screen
+  (`<Name>Screen.a11y.test.tsx`, `app/shell.a11y.test.tsx`). Rust: 164 tests (the shell, tray
+  labels, link parsing, stored settings, window background vs `tokens.css`, capability ↔ commands
+  ↔ bindings, updater endpoints on the allowlist, the installer's scheme).
+- **Checks.** typecheck, lint, test, format:check, cargo fmt, clippy (`-D warnings`) and cargo
+  test are green.
+  - Chrome on `pnpm dev` (mock services, keyboard driven): with an empty `localStorage` the scene
+    played to the language step with the shell inert; Русский and Light by keyboard applied at
+    once and persisted; Later → Home with the focus on the content column and the record
+    `{seen, ru, light}`; a reload did not replay it and kept ru/light; Settings › Advanced →
+    Developer mode → Replay first launch played it again from the start; with Subtle animations off
+    it opened on the language step with no animation or transition running. A focus audit (every
+    tabbable control focused after keyboard input: `:focus-visible` with a 2 px ring, or the mint
+    border on fields) passed on the eight sidebar screens, the app, channel and idea pages,
+    Profile and search results. No console errors.
+  - The real app (`pnpm tauri dev`, Rust backend, driven over the WebView2 debugging port): the
+    scene played on an empty WebView2 profile; Русский and Light by keyboard reached
+    `settings.json`; Later landed on Home. The tray icon is live (UI Automation finds "Paparats"
+    in the notification-area overflow); the × hid the window with the process still running; a
+    second launch of the executable exited and brought the first window back, visible and in the
+    foreground; `Start-Process paparats://app/obsidian` opened the Obsidian page;
+    `paparats://channel/nilesoft` sent during a replayed scene opened the channel page as the
+    exit began. The app log has no warnings. The dev data set in `%APPDATA%/com.paparats.desktop`
+    was backed up before and restored after; the WebView2 `localStorage` was emptied again.
+  - `pnpm tauri build`: `target/release/bundle/nsis/Paparats_0.1.0_x64-setup.exe`, 3 070 474 bytes
+    (2.93 MiB), per-user (`RequestExecutionLevel user`), registers `paparats://`, unsigned (no
+    credentials on this machine); the app executable is 6.79 MiB.
+
+Known gaps:
+
+- The installer was built but not installed here: the per-user install, start on login
+  (registered by release builds at startup) and the installed scheme were not exercised end to end.
+- Updates: `plugins.updater.pubkey` is a placeholder and nothing downloads or installs an update
+  yet; the tray's "Check for updates" was checked by tests, not in the real app. The tray menu's
+  translated labels were not looked at on screen (Rust tests cover them).
+- During the first launch the window controls stay covered (prototype parity, D50): close and
+  minimise through Alt+F4 and the taskbar.
+- Reduced motion from the OS was checked by a unit test (matchMedia stub) and CSS review; the
+  browser check used Subtle animations off. A frame-by-frame comparison of the scene's motion with
+  the prototype was not possible (the checking tab was in the background); end states per phase
+  were compared by the first-launch engineer.
+- Focus is not handed on when a whole row or block disappears (Library ⋯ → Uninstall, the stale
+  callout, the Ideas note ×, an idea card's Take, Cancel plan): the next Tab continues nearby, but
+  nothing shows focus until then. `UpdateRow`'s icon tile is a `tabIndex=-1` button with
+  `aria-hidden`.
+- Running the development build registers `paparats://` for the dev executable in
+  `HKCU\Software\Classes\paparats` (D48); on this machine it now points at `target/debug`.
+- Cyrillic text still renders 1–6 px narrower than in the prototype (M2 gap). The main JS chunk is
+  ≈ 660 kB minified (≈ 200 kB gzip); the mock services and fixtures are still bundled in Tauri
+  builds.

@@ -58,3 +58,12 @@ describe("BenefitStrip", () => {
     expect(within(list).getAllByRole("listitem")).toHaveLength(2);
   });
 });
+
+describe("SubscriptionPlan button description", () => {
+  it("tells the plan buttons apart by the plan's name and price", () => {
+    render(<SubscriptionPlan {...base} buttonLabel="Choose plan" onSelect={() => {}} />);
+    expect(screen.getByRole("button", { name: "Choose plan" })).toHaveAccessibleDescription(
+      "Paparats Pro $4.99/ month",
+    );
+  });
+});

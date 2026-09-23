@@ -56,6 +56,7 @@ export function IdeaDiscussion({ idea, detail }: IdeaDiscussionProps) {
           value: text,
           onChange: setText,
           onPost: () => void post(),
+          posting,
           initials: detail.composer.initials,
           avatarTint: detail.composer.tint,
         }}

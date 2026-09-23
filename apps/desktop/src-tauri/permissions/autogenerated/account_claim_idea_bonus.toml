@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-account-claim-idea-bonus"
+description = "Enables the account_claim_idea_bonus command without any pre-configured scope."
+commands.allow = ["account_claim_idea_bonus"]
+
+[[permission]]
+identifier = "deny-account-claim-idea-bonus"
+description = "Denies the account_claim_idea_bonus command without any pre-configured scope."
+commands.deny = ["account_claim_idea_bonus"]

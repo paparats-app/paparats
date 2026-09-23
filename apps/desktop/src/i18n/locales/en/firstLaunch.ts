@@ -13,4 +13,8 @@ export const firstLaunch = {
   signedInAs: "Signed in as {{email}}",
   emailPlaceholder: "name@example.com",
   passwordPlaceholder: "Password",
+  skip: "Skip",
+  sceneLabel: "Welcome to Paparats",
+  stepsLabel: "Setup steps",
+  emailLabel: "Email",
 } as const;

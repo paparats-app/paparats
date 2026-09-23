@@ -91,6 +91,7 @@ export function ProfileHeaderCard({ profile }: { profile: Profile }) {
           startEdit(profile);
         }}
         onSave={() => void save()}
+        saving={saving}
         onCancel={() => {
           setErrors({});
           endEdit();

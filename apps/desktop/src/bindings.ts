@@ -96,14 +96,28 @@ export const commands = {
     typedError<Account, AppError>(__TAURI_INVOKE("account_sign_in", { email, password })),
   accountSignOut: () => typedError<Account, AppError>(__TAURI_INVOKE("account_sign_out")),
   systemToday: () => typedError<string, AppError>(__TAURI_INVOKE("system_today")),
-  systemCheckForAppUpdate: () =>
-    typedError<SelfUpdateCheck, AppError>(__TAURI_INVOKE("system_check_for_app_update")),
+  /**  The UI language, for the tray menu. Called at startup and on every change. */
+  shellSetLocale: (locale: Locale) =>
+    typedError<null, AppError>(__TAURI_INVOKE("shell_set_locale", { locale })),
+  /**  Settings › General › Minimize to system tray. Called at startup and on every change. */
+  shellSetMinimizeToTray: (enabled: boolean) =>
+    typedError<null, AppError>(__TAURI_INVOKE("shell_set_minimize_to_tray", { enabled })),
+  /**  The UI has painted its first frame: the window may appear. */
+  shellWindowReady: () => typedError<null, AppError>(__TAURI_INVOKE("shell_window_ready")),
+  /**
+   *  The `paparats://` links that arrived before the UI listened; later ones come as
+   *  `shell://deep-link` events.
+   */
+  shellTakeDeepLinks: () =>
+    typedError<DeepLinkTarget[], AppError>(__TAURI_INVOKE("shell_take_deep_links")),
 };
 
 /** Events */
 export const events = {
   downloadProgress: makeEvent<DownloadProgressEvent>("download://progress"),
   downloadState: makeEvent<DownloadStateEvent>("download://state"),
+  shellDeepLink: makeEvent<DeepLinkEvent>("shell://deep-link"),
+  shellTrayAction: makeEvent<TrayActionEvent>("shell://tray-action"),
 };
 
 /* Types */
@@ -281,6 +295,19 @@ export type Collection = {
   sub: Localized<string>;
   apps: string[];
 };
+
+/**
+ *  `shell://deep-link` — a `paparats://` link to open (`app/<id>`, `channel/<id>`), sent once the
+ *  UI has taken the links that arrived before it listened (`shell_take_deep_links`).
+ */
+export type DeepLinkEvent = DeepLinkTarget;
+
+/**  A page a `paparats://` link opens. */
+export type DeepLinkTarget =
+  /**  `paparats://app/<id>` — the app page. */
+  | { kind: "app"; id: string }
+  /**  `paparats://channel/<id>` — the channel page. */
+  | { kind: "channel"; id: string };
 
 export type Device = {
   id: string;
@@ -601,6 +628,14 @@ export type SyncOutcome = { kind: "synced"; at: string } | { kind: "unreachable"
 export type Text = Localized<string> | string;
 
 export type ThemePreference = "light" | "dark" | "system";
+
+/**  What the tray asks the UI to do (`shell://tray-action`). */
+export type TrayAction =
+  /**  "Check for updates": the UI opens Settings › About and checks for a new Paparats version. */
+  "checkForUpdates";
+
+/**  `shell://tray-action` — a tray menu entry the UI carries out ("Check for updates"). */
+export type TrayActionEvent = TrayAction;
 
 /**  How much Paparats vouches for a channel. Ordered from most to least trusted. */
 export type TrustLevel =

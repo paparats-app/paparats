@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-install-get-library"
+description = "Enables the install_get_library command without any pre-configured scope."
+commands.allow = ["install_get_library"]
+
+[[permission]]
+identifier = "deny-install-get-library"
+description = "Denies the install_get_library command without any pre-configured scope."
+commands.deny = ["install_get_library"]

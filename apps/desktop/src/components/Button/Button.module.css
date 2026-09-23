@@ -61,6 +61,18 @@
   gap: var(--sp-6);
 }
 
+/* The 30px buttons keep the prototype's size but get a 32px hit target (README › Accessibility).
+   The pseudo-element sits in the padding box, so it is centred and sized explicitly. */
+.xs::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: max(100%, 32px);
+  height: 32px;
+  transform: translate(-50%, -50%);
+}
+
 .compact {
   --btn-h: 32px;
   --btn-r: var(--r-7);
@@ -241,7 +253,36 @@
 }
 
 .loading {
+  --btn-busy-delay: 150ms;
   cursor: progress;
+}
+
+/* No leading icon to swap: after the delay the content fades out under a centred spinner, so the
+   button keeps its width and a quick action shows nothing at all. The label stays in the
+   accessibility tree (opacity, not visibility). */
+.covered > :not(.cover) {
+  animation: busy-hide 0s linear var(--btn-busy-delay) forwards;
+}
+
+.cover {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  animation: busy-show 0s linear var(--btn-busy-delay) forwards;
+}
+
+@keyframes busy-hide {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes busy-show {
+  to {
+    opacity: 1;
+  }
 }
 
 .spinner {

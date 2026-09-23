@@ -58,6 +58,15 @@ tauri-plugin-window-state = "2.4"
 tauri-plugin-opener = "2.5"
 # Settings persistence (settings.json in the app data dir, STACK.md decision 4).
 tauri-plugin-store = "2.4"
+# Windows integration (M6): start on login, one running instance, paparats:// links, self-update.
+tauri-plugin-autostart = "2.5"
+tauri-plugin-deep-link = "2.4"
+# `deep-link`: a second launch hands its paparats:// URL to the running instance's handler.
+tauri-plugin-single-instance = { version = "2.4", features = ["deep-link"] }
+# Schannel through native-tls like the download engine (D23); NSIS updates need no zip support.
+tauri-plugin-updater = { version = "2.12", default-features = false, features = ["native-tls"] }
+# Reads the login entry (HKCU Run) that tauri-plugin-autostart writes; already in the tree.
+windows-registry = "0.5"
 
 [workspace.lints.rust]
 unsafe_code = "deny"

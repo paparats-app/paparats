@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-channels-lookup"
+description = "Enables the channels_lookup command without any pre-configured scope."
+commands.allow = ["channels_lookup"]
+
+[[permission]]
+identifier = "deny-channels-lookup"
+description = "Denies the channels_lookup command without any pre-configured scope."
+commands.deny = ["channels_lookup"]

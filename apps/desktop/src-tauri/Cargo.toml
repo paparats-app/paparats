@@ -18,9 +18,10 @@ crate-type = ["staticlib", "cdylib", "rlib"]
 name = "paparats-desktop"
 path = "src/main.rs"
 
-[[bin]]
+# `pnpm specta`. An example, not a second `[[bin]]`: the NSIS bundle installs every bin target.
+[[example]]
 name = "export-bindings"
-path = "src/bin/export_bindings.rs"
+path = "examples/export_bindings.rs"
 
 [build-dependencies]
 tauri-build.workspace = true
@@ -33,10 +34,15 @@ paparats-download.workspace = true
 paparats-install.workspace = true
 paparats-inventory.workspace = true
 paparats-account.workspace = true
-tauri.workspace = true
+# `tray-icon`: the notification-area icon and its menu (tray.rs).
+tauri = { workspace = true, features = ["tray-icon"] }
 tauri-plugin-window-state.workspace = true
 tauri-plugin-opener.workspace = true
 tauri-plugin-store.workspace = true
+tauri-plugin-autostart.workspace = true
+tauri-plugin-deep-link.workspace = true
+tauri-plugin-single-instance.workspace = true
+tauri-plugin-updater.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
@@ -49,8 +55,12 @@ tracing.workspace = true
 tracing-subscriber.workspace = true
 tracing-appender.workspace = true
 
+[target.'cfg(windows)'.dependencies]
+windows-registry.workspace = true
+
 [dev-dependencies]
 tauri = { workspace = true, features = ["test"] }
+tempfile.workspace = true
 tokio = { workspace = true, features = ["test-util", "rt", "macros"] }
 
 [lints]

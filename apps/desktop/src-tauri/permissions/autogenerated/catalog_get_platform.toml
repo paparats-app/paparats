@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-catalog-get-platform"
+description = "Enables the catalog_get_platform command without any pre-configured scope."
+commands.allow = ["catalog_get_platform"]
+
+[[permission]]
+identifier = "deny-catalog-get-platform"
+description = "Denies the catalog_get_platform command without any pre-configured scope."
+commands.deny = ["catalog_get_platform"]

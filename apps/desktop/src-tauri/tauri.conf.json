@@ -19,6 +19,8 @@
         "minWidth": 1280,
         "minHeight": 800,
         "center": true,
+        "visible": false,
+        "backgroundColor": "#0b171b",
         "decorations": false,
         "shadow": true,
         "resizable": true
@@ -36,6 +38,17 @@
       "dangerousDisableAssetCspModification": ["style-src"]
     }
   },
+  "plugins": {
+    "deep-link": {
+      "desktop": {
+        "schemes": ["paparats"]
+      }
+    },
+    "updater": {
+      "endpoints": ["https://updates.paparats.app/latest.json"],
+      "pubkey": "PLACEHOLDER-NOT-A-KEY: replace with the minisign public key printed by `pnpm tauri signer generate` (docs/decisions.md › Windows integration). Update checks work without it; installing an update fails signature verification until it is set."
+    }
+  },
   "bundle": {
     "active": true,
     "targets": ["nsis"],
@@ -51,6 +64,10 @@
     ],
     "windows": {
       "webviewInstallMode": { "type": "downloadBootstrapper" },
+      "signCommand": {
+        "cmd": "node",
+        "args": ["scripts/sign-windows.mjs", "%1"]
+      },
       "nsis": {
         "installMode": "currentUser",
         "languages": ["English", "Russian"],

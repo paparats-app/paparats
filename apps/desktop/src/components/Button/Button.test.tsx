@@ -75,3 +75,27 @@ describe("IconButton", () => {
     expect(close).toHaveAttribute("stroke-width", "1.75");
   });
 });
+
+describe("Button busy state", () => {
+  it("covers the label with the spinner when there is no leading icon, keeping the name", async () => {
+    const onClick = vi.fn();
+    render(
+      <Button loading onClick={onClick}>
+        Send
+      </Button>,
+    );
+    const button = screen.getByRole("button", { name: "Send" });
+    expect(button).toHaveAttribute("aria-busy", "true");
+    const cover = button.querySelector('[data-icon="loader-circle"]')?.parentElement;
+    expect(cover).toHaveAttribute("aria-hidden", "true");
+    await userEvent.click(button);
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it("keeps an aria-busy the caller sets without the spinner (Checking…)", () => {
+    render(<Button aria-busy>Checking…</Button>);
+    const button = screen.getByRole("button", { name: "Checking…" });
+    expect(button).toHaveAttribute("aria-busy", "true");
+    expect(button.querySelector('[data-icon="loader-circle"]')).toBeNull();
+  });
+});

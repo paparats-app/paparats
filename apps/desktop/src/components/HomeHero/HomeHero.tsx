@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { useTranslation } from "react-i18next";
 import heroFern from "@/assets/images/hero-fern.webp";
 import { Button } from "../Button";
 import { CarouselDots } from "../CarouselDots";
@@ -56,11 +57,12 @@ export function HomeHero({
   photo = heroFern,
   className,
 }: HomeHeroProps) {
+  const { t } = useTranslation();
   const step = (delta: number) => onIndexChange((index + delta + count) % count);
   return (
     <section
       className={cx(styles.hero, className)}
-      aria-roledescription="carousel"
+      aria-roledescription={t("common.carousel")}
       aria-label={carouselLabel}
       style={{ "--photo": `url("${photo}")` } as CSSProperties}
     >

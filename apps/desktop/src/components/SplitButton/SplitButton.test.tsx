@@ -48,3 +48,15 @@ describe("SplitButton", () => {
     expect(screen.getByRole("button", { name: "Details" })).toBeEnabled();
   });
 });
+
+describe("SplitButton offline", () => {
+  it("reads the muted (Offline) action as unavailable but keeps it pressable", async () => {
+    const onClick = vi.fn();
+    render(<SplitButton label="Offline" tone="muted" onClick={onClick} secondaryLabel="Details" />);
+    const action = screen.getByRole("button", { name: "Offline" });
+    expect(action).toHaveAttribute("aria-disabled", "true");
+    expect(action).toBeEnabled();
+    await userEvent.click(action);
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+});

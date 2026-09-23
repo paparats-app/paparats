@@ -193,8 +193,9 @@ function ConnectedRow({ row, settings }: ConnectedRowProps) {
           };
           break;
         case "signOut":
-          disabled = signingOut || account?.signedIn === false;
+          disabled = account?.signedIn === false;
           onAction = () => {
+            if (signingOut) return;
             setSigningOut(true);
             signOut()
               .then(() => notify(t("settings.signedOut")))
@@ -217,6 +218,7 @@ function ConnectedRow({ row, settings }: ConnectedRowProps) {
           actionLabel={actionLabel}
           onAction={onAction}
           disabled={disabled}
+          busy={row.action === "signOut" && signingOut}
         />
       );
     }

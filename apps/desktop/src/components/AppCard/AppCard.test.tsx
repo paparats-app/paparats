@@ -99,3 +99,19 @@ describe("AppActionButton", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 });
+
+describe("AppActionButton offline", () => {
+  it("reads the muted (Offline) action as unavailable but keeps it pressable", async () => {
+    const onClick = vi.fn();
+    render(<AppActionButton action={{ label: "Offline", tone: "muted", onClick }} />);
+    const action = screen.getByRole("button", { name: "Offline" });
+    expect(action).toHaveAttribute("aria-disabled", "true");
+    await userEvent.click(action);
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("takes Queued out of the tab order", () => {
+    render(<AppActionButton action={{ label: "Queued", tone: "quiet", disabled: true }} />);
+    expect(screen.getByRole("button", { name: "Queued" })).toBeDisabled();
+  });
+});

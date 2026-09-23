@@ -10,3 +10,11 @@ describe("Toast", () => {
     expect(toast.querySelector('[data-icon="check"]')).not.toBeNull();
   });
 });
+
+describe("Toast inside a host's live region", () => {
+  it("does not announce itself with live={false}", () => {
+    render(<Toast message="Profile saved" floating={false} live={false} />);
+    expect(screen.queryByRole("status")).toBeNull();
+    expect(screen.getByText("Profile saved")).toBeInTheDocument();
+  });
+});

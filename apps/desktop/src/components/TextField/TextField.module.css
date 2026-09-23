@@ -38,7 +38,9 @@
   border-color: var(--mint);
 }
 
-.input[aria-invalid="true"] {
+/* The focus border wins while the field is focused (the prototype's `style-focus`), so an invalid
+   field that takes the focus (Publish with a short title) still shows where the focus is. */
+.input[aria-invalid="true"]:not(:focus) {
   border-color: var(--danger);
 }
 

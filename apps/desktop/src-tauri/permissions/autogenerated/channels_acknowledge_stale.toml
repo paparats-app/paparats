@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-channels-acknowledge-stale"
+description = "Enables the channels_acknowledge_stale command without any pre-configured scope."
+commands.allow = ["channels_acknowledge_stale"]
+
+[[permission]]
+identifier = "deny-channels-acknowledge-stale"
+description = "Denies the channels_acknowledge_stale command without any pre-configured scope."
+commands.deny = ["channels_acknowledge_stale"]

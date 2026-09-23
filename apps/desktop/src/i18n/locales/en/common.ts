@@ -3,6 +3,8 @@ export const common = {
   statApps: "Apps and counting",
   statMembers: "Pro members",
   tagline: "Hidden gems for Windows.",
+  /** `aria-roledescription` of the hero carousels (read by screen readers, lower case). */
+  carousel: "carousel",
   seeAll: "See all",
   all: "All",
   back: "Back",

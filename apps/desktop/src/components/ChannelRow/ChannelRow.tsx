@@ -1,3 +1,4 @@
+import { useId, type Ref } from "react";
 import { useTranslation } from "react-i18next";
 import type { TrustLevel } from "@/services/types";
 import type { AppIconSource } from "../AppCard";
@@ -49,6 +50,10 @@ export type ChannelRowProps = ChannelRowBase &
         /** Add-channel dialog catalog row: "Learn more" + Subscribe. */
         variant: "catalog";
         onSubscribe: () => void;
+        /** The subscription is being made: Subscribe shows its busy state. */
+        subscribing?: boolean;
+        /** The Subscribe button (e.g. to return focus to it after the trust confirmation). */
+        subscribeRef?: Ref<HTMLButtonElement>;
       }
   );
 
@@ -59,6 +64,7 @@ export type ChannelRowProps = ChannelRowBase &
  */
 export function ChannelRow(props: ChannelRowProps) {
   const { t } = useTranslation();
+  const nameId = useId();
   const { name, icon, trust, meta, onOpen, className } = props;
   const catalog = props.variant === "catalog";
   const paused = !catalog && !props.official && !props.enabled;
@@ -68,7 +74,9 @@ export function ChannelRow(props: ChannelRowProps) {
       <AppIcon mono={icon.mono} tint={icon.tint} iconUrl={icon.iconUrl} size={catalog ? 40 : 44} />
       <span className={styles.text}>
         <span className={styles.nameLine}>
-          <span className={styles.name}>{name}</span>
+          <span id={nameId} className={styles.name}>
+            {name}
+          </span>
           <TrustBadge level={trust} label={t(TRUST_KEY[trust])} size={catalog ? "sm" : "md"} />
         </span>
         <span className={styles.meta}>{meta}</span>
@@ -77,13 +85,28 @@ export function ChannelRow(props: ChannelRowProps) {
   );
 
   if (props.variant === "catalog") {
+    const { onSubscribe, subscribing, subscribeRef } = props;
     return (
       <div className={cx(styles.row, styles.catalog, className)}>
         <div className={styles.identity}>{identity}</div>
-        <Button variant="ghost" size="compact" className={styles.learn} onClick={onOpen}>
+        {/* Each row repeats "Learn more" / "Subscribe": the channel name describes them. */}
+        <Button
+          variant="ghost"
+          size="compact"
+          className={styles.learn}
+          aria-describedby={nameId}
+          onClick={onOpen}
+        >
           {t("common.learnMore")}
         </Button>
-        <Button size="compact" className={styles.subscribe} onClick={props.onSubscribe}>
+        <Button
+          ref={subscribeRef}
+          size="compact"
+          className={styles.subscribe}
+          loading={subscribing}
+          aria-describedby={nameId}
+          onClick={onSubscribe}
+        >
           {t("common.subscribe")}
         </Button>
       </div>

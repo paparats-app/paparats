@@ -87,6 +87,11 @@
   outline-offset: calc(-1 * var(--focus-ring-w));
 }
 
+/* The first row starts 1px above the card's edge (its rule is clipped): keep its ring whole. */
+.infoRow:first-child:focus-visible {
+  outline-offset: calc(-1 * var(--focus-ring-w) - 1px);
+}
+
 .infoIcon {
   color: var(--text2);
 }

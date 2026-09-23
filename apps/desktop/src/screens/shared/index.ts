@@ -13,3 +13,4 @@ export { channelIcon, HOST_KEY, KIND_KEY, TRUST_LEVELS, useChannelMeta } from ".
 export { useIdeaView, type IdeaView } from "./useIdeaView";
 export { useTakeIdea } from "./useTakeIdea";
 export { BackLink } from "./BackLink";
+export { useBusyAction, type RunBusy } from "./useBusyAction";

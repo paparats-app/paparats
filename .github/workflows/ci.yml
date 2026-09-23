@@ -66,6 +66,24 @@ jobs:
     name: Build installer
     needs: checks
     runs-on: windows-latest
+    env:
+      # Code signing through bundle.windows.signCommand (apps/desktop/src-tauri/scripts/
+      # sign-windows.mjs). A method signs only when all of its secrets exist; with none the
+      # installer is built unsigned and the job still passes.
+      # Azure Trusted Signing:
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      TRUSTED_SIGNING_ENDPOINT: ${{ secrets.TRUSTED_SIGNING_ENDPOINT }}
+      TRUSTED_SIGNING_ACCOUNT: ${{ secrets.TRUSTED_SIGNING_ACCOUNT }}
+      TRUSTED_SIGNING_PROFILE: ${{ secrets.TRUSTED_SIGNING_PROFILE }}
+      # Or an OV/EV certificate as a base64-encoded .pfx (decoded to WINDOWS_CERTIFICATE_PFX below):
+      WINDOWS_CERTIFICATE_PFX_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_PFX_BASE64 }}
+      WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+      # Updater artifacts (the installer's minisign .sig): only with the private key, which must
+      # match plugins.updater.pubkey in tauri.conf.json (docs/decisions.md › Windows integration).
+      TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+      TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
     steps:
       - uses: actions/checkout@v5
 
@@ -83,14 +101,39 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install trusted-signing-cli
+        if: ${{ env.AZURE_CLIENT_ID != '' }}
+        run: cargo install trusted-signing-cli --locked
+
+      - name: Decode the signing certificate
+        if: ${{ env.WINDOWS_CERTIFICATE_PFX_BASE64 != '' }}
+        shell: pwsh
+        run: |
+          $path = Join-Path $env:RUNNER_TEMP "paparats-signing.pfx"
+          [IO.File]::WriteAllBytes($path, [Convert]::FromBase64String($env:WINDOWS_CERTIFICATE_PFX_BASE64))
+          "WINDOWS_CERTIFICATE_PFX=$path" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
       - name: Build NSIS installer
-        uses: tauri-apps/tauri-action@v0
-        with:
-          projectPath: apps/desktop
-          tauriScript: pnpm tauri
-          args: --bundles nsis
+        shell: bash
+        run: |
+          if [ -n "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            pnpm tauri build --config src-tauri/tauri.updater.conf.json
+          else
+            pnpm tauri build
+          fi
+
+      - name: Installer size budget (< 15 MB)
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem target/release/bundle/nsis/*-setup.exe | Select-Object -First 1
+          $mb = [math]::Round($installer.Length / 1MB, 2)
+          "$($installer.Name): $mb MB"
+          if ($installer.Length -ge 15MB) { throw "The installer is $mb MB; the budget is 15 MB." }
 
       - uses: actions/upload-artifact@v4
         with:
           name: paparats-nsis
-          path: target/release/bundle/nsis/*.exe
+          path: |
+            target/release/bundle/nsis/*.exe
+            target/release/bundle/nsis/*.sig
+          if-no-files-found: error

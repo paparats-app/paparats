@@ -50,6 +50,8 @@ export function AppActionButton({
       size={size}
       fullWidth={fullWidth}
       disabled={action.disabled}
+      // "Offline" still answers a press (the offline toast) but reads as unavailable.
+      aria-disabled={tone === "muted" || undefined}
       aria-label={ariaLabel}
       onClick={action.onClick}
       className={cx(

@@ -53,7 +53,7 @@ export function FeaturedHero({
   return (
     <section
       className={cx(styles.hero, className)}
-      aria-roledescription="carousel"
+      aria-roledescription={t("common.carousel")}
       aria-label={carouselLabel}
       style={{ "--tint": app.tint } as CSSProperties}
     >

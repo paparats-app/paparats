@@ -1,22 +1,35 @@
 //! Paparats desktop client — Tauri entry point: plugins, commands, events, window setup.
 
+#[cfg(test)]
+mod app_commands;
+mod autostart;
 mod commands;
+mod deep_link;
 mod error;
 mod events;
 mod logging;
 mod services;
+mod shell;
+mod tray;
+mod window;
 
 #[cfg(test)]
 mod ipc_tests;
 
 pub use error::{AppError, AppResult};
-pub use events::{DownloadProgressEvent, DownloadStateEvent};
+pub use events::{DeepLinkEvent, DownloadProgressEvent, DownloadStateEvent, TrayActionEvent};
 
 use std::sync::Arc;
+use std::time::Duration;
 
 use paparats_core as core;
-use tauri::Manager;
+use tauri::{Manager, RunEvent, WindowEvent};
+use tauri_plugin_deep_link::DeepLinkExt;
 use tauri_specta::{Builder, collect_commands, collect_events};
+
+use crate::shell::{Shell, ShellStart, StoredSettings};
+use crate::tray::{Tray, TrayLabels};
+use crate::window::{MAIN_WINDOW, MainWindow, TauriShellHost};
 
 /// Where `export_bindings` writes the generated TypeScript, relative to this crate.
 pub const BINDINGS_PATH: &str = "../src/bindings.ts";
@@ -24,9 +37,16 @@ pub const BINDINGS_PATH: &str = "../src/bindings.ts";
 /// File name of the local database inside the app data directory.
 pub const DATABASE_FILE: &str = "paparats.db";
 
+/// File name of the UI's settings store in the app data directory (`services/tauri/settings.ts`).
+pub const SETTINGS_FILE: &str = "settings.json";
+
+/// How long the window may stay hidden waiting for the UI's first frame before it is shown anyway.
+const FIRST_FRAME_TIMEOUT: Duration = Duration::from_secs(5);
+
 /// The single registry of commands, events and domain types shared by the app and the bindings
 /// exporter. Domain types are registered explicitly so the UI can import every one of them from
-/// `bindings.ts`, even before a command returns it.
+/// `bindings.ts`, even before a command returns it. Every command is also listed in
+/// `app_commands.rs` (its permission) — a test keeps the two in sync.
 pub fn specta_builder<R: tauri::Runtime>() -> Builder<R> {
     Builder::<R>::new()
         .commands(collect_commands![
@@ -81,9 +101,18 @@ pub fn specta_builder<R: tauri::Runtime>() -> Builder<R> {
             commands::account_sign_out,
             // system
             commands::system_today,
-            commands::system_check_for_app_update,
+            // native shell
+            commands::shell_set_locale,
+            commands::shell_set_minimize_to_tray,
+            commands::shell_window_ready,
+            commands::shell_take_deep_links,
         ])
-        .events(collect_events![DownloadProgressEvent, DownloadStateEvent])
+        .events(collect_events![
+            DownloadProgressEvent,
+            DownloadStateEvent,
+            DeepLinkEvent,
+            TrayActionEvent
+        ])
         .typ::<core::Catalog>()
         .typ::<core::ChannelInfo>()
         .typ::<core::ChannelSubscription>()
@@ -141,25 +170,217 @@ fn init_state(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+/// The native shell: window, tray, login entry and `paparats://` links. The window stays hidden
+/// until the UI reports its first frame (`shell_window_ready`), or until asked when the login
+/// entry started us; the stored settings give the tray its language and the close button its
+/// meaning before the UI has loaded.
+fn init_shell(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
+    let handle = app.handle().clone();
+    let stored = StoredSettings::read(&app.path().app_data_dir()?.join(SETTINGS_FILE));
+    let args: Vec<String> = std::env::args().collect();
+    let start = ShellStart {
+        hidden: shell::launched_by_autostart(&args),
+        minimize_to_tray: stored.tray,
+        locale: stored.locale,
+    };
+
+    app.manage(MainWindow::prepare(&handle, &stored));
+    let host = Arc::new(TauriShellHost::new(handle.clone()));
+    app.manage(Shell::new(host.clone(), &start));
+    host.set_tray(Tray::create(
+        &handle,
+        &TrayLabels::for_locale(stored.locale),
+        |app, item| app.state::<Shell>().tray_item(item),
+        |app| app.state::<Shell>().show(),
+    )?);
+
+    autostart::reconcile(&handle, stored.startup);
+
+    // Development builds register paparats:// for themselves; installs get it from the installer.
+    #[cfg(debug_assertions)]
+    if let Err(e) = app.deep_link().register_all() {
+        tracing::warn!(error = %e, "could not register the paparats:// scheme");
+    }
+    // The link that started this process, then the ones later launches hand over.
+    if let Ok(Some(urls)) = app.deep_link().get_current() {
+        for url in &urls {
+            app.state::<Shell>().open_url(url);
+        }
+    }
+    let links = handle.clone();
+    app.deep_link().on_open_url(move |event| {
+        for url in event.urls() {
+            links.state::<Shell>().open_url(&url);
+        }
+    });
+
+    tauri::async_runtime::spawn(async move {
+        tokio::time::sleep(FIRST_FRAME_TIMEOUT).await;
+        if handle.state::<Shell>().reveal_if_still_waiting() {
+            tracing::warn!("the UI did not report its first frame; showing the window anyway");
+        }
+    });
+    Ok(())
+}
+
 pub fn run() {
     let builder = specta_builder::<tauri::Wry>();
 
-    let result = tauri::Builder::default()
-        .plugin(tauri_plugin_window_state::Builder::default().build())
+    let app = tauri::Builder::default()
+        // First: a second launch hands its arguments (and its `paparats://` link, through the
+        // deep-link plugin) to this process and exits.
+        .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
+            if let Some(shell) = app.try_state::<Shell>() {
+                shell.second_instance(&args);
+            }
+        }))
+        .plugin(tauri_plugin_deep_link::init())
+        .plugin(
+            tauri_plugin_window_state::Builder::default()
+                .with_state_flags(window::saved_state())
+                .skip_initial_state(MAIN_WINDOW)
+                .build(),
+        )
+        .plugin(
+            tauri_plugin_autostart::Builder::new()
+                .app_name(autostart::ENTRY_NAME)
+                .args([shell::AUTOSTART_ARG])
+                .build(),
+        )
+        .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
         // Settings: `settings.json` in the app data dir, read and written by the UI's
         // SettingsService (`services/tauri/settings.ts`).
         .plugin(tauri_plugin_store::Builder::default().build())
         .invoke_handler(builder.invoke_handler())
+        .on_window_event(|window, event| {
+            // Minimize to system tray: the close button and Alt+F4 hide the window instead.
+            if let WindowEvent::CloseRequested { api, .. } = event
+                && window.label() == MAIN_WINDOW
+                && window
+                    .try_state::<Shell>()
+                    .is_some_and(|shell| shell.minimize_to_tray())
+            {
+                api.prevent_close();
+                if let Err(e) = window.hide() {
+                    tracing::warn!(error = %e, "could not hide the window");
+                }
+            }
+        })
         .setup(move |app| {
             builder.mount_events(app);
-            init_state(app)
+            init_state(app)?;
+            init_shell(app)
         })
-        .run(tauri::generate_context!());
+        .build(tauri::generate_context!());
 
-    if let Err(err) = result {
-        tracing::error!(error = %err, "Paparats failed to start");
-        eprintln!("Paparats failed to start: {err}");
-        std::process::exit(1);
+    match app {
+        Ok(app) => app.run(|app, event| {
+            if let RunEvent::Exit = event
+                && let Some(window) = app.try_state::<MainWindow>()
+            {
+                window.keep_saved_maximized();
+            }
+        }),
+        Err(err) => {
+            tracing::error!(error = %err, "Paparats failed to start");
+            eprintln!("Paparats failed to start: {err}");
+            std::process::exit(1);
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::collections::BTreeSet;
+
+    use serde_json::Value;
+
+    use super::app_commands::APP_COMMANDS;
+
+    /// Command names the generated bindings invoke.
+    fn bindings_commands() -> BTreeSet<String> {
+        include_str!("../../src/bindings.ts")
+            .split("__TAURI_INVOKE(\"")
+            .skip(1)
+            .filter_map(|rest| rest.split('"').next())
+            .map(str::to_owned)
+            .collect()
+    }
+
+    fn capability() -> Value {
+        serde_json::from_str(include_str!("../capabilities/default.json")).unwrap()
+    }
+
+    fn granted() -> BTreeSet<String> {
+        capability()["permissions"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|p| p.as_str().unwrap().to_owned())
+            .collect()
+    }
+
+    #[test]
+    fn the_command_list_matches_the_registry() {
+        let listed: BTreeSet<String> = APP_COMMANDS.iter().map(|c| (*c).to_owned()).collect();
+        assert_eq!(
+            listed.len(),
+            APP_COMMANDS.len(),
+            "duplicates in APP_COMMANDS"
+        );
+        assert_eq!(
+            listed,
+            bindings_commands(),
+            "run `pnpm specta` and update app_commands.rs"
+        );
+    }
+
+    #[test]
+    fn the_capability_grants_exactly_the_app_commands() {
+        let app_permissions: BTreeSet<String> =
+            granted().into_iter().filter(|p| !p.contains(':')).collect();
+        let expected: BTreeSet<String> = APP_COMMANDS
+            .iter()
+            .map(|c| format!("allow-{}", c.replace('_', "-")))
+            .collect();
+        assert_eq!(app_permissions, expected);
+    }
+
+    #[test]
+    fn plugin_permissions_are_single_commands() {
+        // No `*:default` sets: each plugin command the UI uses is granted on its own.
+        for permission in granted().iter().filter(|p| p.contains(':')) {
+            assert!(!permission.ends_with(":default"), "{permission}");
+            assert!(permission.contains(":allow-"), "{permission}");
+        }
+        assert_eq!(
+            capability()["windows"],
+            serde_json::json!([super::MAIN_WINDOW])
+        );
+    }
+
+    #[test]
+    fn updater_endpoints_are_on_the_allowlist() {
+        let config: Value = serde_json::from_str(include_str!("../tauri.conf.json")).unwrap();
+        let endpoints = config["plugins"]["updater"]["endpoints"]
+            .as_array()
+            .unwrap();
+        assert!(!endpoints.is_empty());
+        for endpoint in endpoints {
+            let url: tauri::Url = endpoint.as_str().unwrap().parse().unwrap();
+            assert_eq!(url.scheme(), "https");
+            let host = url.host_str().unwrap();
+            assert!(paparats_core::hosts::is_first_party(host), "{host}");
+        }
+    }
+
+    #[test]
+    fn the_scheme_is_registered_by_the_installer() {
+        let config: Value = serde_json::from_str(include_str!("../tauri.conf.json")).unwrap();
+        assert_eq!(
+            config["plugins"]["deep-link"]["desktop"]["schemes"],
+            serde_json::json!([super::deep_link::SCHEME])
+        );
     }
 }

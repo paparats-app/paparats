@@ -140,3 +140,29 @@ describe("SettingsRow", () => {
     expect(screen.getByText("Paparats sends nothing home")).toBeInTheDocument();
   });
 });
+
+describe("SettingsRow action keyboard and busy state", () => {
+  it("describes the button by the row title and shows it busy while it runs", async () => {
+    const onAction = vi.fn();
+    render(
+      <SettingsCard>
+        <SettingsRow
+          type="action"
+          title="Search history"
+          actionLabel="Clear"
+          onAction={onAction}
+          busy
+        />
+        <SettingsRow type="path" title="Install location" value={PATH} onChange={() => {}} />
+      </SettingsCard>,
+    );
+    const clear = screen.getByRole("button", { name: "Clear" });
+    expect(clear).toHaveAccessibleDescription("Search history");
+    expect(clear).toHaveAttribute("aria-busy", "true");
+    await userEvent.click(clear);
+    expect(onAction).not.toHaveBeenCalled();
+    expect(screen.getByRole("button", { name: "Change…" })).toHaveAccessibleDescription(
+      "Install location",
+    );
+  });
+});

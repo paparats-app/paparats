@@ -18,10 +18,11 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  /* Legacy rgba() stops (tokens.css): color-mix() stops would interpolate in Oklab. */
   background: radial-gradient(
     circle at 50% 50%,
-    color-mix(in srgb, var(--glow-peach) 80%, transparent) 0%,
-    color-mix(in srgb, var(--brand-flower) 40%, transparent) 26%,
+    var(--fl-hero-glow-core) 0%,
+    var(--fl-hero-glow-mid) 26%,
     transparent 60%
   );
   mix-blend-mode: screen;

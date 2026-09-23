@@ -86,7 +86,55 @@
   --on-tint: #ffffff; /* monogram text and initials on app/channel tint tiles */
   --knob: #ffffff; /* switch knob */
   --promo-ground: #0f1614; /* Updates / Profile promo cards */
-  --glow-peach: #ffb282; /* core of the first-launch and hero glows (mixed with alpha) */
+  --glow-peach: #ffb282; /* the glow core colour; gradients use the rgba() --fl-*glow-core stops */
+
+  /* ---- First-launch scene (night in both themes; screens/first-launch) ---------------- */
+  --fl-night-1: #0b1d19;
+  --fl-night-2: #06120e;
+  --fl-night-3: #03090a;
+  --fl-text: #e6ecec;
+  --fl-text2: #9aa8aa;
+  --fl-text3: #6d7b7d;
+  --fl-mint: var(--cta-mint);
+  --fl-mint-hover: var(--cta-mint-hover);
+  --fl-ink: var(--cta-ink);
+  --fl-mint-ground: rgba(95, 211, 154, 0.1);
+  --fl-mint-badge: rgba(95, 211, 154, 0.16);
+  --fl-line: rgba(255, 255, 255, 0.12);
+  --fl-line-hover: rgba(255, 255, 255, 0.35);
+  --fl-field-line: rgba(255, 255, 255, 0.14);
+  --fl-preview-line: rgba(255, 255, 255, 0.08);
+  --fl-card: rgba(255, 255, 255, 0.03);
+  --fl-field: rgba(255, 255, 255, 0.05);
+  --fl-ghost: rgba(255, 255, 255, 0.04);
+  --fl-ghost-hover: rgba(255, 255, 255, 0.09);
+  --fl-later-hover: rgba(255, 255, 255, 0.06);
+  --fl-dot: rgba(255, 255, 255, 0.18);
+  --fl-vignette: rgba(0, 0, 0, 0.6);
+  --fl-fly: #ffc9a8;
+  --fl-fly-glow: rgba(224, 91, 60, 0.7);
+  /* Legacy rgba() on purpose: a gradient with a color-mix() stop interpolates in Oklab. */
+  --fl-glow-core: rgba(255, 178, 130, 0.6);
+  --fl-glow-mid: rgba(224, 91, 60, 0.34);
+  --fl-glow-edge: rgba(224, 91, 60, 0.1);
+  --fl-rays: rgba(255, 190, 150, 0.13);
+  --fl-ring: rgba(255, 200, 165, 0.85);
+  --fl-star-inner: #ffe6d6;
+  --fl-star-shadow-near: rgba(255, 150, 100, 0.95);
+  --fl-star-shadow-far: rgba(224, 91, 60, 0.6);
+  /* The Home hero glow at the end of the exit (components/HomeHero), legacy rgba() too. */
+  --fl-hero-glow-core: rgba(255, 178, 130, 0.8);
+  --fl-hero-glow-mid: rgba(232, 97, 63, 0.4);
+  --fl-pv-light-bg: #eef2f1;
+  --fl-pv-light-side: #dde5e3;
+  --fl-pv-light-card: #ffffff;
+  --fl-pv-light-mint: #1f8a62;
+  --fl-pv-dark-bg: #0b171b;
+  --fl-pv-dark-side: #0c191d;
+  --fl-pv-dark-card: #18272c;
+  --fl-pv-dark-mint: #5fd39a;
+  --fl-pv-system-side: rgba(127, 140, 138, 0.25);
+  --fl-pv-system-card: rgba(127, 140, 138, 0.35);
 
   /* ---- Typography --------------------------------------------------------------------- */
   --font-sans: "Onest", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;

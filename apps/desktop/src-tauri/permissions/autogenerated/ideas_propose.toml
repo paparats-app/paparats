@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-ideas-propose"
+description = "Enables the ideas_propose command without any pre-configured scope."
+commands.allow = ["ideas_propose"]
+
+[[permission]]
+identifier = "deny-ideas-propose"
+description = "Denies the ideas_propose command without any pre-configured scope."
+commands.deny = ["ideas_propose"]

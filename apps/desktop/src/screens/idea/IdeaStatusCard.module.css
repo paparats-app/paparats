@@ -79,16 +79,10 @@
   font-size: var(--fs-meta);
 }
 
-/* Open: 30px, radius 8, 13px/600 (line 1305); the pseudo-element makes the hit area 32px. */
+/* Open: 30px, radius 8, 13px/600 (line 1305); the xs Button gives it a 32px hit area. */
 .open.open {
   --btn-r: var(--r-8);
   font-weight: 600;
-}
-
-.open::before {
-  content: "";
-  position: absolute;
-  inset: -1px 0;
 }
 
 .bonus {

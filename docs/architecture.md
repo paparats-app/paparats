@@ -20,8 +20,8 @@ apps/desktop/src/
                            profile app channel search dev first-launch
   screens/shared/          connected pieces several screens share (StoreAppCard, useStoreAppView,
                            toActionView, useDownloadStatus, useProStatusView, BackLink, the channel
-                           labels + useChannelMeta, useIdeaView, useTakeIdea) — they read hooks
-                           and navigate, unlike components/
+                           labels + useChannelMeta, useIdeaView, useTakeIdea, useBusyAction) —
+                           they read hooks and navigate, unlike components/
   components/<Name>/       shared components: <Name>.tsx + <Name>.module.css (+ test), index.ts
   services/                contracts.ts (interfaces), types.ts (domain types), errors.ts,
                            registry.ts (createServices + ServicesProvider + useServices),
@@ -32,11 +32,15 @@ apps/desktop/src/
   domain/                  pure functions: source rule, install state, filters, sorting, ideas,
                            app-page generators, settings schema. No React, fully unit-tested.
   i18n/                    i18next setup, locales/<lang>/<ns>.ts catalogs, format.ts (Intl)
-  platform/                runtime detection (`isTauri`, `shouldUseMockServices`), native window
+  platform/                runtime detection (`isTauri`, `shouldUseMockServices`), native window,
+                           native shell (`shell.ts`: tray language, close to tray, first frame, links),
+                           `storage.ts › localStore` (guarded JSON over `localStorage`: client-only
+                           records such as the first-run record)
   styles/                  tokens.css (the only token layer), global.css, fonts.css
   test/                    setup.ts (jest-dom), render.tsx (renderWithProviders, renderApp)
   assets/images/           WebP images converted from design_handoff/assets (same base names)
-apps/desktop/src-tauri/    Tauri app: commands.rs, events, plugins, tray, window
+apps/desktop/src-tauri/    Tauri app: commands.rs, events, plugins, shell.rs (tray, window, links,
+                           login entry — docs/decisions.md D48), app_commands.rs (permissions)
 crates/paparats-*/         Rust core (see STACK.md); paparats-core = domain model (source of truth)
 fixtures/*.json            mock data set (ported from paparats-proto-data.js by scripts/port-fixtures.mjs)
 ```
@@ -57,8 +61,10 @@ screen ─┬─ queries/* (TanStack Query) ─── services (contracts.ts) �
   calls the Rust commands for every service; settings live in `settings.json` through
   tauri-plugin-store (`docs/decisions.md` D26).
 - Startup (`main.tsx`): `createServices()` → `app/bootstrap.ts › bootstrap(services)` (installs the
-  set, hydrates `useSettingsStore`, applies theme/motion to `<html>`, `initI18n(locale)`) → render
-  `<App services/>`. The first frame already has the user's theme and language.
+  set, hydrates `useSettingsStore`, applies theme/motion to `<html>`, `initI18n(locale)`, then
+  `useFirstLaunchStore.launch()` — the first-launch scene plays unless `localStorage ›
+  paparats.firstRun` says it was seen) → render `<App services/>`. The first frame already has the
+  user's theme and language. Tests never auto-play the scene: only `bootstrap()` launches it.
 - Mutations return the new authoritative state → `queryClient.setQueryData`, no refetch.
 
 ## 3. Services (see `services/contracts.ts`)
@@ -111,7 +117,7 @@ One-off service calls with nothing to cache (`queries/system.ts`): `useSystemAct
 | `useIdeasStore` | `tab`, `statuses`, `sort` ('top'\|'new'), `appFilter` | `focusApp(appId)` (All tab, no status chips) |
 | `useHomeStore` | `heroIndex`, `heroGlow` | `setHeroIndex`, `step(delta, count)`, `setHeroGlow(on)` (the first-launch exit turns the hero glow on, then off after ~1.7 s — M6) |
 | `useDialogStore` | `dialog: DialogState \| null` | `open(d)`, `close()`; rendered by `app/DialogHost` |
-| `useFirstLaunchStore` | `replayRequested: number` | `replay()` bumps the counter (Settings › Advanced › Replay first launch); the first-launch scene (M6) plays when it changes |
+| `useFirstLaunchStore` | `phase` (`'seed'`…`'logo'` scene, `'lang'`/`'theme'`/`'signin'` steps, `'done'` exit, `null` = no scene), `run`, `motion`, `replayRequested` | `launch()` (startup: plays unless seen), `replay()` / `start()` (a new run; `lang` with no motion under reduced motion or Subtle animations off), `advance(run, phase)`, `skip()`, `next()`, `back()`, `finish()` (writes `paparats.firstRun` {seen, locale, theme, at}, `done`, hero glow on), `close(run)`. Holds no timers: the mounted scene (`screens/first-launch`) runs the timeline, the exit (1.5 s), the hero glow (1.7 s) and the sign-in toast (1.6 s). Exports `FIRST_LAUNCH_*`, `FIRST_RUN_KEY`, `isStep`, `hasSeenFirstLaunch`, `sceneMotionAllowed` |
 | `useProfileStore` | `tab` ('account'\|'preferences'\|'security'\|'devices'\|'data'), `editing`, `draft {name,email} \| null`, `byKeyboard` | `setTab`, `startEdit(profile)`, `setDraft`, `endEdit()`, `noteActivation(byKeyboard)` (keyboard focus follows the header's mode switch). Kept across navigation like the prototype's `profileTab`/`editing`/`draft` |
 
 `DialogState` = `{kind:'plan', plan:'monthly'|'yearly'}` · `{kind:'addChannel'}` ·
@@ -196,6 +202,19 @@ Memory router (react-router 8, `createMemoryRouter`). Routes: `/home` `/browse` 
   plain browser with `http://localhost:1420/#/dev` (the initial route comes from the URL hash;
   unknown paths start at Home).
 
+Links from outside: `paparats://app/<id>` and `paparats://channel/<id>` (a first launch, a second
+launch, a browser) arrive through `app/useDeepLinks` (mounted by the layout) as `go({to:'app'|
+'channel', …})`, closing any open dialog; a link that arrives while the first-launch scene covers
+the shell opens when its exit begins (the latest one wins, D50); the tray's "Check for updates" (`app/useTrayActions`)
+goes to Settings › About and runs the About check. Both come from `platform/shell.ts ›
+nativeShell`, which does nothing outside Tauri (docs/decisions.md D48).
+
+First launch is not a route either: `screens/first-launch › FirstLaunch` is the layout's last
+child, an overlay over the whole window (sidebar included) while `useFirstLaunchStore.phase` is
+set; the rest of the window is `inert` until the exit, and finishing hands over to `/home`
+(`beginNavigation({skeleton:false})`, the prototype's `finishIntro`) with the focus on the content
+column. Its night palette is the `--fl-*` group in `tokens.css` (the same in both themes).
+
 Search is not a route: while `useUiStore.query` is non-blank the content area renders
 `<SearchScreen/>`; the route outlet stays mounted (hidden) underneath so its state survives.
 
@@ -226,6 +245,24 @@ Search is not a route: while `useUiStore.query` is non-blank the content area re
 - The content column padding is `--content-pad` (8px 30px 40px, prototype line 134); `PageBanner`
   bleeds through it with `--content-pad-top` / `--content-pad-x`.
 - Focus: `:focus-visible { outline: 2px solid var(--mint); outline-offset: 2px }`. Hit targets ≥ 32 px.
+  Keyboard and focus conventions (M6, `docs/decisions.md` D49):
+  - Controls inside a clipping container (menu items, settings link rows, underline tabs, the
+    Profile info rows, the window controls at the window edge) draw the ring inset
+    (`outline-offset: -2px`); text fields show focus with the mint border (the prototype's);
+    controls on photographic banners use `--cta-mint`. The modal body keeps 4px of ring room.
+  - 30px `xs` buttons get a 32px hit target from `Button` itself; text links add a `::before`
+    hit area.
+  - `Button loading`: `aria-busy`, presses ignored at once; the spinner takes the leading icon's
+    place, or covers the label after 150 ms (width kept). A running action that must not be sent
+    twice uses `screens/shared › useBusyAction()` → `[busy, run]`.
+  - `Modal` traps Tab, brings back focus that escapes (a press on the uncovered sidebar), closes on
+    Escape from anywhere and returns the focus to its opener. A navigation started from inside the
+    content moves the focus to the content column (`main`, `tabindex="-1"` only while focused, no
+    ring), so the next Tab lands on the new screen. A keyboard press on a button that disappears
+    with the state it changes (Update all, Subscribe/Unsubscribe, Take this idea, Edit profile)
+    hands the focus to its replacement (`event.detail === 0` = keyboard).
+  - The toast host keeps one polite live region mounted (`Toast live={false}` inside it).
+  - Tab order: sidebar → search → avatar → screen → window controls.
 - Icons: `lucide-react` through `components/Icon` (`<Icon name="layout-grid" size={20} />`,
   stroke 1.75, round caps/joins), so data can name icons (fixtures use lucide kebab-case names).
 - App icons: `components/AppIcon` — `iconUrl` when present, else the monogram tile (`mono` on `tint`).
@@ -302,4 +339,11 @@ The HTML is a reference, not code to copy: no `{{ }}`, no prototype runtime, no 
 - Each milestone's end-to-end flows also run through the whole shell (`renderApp`) in one file
   per milestone, which fails on any `console.error`/`console.warn`: `app/discovery.test.tsx` (M2),
   `app/libraryUpdates.test.tsx` (M3), `app/account.test.tsx` (M4), `app/channelsIdeas.test.tsx` (M5).
+  M6: the first-launch run through the shell is `screens/first-launch/FirstLaunch.test.tsx ›
+  FirstLaunch in the shell`; the native shell (links, tray actions, first frame) is
+  `app/nativeShell.test.tsx`, over `@tauri-apps/api/mocks`.
+- Keyboard/a11y smoke per screen: `screens/<name>/<Name>Screen.a11y.test.tsx` and
+  `app/shell.a11y.test.tsx`, with `screens/shared/a11yTesting.tsx` (`openScreen(route)` — the
+  shell with animations off, `focusBeforeScreen()`, `expectTabOrder(user, targets)`,
+  `expectNamedControls(root)`; test-only, not in the barrel).
 - Rust: unit tests per crate; `crates/paparats-core/tests/fixtures.rs` keeps fixtures ↔ model in sync.

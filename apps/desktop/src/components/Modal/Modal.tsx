@@ -50,7 +50,8 @@ export interface ModalProps {
 
 /**
  * Modal dialog: `--scrim` backdrop, radius 12, `--shadow-modal`. `role="dialog"` + `aria-modal`,
- * focus trapped inside, Escape / backdrop close, focus restored to the opener on close.
+ * focus trapped inside (Tab wraps; focus that escapes is brought back), Escape (from anywhere) /
+ * backdrop close, focus restored to the opener on close.
  */
 export function Modal({
   open,
@@ -75,7 +76,14 @@ export function Modal({
   const footerRef = useRef<HTMLDivElement>(null);
   const pressStartedOnBackdrop = useRef(false);
 
-  // Focus in on open, back to the opener on close.
+  const onCloseRef = useRef(onClose);
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  });
+
+  // Focus in on open, back to the opener on close. While open, focus stays inside: a press on
+  // the uncovered sidebar still works but the focus returns to the dialog, and Escape closes it
+  // wherever the focus is (e.g. on the page after a press on plain text).
   useEffect(() => {
     if (!open) return;
     const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -85,7 +93,30 @@ export function Modal({
     // With nothing to fill in, start on the first footer button (Cancel), never on ×.
     const inFooter = footerRef.current ? focusableIn(footerRef.current) : [];
     (preferred ?? inBody[0] ?? inFooter[0] ?? dialog)?.focus();
+
+    const initial = document.activeElement;
+    let lastInside = initial instanceof HTMLElement && dialog?.contains(initial) ? initial : null;
+    const onFocusIn = (event: FocusEvent) => {
+      const target = event.target;
+      if (!dialog?.isConnected || !(target instanceof HTMLElement)) return;
+      if (dialog.contains(target)) {
+        lastInside = target;
+        return;
+      }
+      // Another modal dialog owns its focus (two open dialogs must not pull it back and forth).
+      if (target.closest('[aria-modal="true"]')) return;
+      (lastInside?.isConnected ? lastInside : dialog).focus({ preventScroll: true });
+    };
+    const onDocumentKeyDown = (event: globalThis.KeyboardEvent) => {
+      if (event.key !== "Escape" || event.defaultPrevented) return;
+      if (event.target instanceof Node && dialog?.contains(event.target)) return;
+      onCloseRef.current();
+    };
+    document.addEventListener("focusin", onFocusIn);
+    document.addEventListener("keydown", onDocumentKeyDown);
     return () => {
+      document.removeEventListener("focusin", onFocusIn);
+      document.removeEventListener("keydown", onDocumentKeyDown);
       if (opener?.isConnected) opener.focus();
     };
   }, [open, initialFocusRef]);

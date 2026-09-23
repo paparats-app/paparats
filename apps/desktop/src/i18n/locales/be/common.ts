@@ -6,6 +6,8 @@ export const common: LocaleCatalog<typeof En> = {
   statApps: "Праграм і больш",
   statMembers: "Падпісчыкаў Pro",
   tagline: "Схаваныя скарбы для Windows.",
+  /** `aria-roledescription` of the hero carousels (read by screen readers, lower case). */
+  carousel: "карусэль",
   seeAll: "Паказаць усе",
   all: "Усе",
   back: "Назад",

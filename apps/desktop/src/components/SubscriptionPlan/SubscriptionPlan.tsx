@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../Button";
 import { Icon } from "../Icon";
@@ -41,6 +42,8 @@ export function SubscriptionPlan({
   className,
 }: SubscriptionPlanProps) {
   const { t } = useTranslation();
+  const nameId = useId();
+  const priceId = useId();
   const highlight = !current && recommended;
   return (
     <article
@@ -54,7 +57,9 @@ export function SubscriptionPlan({
     >
       <div className={styles.header}>
         <div className={styles.names}>
-          <h3 className={styles.name}>{name}</h3>
+          <h3 id={nameId} className={styles.name}>
+            {name}
+          </h3>
           <div className={styles.sub}>{subtitle}</div>
         </div>
         {badge !== undefined && <span className={styles.badge}>{badge}</span>}
@@ -64,7 +69,7 @@ export function SubscriptionPlan({
           </span>
         )}
       </div>
-      <div className={styles.priceBlock}>
+      <div id={priceId} className={styles.priceBlock}>
         <span className={styles.price}>{price}</span>
         <span className={styles.period}>{period}</span>
       </div>
@@ -82,6 +87,8 @@ export function SubscriptionPlan({
         size="lg"
         fullWidth
         disabled={current}
+        // Two cards say "Choose plan": the plan's name and price tell them apart.
+        aria-describedby={`${nameId} ${priceId}`}
         className={styles.button}
         onClick={onSelect}
       >

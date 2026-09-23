@@ -16,4 +16,8 @@ export const firstLaunch: LocaleCatalog<typeof En> = {
   signedInAs: "Вы вошли как {{email}}",
   emailPlaceholder: "name@example.com",
   passwordPlaceholder: "Пароль",
+  skip: "Пропустить",
+  sceneLabel: "Добро пожаловать в Paparats",
+  stepsLabel: "Шаги настройки",
+  emailLabel: "Электронная почта",
 };

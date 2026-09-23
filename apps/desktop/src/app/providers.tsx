@@ -1,5 +1,5 @@
 // Context for the whole UI: TanStack Query, the service set, i18next, plus the app-wide effects
-// that must run exactly once (download events, document settings, "Back online").
+// that must run exactly once (download events, document settings, the native shell, "Back online").
 import { useEffect, useRef, type ReactNode } from "react";
 import { QueryClientProvider, type QueryClient } from "@tanstack/react-query";
 import { I18nextProvider, useTranslation } from "react-i18next";
@@ -9,6 +9,7 @@ import { ServicesProvider, type Services } from "@/services";
 import { useDownloadsBridge } from "@/stores/useDownloadsBridge";
 import { useUiStore } from "@/stores/useUiStore";
 import { useDocumentSettings } from "./documentSettings";
+import { useNativeShell } from "./useNativeShell";
 
 export interface AppProvidersProps {
   services: Services;
@@ -32,6 +33,7 @@ export function AppProviders({ services, queryClient, children }: AppProvidersPr
 function AppEffects() {
   useDownloadsBridge();
   useDocumentSettings();
+  useNativeShell();
   useBackOnlineToast();
   return null;
 }

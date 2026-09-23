@@ -36,7 +36,11 @@ const banner = () => screen.getByRole("banner");
 const chip = (text: string) =>
   within(banner()).getByText((_, el) => el?.tagName === "DIV" && el.textContent === text);
 const statusCard = (name: string) => screen.getByRole("region", { name });
-const toast = () => screen.queryByRole("status");
+/** The toast host's live region while it holds a toast (it stays mounted, empty, in between). */
+const toast = () => {
+  const region = screen.queryByRole("status");
+  return region?.textContent ? region : null;
+};
 
 /** Services whose account is already on `plan` (renewing on `renewsOn`). */
 function onPlan(plan: "monthly" | "yearly", renewsOn: string): MockServices {

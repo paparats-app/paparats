@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-channels-report"
+description = "Enables the channels_report command without any pre-configured scope."
+commands.allow = ["channels_report"]
+
+[[permission]]
+identifier = "deny-channels-report"
+description = "Denies the channels_report command without any pre-configured scope."
+commands.deny = ["channels_report"]

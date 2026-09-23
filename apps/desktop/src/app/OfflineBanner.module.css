@@ -30,11 +30,3 @@
 .hint {
   color: var(--text2);
 }
-
-/* Retry is 30px like the prototype's (line 131): an invisible 32px hit area around it, without
-   moving the layout (D32). */
-.retry::before {
-  content: "";
-  position: absolute;
-  inset: -2px 0;
-}

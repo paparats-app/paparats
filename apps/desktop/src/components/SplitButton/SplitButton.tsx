@@ -61,6 +61,8 @@ export function SplitButton({
         type="button"
         className={cx(styles.action, TONE_CLASS[tone])}
         disabled={disabled}
+        // "Offline" (muted) still answers a press (the offline toast) but reads as unavailable.
+        aria-disabled={tone === "muted" || undefined}
         onClick={onClick}
       >
         {label}

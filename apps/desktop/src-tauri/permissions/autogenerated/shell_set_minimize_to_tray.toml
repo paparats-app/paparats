@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-shell-set-minimize-to-tray"
+description = "Enables the shell_set_minimize_to_tray command without any pre-configured scope."
+commands.allow = ["shell_set_minimize_to_tray"]
+
+[[permission]]
+identifier = "deny-shell-set-minimize-to-tray"
+description = "Denies the shell_set_minimize_to_tray command without any pre-configured scope."
+commands.deny = ["shell_set_minimize_to_tray"]

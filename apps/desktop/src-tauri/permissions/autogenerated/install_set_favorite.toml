@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-install-set-favorite"
+description = "Enables the install_set_favorite command without any pre-configured scope."
+commands.allow = ["install_set_favorite"]
+
+[[permission]]
+identifier = "deny-install-set-favorite"
+description = "Denies the install_set_favorite command without any pre-configured scope."
+commands.deny = ["install_set_favorite"]

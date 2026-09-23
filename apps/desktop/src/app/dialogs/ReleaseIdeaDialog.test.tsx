@@ -157,3 +157,19 @@ describe("ReleaseIdeaDialog", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 });
+
+describe("ReleaseIdeaDialog busy state", () => {
+  it("keeps Release busy and releases once while it runs", async () => {
+    const user = userEvent.setup();
+    const services = createTestServices();
+    const release = vi
+      .spyOn(services.ideas, "release")
+      .mockImplementation(() => new Promise(() => {}));
+    const { dialog } = await openRelease("clip", services);
+    const button = dialog.getByRole("button", { name: "Release" });
+    await user.click(button);
+    expect(button).toHaveAttribute("aria-busy", "true");
+    await user.click(button);
+    expect(release).toHaveBeenCalledTimes(1);
+  });
+});

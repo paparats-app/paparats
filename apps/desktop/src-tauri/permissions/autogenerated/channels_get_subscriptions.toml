@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-channels-get-subscriptions"
+description = "Enables the channels_get_subscriptions command without any pre-configured scope."
+commands.allow = ["channels_get_subscriptions"]
+
+[[permission]]
+identifier = "deny-channels-get-subscriptions"
+description = "Denies the channels_get_subscriptions command without any pre-configured scope."
+commands.deny = ["channels_get_subscriptions"]

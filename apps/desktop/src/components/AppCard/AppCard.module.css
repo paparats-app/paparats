@@ -72,8 +72,11 @@ button.identity {
   white-space: nowrap;
 }
 
+/* max-width: in the flex column a word longer than the column (ru "синхронизированные.") would
+   otherwise widen the box past the card; the prototype's block clips it at the column width. */
 .tagline {
   display: -webkit-box;
+  max-width: 100%;
   margin-top: var(--sp-3);
   overflow: hidden;
   color: var(--text2);

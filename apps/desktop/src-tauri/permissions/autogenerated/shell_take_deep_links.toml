@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-shell-take-deep-links"
+description = "Enables the shell_take_deep_links command without any pre-configured scope."
+commands.allow = ["shell_take_deep_links"]
+
+[[permission]]
+identifier = "deny-shell-take-deep-links"
+description = "Denies the shell_take_deep_links command without any pre-configured scope."
+commands.deny = ["shell_take_deep_links"]

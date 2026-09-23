@@ -1,3 +1,4 @@
+import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@/i18n";
@@ -94,5 +95,31 @@ describe("ChannelRow", () => {
     expect(onOpen).toHaveBeenCalledTimes(1);
     expect(onSubscribe).toHaveBeenCalledTimes(1);
     expect(screen.getByText("Verified")).toBeInTheDocument();
+  });
+});
+
+describe("ChannelRow catalog keyboard and busy state", () => {
+  it("describes Learn more / Subscribe by the channel, shows Subscribe busy, exposes its ref", () => {
+    const ref = createRef<HTMLButtonElement>();
+    render(
+      <ChannelRow
+        variant="catalog"
+        name="Winaero"
+        icon={{ mono: "Wi", tint: "#c27a2f" }}
+        trust="community"
+        meta="Developer · by Sergey Tkachenko"
+        onOpen={() => {}}
+        onSubscribe={() => {}}
+        subscribing
+        subscribeRef={ref}
+      />,
+    );
+    const subscribe = screen.getByRole("button", { name: "Subscribe" });
+    expect(subscribe).toHaveAccessibleDescription("Winaero");
+    expect(screen.getByRole("button", { name: "Learn more" })).toHaveAccessibleDescription(
+      "Winaero",
+    );
+    expect(subscribe).toHaveAttribute("aria-busy", "true");
+    expect(ref.current).toBe(subscribe);
   });
 });

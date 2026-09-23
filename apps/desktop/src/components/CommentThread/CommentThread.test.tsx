@@ -68,3 +68,25 @@ describe("CommentThread", () => {
     expect(onPost).toHaveBeenCalledWith("   Count me in");
   });
 });
+
+describe("CommentThread posting", () => {
+  it("keeps Post busy and ignores a second submit while posting", async () => {
+    const onPost = vi.fn();
+    render(
+      <CommentThread
+        comments={[]}
+        composer={{
+          value: "Yes please",
+          onChange: () => {},
+          onPost,
+          initials: "SK",
+          posting: true,
+        }}
+      />,
+    );
+    const post = screen.getByRole("button", { name: "Post" });
+    expect(post).toHaveAttribute("aria-busy", "true");
+    await userEvent.click(post);
+    expect(onPost).not.toHaveBeenCalled();
+  });
+});

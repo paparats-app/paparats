@@ -12,6 +12,9 @@ use serde::{Deserialize, Serialize};
 use tauri::{AppHandle, Runtime};
 use tauri_specta::Event;
 
+use crate::deep_link::DeepLinkTarget;
+use crate::tray::TrayAction;
+
 /// `download://progress` — progress of a downloading item (every 110 ms tick while simulated).
 #[derive(Debug, Clone, Serialize, Deserialize, specta::Type, tauri_specta::Event)]
 #[tauri_specta(event_name = "download://progress")]
@@ -22,6 +25,17 @@ pub struct DownloadProgressEvent(pub DownloadProgress);
 #[derive(Debug, Clone, Serialize, Deserialize, specta::Type, tauri_specta::Event)]
 #[tauri_specta(event_name = "download://state")]
 pub struct DownloadStateEvent(pub DownloadStateChange);
+
+/// `shell://deep-link` — a `paparats://` link to open (`app/<id>`, `channel/<id>`), sent once the
+/// UI has taken the links that arrived before it listened (`shell_take_deep_links`).
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type, tauri_specta::Event)]
+#[tauri_specta(event_name = "shell://deep-link")]
+pub struct DeepLinkEvent(pub DeepLinkTarget);
+
+/// `shell://tray-action` — a tray menu entry the UI carries out ("Check for updates").
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type, tauri_specta::Event)]
+#[tauri_specta(event_name = "shell://tray-action")]
+pub struct TrayActionEvent(pub TrayAction);
 
 /// Where download events go (the webview in the app, a recorder in tests).
 pub trait UiEvents: Send + Sync + 'static {

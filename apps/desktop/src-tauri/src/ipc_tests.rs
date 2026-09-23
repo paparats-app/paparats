@@ -275,3 +275,67 @@ fn download_events_arrive_after_the_library_is_updated() {
     assert_eq!(account["activity"][0]["appId"], "obsidian");
     assert_eq!(account["activity"][0]["kind"], "updated");
 }
+
+#[test]
+fn shell_commands_cross_ipc() {
+    use crate::shell::Shell;
+    use crate::shell::testing::{Call, Recorder, start};
+    use crate::tray::TrayItem;
+
+    let (app, w) = app();
+    let recorder = Recorder::default();
+    app.manage(Shell::new(recorder.clone(), &start(false)));
+    let shell = app.state::<Shell>();
+    shell.open_url(&"paparats://channel/winaero".parse().unwrap());
+    shell.tray_item(TrayItem::Open);
+    recorder.clear();
+
+    invoke(&w, "shell_set_locale", json!({"locale": "ru"})).unwrap();
+    invoke(&w, "shell_set_minimize_to_tray", json!({"enabled": false})).unwrap();
+    invoke(&w, "shell_window_ready", json!({})).unwrap();
+    assert_eq!(
+        invoke(&w, "shell_take_deep_links", json!({})).unwrap(),
+        json!([{"kind": "channel", "id": "winaero"}])
+    );
+    assert!(!shell.minimize_to_tray());
+    assert_eq!(
+        recorder.calls(),
+        [Call::Relabel("Открыть Paparats"), Call::Reveal]
+    );
+
+    let err = invoke(&w, "shell_set_locale", json!({"locale": "de"})).unwrap_err();
+    assert!(
+        err.is_string(),
+        "a malformed argument is Tauri's own error: {err}"
+    );
+}
+
+#[test]
+fn shell_events_reach_listeners() {
+    use crate::deep_link::DeepLinkTarget;
+    use crate::events::{DeepLinkEvent, TrayActionEvent};
+    use crate::tray::TrayAction;
+    use tauri_specta::Event;
+
+    let (app, _w) = app();
+    let (tx, rx) = mpsc::channel::<String>();
+    let links = tx.clone();
+    app.listen_any("shell://deep-link", move |e| {
+        let _ = links.send(e.payload().to_owned());
+    });
+    app.listen_any("shell://tray-action", move |e| {
+        let _ = tx.send(e.payload().to_owned());
+    });
+    DeepLinkEvent(DeepLinkTarget::App("obs".into()))
+        .emit(app.handle())
+        .unwrap();
+    TrayActionEvent(TrayAction::CheckForUpdates)
+        .emit(app.handle())
+        .unwrap();
+    let wait = Duration::from_secs(2);
+    assert_eq!(
+        rx.recv_timeout(wait).unwrap(),
+        r#"{"kind":"app","id":"obs"}"#
+    );
+    assert_eq!(rx.recv_timeout(wait).unwrap(), r#""checkForUpdates""#);
+}

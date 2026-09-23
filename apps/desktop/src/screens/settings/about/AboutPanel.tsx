@@ -86,7 +86,14 @@ export function AboutPanel() {
               : t("about.updateAvailable", { version: available })}
           </div>
           <div className={styles.actions}>
-            <Button variant="primaryOnImage" size="lg" className={styles.check} onClick={check}>
+            {/* "Checking…" is the progress (as in the prototype); presses meanwhile do nothing. */}
+            <Button
+              variant="primaryOnImage"
+              size="lg"
+              className={styles.check}
+              aria-busy={checking || undefined}
+              onClick={check}
+            >
               {checking ? t("about.checking") : t("about.checkUpdates")}
             </Button>
             <Button

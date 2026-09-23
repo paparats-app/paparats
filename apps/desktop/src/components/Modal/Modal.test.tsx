@@ -92,3 +92,42 @@ describe("Modal", () => {
     expect(onClose).toHaveBeenCalledTimes(2);
   });
 });
+
+describe("Modal focus containment", () => {
+  function WithPage({ onClose }: { onClose: () => void }) {
+    return (
+      <>
+        <button type="button">Library</button>
+        <p>Plain text on the page</p>
+        <Modal
+          open
+          onClose={onClose}
+          title="Report a problem"
+          footer={<Button onClick={onClose}>Cancel</Button>}
+        >
+          <TextField aria-label="What went wrong?" />
+        </Modal>
+      </>
+    );
+  }
+
+  it("brings back focus that leaves the dialog to where it was inside", async () => {
+    render(<WithPage onClose={() => {}} />);
+    const field = screen.getByRole("textbox", { name: "What went wrong?" });
+    expect(field).toHaveFocus();
+    await userEvent.tab();
+    expect(screen.getByRole("button", { name: "Cancel" })).toHaveFocus();
+    // E.g. a press on the uncovered sidebar: the press works, the focus comes back.
+    screen.getByRole("button", { name: "Library" }).focus();
+    expect(screen.getByRole("button", { name: "Cancel" })).toHaveFocus();
+  });
+
+  it("closes on Escape pressed outside the dialog", async () => {
+    const onClose = vi.fn();
+    render(<WithPage onClose={onClose} />);
+    (document.activeElement as HTMLElement).blur();
+    expect(document.body).toHaveFocus();
+    await userEvent.keyboard("{Escape}");
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+});

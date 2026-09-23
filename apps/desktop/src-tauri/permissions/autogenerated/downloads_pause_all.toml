@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-downloads-pause-all"
+description = "Enables the downloads_pause_all command without any pre-configured scope."
+commands.allow = ["downloads_pause_all"]
+
+[[permission]]
+identifier = "deny-downloads-pause-all"
+description = "Denies the downloads_pause_all command without any pre-configured scope."
+commands.deny = ["downloads_pause_all"]

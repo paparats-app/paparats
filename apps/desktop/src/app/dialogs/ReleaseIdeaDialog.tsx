@@ -93,6 +93,7 @@ function ReleaseForm({ idea }: { idea: Idea }) {
             variant="primary"
             className={styles.release}
             disabled={!ready}
+            loading={releasing}
             onClick={() => void confirm()}
           >
             {t("idea.release")}

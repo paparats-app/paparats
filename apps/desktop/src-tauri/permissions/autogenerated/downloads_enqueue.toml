@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-downloads-enqueue"
+description = "Enables the downloads_enqueue command without any pre-configured scope."
+commands.allow = ["downloads_enqueue"]
+
+[[permission]]
+identifier = "deny-downloads-enqueue"
+description = "Denies the downloads_enqueue command without any pre-configured scope."
+commands.deny = ["downloads_enqueue"]

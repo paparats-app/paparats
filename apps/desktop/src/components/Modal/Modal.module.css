@@ -102,7 +102,10 @@
 }
 
 /* ---- Body & footer ---------------------------------------------------------------------- */
+/* The body scrolls, so it clips: `--ring-room` of padding (taken back by a negative margin, so
+   nothing moves) keeps the 2px focus ring at 2px offset of edge-to-edge fields visible. */
 .body {
+  --ring-room: calc(var(--focus-ring-w) + var(--focus-ring-offset));
   min-height: 0;
   overflow: auto;
   color: var(--text2);
@@ -144,7 +147,9 @@
 }
 
 .confirm .body {
-  margin-top: var(--sp-14);
+  margin: calc(var(--sp-14) - var(--ring-room)) calc(-1 * var(--ring-room))
+    calc(-1 * var(--ring-room));
+  padding: var(--ring-room);
 }
 
 .confirm .footer {
@@ -161,7 +166,8 @@
 }
 
 .form .body {
-  padding: var(--sp-18) var(--sp-24) 0;
+  margin-bottom: calc(-1 * var(--ring-room));
+  padding: var(--sp-18) var(--sp-24) var(--ring-room);
 }
 
 .form .footer {
@@ -169,6 +175,7 @@
 }
 
 .form .body:last-child {
+  margin-bottom: 0;
   padding-bottom: var(--sp-22);
 }
 

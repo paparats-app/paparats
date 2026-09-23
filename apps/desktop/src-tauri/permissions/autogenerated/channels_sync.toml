@@ -1,0 +1,11 @@
+# Automatically generated - DO NOT EDIT!
+
+[[permission]]
+identifier = "allow-channels-sync"
+description = "Enables the channels_sync command without any pre-configured scope."
+commands.allow = ["channels_sync"]
+
+[[permission]]
+identifier = "deny-channels-sync"
+description = "Denies the channels_sync command without any pre-configured scope."
+commands.deny = ["channels_sync"]

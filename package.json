@@ -15,7 +15,7 @@
     "test": "pnpm --filter @paparats/desktop test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "specta": "cargo run --quiet -p paparats-desktop --bin export-bindings && prettier --write apps/desktop/src/bindings.ts",
+    "specta": "cargo run --quiet -p paparats-desktop --example export-bindings && prettier --write apps/desktop/src/bindings.ts",
     "check": "pnpm typecheck && pnpm lint && pnpm test && cargo fmt --all --check && cargo clippy --workspace --all-targets -- -D warnings && cargo test --workspace"
   },
   "devDependencies": {

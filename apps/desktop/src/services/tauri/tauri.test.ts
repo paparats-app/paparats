@@ -1,7 +1,8 @@
 // The Tauri adapters against @tauri-apps/api/mocks: every contract method reaches its command
 // with the argument names the Rust side expects, results and `{kind, message}` errors come back as
 // the contract says, the typed download events map onto `DownloadEvent`, and settings round-trip
-// through the store plugin's commands.
+// through the store plugin's commands. The update check, autostart and the native shell have their
+// own file (system.test.ts).
 import { emit } from "@tauri-apps/api/event";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { openUrl } from "@tauri-apps/plugin-opener";
@@ -267,12 +268,6 @@ describe("tauri adapters: commands", () => {
       { email: "me@example.com", password: "pw" },
     ],
     ["account.signOut", (s) => s.account.signOut(), "account_sign_out", {}],
-    [
-      "system.checkForAppUpdate",
-      (s) => s.system.checkForAppUpdate(),
-      "system_check_for_app_update",
-      {},
-    ],
   ];
 
   const table = routes.map(([method, call, cmd, args]) => [method, cmd, args, call] as const);
@@ -404,17 +399,6 @@ describe("tauri adapters: system", () => {
     expect(calls).toHaveLength(1);
   });
 
-  it("checks for a client update through the core", async () => {
-    const services = core({
-      system_today: answer("2026-09-15"),
-      system_check_for_app_update: answer({ kind: "available", version: "0.2.0" }),
-    });
-    await expect(services.system.checkForAppUpdate()).resolves.toEqual({
-      kind: "available",
-      version: "0.2.0",
-    });
-  });
-
   it("opens external links through the opener plugin", async () => {
     const services = core({ system_today: answer("2026-09-15") });
     await services.system.openExternal("nilesoft.org/support");
@@ -433,11 +417,6 @@ describe("tauri adapters: system", () => {
       kind: "internal",
       message: "not allowed",
     });
-  });
-
-  it("autostart has no Rust side yet and resolves", async () => {
-    const services = core({ system_today: answer("2026-09-15") });
-    await expect(services.system.setAutostart(true)).resolves.toBeUndefined();
   });
 });
 

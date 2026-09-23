@@ -57,10 +57,20 @@ export function ButtonsSection() {
             {t("channel.copyAddr")}
           </Button>
         </Specimen>
-        <Specimen caption="loading (click)">
+        <Specimen caption="loading (click): spinner over the label after 150ms · in place of the icon">
           <Button
             variant="primary"
             size="lg"
+            loading={loading}
+            onClick={() => setLoading(true)}
+            onBlur={() => setLoading(false)}
+          >
+            {t("channel.syncNow")}
+          </Button>
+          <Button
+            variant="outline"
+            size="field"
+            leadingIcon="rotate-ccw"
             loading={loading}
             onClick={() => setLoading(true)}
             onBlur={() => setLoading(false)}

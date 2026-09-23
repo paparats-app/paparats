@@ -29,6 +29,8 @@ export interface SegmentedControlProps<V extends string> {
   /** Stretch the options to fill the width. */
   fullWidth?: boolean;
   disabled?: boolean;
+  /** Stroke of the 16px option icons (default 1.75; the Library list/grid toggle draws 2). */
+  iconStrokeWidth?: number;
   className?: string;
 }
 
@@ -42,6 +44,7 @@ export function SegmentedControl<V extends string>({
   ground = "bg",
   fullWidth = false,
   disabled = false,
+  iconStrokeWidth,
   className,
 }: SegmentedControlProps<V>) {
   const optionRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -93,7 +96,7 @@ export function SegmentedControl<V extends string>({
             }}
             onKeyDown={(event) => onKeyDown(event, index)}
           >
-            {option.icon && <Icon name={option.icon} size={16} />}
+            {option.icon && <Icon name={option.icon} size={16} strokeWidth={iconStrokeWidth} />}
             {option.label}
           </button>
         );

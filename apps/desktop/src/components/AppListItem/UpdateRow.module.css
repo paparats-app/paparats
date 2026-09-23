@@ -34,6 +34,13 @@
   border-radius: var(--r-11);
 }
 
+/* The tile is a button (line 486): no monogram tracking and, with the button's UA font, no
+   tabular figures, unlike the shared tile. */
+.icon.icon {
+  letter-spacing: normal;
+  font-feature-settings: normal;
+}
+
 .identity {
   display: flex;
   flex-direction: column;
@@ -53,23 +60,18 @@
   min-width: 0;
 }
 
+/* The name wraps in a narrow window, as in the prototype (no ellipsis there). */
 .name {
-  min-width: 0;
-  overflow: hidden;
   font-size: var(--fs-title);
   font-weight: 600;
   line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
+/* Wraps like the prototype's (a long download line in a narrow window). */
 .version {
   margin-top: var(--sp-2);
-  overflow: hidden;
   color: var(--text2);
   font-size: var(--fs-secondary);
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .size {

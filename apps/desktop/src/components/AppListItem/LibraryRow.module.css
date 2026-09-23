@@ -29,7 +29,17 @@
   display: grid;
   width: 44px;
   height: 44px;
-  border-radius: var(--r-11);
+  border-radius: var(--r-10);
+}
+
+/* This row's 44px tile is a button (line 600): radius 10, no monogram tracking and the
+   button's normal line height, unlike the shared tile. The button's UA font also drops the
+   root's tabular figures, so "7z" keeps its proportional 7. */
+.icon.icon {
+  border-radius: var(--r-10);
+  line-height: normal;
+  letter-spacing: normal;
+  font-feature-settings: normal;
 }
 
 .identity {
@@ -51,14 +61,11 @@
   min-width: 0;
 }
 
+/* The name wraps in a narrow window, as in the prototype (no ellipsis there). */
 .name {
-  min-width: 0;
-  overflow: hidden;
   font-size: var(--fs-body);
   font-weight: 600;
   line-height: 1.25;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .star {
@@ -76,11 +83,12 @@
   white-space: nowrap;
 }
 
+/* Not clipped: a long localised strip runs past its 240px track as in the prototype (line 602),
+   instead of cutting the last chip off. */
 .tags {
   display: flex;
   gap: var(--sp-6);
   min-width: 0;
-  overflow: hidden;
 }
 
 .tag {
@@ -106,6 +114,11 @@
 
 .subMint {
   color: var(--mint2);
+}
+
+/* The prototype's menu sits 52px below the row's top, 4px under the ⋯ button (line 606). */
+.menu.menu {
+  top: calc(100% + var(--sp-4));
 }
 
 .more.more {

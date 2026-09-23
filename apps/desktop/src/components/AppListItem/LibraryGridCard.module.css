@@ -40,6 +40,11 @@
   outline-offset: var(--focus-ring-offset);
 }
 
+/* No monogram tracking on this card's 48px tile (line 624), unlike the shared tile. */
+.icon.icon {
+  letter-spacing: normal;
+}
+
 .text {
   display: flex;
   flex: 1;

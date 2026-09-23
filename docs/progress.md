@@ -152,3 +152,73 @@ Known gaps (by milestone):
 - The main JS chunk is now ≈ 544 kB minified (the M2 screens on top of the fixtures and three
   catalogs; the mock world is still bundled in Tauri builds). Split the mock services and
   fixtures into a lazy chunk before release.
+
+## M3 — Library, Updates, download engine (2026-09-23)
+
+What exists now (decisions D33–D37 in `docs/decisions.md`):
+
+- **Updates** (`screens/updates`). Banner with the count line ("6 updates available", "Can't check
+  for updates while offline.", "Everything is up to date") and the manifests' total size; Update
+  all (a batch over `startBatch`, `kind: update`, manifest sizes); while it runs "Updating X of N"
+  with the percentage, the 6 px bar, Pause all / Resume all and Cancel all. Rows (pending updates
+  plus "Updated just now") with the version step or the live download line, size, the app action,
+  the 3 px bar, the source chip and the expandable "What's new" (VS Code and Obsidian open) with
+  "View details →". Side column: Automatic updates toggle, Update settings (→ Settings › Updates),
+  Update history (expands), promo card. Empty state with the mint check. Leaving the screen clears
+  "Updated just now".
+- **Library** (`screens/library`). Banner with Install app (→ Browse, filters reset); tabs
+  Installed / Favorites / Collections with counts; Sort by Recently used / A–Z / Size; list and
+  4-column grid. List rows: icon, name with the favourite star, tagline, category and
+  Pro/Portable/license chips, source chip, version with "Updated …" or "Update → x", the app
+  action, the ⋯ menu (favourite, Open install folder, Uninstall) and the 2 px bar with the
+  download lines while queued. Collections tab: collection cards → the filtered list with the
+  "All collections / Work" breadcrumb. Right column: stats, collections list, quick filters (All /
+  Updates available / Downloads / Favorites), the quote. Empty states: empty library (→ Browse),
+  no favourites, no active downloads, up to date, nothing found.
+- **Download engine end to end.** Every Get / Update / Update all goes through
+  `useDownloadsStore` → DownloadService (mock timers in the browser, the Rust engine with typed
+  `download://progress` / `download://state` events in Tauri). Parallel downloads follow
+  `settings.parallel` live; pause/resume/cancel per item and for all; offline freezes running
+  items and blocks Get/Update ("Offline", toast), Retry resumes them; uninstall clears the app's
+  "Updated just now" marker and drops it from Updates and the sidebar badge.
+- **Shared pieces.** `screens/shared › useDownloadStatus` / `downloadStatus` (one status line for
+  the app page, Updates and Library, D34). Component additions: `Tabs.onReselect`,
+  `StatTile.tight`, `SegmentedControl.iconStrokeWidth` and a 32 px hit area on its 30 px options;
+  `LibraryRow` (radius-10 tile, menu 4 px under the trigger, `folder` glyph) and `LibraryGridCard`
+  tile fixes; Library/Updates row names wrap like the prototype; `PromoCard` text #f2f4f2; the
+  on-image `ProgressBar` track is white 14 % (D37). New i18n keys `library.viewAs`,
+  `library.moreActionsFor` (`app`), `library.signature` in en/be/ru.
+- **Tests.** Vitest: 93 files, 605 tests — Library (16) and Updates (14) screen tests with fake
+  timers, `downloadStatus` unit tests, and `app/libraryUpdates.test.tsx`, which runs the M3 flows
+  through the whole shell and fails on any console error or warning: Update all landing everywhere
+  (rows, badge, toast, Library, markers cleared on leaving), one download paused in Updates and
+  resumed in the Library, uninstall reaching Updates and the badge, the Library's views across
+  navigation and the app page, and offline (banner, Retry, inert Get/Update, frozen and resumed
+  downloads). Rust: 126 tests.
+- **Checks.** typecheck, lint, test, format:check, cargo fmt, clippy (`-D warnings`) and cargo
+  test are green; `pnpm specta` produces no bindings drift. Clicked through in Chrome on `pnpm dev`
+  (mock services) and in the real app (`pnpm tauri dev`, Rust backend, driven over the WebView2
+  debugging port): expand/collapse release notes; Update all → per-row progress → "Updated just
+  now" → badge 5→0 → "All updates installed"; Pause all / Resume all / Cancel all; Parallel
+  downloads 2 → 1 → 4 while a batch runs; Library tabs, three sorts, list/grid, a collection and
+  its breadcrumb, all quick filters and their empty states, Open, Open install folder, favourite
+  on/off, uninstall with its toast, app page and Back; Simulate offline (banner, Retry, "Offline"
+  buttons, a frozen download that resumes and lands). Layout compared by script with the prototype
+  at 1440×920 (rows, grid tracks, batch bar, promo) in dark; colours checked in light. No console
+  errors in either. The dev data set in `%APPDATA%/com.paparats.desktop` was backed up before the
+  real-app checks and restored afterwards.
+
+Known gaps (by milestone):
+
+- The Settings screen is still a placeholder (M4): Parallel downloads and Developer mode ›
+  Simulate offline were driven through `useSettingsStore` in the checks. The "Parallel downloads"
+  select must pass a number (M1 note, still open).
+- Creating and editing collections is not designed: + and "New collection" do nothing (D36).
+- "Open install folder" and "Open" are no-ops on the Rust side for now (D24: until M6/M7).
+- No failure copy for a failed download or uninstall (D8, D36): the item disappears silently.
+- The Library re-renders on every download tick (≈ 9 Hz) through its item subscription; fine for
+  a few dozen rows, revisit for large libraries.
+- Belarusian was not compared visually; Cyrillic text still renders 1–6 px narrower than in the
+  prototype (M2 gap). The ⋯ menu and Popover have no portal (M1 gap).
+- The main JS chunk is now ≈ 564 kB minified (≈ 172 kB gzip); the mock services and fixtures are
+  still bundled in Tauri builds.

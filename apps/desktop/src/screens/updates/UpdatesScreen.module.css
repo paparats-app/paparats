@@ -1,0 +1,229 @@
+/* Updates — prototype lines 451–545. */
+.screen {
+  min-width: 0;
+}
+
+/* ---- Banner: count line, batch progress, batch actions (lines 455–476) -------------------- */
+.countLine {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-14);
+  margin-top: var(--sp-18);
+  font-size: var(--fs-title-lg);
+}
+
+.count {
+  font-weight: 500;
+}
+
+.totalSize {
+  color: var(--on-image-quiet);
+  font-size: var(--fs-body);
+}
+
+.batch {
+  width: 440px;
+  max-width: 100%;
+  margin-top: var(--sp-12);
+}
+
+.batchMeta {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: var(--sp-6);
+  color: var(--on-image-2);
+  font-size: var(--fs-secondary-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.batchActions {
+  display: flex;
+  gap: var(--sp-8);
+}
+
+/* Pause all / Cancel all: 42px, 0 18px, radius 10, 14px (line 473–474). Classes are doubled so
+   they win over Button's size and variant rules regardless of CSS order. */
+.pauseAll.pauseAll,
+.cancelAll.cancelAll {
+  --btn-px: var(--sp-18);
+  --btn-fs: var(--fs-body);
+}
+
+.pauseAll.pauseAll {
+  color: var(--on-image-strong);
+  font-weight: 600;
+}
+
+.cancelAll.cancelAll {
+  background: transparent;
+  color: var(--on-image-2);
+  font-weight: 500;
+}
+
+.cancelAll.cancelAll:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--on-image-bright) 8%, transparent);
+  color: var(--on-image-strong);
+}
+
+/* ---- Two columns (line 481) --------------------------------------------------------------- */
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: var(--sp-24);
+  align-items: start;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-10);
+  min-width: 0;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-10);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* "View details →" under the release notes is an 18px text link: give it an invisible hit area
+   of at least 32px without moving the layout (D32). */
+.rows [data-variant="link"]::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--sp-8)) calc(-1 * var(--sp-6));
+}
+
+/* ---- Side column (lines 505–542) ---------------------------------------------------------- */
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-10);
+}
+
+.sideCard {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-14);
+  padding: var(--sp-16) var(--sp-18);
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--card);
+  color: var(--text);
+}
+
+/* "Update settings" is a button card: hover lifts only its border (line 511). */
+.sideLink {
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.sideLink:hover {
+  border-color: var(--line2);
+}
+
+.sideIcon {
+  flex: none;
+  color: var(--text2);
+}
+
+.sideText {
+  display: block;
+  flex: 1;
+  min-width: 0;
+}
+
+.sideTitle {
+  display: block;
+  font-size: var(--fs-title);
+  font-weight: 600;
+}
+
+.sideHint {
+  display: block;
+  margin-top: var(--sp-2);
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+}
+
+.sideChevron {
+  color: var(--text3);
+}
+
+.sideLink:focus-visible,
+.historyHead:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Update history: a clipped card whose header row expands the list (lines 516–531). */
+.historyCard {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--card);
+}
+
+.historyHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-14);
+  box-sizing: border-box;
+  width: 100%;
+  padding: var(--sp-16) var(--sp-18);
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* The ring would be clipped by the card: draw it inside. */
+.historyHead:focus-visible {
+  outline-offset: calc(-1 * var(--focus-ring-w));
+}
+
+.historyHead:hover {
+  background: var(--hover);
+}
+
+.historyList {
+  margin: 0;
+  padding: var(--sp-6) var(--sp-18) var(--sp-10);
+  border-top: 1px solid var(--line);
+  list-style: none;
+}
+
+.historyItem {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+  padding: var(--sp-8) 0;
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-secondary);
+}
+
+.historyName {
+  flex: 1;
+  min-width: 0;
+}
+
+.historyApp {
+  font-weight: 600;
+}
+
+.historyVersion {
+  color: var(--text2);
+}
+
+.historyWhen {
+  color: var(--text3);
+  font-size: var(--fs-meta);
+  white-space: nowrap;
+}

@@ -8,11 +8,11 @@ import { ProPill } from "@/components/ProPill";
 import { SplitButton } from "@/components/SplitButton";
 import { isBusy } from "@/domain/apps";
 import { pickText } from "@/domain/text";
-import { useAppAction, useChannelContext, useLocale, type AppAction } from "@/hooks";
+import { useAppAction, useChannelContext, useLocale } from "@/hooks";
 import { useFormat, type Format } from "@/i18n/format";
 import { useLibrary, useLibraryActions } from "@/queries";
+import { useDownloadStatus } from "@/screens/shared";
 import type { App } from "@/services/types";
-import { useDownloadsStore } from "@/stores/useDownloadsStore";
 import styles from "./AppHeader.module.css";
 
 const ignore = () => undefined;
@@ -96,6 +96,7 @@ function AppActionPanel({ app, format }: { app: App; format: Format }) {
   const { setFavorite } = useLibraryActions();
   const isFavorite = favorites?.includes(app.id) ?? false;
   const busy = isBusy(action.state);
+  const status = useDownloadStatus(app, action.state, action.progress);
 
   return (
     <div className={styles.aside}>
@@ -115,9 +116,7 @@ function AppActionPanel({ app, format }: { app: App; format: Format }) {
         <div className={styles.busy}>
           <ProgressBar value={action.progress} height={4} label={app.name} />
           <div className={styles.status}>
-            <span className={styles.statusText}>
-              <StatusLine app={app} action={action} format={format} />
-            </span>
+            <span className={styles.statusText}>{status?.text}</span>
             <button type="button" className={styles.cancel} onClick={action.cancel}>
               {t("common.cancel")}
             </button>
@@ -130,31 +129,4 @@ function AppActionPanel({ app, format }: { app: App; format: Format }) {
       )}
     </div>
   );
-}
-
-/**
- * "Downloading… 43% · 12 MB of 87 MB" / "Paused · 43%" / "Queued" / "Installing…" (README v2
- * "Downloads"; the prototype's `dlLine` + `dlSize`).
- */
-function StatusLine({ app, action, format }: { app: App; action: AppAction; format: Format }) {
-  const { t } = useTranslation();
-  const sizeMb = useDownloadsStore((s) => s.items[app.id]?.sizeMb) ?? app.sizeMb;
-  const percent = format.percent(action.progress);
-  switch (action.state) {
-    case "queued":
-      return t("common.queued");
-    case "installing":
-      return t("common.installingNow");
-    case "paused":
-      return `${t("common.paused")} · ${percent}`;
-    case "downloading": {
-      const received = t("common.ofSize", {
-        downloaded: format.size(Math.round((sizeMb * action.progress) / 100)),
-        size: format.size(sizeMb),
-      });
-      return `${t("common.downloading")}… ${percent} · ${received}`;
-    }
-    default:
-      return null;
-  }
 }

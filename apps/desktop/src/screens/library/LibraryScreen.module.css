@@ -1,0 +1,138 @@
+/* Library — prototype lines 546–673. */
+.screen {
+  min-width: 0;
+}
+
+/* Content + 250px right column, gap 24 (line 557). */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: var(--sp-24);
+  align-items: start;
+}
+
+.main {
+  min-width: 0;
+}
+
+/* ---- Toolbar: boxed tabs | Sort by + select + list/grid toggle (lines 559–576) ----------- */
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-16);
+  margin-bottom: var(--sp-14);
+}
+
+/* The strip keeps its size when a long language fills the row (the prototype's does too). */
+.tabs.tabs {
+  flex: none;
+}
+
+.toolbarEnd {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-10);
+}
+
+.sortLabel {
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+}
+
+/* ---- Lists ------------------------------------------------------------------------------ */
+.collections,
+.rows,
+.grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Collections tab: 2 columns of library collection cards, gap 12 (line 580). */
+.collections {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--grid-gap);
+}
+
+/* List view: rows 6px apart (line 597). */
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+/* Grid view: 4 columns, gap 12 (line 620). */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--grid-gap);
+}
+
+/* The card fills its cell (equal heights per row, like the prototype's direct grid items). */
+.cell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+
+/* ---- Breadcrumb in an open collection (line 594) ---------------------------------------- */
+.crumbs {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-10);
+  margin-bottom: var(--sp-12);
+}
+
+.crumbBack {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-6);
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-4);
+  background: none;
+  color: var(--text2);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-secondary);
+  cursor: pointer;
+}
+
+/* A 32px hit area around the text link without moving it (D32). */
+.crumbBack::before {
+  content: "";
+  position: absolute;
+  inset: 50% 0 auto;
+  height: 32px;
+  transform: translateY(-50%);
+}
+
+.crumbBack:hover {
+  color: var(--text);
+}
+
+.crumbBack:active {
+  transform: translateY(1px);
+}
+
+.crumbBack:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.crumbSep {
+  color: var(--text3);
+}
+
+.crumbTitle {
+  font-size: var(--fs-title);
+  font-weight: 600;
+}
+
+/* ---- Empty states: the hint inherits the 14px body size (line 637) ---------------------- */
+.emptyHint {
+  font-size: var(--fs-body);
+}

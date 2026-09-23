@@ -31,7 +31,7 @@ export function OfflineBanner() {
         <span className={styles.title}>{t("common.offline")}</span>{" "}
         <span className={styles.hint}>{t("shell.offlineHint")}</span>
       </div>
-      <Button size="xs" variant="secondary" onClick={retry}>
+      <Button size="xs" variant="secondary" className={styles.retry} onClick={retry}>
         {t("shell.retry")}
       </Button>
     </div>

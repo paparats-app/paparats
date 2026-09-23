@@ -37,7 +37,13 @@ export function LibraryGridCard({
   return (
     <div className={cx(styles.card, className)}>
       <button type="button" className={styles.identity} onClick={onOpen}>
-        <AppIcon mono={icon.mono} tint={icon.tint} iconUrl={icon.iconUrl} size={48} />
+        <AppIcon
+          mono={icon.mono}
+          tint={icon.tint}
+          iconUrl={icon.iconUrl}
+          size={48}
+          className={styles.icon}
+        />
         <span className={styles.text}>
           <span className={styles.name}>{name}</span>
           <span className={styles.sub}>{subtitle}</span>

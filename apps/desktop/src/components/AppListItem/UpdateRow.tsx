@@ -9,6 +9,7 @@ import {
 import { AppIcon } from "../AppIcon";
 import { Button, IconButton } from "../Button";
 import { Chip } from "../Chip";
+import { Icon } from "../Icon";
 import { cx } from "../internal/cx";
 import { ProgressBar } from "../ProgressBar";
 import styles from "./UpdateRow.module.css";
@@ -70,7 +71,13 @@ export function UpdateRow({
           tabIndex={-1}
           aria-hidden="true"
         >
-          <AppIcon mono={icon.mono} tint={icon.tint} iconUrl={icon.iconUrl} size={48} />
+          <AppIcon
+            mono={icon.mono}
+            tint={icon.tint}
+            iconUrl={icon.iconUrl}
+            size={48}
+            className={styles.icon}
+          />
         </button>
         <button type="button" className={styles.identity} onClick={onOpen}>
           <span className={styles.nameLine}>
@@ -90,6 +97,7 @@ export function UpdateRow({
           label={expanded ? t("updates.hideDetails") : t("updates.viewDetails")}
           size="sm"
           iconSize={16}
+          iconStrokeWidth={2}
           aria-expanded={expanded}
           aria-controls={panelId}
           className={styles.expand}
@@ -112,7 +120,7 @@ export function UpdateRow({
             <Button
               variant="link"
               size="xs"
-              trailingIcon="arrow-right"
+              trailingIcon={<Icon name="arrow-right" size={14} strokeWidth={2} />}
               className={styles.link}
               onClick={onOpen}
             >

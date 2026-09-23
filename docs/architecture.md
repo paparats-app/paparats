@@ -17,7 +17,8 @@ apps/desktop/src/
                            home browse categories updates library ideas idea subscription settings
                            profile app channel search dev first-launch
   screens/shared/          connected pieces several screens share (StoreAppCard, useStoreAppView,
-                           toActionView) — they read hooks and navigate, unlike components/
+                           toActionView, useDownloadStatus) — they read hooks and navigate,
+                           unlike components/
   components/<Name>/       shared components: <Name>.tsx + <Name>.module.css (+ test), index.ts
   services/                contracts.ts (interfaces), types.ts (domain types), errors.ts,
                            registry.ts (createServices + ServicesProvider + useServices),
@@ -98,8 +99,8 @@ claimIdeaBonus, signIn, signOut}.
 | `useSettingsStore` | `settings: Settings`, `hydrated` | `hydrate()`, `update(patch)` — optimistic, persists via SettingsService, rolls back on failure. Never touches the DOM: `app/documentSettings.ts` applies theme/locale/motion to `<html>` |
 | `useDownloadsStore` | `items: Record<AppId, DownloadItem>`, `order`, `batch {ids} \| null`, `justUpdated: Record<AppId,true>` | actions call DownloadService (`enqueue`, `startBatch`, pause/resume/cancel (+All), `clearJustUpdated(id?)`); selectors `batchProgress`, `allPaused`; kept in sync by `useDownloadsBridge()` (`stores/useDownloadsBridge.ts`, mounted once in the providers) |
 | `useBrowseStore` | `categories`, `pro`, `portable`, `sort` ('featured'\|'newest'\|'name'\|'size'), `collection`, `filterQuery`, `sources`, `heroIndex` | `apply(preset)` resets the six filters then applies the preset (navigation into Browse), `clearAll()`, toggles, `dropSource(id)` (unsubscribe/pause); select filters with `useShallow(selectBrowseFilters)` |
-| `useLibraryStore` | `tab`, `sort` ('recent'\|'name'\|'size'), `view` ('list'\|'grid'), `collection`, `filter` ('all'\|'updates'\|'downloads'\|'favorites'), `menuFor` | |
-| `useUpdatesStore` | `expanded: Record<AppId,boolean>` (vscode, obsidian open), `historyOpen` | |
+| `useLibraryStore` | `tab`, `sort` ('recent'\|'name'\|'size'), `view` ('list'\|'grid'), `collection`, `filter` ('all'\|'updates'\|'downloads'\|'favorites'), `menuFor` | `setTab` (also on the current tab: closes the collection, resets the quick filter), `setFilter` (switches to Installed), `openCollection`, `closeCollection`, `toggleMenu`/`closeMenu`. Kept across navigation like the prototype's state; `go()` only closes the menu |
+| `useUpdatesStore` | `expanded: Record<AppId,boolean>` (vscode, obsidian open), `historyOpen` | `toggleExpanded(id)`, `toggleHistory()` |
 | `useIdeasStore` | `tab`, `statuses`, `sort` ('top'\|'new'), `appFilter` | `focusApp(appId)` (All tab, no status chips) |
 | `useHomeStore` | `heroIndex`, `heroGlow` | `setHeroIndex`, `step(delta, count)`, `setHeroGlow(on)` (the first-launch exit turns the hero glow on, then off after ~1.7 s — M6) |
 | `useDialogStore` | `dialog: DialogState \| null` | `open(d)`, `close()`; rendered by `app/DialogHost` |
@@ -229,6 +230,10 @@ Mapping `useAppAction()` onto a card: `{ label, tone, disabled, onClick: run }` 
 source-channel chips, chevron-down "Details", identity and chevron open the app page — is
 `screens/shared › StoreAppCard` (Home, Browse, Categories, search, the app page's "More in"; the
 channel page should use it too); `useStoreAppView(app)` gives the same fields for rows.
+What a queued app says about its download — "Downloading… 43%", "Paused · 43%", "Queued",
+"Installing…", the "12 MB of 87 MB" size and the one-line form — is
+`screens/shared › useDownloadStatus(app, state, progress)` (pure `downloadStatus()` underneath),
+used by the app page, the Updates rows and the Library rows and cards (decision D34).
 The `/dev` gallery (`screens/dev/sections/index.ts › DEV_SECTIONS`) shows every component; add a
 section there for every new shared component.
 
@@ -268,5 +273,6 @@ The HTML is a reference, not code to copy: no `{{ }}`, no prototype runtime, no 
 - Pure `domain/*` functions get unit tests; stores get behaviour tests; each screen gets at least
   one smoke test plus tests for its end-to-end flows.
 - Each milestone's end-to-end flows also run through the whole shell (`renderApp`) in one file
-  per milestone, which fails on any `console.error`/`console.warn`: `app/discovery.test.tsx` (M2).
+  per milestone, which fails on any `console.error`/`console.warn`: `app/discovery.test.tsx` (M2),
+  `app/libraryUpdates.test.tsx` (M3).
 - Rust: unit tests per crate; `crates/paparats-core/tests/fixtures.rs` keeps fixtures ↔ model in sync.

@@ -37,6 +37,11 @@
   font-size: var(--fs-meta);
 }
 
+/* Library stats: the label sits right under the value. */
+.tight .label {
+  margin-top: 0;
+}
+
 /* ---- Tile (Profile usage) ---------------------------------------------------------------- */
 .tile,
 .compact {

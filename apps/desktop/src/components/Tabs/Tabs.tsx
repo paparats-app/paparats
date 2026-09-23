@@ -27,6 +27,8 @@ export interface TabsProps<V extends string> {
    * mint bar inset 10px (Profile).
    */
   variant?: "boxed" | "underline";
+  /** Called when the already selected tab is clicked (Library: back to the tab's start). */
+  onReselect?: (value: V) => void;
   /** Maps a tab to the id of the panel it controls (sets `aria-controls`). */
   panelId?: (value: V) => string;
   className?: string;
@@ -39,6 +41,7 @@ export function Tabs<V extends string>({
   onChange,
   label,
   variant = "boxed",
+  onReselect,
   panelId,
   className,
 }: TabsProps<V>) {
@@ -83,6 +86,7 @@ export function Tabs<V extends string>({
             className={cx(styles.tab, active && styles.active)}
             onClick={() => {
               if (!active) onChange(item.value);
+              else onReselect?.(item.value);
             }}
             onKeyDown={(event) => onKeyDown(event, index)}
           >

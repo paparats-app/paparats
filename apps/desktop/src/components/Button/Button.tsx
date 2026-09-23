@@ -130,6 +130,8 @@ export interface IconButtonProps extends Omit<
   label: string;
   /** Glyph size; defaults to the size scale's icon size. */
   iconSize?: number;
+  /** Glyph stroke width; defaults to the Icon's 1.75. */
+  iconStrokeWidth?: number;
   /** Circular instead of the size's radius. */
   round?: boolean;
 }
@@ -139,12 +141,19 @@ export function IconButton({
   icon,
   label,
   iconSize,
+  iconStrokeWidth,
   round = false,
   variant = "ghost",
   size = "compact",
   className,
   ...rest
 }: IconButtonProps) {
+  const glyph =
+    iconSize === undefined && iconStrokeWidth === undefined ? (
+      icon
+    ) : (
+      <Icon name={icon} size={iconSize ?? BUTTON_ICON_SIZE[size]} strokeWidth={iconStrokeWidth} />
+    );
   return (
     <Button
       {...rest}
@@ -152,7 +161,7 @@ export function IconButton({
       size={size}
       aria-label={label}
       className={cx(styles.iconOnly, round && styles.round, className)}
-      leadingIcon={iconSize === undefined ? icon : <Icon name={icon} size={iconSize} />}
+      leadingIcon={glyph}
     />
   );
 }

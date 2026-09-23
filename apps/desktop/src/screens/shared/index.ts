@@ -2,3 +2,9 @@
 // navigate). Presentational pieces live in components/.
 export { StoreAppCard, type StoreAppCardProps } from "./StoreAppCard";
 export { toActionView, useStoreAppView, type StoreAppView } from "./storeApp";
+export {
+  downloadStatus,
+  useDownloadStatus,
+  type DownloadStatus,
+  type DownloadStatusCopy,
+} from "./downloadStatus";

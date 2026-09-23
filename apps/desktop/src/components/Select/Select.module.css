@@ -53,9 +53,8 @@
   background: var(--input);
 }
 
-.select:hover:not(:disabled) {
-  border-color: var(--text3);
-}
+/* No hover state: none of the prototype's selects has one (lines 568, 778, 1219, 1434, 1445,
+   1478). */
 
 .select:focus-visible {
   border-color: var(--mint);

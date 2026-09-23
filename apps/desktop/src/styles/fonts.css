@@ -1,9 +1,59 @@
 /*
  * Onest (bundled, OFL): woff2 only, the subsets the UI needs (latin, latin-ext, cyrillic,
- * cyrillic-ext) at 400/500/600/700. Imported instead of the @fontsource CSS entry points so no
- * .woff fallbacks are bundled. Unicode ranges are copied from @fontsource/onest; a later face wins
+ * cyrillic-ext, and the arrows/shapes of "symbols" — the prototype draws → in Onest) at
+ * 400/500/600/700. Imported instead of the @fontsource CSS entry points so no .woff fallbacks are
+ * bundled. Unicode ranges are copied from @fontsource/onest; a later face wins
  * on overlapping ranges, so latin comes last (the @fontsource order).
  */
+
+/* symbols: arrows (→ in "1.92.2 → 1.93.0"), shapes; ranges trimmed to the BMP parts the UI can use. */
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("@fontsource/onest/files/onest-symbols-400-normal.woff2") format("woff2");
+  unicode-range:
+    U+2150-218F, U+2190, U+2192, U+2194-2199, U+21AF, U+21E6-21F0, U+21F3, U+2218-2219, U+2299,
+    U+22C4-22C6, U+2300-243F, U+2440-244A, U+2460-24FF, U+25A0-27BF, U+2800-28FF, U+2921-2922,
+    U+2981, U+29BF, U+29EB, U+2B00-2BFF;
+}
+
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url("@fontsource/onest/files/onest-symbols-500-normal.woff2") format("woff2");
+  unicode-range:
+    U+2150-218F, U+2190, U+2192, U+2194-2199, U+21AF, U+21E6-21F0, U+21F3, U+2218-2219, U+2299,
+    U+22C4-22C6, U+2300-243F, U+2440-244A, U+2460-24FF, U+25A0-27BF, U+2800-28FF, U+2921-2922,
+    U+2981, U+29BF, U+29EB, U+2B00-2BFF;
+}
+
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url("@fontsource/onest/files/onest-symbols-600-normal.woff2") format("woff2");
+  unicode-range:
+    U+2150-218F, U+2190, U+2192, U+2194-2199, U+21AF, U+21E6-21F0, U+21F3, U+2218-2219, U+2299,
+    U+22C4-22C6, U+2300-243F, U+2440-244A, U+2460-24FF, U+25A0-27BF, U+2800-28FF, U+2921-2922,
+    U+2981, U+29BF, U+29EB, U+2B00-2BFF;
+}
+
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url("@fontsource/onest/files/onest-symbols-700-normal.woff2") format("woff2");
+  unicode-range:
+    U+2150-218F, U+2190, U+2192, U+2194-2199, U+21AF, U+21E6-21F0, U+21F3, U+2218-2219, U+2299,
+    U+22C4-22C6, U+2300-243F, U+2440-244A, U+2460-24FF, U+25A0-27BF, U+2800-28FF, U+2921-2922,
+    U+2981, U+29BF, U+29EB, U+2B00-2BFF;
+}
 
 @font-face {
   font-family: "Onest";

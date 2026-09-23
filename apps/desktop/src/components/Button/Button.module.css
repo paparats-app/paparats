@@ -183,10 +183,9 @@
   color: var(--on-image);
 }
 
-/* The prototype doubles the ground on hover (.06 → .12). */
+/* The prototype doubles the ground on hover: white .06 → .12 (Pause all, line 473). */
 .onImage:hover:not(:disabled) {
-  background:
-    linear-gradient(var(--ghost-on-image-bg), var(--ghost-on-image-bg)), var(--ghost-on-image-bg);
+  background: color-mix(in srgb, var(--on-image-bright) 12%, transparent);
 }
 
 .primaryOnImage {

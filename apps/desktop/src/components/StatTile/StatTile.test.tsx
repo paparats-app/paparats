@@ -9,6 +9,11 @@ describe("StatTile", () => {
     expect(container.querySelector('[data-icon="package"]')).not.toBeNull();
   });
 
+  it("marks the tight row (no gap under the value)", () => {
+    const { container } = render(<StatTile icon="heart" value="3" label="Favorites" tight />);
+    expect(container.firstElementChild).toHaveClass("tight");
+  });
+
   it("drops the icon in the compact variant", () => {
     const { container } = render(
       <StatTile variant="compact" icon="package" value="3" label="In work" />,

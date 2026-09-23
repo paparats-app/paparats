@@ -279,3 +279,76 @@ components have. Card grids are named `ul`/`li` lists or `section`s labelled by 
 result counts are `role="status"`, so a changed count is announced. The page has no favicon
 (`<link rel="icon" href="data:,">`): the window icon is native, and WebView2 no longer logs a
 `/favicon.ico` 404.
+
+## Library, Updates, download engine (M3)
+
+### D33 — Library banner subtitle
+The prototype's markup shows the tagline "Your apps, all in one place." (`t.librarySub`); its
+logic computes "14 apps installed" (`libSubtitle`) but never renders it. The markup wins
+(strict parity): the banner shows `library.librarySub`. The count is on the Installed tab and in
+Library stats; `library.installedCount` stays in the catalogs, unused.
+
+### D34 — One download status, three places
+`screens/shared › useDownloadStatus` (pure `downloadStatus()`) builds what a queued app says
+about its download, for the app page, the Updates rows and the Library rows and grid cards:
+- `line`: "Downloading… 43%", "Paused · 43%", "Queued", "Installing…" (the prototype's `dlLine`);
+- `size`: "12 MB of 87 MB" while downloading or paused, from the queued item's size (an update
+  downloads its manifest's size), else the full install size (the prototype's `dlSize`);
+- `text`, the one-line form: "Downloading… 43% · 12 MB of 87 MB"; every other state is `line`.
+The app page and the Updates rows use `text`, so a paused one-line status drops the size (README;
+D31 — the prototype kept it). The Library row keeps the prototype's two lines: `line` on top and
+`size` under it, also while paused. Row and card actions keep the prototype's `card()` labels
+(`43% · Pause`, Resume, Queued, Installing… in `--mint2`), not the README's "Installing… NN%".
+
+### D35 — Updates screen
+- Rows: every pending update plus the apps marked "Updated just now", in catalog order; a row
+  goes when the app is uninstalled or its source channel is switched off or unreachable (the
+  prototype's `updateRows`). "Updated just now" rows show the new version and a disabled
+  `--text2` button.
+- The batch line follows the prototype's markup: "Updating X of N" on the left, where X counts
+  the items that already landed (so a batch starts at "Updating 0 of 6"), and the percentage on
+  the right, above the 6 px bar (the README wrote "Updating 2 of 5 · 43 %"). Update all is hidden
+  while a batch runs, while offline and with nothing to update.
+- The toast is `updates.allUpdated` "All updates installed" (README §4, D8), not v2's "All apps
+  updated".
+- Release notes fall back to the catalog's generic notes when an app has no update manifest (the
+  prototype showed an empty list; every fixture app has one).
+- The screen renders nothing until the catalog, library and channels have loaded, so "Everything
+  is up to date" never flashes (like D30).
+- "Updated just now" is cleared by `useNav().go()` when leaving `/updates` (D7) and also when the
+  screen unmounts (any other way out). The unmount clear waits one microtask so React's dev-only
+  StrictMode remount keeps the markers of a screen that is still open. An update that lands while
+  another screen is open still shows "Updated just now" when Updates is opened next.
+- Update history lists `activity` entries of kind `updated` for visible apps, newest first (the
+  prototype's `history`); activity for an app that is neither installed nor offered by a followed
+  channel is skipped.
+
+### D36 — Library behaviour
+- The Collections tab pill counts the collections with their own app list (3; "All apps" is every
+  installed app), as the prototype; Library stats count every collection (4).
+- Clicking the tab that is already selected resets it, as the prototype's `pick`: Installed drops
+  the quick filter, Collections closes the open collection (`Tabs.onReselect`).
+- The "Updates available" quick filter counts `useUpdates().count` (the prototype's
+  `updatesCount`) but lists installed apps in state `update`; the two differ only while a source
+  channel is paused or unreachable.
+- Uninstall toasts "<App> uninstalled" and clears the app's "Updated just now" marker after the
+  service resolves; a failure shows nothing (no failure copy). An app still in the download queue
+  is not cancelled (prototype), so it comes back when the download lands.
+- "Open install folder" calls `install.openInstallFolder` (a no-op on the Rust side for
+  now, D24); the prototype only closed the menu.
+- The + button and the "New collection" row are focusable and do nothing: creating collections
+  is not designed yet (prototype).
+- A Collections tab with no collections at all shows "Nothing found" (the prototype would show an
+  empty grid; the fixtures always have collections).
+- The ⋯ menu keeps the M1 pop-in animation; the grid card's favourite button keeps its pressed
+  state (mint, `aria-pressed`), like the app page's star (D31). The prototype showed neither.
+
+### D37 — Parity fixes at integration (M3)
+- Library and Updates row names, and the Updates version line, wrap in a narrow window as the
+  prototype's markup does; M1 had truncated them with an ellipsis. At the default 1440 px window
+  nothing wraps, so the layout is unchanged there.
+- `PromoCard` text is `--on-image-strong` (#f2f4f2, both prototype cards); M1 used `--on-image`.
+- The on-image `ProgressBar` track is white at 14 % (`--on-image-bright`), the prototype's
+  `rgba(255,255,255,.14)`; M1 mixed `--on-image`.
+- The 30 px `SegmentedControl` options (Settings › Theme, the Library list/grid toggle) get an
+  invisible 32 px hit area reaching into the track's padding (D32); nothing moves.

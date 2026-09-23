@@ -52,12 +52,15 @@ describe("SegmentedControl", () => {
         value="list"
         onChange={() => {}}
         ground="card"
+        iconStrokeWidth={2}
         options={[
           { value: "list", icon: "list", ariaLabel: "List" },
           { value: "grid", icon: "layout-grid", ariaLabel: "Grid" },
         ]}
       />,
     );
-    expect(screen.getByRole("radio", { name: "Grid" })).toHaveAttribute("tabindex", "-1");
+    const grid = screen.getByRole("radio", { name: "Grid" });
+    expect(grid).toHaveAttribute("tabindex", "-1");
+    expect(grid.querySelector("svg")).toHaveAttribute("stroke-width", "2");
   });
 });

@@ -37,7 +37,8 @@
 }
 
 .onImage {
-  background: color-mix(in srgb, var(--on-image) 14%, transparent);
+  /* rgba(255,255,255,.14) (prototype line 463). */
+  background: color-mix(in srgb, var(--on-image-bright) 14%, transparent);
 }
 
 .onImage .fill {

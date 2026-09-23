@@ -7,7 +7,8 @@
   border: 1px solid var(--line);
   border-radius: var(--r-12);
   background: var(--promo-ground);
-  color: var(--on-image);
+  /* #f2f4f2 in both prototype cards (lines 538, 907). */
+  color: var(--on-image-strong);
   font-family: var(--font-sans);
 }
 

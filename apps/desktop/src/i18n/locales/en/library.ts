@@ -28,4 +28,7 @@ export const library = {
   noDownloads: "No active downloads",
   noDownloadsHint: "Downloads and updates in progress will show up here.",
   browseApps: "Browse apps",
+  viewAs: "View",
+  moreActionsFor: "More actions for {{app}}",
+  signature: "— Paparats",
 } as const;

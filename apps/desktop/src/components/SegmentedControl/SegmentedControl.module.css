@@ -35,6 +35,7 @@
 }
 
 .option {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -56,6 +57,14 @@
 
 .md .option {
   font-size: var(--fs-body);
+}
+
+/* The 30px options get an invisible 32px hit area reaching into the track's 2px padding,
+   without moving anything (D32). */
+.track:not(.md) .option::before {
+  content: "";
+  position: absolute;
+  inset: -1px 0;
 }
 
 .option:hover:not(:disabled) {

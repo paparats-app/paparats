@@ -1,0 +1,158 @@
+/* Library right column — prototype lines 645–670. */
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-10);
+  min-width: 0;
+}
+
+.panel {
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--card);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--fs-title);
+  font-weight: 600;
+}
+
+/* ---- Library stats: 20px icon + 16/600 value + 12px label, 12px apart ------------------- */
+.stats {
+  padding: var(--sp-16) var(--sp-18);
+}
+
+.statsTitle {
+  margin-bottom: var(--sp-10);
+}
+
+.statList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-12);
+}
+
+/* ---- Collections and quick filters: 34px rows ----------------------------------------- */
+.list {
+  padding: var(--sp-12) var(--sp-10) var(--sp-10);
+}
+
+.listHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--sp-8) var(--sp-8);
+}
+
+.listTitle {
+  padding: 0 var(--sp-8) var(--sp-8);
+}
+
+/* 26px like the prototype; an invisible 32px hit area around it (D32). */
+.add {
+  position: relative;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 26px;
+  height: 26px;
+  /* The prototype's UA button padding (6px) pushes the 16px glyph 1px right of centre. */
+  padding: 0 var(--sp-6);
+  border: 0;
+  border-radius: var(--r-6);
+  background: none;
+  color: var(--text2);
+  cursor: pointer;
+}
+
+.add::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+}
+
+.add:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-10);
+  width: 100%;
+  box-sizing: border-box;
+  height: var(--control-h-sm);
+  padding: 0 var(--sp-8);
+  border: 0;
+  border-radius: var(--r-7);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-secondary);
+  text-align: left;
+  cursor: pointer;
+}
+
+/* The open collection / the active quick filter; hover replaces it, as in the prototype. */
+.item[aria-current="true"],
+.item[aria-pressed="true"] {
+  background: var(--card2);
+}
+
+.item:hover {
+  background: var(--hover);
+}
+
+.add:focus-visible,
+.item:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.itemIcon {
+  flex: none;
+  color: var(--text2);
+}
+
+.itemLabel {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemCount {
+  color: var(--text3);
+  font-size: var(--fs-meta);
+  font-variant-numeric: tabular-nums;
+}
+
+.newItem {
+  color: var(--text2);
+}
+
+.newItem:hover {
+  color: var(--text);
+}
+
+/* ---- Closing quote -------------------------------------------------------------------- */
+.quote {
+  padding: var(--sp-16) var(--sp-18);
+}
+
+.quoteText {
+  margin: 0;
+  font-size: var(--fs-title);
+  font-style: italic;
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.signature {
+  margin-top: var(--sp-10);
+  color: var(--text3);
+  font-size: var(--fs-secondary-sm);
+  text-align: right;
+}

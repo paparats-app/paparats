@@ -79,7 +79,7 @@ export function LibraryRow({
       icon: "star",
       onSelect: onToggleFavorite,
     },
-    { id: "folder", label: t("library.openFolder"), icon: "folder-open", onSelect: onOpenFolder },
+    { id: "folder", label: t("library.openFolder"), icon: "folder", onSelect: onOpenFolder },
     { type: "divider", id: "divider" },
     {
       id: "uninstall",
@@ -99,7 +99,13 @@ export function LibraryRow({
         tabIndex={-1}
         aria-hidden="true"
       >
-        <AppIcon mono={icon.mono} tint={icon.tint} iconUrl={icon.iconUrl} size={44} />
+        <AppIcon
+          mono={icon.mono}
+          tint={icon.tint}
+          iconUrl={icon.iconUrl}
+          size={44}
+          className={styles.icon}
+        />
       </button>
       <button type="button" className={styles.identity} onClick={onOpen}>
         <span className={styles.nameLine}>
@@ -141,6 +147,7 @@ export function LibraryRow({
         items={items}
         label={moreLabel}
         align="end"
+        className={styles.menu}
         open={menuOpen}
         onOpenChange={onMenuOpenChange}
         renderTrigger={(trigger) => (

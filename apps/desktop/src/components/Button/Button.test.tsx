@@ -61,4 +61,17 @@ describe("IconButton", () => {
     expect(onClick).toHaveBeenCalledTimes(1);
     expect(screen.getByRole("button")).toHaveAttribute("data-variant", "ghost");
   });
+
+  it("draws its glyph with the given size and stroke width", () => {
+    const { container } = render(
+      <>
+        <IconButton icon="chevron-down" label="Details" size="sm" iconStrokeWidth={2} />
+        <IconButton icon="x" label="Close" />
+      </>,
+    );
+    const [details, close] = container.querySelectorAll("svg");
+    expect(details).toHaveAttribute("stroke-width", "2");
+    expect(details).toHaveAttribute("width", "16");
+    expect(close).toHaveAttribute("stroke-width", "1.75");
+  });
 });

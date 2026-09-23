@@ -14,12 +14,21 @@ export interface StatTileProps {
    * `compact`: `--bg` tile without icon, 20px/700 value (Ideas developer panel).
    */
   variant?: "row" | "tile" | "compact";
+  /** No gap between value and label (`row`: Library stats, prototype line 649; the ecosystem list keeps 2px). */
+  tight?: boolean;
   className?: string;
 }
 
-export function StatTile({ value, label, icon, variant = "row", className }: StatTileProps) {
+export function StatTile({
+  value,
+  label,
+  icon,
+  variant = "row",
+  tight = false,
+  className,
+}: StatTileProps) {
   return (
-    <div className={cx(styles.stat, styles[variant], className)}>
+    <div className={cx(styles.stat, styles[variant], tight && styles.tight, className)}>
       {icon && variant !== "compact" && (
         <Icon name={icon} size={variant === "tile" ? 18 : 20} className={styles.icon} />
       )}

@@ -33,4 +33,7 @@ export const library: LocaleCatalog<typeof En> = {
   noDownloads: "Няма актыўных загрузак",
   noDownloadsHint: "Загрузкі і абнаўленні ў працэсе з’явяцца тут.",
   browseApps: "Да каталога",
+  viewAs: "Выгляд",
+  moreActionsFor: "Іншыя дзеянні: {{app}}",
+  signature: "— Paparats",
 };

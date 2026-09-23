@@ -53,6 +53,29 @@ describe("Tabs", () => {
     expect(onChange).toHaveBeenLastCalledWith("collections");
   });
 
+  it("reports a click on the selected tab through onReselect only", async () => {
+    const onChange = vi.fn();
+    const onReselect = vi.fn();
+    render(
+      <Tabs
+        label="Library"
+        value="installed"
+        onChange={onChange}
+        onReselect={onReselect}
+        items={[
+          { value: "installed", label: "Installed" },
+          { value: "favorites", label: "Favorites" },
+        ]}
+      />,
+    );
+    await userEvent.click(screen.getByRole("tab", { name: "Installed" }));
+    expect(onReselect).toHaveBeenCalledWith("installed");
+    expect(onChange).not.toHaveBeenCalled();
+    await userEvent.click(screen.getByRole("tab", { name: "Favorites" }));
+    expect(onChange).toHaveBeenCalledWith("favorites");
+    expect(onReselect).toHaveBeenCalledTimes(1);
+  });
+
   it("renders underline tabs with icons", () => {
     render(
       <Tabs

@@ -22,3 +22,6 @@ Thumbs.db
 
 # Claude Code worktrees / local state
 .claude/
+
+# Vitest reporter output
+.vitest/

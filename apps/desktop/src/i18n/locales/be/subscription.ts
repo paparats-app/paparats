@@ -4,7 +4,7 @@ import type { LocaleCatalog } from "../../types";
 export const subscription: LocaleCatalog<typeof En> = {
   testimonial:
     "Paparats Pro дапамагае мне засяродзіцца на працы. Адна падпіска — і столькі цудоўных інструментаў.",
-  testimonialBy: "Задаволены карыстальнік",
+  testimonialBy: "— Задаволены карыстальнік",
   subLead: "Адна падпіска. Больш магчымасцей.",
   subBody:
     "Адкрыйце пашыраныя функцыі ва ўсіх праграмах Paparats. Падтрымайце незалежных распрацоўшчыкаў і дапамажыце нам прынесці добрыя інструменты большай колькасці людзей.",

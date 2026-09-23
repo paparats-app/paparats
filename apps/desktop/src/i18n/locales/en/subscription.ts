@@ -1,6 +1,7 @@
 export const subscription = {
   testimonial: "Paparats Pro helps me focus on my work. One subscription, so many amazing tools.",
-  testimonialBy: "A happy user",
+  /** The quote card's signature: the prototype prefixed "— " in its markup. */
+  testimonialBy: "— A happy user",
   subLead: "One subscription. More possibilities.",
   subBody:
     "Unlock advanced features across all Paparats apps. Support independent developers and help us bring great tools to more people.",

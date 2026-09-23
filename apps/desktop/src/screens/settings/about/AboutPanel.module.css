@@ -1,0 +1,208 @@
+/* Settings › About — prototype lines 797–822. The top block is dark in both themes. */
+.card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+  color: var(--text);
+}
+
+/* ---- Top block (line 799): 290px, the fern on the right 60% ------------------------------- */
+.hero {
+  position: relative;
+  min-height: 290px;
+  overflow: hidden;
+  background: var(--banner-ground);
+  color: var(--on-image);
+}
+
+.photo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 60%;
+  background: var(--photo) center / cover no-repeat;
+  /* Mask stops: #000 is the opaque mask value, not a colour (the one allowed literal). */
+  mask-image: linear-gradient(90deg, transparent 0%, #000 50%);
+}
+
+.heroInner {
+  position: relative;
+  padding: 34px 40px var(--sp-30);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-16);
+}
+
+.logo {
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+}
+
+.name {
+  margin: 0;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: var(--ls-tight);
+}
+
+.tagline {
+  margin-top: var(--sp-6);
+  color: var(--on-image-body);
+  font-size: 17px;
+}
+
+/* One line tall before the platform info arrives, so the status and buttons never jump. */
+.version {
+  min-height: 1lh;
+  margin-top: var(--sp-26);
+  font-size: var(--fs-title);
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  margin-top: var(--sp-6);
+  color: var(--on-image-body);
+  font-size: var(--fs-body);
+}
+
+.statusMark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--r-9);
+  background: var(--cta-mint);
+  color: var(--cta-ink);
+}
+
+.actions {
+  display: flex;
+  gap: var(--sp-10);
+  margin-top: var(--sp-20);
+}
+
+/* Check for updates: 40px, 0 22px, min-width 190 (line 806). Doubled to win over Button. */
+.check.check {
+  --btn-px: var(--sp-22);
+  min-width: 190px;
+}
+
+/* What's new: 0 18px, gap 8, #f2f4f2 text (line 807). */
+.whatsNew.whatsNew {
+  --btn-px: var(--sp-18);
+  gap: var(--sp-8);
+  color: var(--on-image-strong);
+}
+
+/* ---- Lower block (line 811): padding 26 40 24 ----------------------------------------------- */
+.body {
+  padding: var(--sp-26) 40px var(--sp-24);
+}
+
+.statement {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+.principles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--sp-16);
+  margin: var(--sp-26) 0 0;
+  padding: var(--sp-24) 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  list-style: none;
+}
+
+.principle {
+  text-align: center;
+}
+
+/* Inline like the prototype's svg, so the line box (and the gap under the icon) match. Doubled
+   to win over Icon's `display: block`. */
+.principleIcon.principleIcon {
+  display: inline;
+  color: var(--mint2);
+}
+
+.principleTitle {
+  margin-top: var(--sp-10);
+  font-size: var(--fs-title);
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 28px;
+  margin-top: var(--sp-22);
+}
+
+.link,
+.legalLink {
+  position: relative;
+  text-decoration: none;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-6);
+  font-size: var(--fs-body);
+  font-weight: 500;
+}
+
+/* No hover change: the prototype's inline colours beat its global `a:hover`. */
+.link,
+.link:hover {
+  color: var(--mint2);
+}
+
+.legalLink,
+.legalLink:hover {
+  color: var(--text2);
+}
+
+/* Invisible hit areas of at least 32px that do not move the layout (D32). */
+.link::before,
+.legalLink::before {
+  content: "";
+  position: absolute;
+  inset: -7px -4px;
+}
+
+.link:focus-visible,
+.legalLink:focus-visible {
+  border-radius: var(--r-4);
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--sp-16);
+  margin-top: var(--sp-26);
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+}
+
+.legal {
+  display: flex;
+  gap: var(--sp-16);
+}

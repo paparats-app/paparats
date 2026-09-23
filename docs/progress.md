@@ -222,3 +222,98 @@ Known gaps (by milestone):
   prototype (M2 gap). The ⋯ menu and Popover have no portal (M1 gap).
 - The main JS chunk is now ≈ 564 kB minified (≈ 172 kB gzip); the mock services and fixtures are
   still bundled in Tauri builds.
+
+## M4 — Account surfaces (2026-09-23)
+
+What exists now (decisions D38–D41 in `docs/decisions.md`):
+
+- **Subscription** (`screens/subscription`). The xl banner with the lead, the body, the motto and
+  "Get Paparats Pro" (→ the monthly confirmation) or, while Pro, the status chip
+  ("Paparats Pro Monthly · Active", "Paparats Pro · gift · Active"); "Learn more" → Settings ›
+  About. The benefit strip; the three equal-height plan cards with prices from the platform
+  data, the current plan's mint border and disabled "Current plan", "Choose plan" (→ the
+  confirmation) and "Cancel plan" on the Free card while a paid plan is active; "Popular apps with
+  Pro features" (5 link cards → the app page, "See all" → Browse with the Pro filter). Side
+  column: Your impact, the quote, the ecosystem numbers, the Pro status card (plan, Active, price,
+  "Renews on …" / "Idea bonus · active until …", or the hint and Upgrade).
+- **Plan dialog** (`app/dialogs/PlanDialog`, registered in `DialogHost`): "Confirm Paparats Pro
+  Monthly/Yearly" with the charge and the renewal date, Cancel/Escape, Confirm → purchase → toast
+  "Welcome to Paparats Pro". The plan in effect reaches the sidebar Pro pill, the banner chip, the
+  Subscription status card and the Profile Pro card at once (`screens/shared › useProStatusView`).
+- **Settings** (`screens/settings`, `/settings/:section?`). The 250 px section nav and all ten
+  sections: the eight row cards from the settings schema (theme, language, toggles, the check
+  frequency and Parallel downloads selects, the install path, Clear search history, the Profile /
+  Subscription links, Sign out, the developer-mode tools of D5 and the component gallery), the
+  Sources placeholder (its panel arrives in M5) and **About** (version line, Check for updates →
+  "Checking…" → toast, What's new → Updates, the principles, the links and the footer opening in
+  the default browser). Theme and language apply to the whole window at once; Parallel downloads
+  changes the running queue live; Start on Windows login goes through `setAutostart`.
+- **Profile** (`screens/profile`). Banner; the header card with the initials, "Member since" and
+  edit mode (Save → the account service → toast "Profile saved", header, rows and the top bar's
+  initials follow; blank fields are refused inline); the underline tabs Account (five rows that
+  open edit mode, the promo card), Preferences (theme, language), Security (password, two-factor
+  switch, active sessions counting the devices), Devices ("This device", Remove), Data & Privacy
+  (Export…, Delete…, both inert). Right column: the Pro card (free / plan / idea gift, Manage or
+  Upgrade → Subscription), usage tiles, Recent activity (→ Updates). The tab, edit mode and draft
+  survive navigation (`useProfileStore`).
+- **Shared pieces.** `screens/shared › useProStatusView` (+ `PERIOD_KEYS`); stores
+  `useProfileStore`, `useFirstLaunchStore` (Replay first launch, for M6); `queries/system.ts ›
+  useSystemActions`, `useSettingsActions`. Component additions: `SettingsRow` `disabled` (action)
+  and `selectedMark` (language); `ProfileHeader` `editButtonRef` / `nameInputRef`; parity fixes in
+  `BenefitStrip`, `SubscriptionPlan`, the link `AppCard`, `StatTile` and `ProfileHeader` (D41).
+  Tokens `--on-image-mint`, `--on-image-mint-ground`; `--font-mono` now lists Consolas first. New
+  i18n keys `settings.signedOut`, `settings.notSignedIn`, `settings.sectionsLabel`,
+  `about.updateAvailable` (`version`), `profile.sections`, `profile.changePhoto`,
+  `profile.nameRequired`, `profile.emailRequired`; `profile.sessionsHint` became a plural
+  (`count`); `subscription.testimonialBy` now carries its dash. The "Parallel downloads" select
+  passes a number (M1 note closed).
+- **Tests.** Vitest: 100 files, 672 tests. The M4 screens: Subscription (9), the plan dialog (8),
+  Settings (13), Settings in the shell (4), About (7), Profile (17), and `app/account.test.tsx`
+  (5), which runs the M4 flows through the whole shell and fails on any console error or warning:
+  a plan bought on Subscription reaching the sidebar, the status card and the Profile card and
+  cancelled again; all ten Settings sections, theme and language applied at once, Parallel
+  downloads 2 → 4 → 1 reshaping a live queue; About's update check; Profile tabs, Edit → Save →
+  toast and avatar, device removal, Data & Privacy. Rust: 126 tests.
+- **Checks.** typecheck, lint, test, format:check, cargo fmt, clippy (`-D warnings`) and cargo
+  test are green; `pnpm specta` produces no bindings drift.
+  - Chrome on `pnpm dev` (mock services, driven by script): Choose plan → dialog → Confirm →
+    toast, the plan current, the Pro pill in the sidebar, the banner chip, the status card and the
+    Profile card, Cancel plan back to Free; all ten Settings sections; Light/Dark and en/ru/be
+    applied at once and persisted; Parallel downloads 1 → 4 during Update all (1 downloading +
+    5 queued → 4 + 2) with the batch landing and its toast; Check for updates → "Checking…" →
+    "You're up to date!", What's new; Clear search history, Sign out, the developer-mode rows;
+    Profile tabs, Edit → Save → toast and avatar, Remove device (the sessions hint then says
+    "1 device signed in."), Export…/Delete… inert.
+  - The real app (`pnpm tauri dev`, Rust backend, driven over the WebView2 debugging port): the
+    yearly purchase (renewal date from the core's local today in the dialog, the status card and
+    the Profile card, sidebar Pro pill); all ten sections; Light/Dark and en/ru persisted to
+    `settings.json`; Parallel downloads 1 → 4 on the Rust queue during Update all (1 + 4 queued →
+    4 + 1) landing with the toast; Check for updates; Profile tabs, Edit → Save → toast and
+    avatar, Remove device, the two-factor switch, Export…/Delete… inert.
+  - No console errors in either. The install path now measures 178.69 px, as in the prototype.
+    The dev data set in `%APPDATA%/com.paparats.desktop` was backed up before the real-app checks
+    and restored afterwards.
+
+Known gaps (by milestone):
+
+- Settings › Sources is a placeholder with its title (M5); Ideas, Idea, Channel and their dialogs
+  (M5); the first-launch scene, the hero glow and Replay first launch doing something visible
+  (M6).
+- After Settings › Sign out nothing signs back in until first launch (M6) / PKCE (M7); in the
+  real app the signed-out state persists in `paparats.db` (reseed the data set, D22). The top bar
+  and Profile do not show a signed-out state (the prototype has none).
+- No-ops kept from the prototype: Install location "Change…", Network proxy "Configure…",
+  Change photo, Password "Change…", "Sign out everywhere", Export…, Delete…. Autostart and the
+  search history have no Rust side yet (`setAutostart` and `clearSearchHistory` resolve without
+  doing anything). The About links point at placeholder `https://paparats.app/…` addresses.
+- No failure copy for a failed purchase, cancel, profile save, device removal or update check:
+  each returns quietly (D38–D40).
+- Shared-component behaviour that differs slightly from the prototype and was left as it is:
+  the selected language option keeps its mint border on hover; Toggle's hover brightness and
+  pressed knob; the 1 px pressed nudge on buttons; AppIcon's 34 px tile keeps -0.02em tracking;
+  the destructive button's hover ground is `--danger` at 10 % (the prototype used
+  rgba(224,91,60,.1)).
+- Cyrillic text still renders 1–6 px narrower than in the prototype (M2 gap); the wrapped ru
+  Profile tab label sits 1.3 px right of the prototype's.
+- The main JS chunk is now ≈ 595 kB minified (≈ 181 kB gzip); the mock services and fixtures are
+  still bundled in Tauri builds.

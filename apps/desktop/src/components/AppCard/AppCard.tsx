@@ -73,7 +73,13 @@ export function AppCard({
 
   const identity = (
     <>
-      <AppIcon mono={icon.mono} tint={icon.tint} iconUrl={icon.iconUrl} size={size} />
+      <AppIcon
+        mono={icon.mono}
+        tint={icon.tint}
+        iconUrl={icon.iconUrl}
+        size={size}
+        className={linkCard ? styles.linkIcon : undefined}
+      />
       <span className={cx(styles.text, linkCard && proLabel !== undefined && styles.pillRoom)}>
         <span className={styles.name}>{name}</span>
         {publisher !== undefined && <span className={styles.publisher}>{publisher}</span>}

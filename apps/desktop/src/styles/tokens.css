@@ -64,6 +64,9 @@
   --on-image-kicker: #a9c9b8;
   --on-image-quiet: #a9b3ad; /* Updates banner size line */
   --on-image-lead: #e2e8e4; /* Subscription banner lead */
+  /* Subscription banner status chip ("Paparats Pro Monthly · Active", prototype line 684). */
+  --on-image-mint: #9fe3c0;
+  --on-image-mint-ground: rgba(92, 201, 149, 0.18);
   --on-image-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
   --on-image-shadow-quote: 0 1px 14px rgba(0, 0, 0, 0.7); /* Home hero pull quote */
   --on-image-shadow-soft: 0 1px 10px rgba(0, 0, 0, 0.6);
@@ -87,7 +90,7 @@
 
   /* ---- Typography --------------------------------------------------------------------- */
   --font-sans: "Onest", "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
-  --font-mono: "Cascadia Mono", Consolas, "Courier New", monospace;
+  --font-mono: Consolas, "Cascadia Mono", monospace; /* the prototype's stack (lines 781, 1129) */
   --fs-hero: 42px; /* hero H1, 600, -.02em, lh 1.1 */
   --fs-page: 34px; /* page H1 */
   --fs-app: 30px; /* app / channel detail H1, 700 */

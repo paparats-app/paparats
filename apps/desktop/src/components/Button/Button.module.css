@@ -173,8 +173,10 @@
   color: var(--danger);
 }
 
+/* The prototype's hover ground is the outline's red at 10 % (rgba(224,91,60,.1), line 935), not
+   the text colour: a fifth of `--danger-border` (that red at 50 %). */
 .destructive:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  background: color-mix(in srgb, var(--danger-border) 20%, transparent);
 }
 
 .onImage {

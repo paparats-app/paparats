@@ -22,10 +22,6 @@
   outline-offset: var(--focus-ring-offset);
 }
 
-.switch:hover:not(:disabled) .track {
-  filter: brightness(1.08);
-}
-
 .switch:active:not(:disabled) .knob {
   width: calc(var(--toggle-knob) + var(--sp-2));
 }

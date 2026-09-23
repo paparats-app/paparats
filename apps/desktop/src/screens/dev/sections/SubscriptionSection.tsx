@@ -45,7 +45,9 @@ export function SubscriptionSection() {
                 price={format.price(plan.amount, plan.currency)}
                 period={period(plan.id)}
                 features={FEATURES.map((f) => t(`subscription.plans.${plan.id}.features.${f}`))}
-                badge={plan.badge ? t(`subscription.${plan.badge}`) : undefined}
+                badge={
+                  plan.badge && plan.id !== current ? t(`subscription.${plan.badge}`) : undefined
+                }
                 current={plan.id === current}
                 recommended={plan.id === "monthly"}
                 buttonLabel={

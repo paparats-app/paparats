@@ -2,6 +2,7 @@ export const about = {
   youUpToDate: "You’re up to date!",
   checking: "Checking…",
   checkUpdates: "Check for updates",
+  updateAvailable: "Version {{version}} is available",
   aboutBody1: "Paparats is a curated app store for modern tools and utilities.",
   aboutBody2: "We believe in useful software, privacy, and a more open ecosystem.",
   website: "Website",

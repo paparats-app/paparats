@@ -1,0 +1,15 @@
+/* Plan confirmation — prototype lines 1355–1366. */
+
+/* The Paparats app icon, 36px, radius 9. */
+.icon {
+  flex: none;
+  display: block;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--r-9);
+}
+
+/* Confirm: 36px primary with 18px sides (Cancel keeps the 16px of the medium size). */
+.confirm.confirm {
+  --btn-px: var(--sp-18);
+}

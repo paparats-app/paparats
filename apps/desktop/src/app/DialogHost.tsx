@@ -1,4 +1,5 @@
 import { useDialogStore, type DialogState } from "@/stores/useDialogStore";
+import { PlanDialog } from "./dialogs/PlanDialog";
 import { ReportDialog } from "./dialogs/ReportDialog";
 
 /**
@@ -16,6 +17,7 @@ function renderDialog(dialog: DialogState) {
     case "report":
       return <ReportDialog target={dialog.target} />;
     case "plan":
+      return <PlanDialog plan={dialog.plan} />;
     case "addChannel":
     case "trustConfirm":
     case "suggestIdea":

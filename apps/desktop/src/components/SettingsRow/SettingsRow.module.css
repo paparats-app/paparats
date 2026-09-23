@@ -87,10 +87,15 @@
   outline-offset: calc(-1 * var(--focus-ring-w));
 }
 
-.languageOn,
-.languageOn:hover {
+.languageOn {
   border-color: var(--mint);
   background: var(--mint-soft);
+}
+
+/* The prototype's hover border (`style-hover`, applied !important) wins on the selected option
+   too; its mint ground stays. */
+.languageOn:hover {
+  border-color: var(--text2);
 }
 
 .check {

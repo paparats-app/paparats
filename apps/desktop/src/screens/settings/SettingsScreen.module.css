@@ -1,0 +1,107 @@
+/* Settings — prototype lines 747–796. */
+.screen {
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--fs-page);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  letter-spacing: var(--ls-tight);
+}
+
+.subtitle {
+  margin: var(--sp-6) 0 var(--sp-22);
+  color: var(--text2);
+  font-size: var(--fs-title);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: var(--sp-20);
+  align-items: start;
+}
+
+/* ---- Section nav (line 751): card, padding 8, 44px items ------------------------------------ */
+.nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-8);
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+}
+
+.navItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+  box-sizing: border-box;
+  width: 100%;
+  height: 44px;
+  padding: 0 var(--sp-14);
+  border: 0;
+  border-radius: var(--r-8);
+  background: transparent;
+  color: var(--text2);
+  font: inherit;
+  font-size: var(--fs-body);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.navItemActive {
+  background: var(--card2);
+  color: var(--text);
+}
+
+/* The 3px mint bar on the active item's left edge. */
+.navItemActive::before {
+  content: "";
+  position: absolute;
+  top: var(--sp-12);
+  bottom: var(--sp-12);
+  left: 0;
+  width: 3px;
+  border-radius: var(--r-3);
+  background: var(--mint);
+}
+
+/* Hover wins over the active ground, as the prototype's `style-hover` (applied !important). */
+.navItem:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.navItem:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* ---- Panel ------------------------------------------------------------------------------------ */
+.panel {
+  min-width: 0;
+}
+
+.sectionTitle {
+  margin: var(--sp-6) 0 var(--sp-14);
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  letter-spacing: var(--ls-h2);
+}
+
+/* Each row's top rule overlaps the previous row's last pixel (`margin-top: -1px`, line 761), so
+   a row is 16 + content + 16 tall like the prototype's. */
+.rows > * + * {
+  margin-top: -1px;
+}
+
+/* The prototype's link rows have no hover ground (line 787). Doubled to win over SettingsRow. */
+.linkRow.linkRow:hover {
+  background: none;
+}

@@ -122,9 +122,25 @@
   font-weight: 400;
 }
 
+/* The prototype's inputs are content-box (38px + the 1px border = 40px) with radius 8, and have
+   no hover state (line 887). */
+.field input {
+  height: 40px;
+  border-radius: var(--r-8);
+}
+
+.field input:hover:not(:focus, [aria-invalid="true"]) {
+  border-color: var(--line2);
+}
+
 .formActions {
   display: flex;
   flex: none;
   flex-direction: column;
   gap: var(--sp-8);
+}
+
+/* Save / Cancel: 36px, padding 0 18px (line 890); the column stretches both to the wider one. */
+.formActions > button {
+  --btn-px: var(--sp-18);
 }

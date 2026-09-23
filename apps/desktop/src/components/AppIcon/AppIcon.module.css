@@ -57,10 +57,12 @@
   letter-spacing: 0;
 }
 
+/* Profile › Recent activity (prototype line 959): no letter-spacing on this size. */
 .s34 {
   --tile: 34px;
   border-radius: var(--r-8);
   font-size: var(--fs-meta);
+  letter-spacing: 0;
 }
 
 .s36 {

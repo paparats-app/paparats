@@ -4,6 +4,9 @@ export const settings = {
   change: "Change…",
   build: "Build",
   historyCleared: "Search history cleared",
+  signedOut: "Signed out",
+  notSignedIn: "Not signed in",
+  sectionsLabel: "Settings sections",
   sections: {
     general: "General",
     updates: "Updates",

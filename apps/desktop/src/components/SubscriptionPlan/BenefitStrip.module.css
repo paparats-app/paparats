@@ -14,16 +14,17 @@
 
 /* Every cell draws a left rule; the first one hides under the card border. */
 .cell {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   margin-left: -1px;
   padding: var(--sp-22) var(--sp-16);
   border-left: 1px solid var(--line);
   text-align: center;
 }
 
-.icon {
+/* The prototype's glyph sits inline in the text flow, so its line box (26px plus the strut's
+   descent) is ≈5px taller than the glyph; a block glyph made every cell 5.5px shorter. */
+.cell > .icon {
+  display: inline;
+  vertical-align: baseline;
   color: var(--mint2);
 }
 

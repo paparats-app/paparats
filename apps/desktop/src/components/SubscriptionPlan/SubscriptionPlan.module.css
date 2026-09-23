@@ -106,10 +106,22 @@
   color: var(--mint2);
 }
 
+/* Every plan button (line 706): 1px `--line2` border (the mint one too), 14/600, and the hover
+   brightens the ground rather than swapping it. */
 .button.button {
   margin-top: var(--sp-20);
+  border-width: 1px;
   border-color: var(--line2);
   font-size: var(--fs-body);
+  font-weight: 600;
+}
+
+.button.button:hover:not(:disabled) {
+  filter: brightness(1.12);
+}
+
+.button.button[data-variant="primary"]:hover:not(:disabled) {
+  background: var(--mint);
 }
 
 .button.button:disabled {

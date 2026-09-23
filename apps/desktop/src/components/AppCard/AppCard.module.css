@@ -133,6 +133,19 @@ button.identity {
   padding-bottom: var(--sp-20);
 }
 
+/* The Pro note wraps in full (prototype line 719 has no clamp, unlike the store card's tagline). */
+.linkCard .tagline {
+  display: block;
+  overflow: visible;
+  -webkit-line-clamp: none;
+}
+
+/* This card's 44px tile: radius 10 and no monogram tracking (line 718), unlike the shared tile. */
+.linkIcon.linkIcon {
+  border-radius: var(--r-10);
+  letter-spacing: normal;
+}
+
 .proPinned {
   position: absolute;
   right: var(--sp-10);

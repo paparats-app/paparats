@@ -352,3 +352,110 @@ D31 — the prototype kept it). The Library row keeps the prototype's two lines:
   `rgba(255,255,255,.14)`; M1 mixed `--on-image`.
 - The 30 px `SegmentedControl` options (Settings › Theme, the Library list/grid toggle) get an
   invisible 32 px hit area reaching into the track's padding (D32); nothing moves.
+
+## Account surfaces (M4)
+
+### D38 — Subscription and the plan dialog
+- A plan card shows either its promo pill ("Most popular", "Save 18%") or, on the plan in effect,
+  "Current plan" (README §6: "… or 'Current plan'"). The prototype rendered both in the Pro state;
+  the second pill ran out of the monthly card, was clipped by the yearly one and wrapped the plan
+  name. So in the Pro state our cards are 8–18 px shorter than the prototype's; the Free state is
+  identical. The `/dev` gallery follows the same rule.
+- The confirmation names the charge and the renewal date: today + 1 month or 1 year, clamped to
+  the month's last day (31 January → 28 February), formatted per language. The status cards show
+  the account's `renewsOn`, which the core computes from the same local today (D21), so the two
+  agree (the prototype hard-coded 2026-10-15 / 2027-09-15).
+- Confirm is disabled until the plans have loaded, shows a spinner while buying and ignores
+  repeated clicks; a failed purchase keeps the dialog open without a toast, and a failed cancel
+  leaves the plan as it was (no failure copy in the handoff).
+- As in the prototype: "Cancel plan" (Free card) cancels at once, without a confirmation or a
+  toast; "Learn more" opens Settings › About (`goAbout`); the idea gift shows "Paparats Pro · gift"
+  both as the plan name and on the price line (`proStatus.price = t.proGift`).
+- The ecosystem numbers use `format.plus` ("10 000+" in ru/be); the prototype showed "10,000+" in
+  every language (D13).
+- One view of the plan in effect, `screens/shared › useProStatusView()`, feeds the banner status
+  chip, the Subscription status card and the Profile Pro card; the sidebar Pro pill reads
+  `usePro()`. The banner chip's mint text and ground are the on-image tokens `--on-image-mint` and
+  `--on-image-mint-ground` (prototype line 684).
+- Subscription and Profile render nothing until their queries have loaded (like D30), so no plan
+  state or count changes a frame later.
+
+### D39 — Settings
+- Picking a section replaces the route (`/settings/<id>`) without `go()`: no skeleton, enter
+  animation or scroll reset, like the prototype's `setState({section})`. `/settings` always opens
+  General; the prototype remembered the last section across navigation.
+- The section nav shows `--hover` on hover even on the active item, and the link rows (Profile,
+  Subscription, Component gallery) have no hover ground: both are the prototype's styles (its
+  hover styles are `!important`). The app sidebar keeps its own active ground on hover.
+- Kept as no-ops, as in the prototype: Downloads › Install location › "Change…" (no folder
+  picker yet) and Advanced › Network proxy › "Configure…".
+- Privacy › Clear calls `clearSearchHistory()` and toasts "Search history cleared" once it
+  resolves (the prototype toasted at once); a failure shows nothing. Search history is not stored
+  yet on either side.
+- Account › Sign out (a no-op in the prototype) calls `account.signOut()`, toasts "Signed out" and
+  the row then reads "Not signed in" with the button disabled. Nothing else reacts: the prototype
+  has no signed-out state, and signing in again arrives with first launch (M6) and PKCE (M7). In
+  the real app the signed-out flag persists in `paparats.db`; until M6, reseed the data set (D22)
+  to sign back in.
+- Start on Windows login also calls `system.setAutostart(value)` (a no-op on both sides until
+  tauri-plugin-autostart lands) and switches back if it rejects.
+- Parallel downloads stores a number (`1 | 2 | 4`); the downloads bridge passes it to
+  `DownloadService.setConcurrency` at once, so a running queue grows or shrinks live.
+- Settings › About:
+  - Check for updates ignores clicks while "Checking…" (the prototype restarted its 1.2 s timer).
+    A newer version toasts "Version X is available" and replaces "You're up to date!" under the
+    version; a failed check returns quietly.
+  - Website, Documentation, Get support, Report an issue and the footer's Terms of Service /
+    Privacy Policy / Licenses open in the default browser through `system.openExternal`
+    (`href="#"` in the prototype). The addresses are placeholders on `https://paparats.app/`
+    (`/`, `/docs`, `/support`, `/issues`, `/terms`, `/privacy`, `/licenses`) until the site
+    exists; middle-click is blocked so no link opens inside the WebView.
+  - The version line joins labels like the prototype's `versionLine` (D13); "Paparats" is an
+    `<h2>` (a div in the prototype) so the panel has a heading.
+- Advanced › Replay first launch only bumps `useFirstLaunchStore.replayRequested`; the M6 scene
+  plays when it changes.
+
+### D40 — Profile
+- Devices › Remove calls `account.removeDevice` (no handler in the prototype); no toast (no copy);
+  on a failure the row stays. The Security › Active sessions hint counts the devices still signed
+  in (`profile.sessionsHint` became a plural key): the prototype's fixed "2 devices signed in." is
+  the same string for its two devices, but went stale after a removal.
+- Focusable no-ops, as in the prototype: the camera badge (Change photo), Password › Change…,
+  Sign out everywhere, Export… and Delete… (never destructive).
+- Save with a blank name or email shows "Enter your name" / "Enter your email" under the field
+  and does not call the service (the service rejects blank values, D12); the message goes when
+  that field is edited. Any other failed save keeps the form open without a toast.
+- Keyboard focus follows the header's mode switch (Enter/Space on Edit profile or an Account row →
+  the Name field; Save/Cancel → back to Edit profile). Mouse clicks move no focus, which keeps the
+  prototype's look (the input's focus border).
+- The two-factor switch shows the requested value until the account carries it; on a failure it
+  reverts.
+- The tab, edit mode and draft live in `useProfileStore` and survive navigation, like the
+  prototype's `profileTab` / `editing` / `draft`.
+- Profile tab labels may wrap (ru "Данные и приватность" wraps as in the prototype; `Tabs` keeps
+  `nowrap` elsewhere).
+- Recent activity lists the five newest entries whose app is visible; the activity grows with
+  every install and update (the prototype showed five static entries). Updates installed reads
+  `account.usage.updatesInstalled`.
+- Accessible names added: the tab list is "Profile sections", the camera badge "Change photo".
+
+### D41 — Parity fixes and shared changes at integration (M4)
+- `--font-mono` lists Consolas first, the prototype's stack (lines 781, 1129): the install path
+  now measures 178.69 px, as in the prototype (190.4 px with Cascadia Mono first).
+- Component fixes found by the screen comparisons, all per the prototype markup: `BenefitStrip`
+  cells are blocks with an inline 26 px glyph (5.5 px taller); the `SubscriptionPlan` button has a
+  1 px `--line2` border on every variant and weight 600, and the mint one keeps `--mint` on hover;
+  the link `AppCard` (Pro apps) wraps its note instead of clamping it to 2 lines and draws its
+  44 px tile at radius 10 without monogram tracking; the `StatTile` tile icon is inline (values
+  5.6 px lower); `ProfileHeader` inputs render 40 px at radius 8 and Save/Cancel have 18 px
+  padding.
+- Additive component props: `SettingsRow` `disabled` (action rows) and
+  `selectedMark: 'check' | 'code'` (language rows; Profile keeps the ISO code on the selected
+  option, prototype line 915); `ProfileHeader` `editButtonRef` / `nameInputRef` (keyboard focus
+  without DOM queries).
+- `useProfileStore` and `useFirstLaunchStore` live in `stores/` and are reset by the test
+  `resetStores()` like every other store.
+- The top bar's avatar keeps Onest. The prototype's avatar `<button>` has no `font: inherit`, so
+  its initials render in Chrome's default Arial; the caps sit within ≈ 0.6 px of the prototype's.
+- `subscription.testimonialBy` carries the dash ("— A happy user"), which the prototype's markup
+  prepended (like `sources.staleTitle`'s period, D13).

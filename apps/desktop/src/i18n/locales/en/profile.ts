@@ -32,7 +32,8 @@ export const profile = {
   twoFactor: "Two-factor authentication",
   twoFactorHint: "Authenticator app or security key.",
   sessions: "Active sessions",
-  sessionsHint: "2 devices signed in.",
+  sessionsHint_one: "{{count, number}} device signed in.",
+  sessionsHint_other: "{{count, number}} devices signed in.",
   signOutAll: "Sign out everywhere",
   thisDevice: "This device",
   lastActive: "Last active {{when}}",
@@ -45,4 +46,8 @@ export const profile = {
   deleteBtn: "Delete…",
   prefTheme: "Theme",
   prefLanguage: "Language",
+  sections: "Profile sections",
+  changePhoto: "Change photo",
+  nameRequired: "Enter your name",
+  emailRequired: "Enter your email",
 } as const;

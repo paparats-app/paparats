@@ -1,0 +1,13 @@
+/* Settings › Sources header — prototype line 825 (placeholder until M5). */
+.title {
+  margin: var(--sp-6) 0 0;
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  letter-spacing: var(--ls-h2);
+}
+
+.subtitle {
+  margin-top: var(--sp-4);
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+}

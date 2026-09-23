@@ -30,6 +30,11 @@ export type SettingsRowProps = RowBase &
         value: Locale;
         options: readonly LanguageOption[];
         onChange: (value: Locale) => void;
+        /**
+         * What the selected option shows on the right: a mint check (Settings, the default) or
+         * its ISO code like the others (Profile › Preferences, prototype line 915).
+         */
+        selectedMark?: "check" | "code";
       }
     | { type: "toggle"; checked: boolean; onChange: (checked: boolean) => void; disabled?: boolean }
     | {
@@ -40,7 +45,14 @@ export type SettingsRowProps = RowBase &
       }
     /** Monospace value in place of the hint + "Change…". */
     | { type: "path"; value: string; onChange: () => void }
-    | { type: "action"; actionLabel: string; onAction: () => void; destructive?: boolean }
+    | {
+        type: "action";
+        actionLabel: string;
+        onAction: () => void;
+        destructive?: boolean;
+        /** Disables the button (e.g. Sign out while signed out or while it runs). */
+        disabled?: boolean;
+      }
     /** The whole row is a button with a `--mint2` label + chevron on the right. */
     | { type: "link"; actionLabel: string; onClick: () => void }
     /** 20px mint icon (shield by default) + title + body. */
@@ -90,6 +102,7 @@ export function SettingsRow(props: SettingsRowProps) {
             value={props.value}
             options={props.options}
             onChange={props.onChange}
+            selectedMark={props.selectedMark ?? "check"}
           />
         </div>
       );
@@ -134,6 +147,7 @@ export function SettingsRow(props: SettingsRowProps) {
           <Button
             size="compact"
             variant={props.destructive ? "destructive" : "secondary"}
+            disabled={props.disabled}
             onClick={props.onAction}
           >
             {props.actionLabel}
@@ -169,10 +183,11 @@ interface LanguageGridProps {
   value: Locale;
   options: readonly LanguageOption[];
   onChange: (value: Locale) => void;
+  selectedMark: "check" | "code";
 }
 
 /** 3-column grid of 40px language buttons: native name + mint check or the ISO code. */
-function LanguageGrid({ labelledBy, value, options, onChange }: LanguageGridProps) {
+function LanguageGrid({ labelledBy, value, options, onChange, selectedMark }: LanguageGridProps) {
   const refs = useRef<Array<HTMLButtonElement | null>>([]);
   const selected = options.findIndex((o) => o.code === value);
   const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
@@ -205,7 +220,7 @@ function LanguageGrid({ labelledBy, value, options, onChange }: LanguageGridProp
             onKeyDown={(event) => onKeyDown(event, index)}
           >
             <span>{option.native}</span>
-            {on ? (
+            {on && selectedMark === "check" ? (
               <Icon name="check" size={16} strokeWidth={2.4} className={styles.check} />
             ) : (
               <span className={styles.code} aria-hidden="true">

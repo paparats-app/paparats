@@ -7,6 +7,9 @@ export const settings: LocaleCatalog<typeof En> = {
   change: "Змяніць…",
   build: "Зборка",
   historyCleared: "Гісторыя пошуку ачышчана",
+  signedOut: "Вы выйшлі з уліковага запісу",
+  notSignedIn: "Уваход не выкананы",
+  sectionsLabel: "Раздзелы налад",
   sections: {
     general: "Агульныя",
     updates: "Абнаўленні",

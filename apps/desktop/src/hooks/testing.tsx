@@ -17,9 +17,11 @@ import {
 import { useBrowseStore } from "@/stores/useBrowseStore";
 import { useDialogStore } from "@/stores/useDialogStore";
 import { useDownloadsStore } from "@/stores/useDownloadsStore";
+import { useFirstLaunchStore } from "@/stores/useFirstLaunchStore";
 import { useHomeStore } from "@/stores/useHomeStore";
 import { useIdeasStore } from "@/stores/useIdeasStore";
 import { useLibraryStore } from "@/stores/useLibraryStore";
+import { useProfileStore } from "@/stores/useProfileStore";
 import { useSettingsStore } from "@/stores/useSettingsStore";
 import { useUiStore } from "@/stores/useUiStore";
 import { useUpdatesStore } from "@/stores/useUpdatesStore";
@@ -57,9 +59,11 @@ export function resetStores(): void {
     useBrowseStore,
     useDialogStore,
     useDownloadsStore,
+    useFirstLaunchStore,
     useHomeStore,
     useIdeasStore,
     useLibraryStore,
+    useProfileStore,
     useSettingsStore,
     useUiStore,
     useUpdatesStore,

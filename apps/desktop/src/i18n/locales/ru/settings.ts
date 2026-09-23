@@ -7,6 +7,9 @@ export const settings: LocaleCatalog<typeof En> = {
   change: "Изменить…",
   build: "Сборка",
   historyCleared: "История поиска очищена",
+  signedOut: "Вы вышли из аккаунта",
+  notSignedIn: "Вход не выполнен",
+  sectionsLabel: "Разделы настроек",
   sections: {
     general: "Общие",
     updates: "Обновления",

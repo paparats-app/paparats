@@ -5,6 +5,7 @@ export const about: LocaleCatalog<typeof En> = {
   youUpToDate: "У вас последняя версия!",
   checking: "Проверка…",
   checkUpdates: "Проверить обновления",
+  updateAvailable: "Доступна версия {{version}}",
   aboutBody1: "Paparats — отобранный каталог современных инструментов и утилит.",
   aboutBody2: "Мы верим в полезное ПО, приватность и более открытую экосистему.",
   website: "Сайт",

@@ -50,6 +50,40 @@ describe("SettingsRow", () => {
     expect(onChange).toHaveBeenLastCalledWith("ru");
   });
 
+  it('language with selectedMark="code": the selected option keeps its code, no check', () => {
+    const { container } = render(
+      <SettingsRow
+        type="language"
+        title="Language"
+        value="en"
+        options={LANGUAGES}
+        selectedMark="code"
+        onChange={() => undefined}
+      />,
+    );
+    const english = screen.getByRole("radio", { name: "English" });
+    expect(english).toHaveAttribute("aria-checked", "true");
+    expect(english).toHaveTextContent("EN");
+    expect(container.querySelector("svg")).toBeNull();
+  });
+
+  it("action: disabled ignores clicks", async () => {
+    const onAction = vi.fn();
+    render(
+      <SettingsRow
+        type="action"
+        title="Signed in as serj.kaje@example.com"
+        actionLabel="Sign out"
+        onAction={onAction}
+        disabled
+      />,
+    );
+    const button = screen.getByRole("button", { name: "Sign out" });
+    expect(button).toBeDisabled();
+    await userEvent.click(button);
+    expect(onAction).not.toHaveBeenCalled();
+  });
+
   it("toggle and select are labelled by the row title", async () => {
     const onToggle = vi.fn();
     const onSelect = vi.fn();

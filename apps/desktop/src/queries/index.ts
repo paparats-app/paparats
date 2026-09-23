@@ -12,3 +12,5 @@ export { useIdeas, useIdeaActions, upsertIdea } from "./ideas";
 export type { IdeaActions } from "./ideas";
 export { useAccount, useAccountActions } from "./account";
 export type { AccountActions } from "./account";
+export { useSettingsActions, useSystemActions } from "./system";
+export type { SettingsActions, SystemActions } from "./system";

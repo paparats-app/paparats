@@ -55,6 +55,12 @@
   border-radius: var(--r-10);
 }
 
+/* The prototype's tile icon is an inline SVG on the text baseline, so it sits in a full line box
+   (18px glyph in a ~23.6px line): the value starts 5.6px lower than under a block icon. */
+.tile .icon {
+  display: inline;
+}
+
 .tile .value {
   margin-top: var(--sp-8);
   font-size: var(--fs-h2);

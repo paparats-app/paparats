@@ -1,0 +1,298 @@
+/* Profile — prototype lines 866–966. */
+.screen {
+  min-width: 0;
+}
+
+/* Content + 400px right column, gap 24 (line 874). */
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: var(--sp-24);
+  align-items: start;
+}
+
+.main {
+  min-width: 0;
+}
+
+/* Underline tabs 18px under the header card (line 895). */
+.tabs.tabs {
+  margin-top: var(--sp-18);
+}
+
+/* The prototype's tab labels wrap when the strip runs out of room ("Данные и приватность" takes
+   two lines in the 712px column); they never overflow it. */
+.tabs.tabs > button {
+  white-space: normal;
+}
+
+/* The prototype's 16px tab icon is a shrinkable flex item: next to the wrapped ru label it
+   narrows (16 → ≈13px) before the label takes a third line. */
+.tabs.tabs > button > svg {
+  flex: 0 1 auto;
+}
+
+/* ---- Account (lines 902–911) -------------------------------------------------------------- */
+.h2 {
+  margin: var(--sp-20) 0 var(--sp-12);
+  color: var(--text);
+  font-size: var(--fs-lead);
+  font-weight: 600;
+  letter-spacing: var(--ls-h2);
+}
+
+.panelCard,
+.panelCardTop {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+  color: var(--text);
+  list-style: none;
+}
+
+/* Security, Preferences, Devices, Data: the card sits 20px under the tabs. */
+.panelCardTop.panelCardTop {
+  margin-top: var(--sp-20);
+}
+
+/* Every row draws a top rule and overlaps the previous one by 1px; the card clips the first. */
+.infoRow {
+  display: grid;
+  grid-template-columns: 20px 170px minmax(0, 1fr) 16px;
+  gap: var(--sp-16);
+  align-items: center;
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: -1px;
+  padding: var(--sp-14) var(--sp-20);
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.infoRow:hover {
+  background: var(--hover);
+}
+
+/* The card clips (radius 12): the ring goes inside the row. */
+.infoRow:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: calc(-1 * var(--focus-ring-w));
+}
+
+.infoIcon {
+  color: var(--text2);
+}
+
+.infoLabel {
+  color: var(--text2);
+  font-size: var(--fs-body);
+}
+
+.infoValue {
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--fs-body);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.infoChevron {
+  color: var(--text3);
+}
+
+.promo.promo {
+  margin-top: var(--sp-14);
+}
+
+/* ---- Devices (lines 925–931) -------------------------------------------------------------- */
+.device {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-16);
+  margin-top: -1px;
+  padding: var(--sp-16) var(--sp-20);
+  border-top: 1px solid var(--line);
+}
+
+.deviceTile {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-10);
+  background: var(--card2);
+  color: var(--text2);
+}
+
+.deviceText {
+  flex: 1;
+  min-width: 0;
+}
+
+.deviceHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+.deviceName {
+  font-size: var(--fs-title);
+  font-weight: 600;
+}
+
+.thisDevice {
+  padding: 1px var(--sp-8);
+  border-radius: var(--r-9);
+  background: var(--mint-soft);
+  color: var(--mint2);
+  font-size: var(--fs-chip);
+  font-weight: 600;
+}
+
+.deviceMeta {
+  margin-top: var(--sp-2);
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+}
+
+/* ---- Right column (lines 939–964) --------------------------------------------------------- */
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-12);
+  min-width: 0;
+}
+
+.cardTitle {
+  font-size: var(--fs-title-lg);
+  font-weight: 600;
+}
+
+.cardSub,
+.cardSubSpaced {
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+}
+
+.cardSubSpaced {
+  margin-top: var(--sp-2);
+}
+
+/* Pro status card (lines 940–948). */
+.proHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-10);
+}
+
+.proIdentity {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-10);
+  min-width: 0;
+}
+
+/* The prototype's crown is a shrinkable flex item: beside a long plan name ("Paparats Pro (год)")
+   and "Active" it narrows (22 → ≈20px) before the name wraps. */
+.proIdentity > .proIcon {
+  flex: 0 1 auto;
+  color: var(--mint2);
+}
+
+.proFoot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-12);
+  margin-top: var(--sp-16);
+}
+
+.proPrice {
+  font-size: var(--fs-title-lg);
+  font-weight: 600;
+}
+
+.proRenews {
+  margin-top: var(--sp-2);
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+}
+
+.proFreeHint {
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  text-wrap: pretty;
+}
+
+/* Manage / Upgrade: 36px, 0 16px, radius 8, 13px/600 with a 14px arrow (line 947). */
+.proCta.proCta {
+  --btn-fs: var(--fs-secondary);
+  font-weight: 600;
+}
+
+/* Usage stats (lines 950–956). */
+.usageGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-8);
+  margin-top: var(--sp-14);
+}
+
+/* Recent activity (lines 957–962): padding 18 20 10. */
+.activityCard.activityCard {
+  padding: var(--sp-18) var(--sp-20) var(--sp-10);
+}
+
+/* The prototype's "See all" here has a 6px gap (8px elsewhere). */
+.activityHead > button {
+  gap: var(--sp-6);
+}
+
+.activityList {
+  margin: var(--sp-8) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.activityRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+  padding: var(--sp-10) 0;
+  border-top: 1px solid var(--line);
+}
+
+.activityText {
+  flex: 1;
+  min-width: 0;
+}
+
+.activityTitle {
+  overflow: hidden;
+  font-size: 13.5px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activityVersion {
+  margin-top: 1px;
+  color: var(--text2);
+  font-size: var(--fs-meta);
+}
+
+.activityWhen {
+  color: var(--text3);
+  font-size: var(--fs-meta);
+  white-space: nowrap;
+}

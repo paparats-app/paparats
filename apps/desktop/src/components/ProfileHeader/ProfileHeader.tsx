@@ -1,4 +1,4 @@
-import type { FormEvent } from "react";
+import type { FormEvent, Ref } from "react";
 import { useTranslation } from "react-i18next";
 import { Button } from "../Button";
 import { Icon } from "../Icon";
@@ -29,6 +29,10 @@ export interface ProfileHeaderProps {
   /** The 30px camera badge; accessible name via `photoLabel`. */
   onChangePhoto?: () => void;
   photoLabel?: string;
+  /** "Edit profile" (view mode), e.g. to return keyboard focus after Save / Cancel. */
+  editButtonRef?: Ref<HTMLButtonElement>;
+  /** The Name input (edit mode), e.g. to move keyboard focus into the form. */
+  nameInputRef?: Ref<HTMLInputElement>;
   className?: string;
 }
 
@@ -50,6 +54,8 @@ export function ProfileHeader({
   errors,
   onChangePhoto,
   photoLabel,
+  editButtonRef,
+  nameInputRef,
   className,
 }: ProfileHeaderProps) {
   const { t } = useTranslation();
@@ -79,6 +85,7 @@ export function ProfileHeader({
         <form className={styles.form} onSubmit={submit}>
           <div className={styles.fields}>
             <TextField
+              ref={nameInputRef}
               label={t("profile.name")}
               value={draft.name}
               error={errors?.name}
@@ -113,7 +120,12 @@ export function ProfileHeader({
               {t("profile.memberSince", { date: memberSince })}
             </div>
           </div>
-          <Button size="field" leadingIcon={<Icon name="pencil" size={15} />} onClick={onEdit}>
+          <Button
+            ref={editButtonRef}
+            size="field"
+            leadingIcon={<Icon name="pencil" size={15} />}
+            onClick={onEdit}
+          >
             {t("profile.editProfile")}
           </Button>
         </>

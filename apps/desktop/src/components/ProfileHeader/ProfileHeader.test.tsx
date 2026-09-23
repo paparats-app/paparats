@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { useState } from "react";
+import { createRef, useState } from "react";
 import "@/i18n";
 import { ProfileHeader, type ProfileDraft } from "./ProfileHeader";
 
@@ -42,6 +42,30 @@ describe("ProfileHeader", () => {
     await userEvent.type(name, "Serj K.{Enter}");
     expect(onSave).toHaveBeenCalledWith({ name: "Serj K.", email: "s@example.com" });
     expect(screen.queryByLabelText("Name")).toBeNull();
+  });
+
+  it("hands out the Edit profile button and the Name input through refs", async () => {
+    const editButton = createRef<HTMLButtonElement>();
+    const nameInput = createRef<HTMLInputElement>();
+    const props = {
+      name: "Serj Kaje",
+      email: "s@example.com",
+      initials: "SK",
+      memberSince: "September 2024",
+      draft: { name: "Serj Kaje", email: "s@example.com" },
+      onDraftChange: () => {},
+      onEdit: () => {},
+      onSave: () => {},
+      onCancel: () => {},
+      editButtonRef: editButton,
+      nameInputRef: nameInput,
+    };
+    const { rerender } = render(<ProfileHeader {...props} editing={false} />);
+    expect(editButton.current).toBe(screen.getByRole("button", { name: "Edit profile" }));
+    expect(nameInput.current).toBeNull();
+    rerender(<ProfileHeader {...props} editing />);
+    expect(nameInput.current).toBe(screen.getByLabelText("Name"));
+    expect(editButton.current).toBeNull();
   });
 
   it("cancels without saving", async () => {

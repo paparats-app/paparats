@@ -2,8 +2,9 @@
 //!
 //! - `paparats://app/<id>` and `paparats://channel/<id>` open that page (the UI navigates on a
 //!   [`DeepLinkEvent`]);
-//! - `paparats://auth/callback?…` is the browser sign-in return, reserved for the PKCE flow (M7):
-//!   recognised, never logged with its query (it carries the authorization code), ignored for now.
+//! - `paparats://auth/callback?…` is the browser sign-in return (OAuth 2 PKCE, M7): handed to the
+//!   account flow when real sign-in is on (`PAPARATS_REAL=account`), ignored otherwise; never
+//!   logged or printed with its query (it carries the authorization code, see [`AuthCallback`]).
 //!
 //! Anything else is ignored. Ids are catalog slugs: ASCII letters, digits, `.`, `_`, `-`, starting
 //! with a letter or digit, at most [`MAX_ID_LEN`] characters; letters are lowercased.
@@ -31,8 +32,25 @@ pub enum DeepLinkTarget {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum DeepLink {
     Open(DeepLinkTarget),
-    /// `paparats://auth/callback` — the sign-in return (M7).
-    AuthCallback,
+    /// `paparats://auth/callback?…` — the browser sign-in return.
+    AuthCallback(AuthCallback),
+}
+
+/// The sign-in return link, whole (the account flow checks its shape and state). Its `Debug`
+/// never shows the link: the query holds the authorization code.
+#[derive(Clone, PartialEq, Eq)]
+pub struct AuthCallback(Url);
+
+impl AuthCallback {
+    pub fn url(&self) -> &Url {
+        &self.0
+    }
+}
+
+impl std::fmt::Debug for AuthCallback {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str("AuthCallback(<redacted>)")
+    }
 }
 
 /// Why a link was ignored (logged by kind only: the link itself may carry anything).
@@ -69,7 +87,9 @@ pub fn parse(url: &Url) -> Result<DeepLink, DeepLinkError> {
     match (kind.as_str(), first) {
         ("app", Some(id)) => Ok(DeepLink::Open(DeepLinkTarget::App(slug(id)?))),
         ("channel", Some(id)) => Ok(DeepLink::Open(DeepLinkTarget::Channel(slug(id)?))),
-        ("auth", Some(step)) if step.eq_ignore_ascii_case("callback") => Ok(DeepLink::AuthCallback),
+        ("auth", Some(step)) if step.eq_ignore_ascii_case("callback") => {
+            Ok(DeepLink::AuthCallback(AuthCallback(url.clone())))
+        }
         _ => Err(DeepLinkError::Unsupported),
     }
 }
@@ -136,14 +156,21 @@ mod tests {
 
     #[test]
     fn sign_in_return_is_recognised() {
-        assert_eq!(
-            parse_str("paparats://auth/callback?code=secret&state=xyz"),
-            Ok(DeepLink::AuthCallback)
+        let raw = "paparats://auth/callback?code=secret&state=xyz";
+        let Ok(DeepLink::AuthCallback(callback)) = parse_str(raw) else {
+            panic!("not a callback");
+        };
+        assert_eq!(callback.url().as_str(), raw, "handed over whole");
+        let shown = format!("{:?}", DeepLink::AuthCallback(callback.clone()));
+        assert!(
+            !shown.contains("secret") && !shown.contains("xyz"),
+            "{shown}"
         );
-        assert_eq!(
+        assert_eq!(callback.url().query(), Some("code=secret&state=xyz"));
+        assert!(matches!(
             parse_str("paparats://auth/callback/"),
-            Ok(DeepLink::AuthCallback)
-        );
+            Ok(DeepLink::AuthCallback(_))
+        ));
         assert_eq!(
             parse_str("paparats://auth/logout"),
             Err(DeepLinkError::Unsupported)

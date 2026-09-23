@@ -800,3 +800,270 @@ D31 — the prototype kept it). The Library row keeps the prototype's two lines:
   `common.carousel` in en/be/ru now.
 - **Numbering.** The keyboard/focus decision kept D49; the first launch is D50 (its engineer wrote
   no decision).
+
+## Real strategies (M7)
+
+M7 puts real implementations behind the simulated ones without changing the UI. The engineers of
+the install strategies and of the first integration left no notes; D52–D57 were written at
+integration from the code's behaviour.
+
+### D52 — `PAPARATS_REAL`: one variable, read once, wired in one place
+- **Parsing** (`src-tauri/src/flags.rs › RealFlags`): read once in `init_state`, after file logging
+  starts. Names `inventory`, `install`, `catalog`, `account`, `all`, in any case, separated by
+  `,` `;` `+` or whitespace. Unknown names are logged as a warning and ignored; unset (or not
+  Unicode) = nothing real. There is no setting, command or event for it: the UI cannot tell which
+  strategies run (M7 = no UI change).
+- **Wiring** (`src-tauri/src/services/wiring.rs › Strategies::from_flags`) builds, in this order:
+  the catalog backend; the inventory, over the catalog's apps; the installer (`StrictTrust`, D55);
+  the transfer (`RoutedTransfer`: the simulated transfer unless the job carries a URL and a real
+  strategy; `HttpTransfer` only when the remote catalog runs, sharing its allowlist and proxy
+  rule); the sign-in. `AppState::open` takes the builder, `AppState::new` the built `Strategies`.
+- **A strategy that cannot start falls back** to its simulated counterpart and the app starts:
+  the catalog (no pinned key, a bad override, a storage error) → the embedded catalog; the
+  installer (no known folders, i.e. not Windows) → simulated; sign-in (not Windows) → local. The
+  log says why at `error`, and `Strategies.flags` = what actually runs: it is logged once as
+  `real strategies (PAPARATS_REAL) real=[…]` (absent in the default run) and decides whether
+  `paparats://auth/callback` links go to the account flow (D56). The inventory has no failure
+  path (a failing scan source is logged and skipped, D53). One gap: when `HttpTransfer` cannot be
+  built the catalog still counts as running and real packages fail to download.
+- **The default run is M6's**: embedded catalog, stored inventory, simulated transfer and
+  installer, local sign-in (`no_flags_is_the_mock_world`: 14 seeded apps, nothing written).
+  Under real flags the mock world is still seeded, and favorites, collections, subscriptions,
+  ideas, activity, plans and devices stay local.
+- **Async commands.** The commands that read the catalog or the inventory became `async` (catalog,
+  platform, library, favorite, channels, sync, sign-in, sign-out); the bindings did not change.
+  Inventory reads run on the blocking pool. `AppState::startup()` (spawned after `setup`)
+  refreshes the remote catalog, hands its apps to the inventory and syncs the active channels,
+  warms the inventory scan and refreshes the signed-in profile — nothing in the default run.
+- **Combinations.** `install` alone changes nothing visible: without the remote catalog every job
+  is a simulated package, which the real installer runs with the simulated hold. `inventory`
+  without `install`: a simulated install is journaled, but the next scan does not find it, so the
+  app leaves the library again.
+
+### D53 — The real inventory (`PAPARATS_REAL=inventory`)
+- **Sources** (`paparats-inventory › RegistryInventory`): the Uninstall keys of HKCU and of HKLM's
+  64- and 32-bit views; the current user's MSIX main packages
+  (`PackageManager.FindPackagesByUserSecurityIdWithPackageTypes(current user, Main)`); Paparats'
+  portable folder `%LOCALAPPDATA%\Paparats\apps\<app-id>\<version>\` (folders starting with `.` —
+  the installer's staging — and links are skipped). Entries Windows hides are hidden here too: no
+  `DisplayName`, `SystemComponent` = 1, a `ParentKeyName`, an update `ReleaseType`. Read-only, no
+  elevation, no `unsafe` (`winreg`, the `windows` crate's WinRT projection).
+- **Only catalog apps are reported**, through detection rules that travel with the catalog:
+  `App.detection` (`AppDetection`: `displayNames`, `displayNameRegex`, `publisher`,
+  `productCodes`, `msixFamilyNames`; every field on the wire, like the rest of the model). All 32
+  fixture apps carry rules (`scripts/port-fixtures.mjs › DETECTION`). Matching, strongest first:
+  an Uninstall key name in `productCodes` (no publisher check); a display name, compared in three
+  forms (as is, architecture tags stripped, trailing versions stripped); the regex (anchored,
+  case-insensitive, 1 MiB). `publisher` is a substring the entry's publisher must contain for name
+  and regex matches. An entry belongs to one app (strongest match, then catalog order); an MSIX
+  package matches by family name, a portable folder by app id. A regex that does not compile is
+  logged and dropped; the app keeps its other rules.
+- **Versions**: `DisplayVersion`'s first version-like token, else `VersionMajor.VersionMinor`,
+  else the packed MSI `Version`, else a version in the `DisplayName`; the highest of all copies
+  wins (per-user and per-machine, x64 and x86, portable). A version equal to the catalog's
+  (`5.2.9.0`, `24.09`) is reported in the catalog's spelling; none at all → the version Paparats
+  recorded, else `0` (which reads as an update).
+- **The UI compares versions, not strings** (`domain/versions.ts`, a port of
+  `paparats_inventory::version` with mirrored tests): "Update" only when the catalog's version is
+  newer — a self-updated app newer than the catalog reads "installed", never a downgrade — and the
+  version history marks the installed release by numeric equality. On the mock data set nothing
+  changes (6 updates, 8 installed).
+- **Last used** is a best-effort estimate — Windows keeps no reliable per-app "last used": the
+  newest of Explorer's UserAssist runs (ROT13 names, a FILETIME at offset 60 — a program inside
+  the install folder, a shortcut named like the entry or the app, the MSIX family), the newest
+  write in the install folder two levels deep (at most 256 entries; MSIX:
+  `%LOCALAPPDATA%\Packages\<family>`), the `InstallDate` and the Uninstall key's last write; never
+  after today, today with no evidence. The install folder is `InstallLocation`, else the folder of
+  `DisplayIcon` or of the uninstaller outside `%windir%`, Package Cache and `Windows\Installer`.
+  Prefetch would be better but needs administrator rights. UserAssist is read in memory and never
+  logged; only `{appId, version, lastUsed}` of catalog apps crosses IPC.
+- **Cache and journal.** Scans are cached for 10 s (one scan at a time; `record`, `remove`,
+  `refresh` and a new catalog drop the cache); a source that fails is logged and the others still
+  count. On the development PC a scan answered `install_get_library` in ≈ 0.26 s. `record` and
+  `remove` go to the stored inventory as a journal (activity, the updates counter, the recorded
+  version); a journal row never makes an app installed. The UI caches the library, so apps
+  installed or removed outside Paparats appear after the next library change or a restart.
+- **Uninstall** asks the installer (D55) to remove what its receipt names, then scans again: an
+  app still found is refused with `invalid` "`<id>` was not installed by Paparats; remove it in
+  Windows Settings", and nothing is forgotten. The Library does not show that error yet (its menu
+  ignores failures — no UI change in M7). `Inventory::locate` (where an app was found, with the
+  uninstall commands Windows keeps) is the hook for uninstalling other installs later.
+
+### D54 — Signed manifests and the remote catalog (`PAPARATS_REAL=catalog`)
+- **Envelope** (`paparats-catalog › envelope`): `{payload, signature, keyId, publicKey?}` — the
+  payload is the manifest JSON in base64, the signature Ed25519 (`verify_strict`, 64 bytes) over
+  exactly those bytes. The key is chosen by `keyId` (default id: hex of the first 8 bytes of the
+  key's SHA-256); keys are 32 bytes in hex or base64, weak keys refused. No expiry or threshold:
+  rotation = several ids, revocation = removing a key (cached copies that no longer verify are
+  deleted when loaded). Payloads carry a `generated` date that may never go back (the same day is
+  accepted) — the rollback guard.
+- **Files** under `https://cdn.paparats.app/v1/`: `channels.json` (the channel directory: channel
+  data, each channel's `manifestUrl` and, for verified channels, their keys), `catalog.json`,
+  `platform.json` — all signed with the pinned official keys — then each channel's manifest
+  (`{channelId, generated, packages}`). Official channels: official keys; verified channels: their
+  keys from the signed directory (or an official key); community channels: unsigned or
+  self-signed manifests are accepted as **unverified** (warnings in the log), a bad self-signature
+  is refused. Every manifest's `channelId` must match; package URLs must be HTTPS (plain HTTP to
+  loopback), without credentials, with a 64-hex SHA-256.
+- **Cache** (`paparats-storage › manifest_cache`, schema 2): the raw verified envelope per URL
+  with its ETag, re-verified on every load; only verified envelopes are stored. `If-None-Match` →
+  304 reuses the copy; a bad signature, rollback or malformed answer keeps the previous copy;
+  offline the cache serves without an age limit. `channel_health` counts failures: a channel is in
+  outage after 2 failed syncs in a row (`outage` = the first one), and a success ends it.
+- **Refresh**: at startup only — the three official files one after another (each on its own),
+  then the manifests of the active subscriptions; "Sync now" fetches that channel's manifest (any
+  failure is "unreachable"). Catalog, platform and channel reads wait up to 45 s for the first
+  refresh when nothing is cached; after it (even a failed one) they answer from what exists, with
+  no retry during the session.
+- **Network**: HTTPS only (HTTP to loopback), at most 5 redirects each checked, 16 MiB per
+  manifest, 10 s connect / 30 s per request, the environment's proxy. One allowlist, shared with
+  the downloads, grows during the session: first-party hosts, the manifest hosts the directory
+  lists, the download hosts of verified manifests, and a community channel's download hosts once
+  it is followed (on follow, after the startup sync, after a successful "Sync now" — the follow
+  went through the community confirmation).
+- **Downloads**: a queued app gets the package its **source channel's** manifest lists (the
+  install-source rule: the most trusted active channel offering it); the manifest's version is
+  installed. An app that channel does not list, or before it was synced, stays a simulated
+  download. Real transfers go to `app_local_data_dir()/downloads` (SHA-256 checked, the size
+  capped at `sizeBytes`, the file named for its strategy — D57) and are deleted after the install.
+- **Keys and overrides.** No release key is pinned yet (`OFFICIAL_KEYS` is empty), so `catalog`
+  alone falls back to the embedded catalog (D52). `PAPARATS_CATALOG_URL` / `PAPARATS_CATALOG_KEYS`
+  point a **development build** at a CDN signed with a development key (the keys replace the
+  pinned ones; a loopback base URL is allowlisted and turns the environment's proxy off for the
+  catalog and the downloads). Release builds ignore both with a warning — decided at integration:
+  there the compiled-in keys are the only root of trust. `sign-manifest` (a bin of the catalog
+  crate; `node scripts/sign-manifest.mjs` runs it) signs one JSON file with the seed in
+  `PAPARATS_SIGNING_KEY` (`PAPARATS_SIGNING_KEY_ID` optional): `--generate-key`, `--public-key`,
+  `--self-signed`, `--unsigned`, `--out`.
+- **Known gaps.** The directory allowlists every channel's manifest host at load, so a community
+  channel that serves downloads from its manifest host is not gated by the follow; the allowlist
+  never shrinks within a session; a signature or rollback failure reads as "unreachable";
+  `generated` has no ceiling (a far-future date blocks that source's updates); trust warnings
+  reach only the log; the catalog and the directory refresh only at startup.
+
+### D55 — Real installers (`PAPARATS_REAL=install`)
+- **One `StrategyInstaller`** behind the `Installer` trait runs the strategy of the verified
+  manifest (`Package.strategy`); `simulated` packages keep the simulated hold (D52).
+- **Verify before trusting.** The file is opened read-only with share mode *read* (nobody may
+  write, rename or delete it) and hashed against the manifest's SHA-256, which is mandatory. The
+  handle stays open until the installer exits, so the bytes that were checked are the bytes that
+  run. EXE/MSI then go through `verify_authenticode`: `WinVerifyTrust`
+  (`WINTRUST_ACTION_GENERIC_VERIFY_V2`, no UI, revocation checked for the whole chain) on the
+  embedded signature, else on the system catalogs (SHA-256, then SHA-1 member hash) — how Windows
+  signs its own binaries. The signer is the verified chain's leaf certificate (CN, full subject,
+  issuer).
+- **Policy** (`policy::authorize`, typed errors): a signature Windows trusts is required
+  (`unsigned`, `badSignature(<reason>)`); when the manifest names a `signer` (CN or full subject,
+  case-insensitive) it must match (`signerMismatch`). An unsigned EXE/MSI runs only from a
+  **community** channel whose unsigned-binary warning the user accepted, and never when its
+  manifest names a signer; a broken signature (tampered, revoked, untrusted root, expired,
+  revocation unknown) is never waived. The app passes `StrictTrust` — no UI accepts unsigned
+  binaries yet. MSIX packages are verified by Windows itself, ZIPs by their hash.
+- **MSI**: `%SystemRoot%\System32\msiexec.exe` (an absolute path, never a PATH lookup) with
+  `/i <file> /qn /norestart` + `MSIINSTALLPERUSER=1 ALLUSERS=2`. Per user is the default and needs
+  a package whose Summary Information says it installs without elevation (Word Count bit 3);
+  otherwise the install fails with `needsMachineWide` — never a silent UAC prompt. Exit codes:
+  0 → installed; 3010 / 1641 → installed, a restart finishes it (logged); 1602 →
+  `installerCancelled` (not the queue's own `cancelled`, which would leave the item unsettled);
+  1618 → `busy`; anything else → `exitCode`. The ProductCode goes into the receipt; uninstall is
+  `msiexec /x {code} /qn /norestart` (1605, already gone, counts as removed).
+- **Machine-wide** only when asked explicitly (`InstallTarget.per_user = false`: `ALLUSERS=1`, or
+  an elevated EXE): `ShellExecuteExW` with the `runas` verb (the UAC prompt, window hidden) and the
+  same argument vector quoted by the `CommandLineToArgvW` rules — the only place a vector becomes
+  one string; a declined prompt is `elevationDeclined`. The app always installs per user for now
+  (the Settings choice is not passed to the engine).
+- **EXE silent**: the manifest's `args` verbatim — one manifest string = one argument, never a
+  shell (the file must be an `.exe`: Rust would start a `.bat`/`.cmd` through `cmd.exe`) — started
+  in its folder with no console window and null standard handles. An installer that demands
+  administrator rights fails to start (740) → `needsMachineWide`. Exit codes as for MSI, plus
+  1223 → cancelled; Inno/NSIS private codes are failures. After 30 minutes the installer is killed
+  (`timedOut`; child processes are not tracked). One installer runs at a time (Windows Installer
+  allows one install per machine).
+- **MSIX**: the package identity (`Name`, `Publisher`) is read from its manifest for the receipt,
+  then `PackageManager.AddPackageAsync(file URI, no dependencies,
+  ForceTargetApplicationShutdown)`; uninstall removes the current user's packages with that name
+  and publisher.
+- **Portable ZIP**: extracted into a hidden staging folder `<apps>\<app-id>\.<version>.partial-…`
+  and renamed to `%LOCALAPPDATA%\Paparats\apps\<app-id>\<version>\` (a failed or cancelled
+  extraction leaves nothing). Zip slip: every entry name is checked before the first byte is
+  written — relative, plain Windows names only (no `..`, roots, drives, `:` streams, device names,
+  trailing dots or spaces, wildcards, control characters); symlink and encrypted entries are
+  refused; files are created new (names differing only in case are an error, never an overwrite);
+  at most 16 GiB and 200 000 entries. A Start-menu shortcut `Programs\Paparats\<program>.lnk` opens
+  the main program (the `.exe` named like the app, else the only one that is not an
+  uninstaller/updater/helper, else the largest; top level or the only sub-folder). An update lands
+  next to the old version, which is then removed; uninstall removes the shortcut and the folders.
+- **Receipts** (`%LOCALAPPDATA%\Paparats\receipts\<app-id>.json`, written atomically) record what
+  a real strategy installed; uninstall reads them. No receipt → nothing to remove (simulated or
+  seeded apps). EXE installs cannot be uninstalled yet (`unsupported`: that needs the app's own
+  uninstaller from its Uninstall entry, D53).
+- **`unsafe`** only in `src/sys/windows.rs` (`#[allow(unsafe_code)] mod sys`, a `SAFETY` comment
+  per block); other platforms get stubs that answer `unsupported`. Error messages carry no paths.
+- **Known gaps**: two portable apps whose programs share a name share one shortcut; a timed-out
+  installer's children keep running; the install location setting is not used (installers pick
+  their own folder).
+
+### D56 — Sign-in in the browser (`PAPARATS_REAL=account`)
+- **OAuth 2 authorization code with PKCE** for a public client (`paparats-desktop`, no secret)
+  against `https://api.paparats.app` (first-party, `hosts::ACCOUNT_API`): `/oauth/authorize`,
+  `/oauth/token`, `/oauth/revoke`, `GET /v1/me`. No scope, S256, a 64-character verifier (384
+  bits) and a 256-bit state from the OS CSPRNG. The redirect is `paparats://auth/callback` through
+  the M6 link path (single instance + deep link), not a loopback server; the callback is handled
+  in Rust only — never queued for the UI, never logged with its query — and ignored when real
+  sign-in does not run (this replaces D48's "ignored until PKCE").
+- **`account_sign_in(email, password)`**: the password is dropped (never stored, sent or logged);
+  the email becomes the `login_hint`. The call opens the system browser (tauri-plugin-opener) and
+  resolves when the callback completes it: signed in with the API's profile; `invalid` when the
+  user denied it or after 10 minutes. A link that matches no pending sign-in (stale, replayed,
+  forged, from before a restart) is dropped without ending the wait; the state is compared in
+  constant time and used once; at most 4 sign-ins wait (10 minutes each, in memory).
+- **Tokens**: form posts, Bearer tokens only, redirects never followed, answers ≤ 64 KiB, 20 s.
+  The access token is refreshed when used within 60 s of its expiry (one refresh at a time; a
+  rotated refresh token is stored); only `invalid_grant` or a missing refresh token ends the
+  session. They live in the **Windows Credential Manager** — a generic credential for service
+  `Paparats` and the user id, `persistence=Local` (this PC, not roaming), a JSON blob of at most
+  2 560 bytes (an access token that does not fit is dropped and refreshed on use) — never in the
+  database or the log. The database keeps the user id (`meta account.userId`) and the profile.
+- **Profile**: `/v1/me` replaces the local profile (name, email, member since, country, time
+  zone); devices, activity, usage, plans and two-factor stay local. When signed in, startup
+  refreshes it in the background (no event: the UI sees it on its next account read).
+- **At startup the snapshot follows the stored session** (added at integration): the seeded mock
+  account says "signed in", so without tokens for a remembered user it is signed out locally.
+- **Sign-out** revokes the refresh and the access token (5 s, best effort — offline they are only
+  deleted), deletes them and forgets the user id. Signing in as another account deletes the
+  previous account's tokens.
+- **Fallback**: other platforms keep the local sign-in; on Windows the Credential Manager is not
+  probed at startup (a broken store fails at first use).
+- **Known gaps**: no event tells the UI about account changes outside the sign-in call; an
+  unreadable credential blocks sign-in and sign-out until it is removed; a sign-out while a
+  sign-in waits leaves that call to time out; profile edits stay local and the next refresh
+  replaces them; the UI still asks for a password (and first launch only signs in with a typed
+  email).
+
+### D57 — Integration (M7)
+- **Dependencies** live in `[workspace.dependencies]` only; crates add features, and Windows-only
+  crates sit under `[target.'cfg(windows)'.dependencies]`: `base64`, `url`, `regex`, `getrandom`
+  (now a runtime dependency: PKCE, key generation), `winreg` 0.56, `windows` 0.62 +
+  `windows-collections` 0.3, `zip` 7.2 (no default features; deflate through zlib-rs, deflate64),
+  `keyring` 4 + `keyring-core` 1. MSRV 1.88 (let chains, keyring 4). Accepted duplicates in the
+  lock: `windows` 0.62 next to Tauri's 0.61 (the M7 code is written against 0.62, whose core the
+  tree already had; they converge when Tauri moves), `winreg` 0.56 next to auto-launch's 0.10 and
+  embed-resource's 0.55 (the inventory does not build against 0.55's API).
+- **Download file names follow the strategy** (`paparats-download › http › file_extension`):
+  `<app>-<version>.msi|exe|zip`; MSIX keeps `.msix`/`.msixbundle`/`.appx`/`.appxbundle` from the
+  URL (else `.msix`). A CDN link without the right extension no longer makes the EXE strategy
+  refuse its installer.
+- **Fixes at integration**: the account snapshot reconciled at startup (D56); the catalog
+  overrides limited to development builds (D54); forgetting an uninstalled app runs on the
+  blocking pool like the other inventory calls; `InstallError::Unsupported` reads "not supported:
+  …"; stale comments corrected.
+- **Tests that change this PC are `#[ignore]`d** and take their input from the environment
+  (`cargo test -p paparats-install -- --ignored <name>`): `real_msi_install` and
+  `real_machine_wide_msi_install` (a UAC prompt) with `PAPARATS_TEST_MSI`; `real_exe_install` with
+  `PAPARATS_TEST_EXE` and `PAPARATS_TEST_EXE_ARGS`; `real_msix_install` with `PAPARATS_TEST_MSIX`.
+  Also ignored: `paparats-inventory › scan_this_machine` (read-only; prints what the scan finds)
+  and `paparats-account › credential_manager_round_trip` (writes a `Paparats-test` credential).
+  Everything else runs in `cargo test`, including real `WinVerifyTrust` checks (notepad.exe by
+  catalog, explorer.exe embedded and tampered, an unsigned copy), a signed system program as a
+  stand-in EXE installer, a portable install/update/uninstall in a temp folder, and the catalog,
+  OAuth and download flows against local HTTP servers.

@@ -30,7 +30,16 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Obsidian"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "sharex",
@@ -62,7 +71,18 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "ShareX"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": [
+          "19568ShareX.ShareX_egrzcvs15399j"
+        ]
+      }
     },
     {
       "id": "vlc",
@@ -90,7 +110,18 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "VLC media player"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [
+          "VLC media player"
+        ],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "powertoys",
@@ -118,7 +149,14 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [],
+        "displayNameRegex": "^PowerToys(?: \\(Preview\\))?(?: (?:x64|arm64))?$",
+        "publisher": "Microsoft",
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "notepadpp",
@@ -146,7 +184,18 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Notepad++"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [
+          "Notepad++"
+        ],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "everything",
@@ -174,7 +223,18 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Everything"
+        ],
+        "displayNameRegex": null,
+        "publisher": "voidtools",
+        "productCodes": [
+          "Everything"
+        ],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "vscode",
@@ -202,7 +262,17 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [],
+        "displayNameRegex": "^Microsoft Visual Studio Code(?: \\(User\\))?$",
+        "publisher": "Microsoft",
+        "productCodes": [
+          "{EA457B21-F73E-494C-ACAB-524FDE069978}_is1",
+          "{771FD6B0-FA20-440A-A002-3B3BAC16DC50}_is1"
+        ],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "files",
@@ -230,7 +300,19 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Files"
+        ],
+        "displayNameRegex": null,
+        "publisher": "Files Community",
+        "productCodes": [],
+        "msixFamilyNames": [
+          "49306atecsolution.FilesUWP_et10x9a9vyk8t",
+          "Files_1y0xx7n9077q4"
+        ]
+      }
     },
     {
       "id": "flow",
@@ -262,7 +344,16 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Flow Launcher"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "localsend",
@@ -290,7 +381,16 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "LocalSend"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "krita",
@@ -322,7 +422,16 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Krita"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "rustdesk",
@@ -354,7 +463,16 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "RustDesk"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "sevenzip",
@@ -382,7 +500,18 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "7-Zip"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [
+          "7-Zip"
+        ],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "obs",
@@ -410,7 +539,18 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "OBS Studio"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [
+          "OBS Studio"
+        ],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "keepassxc",
@@ -438,7 +578,16 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "KeePassXC"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "audacity",
@@ -466,7 +615,18 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Audacity"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [
+          "Audacity_is1"
+        ],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "bitwarden",
@@ -494,7 +654,18 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Bitwarden"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": [
+          "8bitSolutionsLLC.bitwardendesktop_h4e712dmw3xyy"
+        ]
+      }
     },
     {
       "id": "inkscape",
@@ -522,7 +693,16 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Inkscape"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "flux",
@@ -550,7 +730,16 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "f.lux"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "anki",
@@ -578,7 +767,16 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Anki"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "stellarium",
@@ -606,7 +804,16 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Stellarium"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "mindustry",
@@ -634,7 +841,18 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Mindustry"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [
+          "Steam App 1127400"
+        ],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "joplin",
@@ -662,7 +880,16 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Joplin"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "ditto",
@@ -690,7 +917,16 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Ditto"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "supertuxkart",
@@ -718,7 +954,16 @@
       },
       "channel": null,
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "SuperTuxKart"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "shell",
@@ -746,7 +991,16 @@
       },
       "channel": "nilesoft",
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Nilesoft Shell"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "czkawka",
@@ -774,7 +1028,16 @@
       },
       "channel": "fossfriends",
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Czkawka"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "imageglass",
@@ -802,7 +1065,16 @@
       },
       "channel": "fossfriends",
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "ImageGlass"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "rufus",
@@ -830,7 +1102,16 @@
       },
       "channel": "fossfriends",
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Rufus"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "winaerotweaker",
@@ -860,7 +1141,16 @@
       "alsoIn": [
         "paparats"
       ],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Winaero Tweaker"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "mpv",
@@ -888,7 +1178,16 @@
       },
       "channel": "mpvbuilds",
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "mpv"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     },
     {
       "id": "slounik",
@@ -916,7 +1215,17 @@
       },
       "channel": "bysoft",
       "alsoIn": [],
-      "iconUrl": null
+      "iconUrl": null,
+      "detection": {
+        "displayNames": [
+          "Слоўнік",
+          "Slounik"
+        ],
+        "displayNameRegex": null,
+        "publisher": null,
+        "productCodes": [],
+        "msixFamilyNames": []
+      }
     }
   ],
   "categories": [
@@ -1310,6 +1619,17 @@
           "Лучшая поддержка Python и C++",
           "Обновлён каталог расширений"
         ]
+      },
+      "package": {
+        "appId": "vscode",
+        "version": "1.93.0",
+        "url": null,
+        "sha256": null,
+        "sizeBytes": 91226112,
+        "strategy": {
+          "kind": "simulated"
+        },
+        "signer": null
       }
     },
     {
@@ -1331,6 +1651,17 @@
           "Более надёжная синхронизация",
           "Исправления ошибок"
         ]
+      },
+      "package": {
+        "appId": "obsidian",
+        "version": "1.8.10",
+        "url": null,
+        "sha256": null,
+        "sizeBytes": 12582912,
+        "strategy": {
+          "kind": "simulated"
+        },
+        "signer": null
       }
     },
     {
@@ -1352,6 +1683,17 @@
           "Быстрее кодирование GIF",
           "Исправлены повторы загрузки"
         ]
+      },
+      "package": {
+        "appId": "sharex",
+        "version": "17.1.0",
+        "url": null,
+        "sha256": null,
+        "sizeBytes": 8388608,
+        "strategy": {
+          "kind": "simulated"
+        },
+        "signer": null
       }
     },
     {
@@ -1373,6 +1715,17 @@
           "Быстрее поиск в больших файлах",
           "Исправления безопасности"
         ]
+      },
+      "package": {
+        "appId": "notepadpp",
+        "version": "8.8.3",
+        "url": null,
+        "sha256": null,
+        "sizeBytes": 5242880,
+        "strategy": {
+          "kind": "simulated"
+        },
+        "signer": null
       }
     },
     {
@@ -1394,6 +1747,17 @@
           "Обновлены кодеки",
           "Улучшен рендер субтитров"
         ]
+      },
+      "package": {
+        "appId": "vlc",
+        "version": "3.0.21",
+        "url": null,
+        "sha256": null,
+        "sizeBytes": 41943040,
+        "strategy": {
+          "kind": "simulated"
+        },
+        "signer": null
       }
     },
     {
@@ -1415,6 +1779,17 @@
           "Новая тема «modern»",
           "Исправлено мерцание подменю"
         ]
+      },
+      "package": {
+        "appId": "shell",
+        "version": "1.9.15",
+        "url": null,
+        "sha256": null,
+        "sizeBytes": 3145728,
+        "strategy": {
+          "kind": "simulated"
+        },
+        "signer": null
       }
     }
   ],

@@ -309,10 +309,10 @@ impl DownloadEngine {
         self.inner.mutate(|s, events| {
             if let Some(at) = s.running.iter().position(|e| e.app_id() == app_id) {
                 State::cancel_entry(s.running.remove(at), events);
-            } else if let Some(at) = s.queue.iter().position(|e| e.app_id() == app_id) {
-                if let Some(entry) = s.queue.remove(at) {
-                    State::cancel_entry(entry, events);
-                }
+            } else if let Some(at) = s.queue.iter().position(|e| e.app_id() == app_id)
+                && let Some(entry) = s.queue.remove(at)
+            {
+                State::cancel_entry(entry, events);
             }
             s.pump(events)
         });

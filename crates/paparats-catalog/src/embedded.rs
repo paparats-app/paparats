@@ -35,14 +35,16 @@ struct ChannelsFile {
     subscriptions: Vec<ChannelSubscription>,
 }
 
-/// Where the catalog comes from. Today: the embedded mock data set. M7: signed manifests from
-/// the CDN and followed channels, verified with a [`crate::ManifestVerifier`] and cached.
+/// Where the catalog comes from: the embedded mock data set ([`EmbeddedCatalog`]), or signed
+/// manifests from the CDN and followed channels, verified and cached ([`crate::RemoteCatalog`],
+/// behind the `catalog` flag of `PAPARATS_REAL`; see [`crate::from_flags`]).
 pub trait CatalogSource: Send + Sync {
     /// Apps of every known channel, categories, editorial content, update manifests, reviews.
     fn catalog(&self) -> Result<Catalog, CatalogError>;
     /// Plans, ecosystem numbers, client build.
     fn platform(&self) -> Result<PlatformInfo, CatalogError>;
-    /// Every channel known to the client, followed or not (as published, before local sync).
+    /// Every channel known to the client, followed or not. Embedded: as published, before local
+    /// sync. Remote: with this machine's last sync and outage (see `RemoteCatalog::channels`).
     fn channels(&self) -> Result<Vec<ChannelInfo>, CatalogError>;
 }
 

@@ -14,6 +14,10 @@ pub const FIRST_PARTY: &[&str] = &[
     "updates.paparats.app",
 ];
 
+/// The account API: OAuth 2 authorization server (`/oauth/*`) and `/v1/me`. One of
+/// [`FIRST_PARTY`].
+pub const ACCOUNT_API: &str = "api.paparats.app";
+
 fn normalize(host: &str) -> String {
     host.trim_end_matches('.').to_ascii_lowercase()
 }
@@ -93,5 +97,10 @@ mod tests {
         assert!(is_loopback("LOCALHOST"));
         assert!(is_loopback("[::1]"));
         assert!(!is_loopback("127.0.0.1.nip.io"));
+    }
+
+    #[test]
+    fn account_api_is_first_party() {
+        assert!(FIRST_PARTY.contains(&ACCOUNT_API));
     }
 }

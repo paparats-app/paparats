@@ -258,6 +258,7 @@ fn job(url: String, body: &[u8], sha: Option<String>) -> Job {
             sha256: Some(sha.unwrap_or_else(|| sha256(body))),
             size_bytes: body.len() as u64,
             strategy: InstallStrategy::Msi,
+            signer: None,
         },
     }
 }
@@ -350,7 +351,7 @@ async fn downloads_verifies_installs_and_cleans_up() {
     assert_eq!(
         seen[0].file_name().and_then(|n| n.to_str()),
         Some("shell-1.9.15.msi"),
-        "verified file keeps the URL's extension"
+        "the verified file is named for its strategy (MSI)"
     );
     assert!(h.files().is_empty(), "installer file removed after install");
     assert_eq!(server.ranges(), [None]);

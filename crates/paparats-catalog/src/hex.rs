@@ -14,7 +14,7 @@ pub fn encode(bytes: &[u8]) -> String {
 /// Decodes hex (either case). `None` on odd length or a non-hex digit.
 pub fn decode(text: &str) -> Option<Vec<u8>> {
     let text = text.as_bytes();
-    if text.len() % 2 != 0 {
+    if !text.len().is_multiple_of(2) {
         return None;
     }
     let nibble = |c: u8| match c {
@@ -23,8 +23,10 @@ pub fn decode(text: &str) -> Option<Vec<u8>> {
         b'A'..=b'F' => Some(c - b'A' + 10),
         _ => None,
     };
-    text.chunks_exact(2)
-        .map(|pair| Some((nibble(pair[0])? << 4) | nibble(pair[1])?))
+    let (pairs, _) = text.as_chunks::<2>();
+    pairs
+        .iter()
+        .map(|&[hi, lo]| Some((nibble(hi)? << 4) | nibble(lo)?))
         .collect()
 }
 

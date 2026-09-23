@@ -1,6 +1,7 @@
 //! Signed manifests. Every catalog/channel manifest is Ed25519-signed and verified before any
 //! hash or host inside it is trusted ("verify before trusting": manifest signature → download
-//! hash → Authenticode). Fetching and caching arrive in M7; this is the verification path.
+//! hash → Authenticode). This is the hex `SignedManifest` form and the verifier; the served
+//! envelope (base64, `keyId`) is [`crate::ManifestEnvelope`], fetched by [`crate::RemoteCatalog`].
 
 use ed25519_dalek::{Signature, VerifyingKey};
 use paparats_core::{ChannelId, IsoDate, Package};
@@ -115,6 +116,7 @@ mod tests {
                 sha256: Some("ab".repeat(32)),
                 size_bytes: 3_355_443,
                 strategy: InstallStrategy::Msi,
+                signer: Some("Nilesoft".into()),
             }],
         }
     }

@@ -1,6 +1,6 @@
 [package]
 name = "paparats-account"
-description = "Account and subscription state (local today; OAuth 2 PKCE + Credential Manager in M7)."
+description = "Account and subscription state: the local mock world, and real sign-in (OAuth 2 PKCE + Credential Manager) behind PAPARATS_REAL=account."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -12,6 +12,26 @@ publish.workspace = true
 paparats-core.workspace = true
 paparats-storage.workspace = true
 thiserror.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+tracing.workspace = true
+# `form`: the OAuth endpoints take `application/x-www-form-urlencoded` posts.
+reqwest = { workspace = true, features = ["form"] }
+sha2.workspace = true
+# The OS CSPRNG (ProcessPrng on Windows) for the PKCE verifier and the state.
+getrandom.workspace = true
+base64.workspace = true
+url.workspace = true
+tokio = { workspace = true, features = ["sync"] }
+
+[target.'cfg(windows)'.dependencies]
+# Windows Credential Manager. `keyring` sets up the Windows store (its `v1` feature brings only
+# that store on Windows); `keyring-core` creates entries with `persistence=Local` (this PC only).
+keyring.workspace = true
+keyring-core.workspace = true
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["rt-multi-thread", "macros", "net", "io-util", "time"] }
 
 [lints]
 workspace = true

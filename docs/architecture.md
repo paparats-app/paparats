@@ -40,7 +40,9 @@ apps/desktop/src/
   test/                    setup.ts (jest-dom), render.tsx (renderWithProviders, renderApp)
   assets/images/           WebP images converted from design_handoff/assets (same base names)
 apps/desktop/src-tauri/    Tauri app: commands.rs, events, plugins, shell.rs (tray, window, links,
-                           login entry — docs/decisions.md D48), app_commands.rs (permissions)
+                           login entry — docs/decisions.md D48), app_commands.rs (permissions),
+                           flags.rs (PAPARATS_REAL, D52), services/ (one file per service;
+                           wiring.rs picks the simulated or real strategies — §12)
 crates/paparats-*/         Rust core (see STACK.md); paparats-core = domain model (source of truth)
 fixtures/*.json            mock data set (ported from paparats-proto-data.js by scripts/port-fixtures.mjs)
 ```
@@ -347,3 +349,37 @@ The HTML is a reference, not code to copy: no `{{ }}`, no prototype runtime, no 
   shell with animations off, `focusBeforeScreen()`, `expectTabOrder(user, targets)`,
   `expectNamedControls(root)`; test-only, not in the barrel).
 - Rust: unit tests per crate; `crates/paparats-core/tests/fixtures.rs` keeps fixtures ↔ model in sync.
+  Integration tests against local HTTP servers: `paparats-catalog/tests/remote.rs` (signed CDN),
+  `paparats-account/tests/oauth.rs` (OAuth server), `paparats-download/tests/http.rs`, and
+  `src-tauri/src/services/remote_tests.rs` (the app on a local CDN). Tests that change the PC are
+  `#[ignore]` (README › Real strategies, D57).
+
+## 12. Real strategies (M7)
+
+`PAPARATS_REAL` (`src-tauri/src/flags.rs › RealFlags`, read once at startup) replaces simulated
+strategies with real ones; `services/wiring.rs › Strategies::from_flags` builds them and
+`AppState` holds them behind the same traits, so commands, bindings and the UI do not change
+(D52). A strategy that cannot start falls back to its simulated counterpart; `AppState::flags()`
+tells what runs.
+
+| Flag | Simulated (default) | Real | Crate · decision |
+|---|---|---|---|
+| `catalog` | `EmbeddedCatalog` (fixtures) | `RemoteCatalog`: Ed25519-signed envelopes from the CDN, cached in SQLite (`manifest_cache`) | `paparats-catalog` (`CatalogBackend`, `envelope`, `remote/`) · D54 |
+| — (with `catalog`) | `SimulatedTransfer` | `HttpTransfer` for packages of the source channel's manifest (`RoutedTransfer`) | `paparats-download` · D54 |
+| `inventory` | `StoredInventory` (local DB) | `RegistryInventory`: Uninstall keys, MSIX packages, portable folder, catalog detection rules; the DB is its journal | `paparats-inventory` · D53 |
+| `install` | `SimulatedInstaller` | `StrategyInstaller`: MSI, EXE silent, MSIX, portable ZIP; SHA-256 + Authenticode (`policy`), receipts | `paparats-install` · D55 |
+| `account` | `Auth::Simulated` (`AccountStore::sign_in`) | `Auth::Real(OAuthAccount)`: OAuth 2 PKCE in the browser, tokens in the Credential Manager | `paparats-account` (`auth/`) · D56 |
+
+- Every trait keeps its M6 shape: `CatalogSource`, `Inventory` (+ `set_catalog`, `refresh`,
+  `locate`), `Installer`, `Transfer`. Inventory reads run on the blocking pool.
+- `AppState::startup()` runs once after `setup`: the remote catalog's refresh (then the inventory
+  learns its apps and the active channels sync), the inventory's first scan, the signed-in
+  profile. Catalog reads wait for the first refresh when nothing is cached (45 s at most).
+- `paparats://auth/callback` goes from the shell (`Shell::open_url`) to
+  `AppState::complete_sign_in` only when real sign-in runs; the waiting `account_sign_in` hears the
+  outcome on a broadcast channel.
+- Only `paparats-install/src/sys/windows.rs` contains `unsafe` (`#[allow(unsafe_code)]`, a
+  `SAFETY` comment per block); the workspace denies it everywhere else.
+- Network: one allowlist per session (`paparats-core::hosts` first-party + hosts from verified
+  manifests + followed community channels' download hosts), shared by the catalog and the
+  downloads.

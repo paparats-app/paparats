@@ -5,7 +5,8 @@ members = ["apps/desktop/src-tauri", "crates/*"]
 [workspace.package]
 version = "0.1.0"
 edition = "2024"
-rust-version = "1.85"
+# 1.88: let chains (edition 2024) and keyring 4 (M7).
+rust-version = "1.88"
 license = "Proprietary"
 authors = ["Paparats"]
 publish = false
@@ -42,9 +43,15 @@ chrono = { version = "0.4", default-features = false, features = ["std"] }
 tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt", "std"] }
 tracing-appender = "0.2"
 
+# Encoding, URLs, patterns, randomness (manifest envelopes, OAuth, detection rules, PKCE)
+base64 = "0.22"
+url = "2"
+regex = "1"
+# The OS CSPRNG (PKCE verifier and state, `sign-manifest --generate-key`).
+getrandom = "0.3"
+
 # Tests
 tempfile = "3"
-getrandom = "0.3"
 
 # Typed IPC (tauri-specta and specta must stay on the same release candidate)
 specta = { version = "=2.0.0-rc.25", features = ["derive"] }
@@ -67,6 +74,20 @@ tauri-plugin-single-instance = { version = "2.4", features = ["deep-link"] }
 tauri-plugin-updater = { version = "2.12", default-features = false, features = ["native-tls"] }
 # Reads the login entry (HKCU Run) that tauri-plugin-autostart writes; already in the tree.
 windows-registry = "0.5"
+
+# Real strategies (M7, PAPARATS_REAL). Windows-only crates are declared per crate under
+# `[target.'cfg(windows)'.dependencies]`; features are chosen by each crate.
+# Installed apps: Uninstall keys and UserAssist (safe API).
+winreg = "0.56"
+# Authenticode, MSI, MSIX, known folders, shortcuts (install); MSIX packages (inventory).
+windows = "0.62"
+# `IIterable<Uri>` for `AddPackageAsync` (the version `windows` 0.62 itself uses).
+windows-collections = "0.3"
+# Portable ZIP packages (features per crate). 7.x keeps the deflate64 support the installer needs.
+zip = { version = "7.2", default-features = false }
+# OAuth tokens in the Windows Credential Manager.
+keyring = "4"
+keyring-core = "1"
 
 [workspace.lints.rust]
 unsafe_code = "deny"

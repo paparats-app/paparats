@@ -8,15 +8,29 @@ license.workspace = true
 authors.workspace = true
 publish.workspace = true
 
+# Signs a JSON file into a manifest envelope (test fixtures, staging CDN); see the file header.
+[[bin]]
+name = "sign-manifest"
+path = "src/bin/sign-manifest.rs"
+
 [dependencies]
 paparats-core.workspace = true
+paparats-storage.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true
+tracing.workspace = true
 ed25519-dalek.workspace = true
+sha2.workspace = true
+reqwest.workspace = true
+# Manifest envelopes (payload, signature, keys).
+base64.workspace = true
+# `sign-manifest --generate-key`.
+getrandom.workspace = true
 
 [dev-dependencies]
-getrandom.workspace = true
+tempfile.workspace = true
+tokio = { workspace = true, features = ["net", "io-util", "rt-multi-thread", "macros"] }
 
 [lints]
 workspace = true

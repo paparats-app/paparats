@@ -177,6 +177,47 @@ export type App = {
   alsoIn: string[];
   /**  Publisher icon URL from the catalog CDN; absent = monogram tile. */
   iconUrl: string | null;
+  /**
+   *  How the inventory recognises this app on the PC; absent = only the portable copies Paparats
+   *  extracted itself are found.
+   */
+  detection: AppDetection | null;
+};
+
+/**
+ *  Detection rules of one app. Every matcher is optional; an app without rules is only found where
+ *  Paparats extracted it itself (portable apps).
+ *  All comparisons are case-insensitive.
+ *
+ *  An Uninstall entry is the app when its key name is one of `product_codes`, or when its
+ *  `DisplayName` matches (`display_names` or `display_name_regex`) and its `Publisher` contains
+ *  `publisher` (when set). An MSIX package is the app when its family name is one of
+ *  `msix_family_names`.
+ */
+export type AppDetection = {
+  /**
+   *  Uninstall-entry `DisplayName`s, compared after trailing versions and architecture tags are
+   *  stripped from the entry (`7-Zip 25.01 (x64)` and `LocalSend version 1.17.0` read as
+   *  `7-Zip` and `LocalSend`).
+   */
+  displayNames: string[];
+  /**
+   *  A regular expression the whole `DisplayName` must match (Rust `regex` syntax), for names
+   *  the list cannot express.
+   */
+  displayNameRegex: string | null;
+  /**
+   *  Text the entry's `Publisher` must contain; guards generic names (`Everything` → `voidtools`).
+   *  Applies to name matches only.
+   */
+  publisher: string | null;
+  /**
+   *  Uninstall key names: MSI product codes (`{GUID}`), Inno Setup ids (`{GUID}_is1`) or fixed
+   *  names (`Notepad++`). A key-name match needs neither name nor publisher.
+   */
+  productCodes: string[];
+  /**  MSIX/AppX package family names (`Name_PublisherHash`). */
+  msixFamilyNames: string[];
 };
 
 /**
@@ -468,6 +509,22 @@ export type IdeaKind = "new" | "app";
 
 export type IdeaStatus = "open" | "work" | "released";
 
+/**
+ *  How a downloaded package is installed. The real strategies run with `PAPARATS_REAL=install`
+ *  (M7); `Simulated` drives the mock world and tests with the prototype's timings.
+ */
+export type InstallStrategy =
+  /**  `msiexec /i <file> /qn` (arguments passed as a vector, never through a shell). */
+  | { kind: "msi" }
+  /**  Inno/NSIS/other installer with silent arguments taken verbatim from the manifest. */
+  | { kind: "exeSilent"; args: string[] }
+  /**  MSIX via `Windows.Management.Deployment.PackageManager`. */
+  | { kind: "msix" }
+  /**  Extract to the per-user apps directory and create a shortcut. */
+  | { kind: "portableZip" }
+  /**  No file-system side effects: holds in "installing" for a few ticks, then succeeds. */
+  | { kind: "simulated" };
+
 /**  An app found on this PC (inventory), with the version that is installed. */
 export type InstalledApp = {
   appId: string;
@@ -497,6 +554,26 @@ export type Localized<T> = {
   en: T;
   be: T;
   ru: T;
+};
+
+/**  One release of an app as the queue downloads and installs it. */
+export type Package = {
+  appId: string;
+  version: string;
+  /**  Download URL from the verified manifest; `None` for simulated packages. */
+  url: string | null;
+  /**  Lower-case hex SHA-256 of the file, from the verified manifest. */
+  sha256: string | null;
+  /**  Exact file size in bytes (0 = unknown). */
+  sizeBytes: number;
+  strategy: InstallStrategy;
+  /**
+   *  Expected Authenticode signer of an EXE/MSI package, from the verified manifest: the
+   *  certificate's common name (`Microsoft Corporation`) or its full subject
+   *  (`CN=…, O=…, C=…`), compared case-insensitively. `None` (null or absent) = any valid
+   *  signature.
+   */
+  signer: string | null;
 };
 
 /**
@@ -652,6 +729,12 @@ export type UpdateManifest = {
   /**  Size of the update download, in megabytes (may differ from the full install size). */
   downloadMb: number;
   notes: Localized<string[]>;
+  /**
+   *  The download manifest of the new version: install strategy, expected SHA-256 and signer.
+   *  `None` (null or absent) in data sets that do not publish one; the mock world's are
+   *  `simulated`.
+   */
+  package: Package | null;
 };
 
 export type UpdateSchedule = "hourly" | "daily" | "weekly";

@@ -6,3 +6,4 @@ export * from "./dates";
 export * from "./ideas";
 export * from "./settings";
 export * from "./text";
+export * from "./versions";

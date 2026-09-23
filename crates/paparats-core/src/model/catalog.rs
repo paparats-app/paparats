@@ -3,6 +3,7 @@
 use serde::{Deserialize, Serialize};
 use specta::Type;
 
+use super::detection::AppDetection;
 use super::text::{IsoDate, Localized};
 
 /// Stable app identifier, e.g. `"obsidian"`.
@@ -73,6 +74,9 @@ pub struct App {
     pub also_in: Vec<ChannelId>,
     /// Publisher icon URL from the catalog CDN; absent = monogram tile.
     pub icon_url: Option<String>,
+    /// How the inventory recognises this app on the PC; absent = only the portable copies Paparats
+    /// extracted itself are found.
+    pub detection: Option<AppDetection>,
 }
 
 impl App {
@@ -140,6 +144,10 @@ pub struct UpdateManifest {
     #[specta(type = crate::Num)]
     pub download_mb: f64,
     pub notes: Localized<Vec<String>>,
+    /// The download manifest of the new version: install strategy, expected SHA-256 and signer.
+    /// `None` (null or absent) in data sets that do not publish one; the mock world's are
+    /// `simulated`.
+    pub package: Option<super::package::Package>,
 }
 
 /// A user review. The mock data set shares one pool across apps.

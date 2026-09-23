@@ -7,8 +7,8 @@ use std::path::{Path, PathBuf};
 use std::sync::{Arc, RwLock};
 use std::time::Duration;
 
-use paparats_core::bytes_to_mb;
 use paparats_core::hosts::{Allowlist, is_loopback};
+use paparats_core::{InstallStrategy, bytes_to_mb};
 use paparats_install::{BoxFuture, Gate};
 use reqwest::header::{CONTENT_RANGE, RANGE};
 use reqwest::{Client, StatusCode, Url, redirect};
@@ -77,6 +77,37 @@ fn sanitize(part: &str) -> String {
             }
         })
         .collect()
+}
+
+/// MSIX package and bundle extensions.
+const MSIX_EXTENSIONS: [&str; 4] = ["msix", "msixbundle", "appx", "appxbundle"];
+
+/// The file extension of a verified download. The verified manifest's strategy decides, not the
+/// URL (a CDN link may have none, or another one): the EXE strategy only runs `.exe` files, and
+/// `msiexec` and the ZIP reader get the file as what the manifest says it is. MSIX keeps a package
+/// or bundle extension from the URL (else `msix`); simulated packages keep the URL's.
+fn file_extension(strategy: &InstallStrategy, url: &Url) -> Option<String> {
+    let from_url = url
+        .path_segments()
+        .and_then(|mut s| s.next_back())
+        .and_then(|name| Path::new(name).extension())
+        .and_then(|e| e.to_str())
+        .map(|e| sanitize(e).to_ascii_lowercase())
+        .filter(|e| !e.is_empty());
+    let fixed = match strategy {
+        InstallStrategy::Msi => "msi",
+        InstallStrategy::ExeSilent { .. } => "exe",
+        InstallStrategy::PortableZip => "zip",
+        InstallStrategy::Msix => {
+            return Some(
+                from_url
+                    .filter(|e| MSIX_EXTENSIONS.contains(&e.as_str()))
+                    .unwrap_or_else(|| "msix".to_owned()),
+            );
+        }
+        InstallStrategy::Simulated => return from_url,
+    };
+    Some(fixed.to_owned())
 }
 
 async fn existing_len(path: &Path) -> Result<u64, DownloadError> {
@@ -169,15 +200,12 @@ impl HttpTransfer {
         ))
     }
 
-    /// Where the verified download of `job` is moved (keeps the URL's file extension).
+    /// Where the verified download of `job` is moved: `<app>-<version>.<ext>`, the extension
+    /// being the one its install strategy needs ([`file_extension`]).
     fn final_path(&self, job: &Job, url: &Url) -> PathBuf {
         let p = &job.package;
-        let ext = url
-            .path_segments()
-            .and_then(|mut s| s.next_back())
-            .and_then(|name| Path::new(name).extension())
-            .and_then(|e| e.to_str())
-            .map(|e| format!(".{}", sanitize(e)))
+        let ext = file_extension(&p.strategy, url)
+            .map(|e| format!(".{e}"))
             .unwrap_or_default();
         self.work_dir.join(format!(
             "{}-{}{ext}",
@@ -388,6 +416,58 @@ mod tests {
             check_url(&list(&[]), &url("http://127.0.0.1/x")),
             Err(DownloadError::HostNotAllowed(_))
         ));
+    }
+
+    #[test]
+    fn the_strategy_names_the_file_extension() {
+        let ext = |strategy: InstallStrategy, u: &str| file_extension(&strategy, &url(u));
+        let exe = || InstallStrategy::ExeSilent { args: vec![] };
+        // A CDN link without an extension, or with another one, still yields what the installer
+        // needs.
+        assert_eq!(
+            ext(exe(), "https://cdn.paparats.app/dl?id=5").unwrap(),
+            "exe"
+        );
+        assert_eq!(
+            ext(exe(), "https://cdn.paparats.app/setup.bat").unwrap(),
+            "exe"
+        );
+        assert_eq!(
+            ext(InstallStrategy::Msi, "https://cdn.paparats.app/x").unwrap(),
+            "msi"
+        );
+        assert_eq!(
+            ext(
+                InstallStrategy::PortableZip,
+                "https://cdn.paparats.app/t.7z"
+            )
+            .unwrap(),
+            "zip"
+        );
+        assert_eq!(
+            ext(
+                InstallStrategy::Msix,
+                "https://cdn.paparats.app/App.MsixBundle"
+            )
+            .unwrap(),
+            "msixbundle"
+        );
+        assert_eq!(
+            ext(InstallStrategy::Msix, "https://cdn.paparats.app/app.exe").unwrap(),
+            "msix"
+        );
+        assert_eq!(
+            ext(
+                InstallStrategy::Simulated,
+                "https://cdn.paparats.app/a.b/f.tar"
+            )
+            .unwrap(),
+            "tar"
+        );
+        assert_eq!(
+            ext(InstallStrategy::Simulated, "https://cdn.paparats.app/f"),
+            None
+        );
     }
 
     #[test]

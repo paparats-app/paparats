@@ -49,8 +49,10 @@ thiserror.workspace = true
 specta.workspace = true
 specta-typescript.workspace = true
 tauri-specta.workspace = true
-tokio = { workspace = true, features = ["time"] }
+tokio = { workspace = true, features = ["time", "sync"] }
 chrono = { workspace = true, features = ["clock"] }
+# `paparats://auth/callback` links reach the account flow as `url::Url` (= `tauri::Url`).
+url.workspace = true
 tracing.workspace = true
 tracing-subscriber.workspace = true
 tracing-appender.workspace = true
@@ -61,7 +63,11 @@ windows-registry.workspace = true
 [dev-dependencies]
 tauri = { workspace = true, features = ["test"] }
 tempfile.workspace = true
-tokio = { workspace = true, features = ["test-util", "rt", "macros"] }
+# `net`, `io-util`: a local CDN for the remote catalog test.
+tokio = { workspace = true, features = ["test-util", "rt", "rt-multi-thread", "macros", "net", "io-util"] }
+# Signing the local CDN's manifests.
+ed25519-dalek.workspace = true
+sha2.workspace = true
 
 [lints]
 workspace = true

@@ -17,8 +17,8 @@ use tauri::webview::InvokeRequest;
 use tauri::{App, Listener, Manager, WebviewWindow, WebviewWindowBuilder};
 
 use crate::events::TauriEvents;
-use crate::services::AppState;
 use crate::services::testing::{TODAY, fixed_clock};
+use crate::services::{AppState, Strategies};
 
 /// A mock app with the full command/event registry and a fast simulated world (2 ms ticks).
 fn app() -> (App<MockRuntime>, WebviewWindow<MockRuntime>) {
@@ -29,13 +29,19 @@ fn app() -> (App<MockRuntime>, WebviewWindow<MockRuntime>) {
         .unwrap();
     builder.mount_events(&app);
     let tick = Duration::from_millis(2);
+    let storage = Arc::new(Storage::open_in_memory().unwrap());
+    let strategies = Strategies::simulated(
+        &storage,
+        Arc::new(SimulatedTransfer::with_random(|| 1.0).with_tick(tick)),
+        Arc::new(SimulatedInstaller::with_timing(tick, 8)),
+    )
+    .unwrap();
     let state = AppState::new(
-        Arc::new(Storage::open_in_memory().unwrap()),
+        storage,
         Arc::new(TauriEvents::new(app.handle().clone())),
         tauri::async_runtime::handle().inner().clone(),
         fixed_clock(TODAY),
-        Arc::new(SimulatedTransfer::with_random(|| 1.0).with_tick(tick)),
-        Arc::new(SimulatedInstaller::with_timing(tick, 8)),
+        strategies,
     )
     .unwrap();
     app.manage(state);
@@ -221,9 +227,8 @@ fn download_events_arrive_after_the_library_is_updated() {
         let payload: Value = serde_json::from_str(event.payload()).unwrap();
         let version = handle
             .state::<AppState>()
-            .get_library()
+            .installed_now()
             .unwrap()
-            .installed
             .into_iter()
             .find(|a| a.app_id == "obsidian")
             .map(|a| a.version);

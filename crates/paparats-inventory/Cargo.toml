@@ -1,6 +1,6 @@
 [package]
 name = "paparats-inventory"
-description = "Installed-app discovery (stored mock world today; registry/MSIX scan in M7), version compare."
+description = "Installed-app discovery: the stored mock world, or the real registry/MSIX scan (M7); version compare."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -12,6 +12,21 @@ publish.workspace = true
 paparats-core.workspace = true
 paparats-storage.workspace = true
 thiserror.workspace = true
+tracing.workspace = true
+# `clock`: registry/file times → local calendar dates (last used).
+chrono = { workspace = true, features = ["clock"] }
+# Detection rules' `displayNameRegex`; already in the tree through tauri-utils.
+regex.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+# Uninstall keys (HKCU, HKLM 64- and 32-bit views) and UserAssist; safe API, no `unsafe` here.
+winreg.workspace = true
+# MSIX/AppX packages of the current user (Windows.Management.Deployment.PackageManager).
+windows = { workspace = true, features = ["ApplicationModel", "Management_Deployment"] }
+
+[dev-dependencies]
+serde_json.workspace = true
+tempfile.workspace = true
 
 [lints]
 workspace = true

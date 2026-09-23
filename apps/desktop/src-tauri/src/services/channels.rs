@@ -21,20 +21,10 @@ fn protect_official(channel_id: &str, action: &str) -> AppResult<()> {
 
 impl AppState {
     /// Every channel known to the client (followed or not), with local sync dates applied.
-    pub fn get_channels(&self) -> AppResult<Vec<ChannelInfo>> {
-        let synced = self.storage.channel_sync_dates()?;
-        Ok(self
-            .catalog
-            .channels_ref()
-            .iter()
-            .map(|c| {
-                let mut c = c.clone();
-                if let Some(date) = synced.get(&c.id) {
-                    c.synced = Some(date.clone());
-                }
-                c
-            })
-            .collect())
+    /// With the remote catalog and nothing cached, waits for the first refresh.
+    pub async fn get_channels(&self) -> AppResult<Vec<ChannelInfo>> {
+        self.catalog_ready().await;
+        self.channels_now()
     }
 
     /// Followed channels, in the order they were added (the official catalog first).
@@ -45,17 +35,20 @@ impl AppState {
     /// Looks a channel up by address, host or `@handle` (the prototype's `lookupChannel`).
     pub fn lookup_channel(&self, address: &str) -> AppResult<ChannelLookup> {
         Ok(rules::lookup(
-            &self.get_channels()?,
+            &self.channels_now()?,
             &self.storage.subscriptions()?,
             address,
         ))
     }
 
     /// Follows a channel (`notFound` for an unknown one). Community channels are confirmed by
-    /// the UI before this is called.
+    /// the UI before this is called — with the remote catalog, that confirmation also allows
+    /// the download hosts of the channel's manifest once it has been synced.
     pub fn subscribe_channel(&self, channel_id: &str) -> AppResult<Vec<ChannelSubscription>> {
         self.channel(channel_id)?;
-        Ok(self.storage.subscribe(channel_id)?)
+        let subscriptions = self.storage.subscribe(channel_id)?;
+        self.allow_community_downloads(channel_id);
+        Ok(subscriptions)
     }
 
     /// Unfollows a channel. The official catalog cannot be removed (`invalid`).
@@ -79,10 +72,19 @@ impl AppState {
         Ok(self.storage.acknowledge_stale(channel_id)?)
     }
 
-    /// "Sync now": unreachable during an outage (days down, at least 1), else synced today.
-    pub fn sync_channel(&self, channel_id: &str) -> AppResult<SyncOutcome> {
-        let channel = self.channel(channel_id)?;
+    /// "Sync now". The embedded catalog: unreachable during an outage (days down, at least 1),
+    /// else synced today. The remote catalog fetches and verifies the channel's manifest; a
+    /// failure keeps the cached copy and answers unreachable (days since the first failure).
+    pub async fn sync_channel(&self, channel_id: &str) -> AppResult<SyncOutcome> {
         let today = self.today();
+        if let Some(remote) = self.catalog.remote() {
+            let outcome = remote.sync_channel(channel_id, &today).await?;
+            if matches!(outcome, SyncOutcome::Synced { .. }) {
+                self.allow_community_downloads(channel_id);
+            }
+            return Ok(outcome);
+        }
+        let channel = self.channel(channel_id)?;
         if channel.outage.is_some() {
             return Ok(SyncOutcome::Unreachable {
                 days: rules::down_days(&channel, &today),
@@ -93,10 +95,10 @@ impl AppState {
     }
 
     /// Sends a problem report to the channel author (copy to Paparats) or to Paparats only
-    /// (official catalog). There is no report API until M7; the text is never logged.
+    /// (official catalog). There is no report API yet (D24); the text is never logged.
     pub fn report_problem(&self, target: &ReportTarget, _text: &str) -> AppResult<ReportReceipt> {
         let channel = self.channel(&target.channel_id)?;
-        tracing::info!(channel = %channel.id, app = ?target.app_id, "problem report (not sent before M7)");
+        tracing::info!(channel = %channel.id, app = ?target.app_id, "problem report (no report API yet)");
         Ok(if channel.trust == TrustLevel::Official {
             ReportReceipt::Paparats
         } else {
@@ -120,7 +122,7 @@ mod tests {
     #[tokio::test]
     async fn channels_and_subscriptions() {
         let (s, _) = state();
-        assert_eq!(s.get_channels().unwrap().len(), 6);
+        assert_eq!(s.get_channels().await.unwrap().len(), 6);
         assert_eq!(
             ids(&s.get_subscriptions().unwrap()),
             ["paparats", "nilesoft", "fossfriends"]
@@ -178,17 +180,18 @@ mod tests {
         let (s, _) = state();
         // fossfriends has been down since 2026-08-30; the fixed clock says 2026-09-15.
         assert_eq!(
-            s.sync_channel("fossfriends").unwrap(),
+            s.sync_channel("fossfriends").await.unwrap(),
             SyncOutcome::Unreachable { days: 16 }
         );
         assert_eq!(
-            s.sync_channel("winaero").unwrap(),
+            s.sync_channel("winaero").await.unwrap(),
             SyncOutcome::Synced {
                 at: "2026-09-15".into()
             }
         );
         let winaero = s
             .get_channels()
+            .await
             .unwrap()
             .into_iter()
             .find(|c| c.id == "winaero")
@@ -199,7 +202,7 @@ mod tests {
             "was never synced"
         );
         assert!(matches!(
-            s.sync_channel("ghost"),
+            s.sync_channel("ghost").await,
             Err(AppError::NotFound(_))
         ));
     }

@@ -1,6 +1,6 @@
 [package]
 name = "paparats-install"
-description = "Installer strategies (simulated today; MSI, EXE silent, MSIX, portable ZIP in M7)."
+description = "Installer strategies: simulated, and MSI, EXE silent, MSIX, portable ZIP with Authenticode checks behind PAPARATS_REAL=install."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -11,10 +11,44 @@ publish.workspace = true
 [dependencies]
 paparats-core.workspace = true
 thiserror.workspace = true
-tokio = { workspace = true, features = ["sync", "time"] }
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+tracing.workspace = true
+# `rt`: blocking work (hashing, extraction, Windows calls) runs on the blocking pool;
+# `process`: installers run through `std::process::Command` handed to tokio for the wait.
+tokio = { workspace = true, features = ["sync", "time", "rt", "process"] }
+# Portable ZIP packages. Deflate through flate2/zlib-rs (already in the tree) plus deflate64 (what
+# Explorer writes for large archives). Kept on 7.x (the version in Cargo.lock).
+zip = { workspace = true, features = ["deflate-flate2-zlib-rs", "deflate64"] }
+
+[target.'cfg(windows)'.dependencies]
+# Authenticode (WinVerifyTrust + catalogs), elevation (ShellExecuteExW "runas"), shortcuts
+# (IShellLinkW/IPersistFile), known folders, the MSI database (per-user support, ProductCode) and
+# MSIX deployment (PackageManager). Every `unsafe` call lives in `src/sys/windows.rs`.
+windows = { workspace = true, features = [
+    "ApplicationModel",
+    "Foundation",
+    "Foundation_Collections",
+    "Management_Deployment",
+    "Win32_Foundation",
+    "Win32_Security",
+    "Win32_Security_Cryptography",
+    "Win32_Security_Cryptography_Catalog",
+    "Win32_Security_Cryptography_Sip",
+    "Win32_Security_WinTrust",
+    "Win32_System_ApplicationInstallationAndServicing",
+    "Win32_System_Com",
+    "Win32_System_Registry",
+    "Win32_System_Threading",
+    "Win32_UI_Shell",
+] }
+# `IIterable<Uri>` for `AddPackageAsync` (the version `windows` 0.62 itself uses).
+windows-collections.workspace = true
 
 [dev-dependencies]
-tokio = { workspace = true, features = ["test-util", "rt", "macros"] }
+tokio = { workspace = true, features = ["test-util", "rt", "rt-multi-thread", "macros"] }
+tempfile.workspace = true
 
 [lints]
 workspace = true

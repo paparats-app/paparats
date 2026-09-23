@@ -42,13 +42,13 @@ pub fn app_info() -> AppResult<AppInfo> {
 #[tauri::command]
 #[specta::specta]
 pub async fn catalog_get_catalog(state: St<'_>) -> AppResult<Catalog> {
-    state.get_catalog()
+    state.get_catalog().await
 }
 
 #[tauri::command]
 #[specta::specta]
 pub async fn catalog_get_platform(state: St<'_>) -> AppResult<PlatformInfo> {
-    state.get_platform()
+    state.get_platform().await
 }
 
 // --- install (library) ---------------------------------------------------------------------
@@ -56,7 +56,7 @@ pub async fn catalog_get_platform(state: St<'_>) -> AppResult<PlatformInfo> {
 #[tauri::command]
 #[specta::specta]
 pub async fn install_get_library(state: St<'_>) -> AppResult<Library> {
-    state.get_library()
+    state.get_library().await
 }
 
 #[tauri::command]
@@ -66,7 +66,7 @@ pub async fn install_set_favorite(
     app_id: String,
     favorite: bool,
 ) -> AppResult<Library> {
-    state.set_favorite(&app_id, favorite)
+    state.set_favorite(&app_id, favorite).await
 }
 
 #[tauri::command]
@@ -164,7 +164,7 @@ pub async fn downloads_set_online(state: St<'_>, online: bool) -> AppResult<()> 
 #[tauri::command]
 #[specta::specta]
 pub async fn channels_get_channels(state: St<'_>) -> AppResult<Vec<ChannelInfo>> {
-    state.get_channels()
+    state.get_channels().await
 }
 
 #[tauri::command]
@@ -219,7 +219,7 @@ pub async fn channels_acknowledge_stale(
 #[tauri::command]
 #[specta::specta]
 pub async fn channels_sync(state: St<'_>, channel_id: String) -> AppResult<SyncOutcome> {
-    state.sync_channel(&channel_id)
+    state.sync_channel(&channel_id).await
 }
 
 #[tauri::command]
@@ -333,13 +333,13 @@ pub async fn account_claim_idea_bonus(state: St<'_>) -> AppResult<Account> {
 #[tauri::command]
 #[specta::specta]
 pub async fn account_sign_in(state: St<'_>, email: String, password: String) -> AppResult<Account> {
-    state.sign_in(&email, &password)
+    state.sign_in(&email, &password).await
 }
 
 #[tauri::command]
 #[specta::specta]
 pub async fn account_sign_out(state: St<'_>) -> AppResult<Account> {
-    state.sign_out()
+    state.sign_out().await
 }
 
 // --- system --------------------------------------------------------------------------------

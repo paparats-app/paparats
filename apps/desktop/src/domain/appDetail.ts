@@ -2,6 +2,7 @@
 // are derived deterministically from the app id until the catalog carries real data.
 import type { App, IsoDate, Localized, Review, UpdateManifest } from "@/services/types";
 import { addDays } from "./dates";
+import { compareVersions } from "./versions";
 
 /** Sum of the char codes of the id — the seed of every generator here. */
 export function appHash(appId: string): number {
@@ -100,7 +101,8 @@ export function versionHistory(
       date: i === 0 ? app.updated : addDays(app.updated, -daysBack),
       sizeMb: Math.max(1, Math.round(app.sizeMb * (1 - i * 0.02))),
       isCurrent: i === 0,
-      isInstalled: i !== 0 && installedVersion === version,
+      isInstalled:
+        i !== 0 && installedVersion != null && compareVersions(installedVersion, version) === 0,
       notes,
     };
   });

@@ -18,8 +18,9 @@ use tauri::{AppHandle, Manager, Runtime, Theme, WebviewWindow};
 use tauri_plugin_window_state::{AppHandleExt, StateFlags, WindowExt};
 use tauri_specta::Event;
 
-use crate::deep_link::DeepLinkTarget;
+use crate::deep_link::{AuthCallback, DeepLinkTarget};
 use crate::events::{DeepLinkEvent, TrayActionEvent};
+use crate::services::AppState;
 use crate::shell::{ShellHost, StoredSettings};
 use crate::tray::{Tray, TrayAction, TrayLabels};
 
@@ -194,6 +195,16 @@ impl<R: Runtime> ShellHost for std::sync::Arc<TauriShellHost<R>> {
         if let Err(e) = TrayActionEvent(action).emit(&self.app) {
             tracing::warn!(error = %e, "could not hand a tray action to the UI");
         }
+    }
+
+    fn sign_in_callback(&self, callback: AuthCallback) {
+        let app = self.app.clone();
+        tauri::async_runtime::spawn(async move {
+            match app.try_state::<AppState>() {
+                Some(state) => state.complete_sign_in(callback.url()).await,
+                None => tracing::warn!("sign-in callback before the app state exists; dropped"),
+            }
+        });
     }
 
     fn quit(&self) {

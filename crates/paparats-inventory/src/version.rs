@@ -168,4 +168,22 @@ mod tests {
             );
         }
     }
+
+    #[test]
+    fn versions_the_inventory_reads() {
+        // MSIX `Major.Minor.Build.Revision` and MSI 4-part versions against 3-part catalog ones.
+        assert_eq!(compare("2026.8.1.0", "2026.8.1"), Ordering::Equal);
+        assert_eq!(compare("5.2.9.0", "5.2.9"), Ordering::Equal);
+        assert!(is_newer("5.2.9.1", "5.2.9"));
+        assert!(is_newer("1.4.1.1032", "1.4.1.1028"));
+        // Numeric, not lexicographic, at every position.
+        assert!(is_newer("0.100.2", "0.94.0"));
+        assert!(is_newer("1.121.0", "1.93.0"));
+        // Leading zeros (7-Zip) and a newer year-based release.
+        assert!(is_newer("25.01", "24.09"));
+        assert_eq!(compare("24.09", "24.9"), Ordering::Equal);
+        // Build metadata and pre-release suffixes from DisplayVersion.
+        assert_eq!(compare("4.1.1+40101", "4.1.1"), Ordering::Equal);
+        assert!(is_newer("3.7.4", "3.7.4-beta.1"));
+    }
 }

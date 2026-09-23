@@ -51,6 +51,24 @@ fn catalog_fixture_matches_model() {
 }
 
 #[test]
+fn fixture_update_manifests_carry_simulated_packages() {
+    let c: Catalog = load("catalog.json");
+    assert!(!c.updates.is_empty());
+    for u in &c.updates {
+        let app = c.apps.iter().find(|a| a.id == u.app_id);
+        let p = u
+            .package
+            .as_ref()
+            .unwrap_or_else(|| panic!("update {} has no package", u.app_id));
+        assert_eq!(p.app_id, u.app_id);
+        assert_eq!(Some(&p.version), app.map(|a| &a.version), "{}", u.app_id);
+        assert_eq!(p.strategy, InstallStrategy::Simulated, "{}", u.app_id);
+        assert_eq!(p.size_bytes, mb_to_bytes(u.download_mb), "{}", u.app_id);
+        assert_eq!((&p.url, &p.sha256, &p.signer), (&None, &None, &None));
+    }
+}
+
+#[test]
 fn channel_fixture_matches_model() {
     let f: ChannelsFile = load("channels.json");
     assert!(

@@ -1,6 +1,6 @@
 //! The single error type that crosses the Tauri boundary.
 
-use paparats_account::AccountError;
+use paparats_account::{AccountError, AuthError};
 use paparats_catalog::CatalogError;
 use paparats_core::dates::DateError;
 use paparats_download::DownloadError;
@@ -11,7 +11,7 @@ use serde::Serialize;
 
 /// Error returned by every Tauri command. Serialised as `{ kind, message }` so the UI can branch
 /// on `kind` without parsing text.
-#[derive(Debug, thiserror::Error, Serialize, specta::Type)]
+#[derive(Debug, Clone, thiserror::Error, Serialize, specta::Type)]
 #[serde(tag = "kind", content = "message", rename_all = "camelCase")]
 pub enum AppError {
     #[error("not found: {0}")]
@@ -38,6 +38,11 @@ impl AppError {
         let message = e.to_string();
         tracing::error!(error = %message, "internal error");
         Self::Internal(message)
+    }
+
+    /// An unexpected failure described by the app itself (logged like [`From`] conversions).
+    pub fn internal_message(message: &str) -> Self {
+        Self::internal(message)
     }
 }
 
@@ -80,7 +85,27 @@ impl From<DownloadError> for AppError {
 
 impl From<CatalogError> for AppError {
     fn from(e: CatalogError) -> Self {
-        Self::internal(e)
+        match e {
+            CatalogError::UnknownChannel(id) => Self::NotFound(format!("channel {id}")),
+            CatalogError::Storage(e) => e.into(),
+            other => Self::internal(other),
+        }
+    }
+}
+
+/// Real sign-in (`PAPARATS_REAL=account`). Messages carry no tokens, codes, user ids or emails.
+impl From<AuthError> for AppError {
+    fn from(e: AuthError) -> Self {
+        match e {
+            AuthError::NotCallback
+            | AuthError::MalformedCallback(_)
+            | AuthError::StateMismatch
+            | AuthError::Denied(_)
+            | AuthError::NotSignedIn
+            | AuthError::SessionExpired => Self::Invalid(e.to_string()),
+            AuthError::Account(e) => e.into(),
+            other => Self::internal(other),
+        }
     }
 }
 
@@ -129,6 +154,26 @@ mod tests {
         ));
         assert!(matches!(
             AppError::from(DownloadError::Http(500)),
+            AppError::Internal(_)
+        ));
+        assert!(matches!(
+            AppError::from(CatalogError::UnknownChannel("ghost".into())),
+            AppError::NotFound(_)
+        ));
+        assert!(matches!(
+            AppError::from(CatalogError::Unavailable("catalog")),
+            AppError::Internal(_)
+        ));
+        assert!(matches!(
+            AppError::from(AuthError::Denied("access_denied".into())),
+            AppError::Invalid(_)
+        ));
+        assert!(matches!(
+            AppError::from(AuthError::Account(AccountError::NotFound("device".into()))),
+            AppError::NotFound(_)
+        ));
+        assert!(matches!(
+            AppError::from(AuthError::Http(503)),
             AppError::Internal(_)
         ));
     }

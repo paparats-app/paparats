@@ -11,7 +11,8 @@ export function createTauriAccountService(): AccountService {
     purchase: (plan) => unwrap(commands.accountPurchase(plan)),
     cancelPlan: () => unwrap(commands.accountCancelPlan()),
     claimIdeaBonus: () => unwrap(commands.accountClaimIdeaBonus()),
-    // The password goes to the core, which drops it (no account API before M7, D24).
+    // The core drops the password. With PAPARATS_REAL=account it opens the browser sign-in and
+    // resolves when the paparats://auth/callback link comes back (D56).
     signIn: (email, password) => unwrap(commands.accountSignIn(email, password)),
     signOut: () => unwrap(commands.accountSignOut()),
   };

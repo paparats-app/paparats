@@ -10,6 +10,7 @@ mod channels;
 mod error;
 mod ideas;
 mod library;
+mod manifest_cache;
 mod schema;
 mod seed;
 
@@ -19,6 +20,7 @@ use std::sync::{Mutex, MutexGuard};
 use rusqlite::{Connection, OptionalExtension, Transaction, params};
 
 pub use error::StorageError;
+pub use manifest_cache::{CachedManifest, ChannelHealth};
 pub use schema::SCHEMA_VERSION;
 pub use seed::fixtures;
 

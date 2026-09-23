@@ -51,6 +51,14 @@ describe("installState", () => {
     expect(installState(vscode, installed.get("vscode"))).toBe("update");
   });
 
+  it("reads a newer or differently spelled real install as installed", () => {
+    // The real inventory (PAPARATS_REAL=inventory) reports what Windows has.
+    const newer = { appId: "vscode", version: "1.121.0", lastUsed: TODAY };
+    expect(installState(vscode, newer)).toBe("installed");
+    const spelled = { appId: "vscode", version: "1.93.0.0", lastUsed: TODAY };
+    expect(installState(vscode, spelled)).toBe("installed");
+  });
+
   it("lets a queue entry win over the inventory", () => {
     const inst = installed.get("vscode");
     expect(installState(vscode, inst, item("vscode", { state: "queued", progress: 0 }))).toBe(
@@ -93,10 +101,15 @@ describe("updates", () => {
     expect(updateSizeMb(appById("flow"), catalog.updates, true)).toBe(92);
   });
 
-  it("lists installed apps whose catalog version differs, in catalog order", () => {
+  it("lists installed apps whose catalog version is newer, in catalog order", () => {
     const pending = pendingUpdates(catalog.apps, installed, ctx, TODAY);
     expect(ids(pending)).toEqual(["obsidian", "sharex", "vlc", "notepadpp", "vscode", "shell"]);
     expect(totalUpdateMb(pending, catalog.updates)).toBe(155);
+    const newerVscode = indexInstalled([
+      ...library.installed.filter((i) => i.appId !== "vscode"),
+      { appId: "vscode", version: "1.121.0", lastUsed: TODAY },
+    ]);
+    expect(ids(pendingUpdates(catalog.apps, newerVscode, ctx, TODAY))).not.toContain("vscode");
   });
 
   it("skips apps whose source channel is paused or unreachable", () => {

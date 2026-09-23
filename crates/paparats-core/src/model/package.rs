@@ -1,13 +1,14 @@
 //! Installable packages: what a (signed) channel manifest declares for one release of an app, and
-//! how the installer should run it. Not exported to the UI; used by the download and install crates.
+//! how the installer should run it. Used by the download and install crates; the UI only sees it
+//! on [`UpdateManifest::package`](super::catalog::UpdateManifest::package) and never acts on it.
 
 use serde::{Deserialize, Serialize};
 use specta::Type;
 
 use super::catalog::AppId;
 
-/// How a downloaded package is installed. Real strategies arrive in M7; `Simulated` drives the
-/// mock world and tests with the prototype's timings.
+/// How a downloaded package is installed. The real strategies run with `PAPARATS_REAL=install`
+/// (M7); `Simulated` drives the mock world and tests with the prototype's timings.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Type)]
 #[serde(
     tag = "kind",
@@ -41,6 +42,11 @@ pub struct Package {
     #[specta(type = crate::Num)]
     pub size_bytes: u64,
     pub strategy: InstallStrategy,
+    /// Expected Authenticode signer of an EXE/MSI package, from the verified manifest: the
+    /// certificate's common name (`Microsoft Corporation`) or its full subject
+    /// (`CN=…, O=…, C=…`), compared case-insensitively. `None` (null or absent) = any valid
+    /// signature.
+    pub signer: Option<String>,
 }
 
 impl Package {
@@ -53,6 +59,7 @@ impl Package {
             sha256: None,
             size_bytes: mb_to_bytes(size_mb),
             strategy: InstallStrategy::Simulated,
+            signer: None,
         }
     }
 }
@@ -93,6 +100,26 @@ mod tests {
             serde_json::to_value(InstallStrategy::PortableZip).unwrap(),
             serde_json::json!({"kind": "portableZip"})
         );
+    }
+
+    #[test]
+    fn package_wire_shape_is_symmetric() {
+        let mut p = Package::simulated("shell", "1.9.15", 3.2);
+        let json = serde_json::to_value(&p).unwrap();
+        assert_eq!(json["signer"], serde_json::Value::Null);
+        assert_eq!(serde_json::from_value::<Package>(json.clone()).unwrap(), p);
+        // Manifests written before the field existed still parse.
+        let mut older = json;
+        older.as_object_mut().unwrap().remove("signer");
+        assert_eq!(serde_json::from_value::<Package>(older).unwrap(), p);
+
+        p.strategy = InstallStrategy::Msi;
+        p.sha256 = Some("ab".repeat(32));
+        p.signer = Some("Nilesoft Ltd".into());
+        let json = serde_json::to_value(&p).unwrap();
+        assert_eq!(json["signer"], "Nilesoft Ltd");
+        assert_eq!(json["strategy"], serde_json::json!({"kind": "msi"}));
+        assert_eq!(serde_json::from_value::<Package>(json).unwrap(), p);
     }
 
     #[test]

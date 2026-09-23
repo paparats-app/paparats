@@ -1,6 +1,7 @@
 //! DownloadService: the queue. Finished downloads are recorded by the engine bridge
 //! (`events::EngineBridge`) before `installed` is emitted.
 
+use paparats_catalog::{CatalogSource, ChannelPackage, rules};
 use paparats_core::{DownloadRequest, DownloadSnapshot};
 use paparats_download::Job;
 
@@ -13,10 +14,57 @@ impl AppState {
     }
 
     /// Adds requests to the queue (ids already queued/running are ignored). The mock world has
-    /// no files: every request becomes a simulated package of `sizeMb`.
+    /// no files: every request becomes a simulated package of `sizeMb`. With the remote catalog
+    /// the package comes from the verified manifest of the app's source channel (the install-
+    /// source rule); an app no synced manifest lists stays simulated.
     pub fn enqueue_downloads(&self, requests: Vec<DownloadRequest>) {
-        self.engine
-            .enqueue(requests.into_iter().map(Job::simulated));
+        let jobs: Vec<Job> = requests.into_iter().map(|r| self.job_for(r)).collect();
+        self.engine.enqueue(jobs);
+    }
+
+    fn job_for(&self, request: DownloadRequest) -> Job {
+        if self.catalog.remote().is_none() {
+            return Job::simulated(request);
+        }
+        match self.source_package(&request.app_id) {
+            Some(found) => {
+                if !found.warnings.is_empty() {
+                    tracing::warn!(
+                        app = %request.app_id,
+                        channel = %found.channel_id,
+                        warnings = ?found.warnings,
+                        "downloading from an unverified community manifest"
+                    );
+                }
+                if found.package.version != request.version {
+                    tracing::info!(
+                        app = %request.app_id,
+                        manifest = %found.package.version,
+                        catalog = %request.version,
+                        "the channel manifest names another version than the catalog"
+                    );
+                }
+                Job {
+                    request,
+                    package: found.package,
+                }
+            }
+            None => {
+                tracing::warn!(app = %request.app_id, "no synced manifest lists this app; simulated download");
+                Job::simulated(request)
+            }
+        }
+    }
+
+    /// The release of `app_id` from its source channel's manifest (remote catalog only).
+    fn source_package(&self, app_id: &str) -> Option<ChannelPackage> {
+        let remote = self.catalog.remote()?;
+        let catalog = self.catalog.catalog().ok()?;
+        let app = catalog.apps.iter().find(|a| a.id == app_id)?;
+        let subscriptions = self.storage.subscriptions().ok()?;
+        let channels = self.catalog.channels().ok()?;
+        let source = rules::resolve_source(app, &subscriptions, &channels);
+        remote.package(&source, app_id)
     }
 
     pub fn pause_download(&self, app_id: &str) {
@@ -89,7 +137,7 @@ mod tests {
         tokio::time::sleep(TICK * 18 + TICK / 2).await;
         assert!(s.download_snapshot().items.is_empty());
 
-        let lib = s.get_library().unwrap();
+        let lib = s.get_library().await.unwrap();
         let obsidian = lib
             .installed
             .iter()
@@ -264,14 +312,15 @@ mod tests {
 
         at(start, 17).await;
         assert_eq!(phases(&rec, "files").len(), 3, "still installing");
-        let has_files = |s: &AppState| {
+        async fn has_files(s: &AppState) -> bool {
             s.get_library()
+                .await
                 .unwrap()
                 .installed
                 .iter()
                 .any(|a| a.app_id == "files")
-        };
-        assert!(!has_files(&s));
+        }
+        assert!(!has_files(&s).await);
 
         at(start, 18).await;
         assert_eq!(
@@ -281,7 +330,7 @@ mod tests {
                 update: false
             })
         );
-        let lib = s.get_library().unwrap();
+        let lib = s.get_library().await.unwrap();
         let last = lib.installed.last().unwrap();
         assert_eq!(
             (
@@ -372,7 +421,7 @@ mod tests {
             [DownloadPhase::Queued, DownloadPhase::Cancelled]
         );
         at(start, 30).await;
-        let lib = s.get_library().unwrap();
+        let lib = s.get_library().await.unwrap();
         assert!(!lib.installed.iter().any(|a| a.app_id == "files"));
         assert!(progress_of(&rec, "files").is_empty());
     }

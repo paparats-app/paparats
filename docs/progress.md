@@ -514,3 +514,93 @@ Known gaps:
 - Cyrillic text still renders 1–6 px narrower than in the prototype (M2 gap). The main JS chunk is
   ≈ 660 kB minified (≈ 200 kB gzip); the mock services and fixtures are still bundled in Tauri
   builds.
+
+## M7 — Real strategies behind flags (2026-09-23)
+
+What exists now (decisions D52–D57 in `docs/decisions.md`). Without `PAPARATS_REAL` the app is
+M6's; nothing in the UI changed.
+
+- **Flags and wiring** (`src-tauri/src/flags.rs`, `services/wiring.rs`; D52). `PAPARATS_REAL` =
+  `inventory`, `install`, `catalog`, `account` or `all`, read once at startup; a strategy that
+  cannot start falls back to the simulated one and the log names what runs. Catalog, library,
+  channel and account commands became async; inventory reads run on the blocking pool; a startup
+  task refreshes the remote catalog, warms the inventory and refreshes the signed-in profile.
+- **Real inventory** (`paparats-inventory › RegistryInventory`; D53): Uninstall keys (HKCU, HKLM
+  64/32-bit), the user's MSIX packages and Paparats' portable folder, matched to catalog apps by
+  detection rules that now travel with the catalog (`App.detection`, all 32 fixture apps);
+  highest version wins, catalog spelling when equal; "last used" from UserAssist, folder times and
+  install dates; 10 s cache; the local database becomes its journal. Uninstalling an app Paparats
+  did not install is refused. UI: `domain/versions.ts` compares versions numerically, so an app
+  newer than the catalog is "installed", not an update (the mock data set reads the same).
+- **Real installers** (`paparats-install › StrategyInstaller`; D55): MSI (`msiexec /i … /qn
+  /norestart`, per user, elevation only for an explicit machine-wide install), EXE silent (the
+  manifest's argument vector, 30 min timeout, exit codes mapped), MSIX
+  (`AddPackageAsync`, `ForceTargetApplicationShutdown`), portable ZIP (zip-slip-safe staged
+  extraction to `%LOCALAPPDATA%\Paparats\apps\<app>\<version>`, Start-menu shortcut, uninstall).
+  Every file hashed and held locked; EXE/MSI through `verify_authenticode` (`WinVerifyTrust`,
+  embedded or catalog signatures) under the signature policy (typed errors; unsigned only for an
+  accepted community warning). Receipts drive uninstall. The only `unsafe` code is
+  `src/sys/windows.rs`.
+- **Remote catalog** (`paparats-catalog › RemoteCatalog`; D54): Ed25519-signed manifest envelopes
+  (`channels.json`, `catalog.json`, `platform.json`, channel manifests) with pinned keys, rollback
+  guard, ETag cache in SQLite (schema 2), offline from the cache, outage tracking; downloads of
+  packages from the source channel's manifest through `HttpTransfer`; `sign-manifest` bin and
+  `scripts/sign-manifest.mjs`. No release key is pinned yet: `catalog` falls back to the embedded
+  catalog unless a development build is pointed at a self-signed CDN.
+- **Real sign-in** (`paparats-account › OAuthAccount`; D56): OAuth 2 PKCE in the system browser
+  against `api.paparats.app`, the `paparats://auth/callback` link completing the waiting
+  `account_sign_in`; tokens in the Windows Credential Manager (`persistence=Local`), refreshed on
+  use, revoked on sign-out; the profile from `/v1/me`.
+- **Integration** (D57). Dependencies hoisted to `[workspace.dependencies]` (Windows-only ones
+  under target sections). Fixes: the downloaded file is named for its install strategy (an EXE
+  link without `.exe` was refused); the seeded account no longer reads "signed in" under real
+  sign-in without tokens; `PAPARATS_CATALOG_URL`/`_KEYS` only in development builds; forgetting
+  an uninstalled app runs on the blocking pool; `InstallError::Unsupported` wording; stale
+  comments. D52–D57 written from the code (two engineers left no notes); README › Real strategies
+  and `docs/architecture.md` §12 describe the flags, strategies and test commands.
+- **Tests.** Vitest: 132 files, 898 tests (`domain/versions.test.ts`, `apps.test.ts`). Rust: 348
+  tests + 6 `#[ignore]`d (real MSI, machine-wide MSI, EXE and MSIX installs; the machine scan
+  printout; the Credential Manager round trip — commands in the README). New suites: argument
+  vectors, exit codes, zip slip and archive limits, real `WinVerifyTrust` (notepad.exe by catalog,
+  explorer.exe embedded and tampered, unsigned copies), a signed system program as a stand-in EXE
+  installer, portable install/update/uninstall in a temp folder; the inventory over a fake
+  registry and on this PC; the remote catalog, OAuth and downloads against local HTTP servers;
+  the app on a local signed CDN (`services/remote_tests.rs`); the startup account reconcile.
+- **Checks.** typecheck, lint, test, format:check, cargo fmt, clippy (`-D warnings`), cargo test
+  and `pnpm specta` (no drift) are green.
+  - `PAPARATS_REAL=inventory pnpm tauri dev`, driven over the WebView2 debugging port on a fresh
+    profile: the log shows `inventory: registry and MSIX scan` and `real strategies
+    (PAPARATS_REAL) real=["inventory"]`; `install_get_library` answered in 263 ms with this PC's
+    catalog apps — Obsidian 1.11.7, VLC 3.0.23, PowerToys 0.100.2, Everything 1.4.1.1032, VS Code
+    1.121.0, 7-Zip 24.09. The Library lists the six (5 × Open, 7-Zip → Update 25.01), Updates and
+    the sidebar badge show one update, Home renders. Uninstall 7-Zip was refused with `invalid`
+    ("not installed by Paparats") and nothing was removed.
+  - Default run (no flag): the 14 mock apps, 6 updates, no `real strategies` line in the log.
+  - `PAPARATS_REAL=all`: the catalog fell back (`no trusted manifest keys are configured`),
+    inventory, install and account ran, the seeded account read signed out (`no stored session`),
+    the Library showed the same six apps. No install or sign-in was started.
+  - `%APPDATA%\com.paparats.desktop` and `%LOCALAPPDATA%\com.paparats.desktop` were moved aside
+    before and restored
+    afterwards byte-identical (5 + 1 162 files, SHA-256); `%LOCALAPPDATA%\Paparats` was never
+    created; every process started was stopped.
+
+Known gaps:
+
+- Real installs were not run on this machine (MSI, EXE, MSIX and elevated paths are covered by
+  argument/exit-code tests and the `#[ignore]`d tests only), and no release catalog key exists,
+  so real installs can only come from a development CDN. No test runs download → real installer
+  in one go: `services/remote_tests.rs` downloads a real package from a local CDN and installs it
+  with the simulated installer; the portable strategy is exercised end to end in its crate.
+- The UI shows none of the new failures: the Library ignores an uninstall refusal, trust warnings
+  of community manifests reach only the log, account changes outside the sign-in call reach the
+  UI on its next account read. Installs are always per user; the install location setting is not
+  used.
+- Remote catalog: refresh only at startup (no retry); the directory allowlists every channel's
+  manifest host (community downloads from that host are not gated by the follow); signature
+  failures read as "unreachable"; `generated` has no future ceiling.
+- Inventory: an app without any version reads as an update (`0`); versions recorded in the seeded
+  mock journal can stand in for a missing one; apps installed or removed outside Paparats appear
+  after the next library change or restart; EXE installs cannot be uninstalled.
+- Account: an unreadable credential blocks sign-in and sign-out until removed; the UI still asks
+  for a password; first launch signs in only with a typed email.
+- `windows` 0.62 and 0.61 (Tauri's) both build; `winreg` has three versions in the lock.

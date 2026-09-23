@@ -15,6 +15,7 @@ import type {
 } from "@/services/types";
 import { downDays, isActive, sourceOf, type ChannelContextData } from "./channels";
 import { pickLocalized } from "./text";
+import { isNewer } from "./versions";
 
 // ---------------------------------------------------------------------------------------------
 // Install state
@@ -46,7 +47,8 @@ export function downloadState(download: DownloadItem): AppInstallState {
 
 /**
  * The prototype's `stateOf`: a queue entry wins, otherwise the inventory decides between
- * none / installed / update.
+ * none / installed / update. "Update" means the catalog's version is newer than the installed
+ * one (not merely different: a real install may be newer, or spelled `5.2.9.0`).
  */
 export function installState(
   app: App,
@@ -55,7 +57,7 @@ export function installState(
 ): AppInstallState {
   if (download) return downloadState(download);
   if (!installed) return "none";
-  return installed.version === app.version ? "installed" : "update";
+  return isNewer(app.version, installed.version) ? "update" : "installed";
 }
 
 /** `library` with `entry` recorded in the inventory (replacing an older version of the app). */
@@ -97,7 +99,7 @@ export function updateSizeMb(
 }
 
 /**
- * Installed at a version other than the catalog's, from a source channel that is switched on
+ * Installed at a version older than the catalog's, from a source channel that is switched on
  * and reachable.
  */
 export function pendingUpdates(
@@ -108,7 +110,7 @@ export function pendingUpdates(
 ): App[] {
   return apps.filter((app) => {
     const inst = installed.get(app.id);
-    if (!inst || inst.version === app.version) return false;
+    if (!inst || !isNewer(app.version, inst.version)) return false;
     const source = sourceOf(app, ctx);
     return isActive(ctx.subscriptions, source) && downDays(ctx.byId[source], today) === 0;
   });

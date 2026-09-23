@@ -26,6 +26,101 @@ const icon = (n) => ICON[n] ?? n;
 const nulls = (o) =>
   Object.fromEntries(Object.entries(o).map(([k, v]) => [k, v === undefined ? null : v]));
 
+// How the real inventory (M7, crates/paparats-inventory) recognises each app on a PC — the
+// `AppDetection` rules of paparats-core. Not in the prototype. `displayNames` are compared with the
+// Uninstall entry's DisplayName after trailing versions and architecture tags are stripped
+// ("7-Zip 25.01 (x64)" → "7-Zip"); `publisher` (a substring of the Publisher value) guards generic
+// names; `productCodes` are Uninstall key names known to be stable across releases (NSIS/Inno ids,
+// Steam app keys); `msixFamilyNames` are Microsoft Store / sideloaded MSIX package families.
+const DETECTION = {
+  obsidian: { displayNames: ["Obsidian"] },
+  sharex: {
+    displayNames: ["ShareX"],
+    msixFamilyNames: ["19568ShareX.ShareX_egrzcvs15399j"],
+  },
+  vlc: { displayNames: ["VLC media player"], productCodes: ["VLC media player"] },
+  powertoys: {
+    displayNameRegex: "^PowerToys(?: \\(Preview\\))?(?: (?:x64|arm64))?$",
+    publisher: "Microsoft",
+  },
+  notepadpp: { displayNames: ["Notepad++"], productCodes: ["Notepad++"] },
+  everything: {
+    displayNames: ["Everything"],
+    publisher: "voidtools",
+    productCodes: ["Everything"],
+  },
+  vscode: {
+    displayNameRegex: "^Microsoft Visual Studio Code(?: \\(User\\))?$",
+    publisher: "Microsoft",
+    // Inno Setup ids of the x64 system and user installers.
+    productCodes: [
+      "{EA457B21-F73E-494C-ACAB-524FDE069978}_is1",
+      "{771FD6B0-FA20-440A-A002-3B3BAC16DC50}_is1",
+    ],
+  },
+  files: {
+    displayNames: ["Files"],
+    publisher: "Files Community",
+    msixFamilyNames: ["49306atecsolution.FilesUWP_et10x9a9vyk8t", "Files_1y0xx7n9077q4"],
+  },
+  flow: { displayNames: ["Flow Launcher"] },
+  localsend: { displayNames: ["LocalSend"] },
+  krita: { displayNames: ["Krita"] },
+  rustdesk: { displayNames: ["RustDesk"] },
+  sevenzip: { displayNames: ["7-Zip"], productCodes: ["7-Zip"] },
+  obs: { displayNames: ["OBS Studio"], productCodes: ["OBS Studio"] },
+  keepassxc: { displayNames: ["KeePassXC"] },
+  audacity: { displayNames: ["Audacity"], productCodes: ["Audacity_is1"] },
+  bitwarden: {
+    displayNames: ["Bitwarden"],
+    msixFamilyNames: ["8bitSolutionsLLC.bitwardendesktop_h4e712dmw3xyy"],
+  },
+  inkscape: { displayNames: ["Inkscape"] },
+  flux: { displayNames: ["f.lux"] },
+  anki: { displayNames: ["Anki"] },
+  stellarium: { displayNames: ["Stellarium"] },
+  mindustry: { displayNames: ["Mindustry"], productCodes: ["Steam App 1127400"] },
+  joplin: { displayNames: ["Joplin"] },
+  ditto: { displayNames: ["Ditto"] },
+  supertuxkart: { displayNames: ["SuperTuxKart"] },
+  shell: { displayNames: ["Nilesoft Shell"] },
+  czkawka: { displayNames: ["Czkawka"] },
+  imageglass: { displayNames: ["ImageGlass"] },
+  rufus: { displayNames: ["Rufus"] },
+  winaerotweaker: { displayNames: ["Winaero Tweaker"] },
+  mpv: { displayNames: ["mpv"] },
+  slounik: { displayNames: ["Слоўнік", "Slounik"] },
+};
+// Every field is on the wire, like the Rust type serialises it.
+const detection = (id) => {
+  const d = DETECTION[id];
+  if (!d) throw new Error(`no detection rules for ${id}`);
+  return {
+    displayNames: d.displayNames ?? [],
+    displayNameRegex: d.displayNameRegex ?? null,
+    publisher: d.publisher ?? null,
+    productCodes: d.productCodes ?? [],
+    msixFamilyNames: d.msixFamilyNames ?? [],
+  };
+};
+
+// The download manifest (`Package`) of an update in the mock world: installed by the simulated
+// strategy, so no URL, hash or signer (M7 real strategies take these from signed channel
+// manifests). The version is the app's catalog version; the size is the update download (MiB).
+const simulatedPackage = (appId, mb) => {
+  const app = D.apps.find((a) => a.id === appId);
+  if (!app) throw new Error(`update for unknown app ${appId}`);
+  return {
+    appId,
+    version: app.version,
+    url: null,
+    sha256: null,
+    sizeBytes: Math.round(mb * 1048576),
+    strategy: { kind: "simulated" },
+    signer: null,
+  };
+};
+
 const catalog = {
   apps: D.apps.map((a) =>
     nulls({
@@ -47,6 +142,7 @@ const catalog = {
       channel: a.channel,
       alsoIn: a.alsoIn ?? [],
       iconUrl: null,
+      detection: detection(a.id),
     }),
   ),
   categories: D.categories.map((c) => ({
@@ -85,6 +181,7 @@ const catalog = {
     appId,
     downloadMb: u.mb,
     notes: u.notes,
+    package: simulatedPackage(appId, u.mb),
   })),
   genericNotes: D.genericNotes,
   reviewPool: D.reviewPool,

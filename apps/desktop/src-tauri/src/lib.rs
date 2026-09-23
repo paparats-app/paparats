@@ -7,6 +7,7 @@ mod commands;
 mod deep_link;
 mod error;
 mod events;
+mod flags;
 mod logging;
 mod services;
 mod shell;
@@ -23,10 +24,13 @@ use std::sync::Arc;
 use std::time::Duration;
 
 use paparats_core as core;
-use tauri::{Manager, RunEvent, WindowEvent};
+use tauri::{AppHandle, Manager, RunEvent, WindowEvent};
 use tauri_plugin_deep_link::DeepLinkExt;
+use tauri_plugin_opener::OpenerExt;
 use tauri_specta::{Builder, collect_commands, collect_events};
 
+use crate::flags::{CatalogEnv, RealFlags};
+use crate::services::{Browser, RealPaths, Strategies};
 use crate::shell::{Shell, ShellStart, StoredSettings};
 use crate::tray::{Tray, TrayLabels};
 use crate::window::{MAIN_WINDOW, MainWindow, TauriShellHost};
@@ -36,6 +40,9 @@ pub const BINDINGS_PATH: &str = "../src/bindings.ts";
 
 /// File name of the local database inside the app data directory.
 pub const DATABASE_FILE: &str = "paparats.db";
+
+/// Folder of real downloads (partial and verified packages) in the app's local data directory.
+pub const DOWNLOADS_DIR: &str = "downloads";
 
 /// File name of the UI's settings store in the app data directory (`services/tauri/settings.ts`).
 pub const SETTINGS_FILE: &str = "settings.json";
@@ -147,9 +154,22 @@ pub fn export_bindings() -> Result<(), String> {
         .map_err(|e| e.to_string())
 }
 
-/// Logging, database, catalog and download engine. Runs once in `setup`, after the event
-/// registry is mounted (the engine emits typed events).
-fn init_state(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
+/// The system browser (tauri-plugin-opener): the account API's sign-in page.
+struct SystemBrowser(AppHandle);
+
+impl Browser for SystemBrowser {
+    fn open(&self, url: &str) -> Result<(), String> {
+        self.0
+            .opener()
+            .open_url(url, None::<&str>)
+            .map_err(|e| e.to_string())
+    }
+}
+
+/// Logging, database, the strategies `PAPARATS_REAL` asks for (catalog, inventory, installer,
+/// sign-in) and the download engine. Runs once in `setup`, after the event registry is mounted
+/// (the engine emits typed events). Returns the real strategies actually running.
+fn init_state(app: &mut tauri::App) -> Result<RealFlags, Box<dyn std::error::Error>> {
     match app
         .path()
         .app_log_dir()
@@ -161,20 +181,32 @@ fn init_state(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
         }
         Err(e) => eprintln!("Paparats: file logging is disabled: {e}"),
     }
+    // Read here and nowhere else, once logging runs (unknown names are logged).
+    let flags = RealFlags::from_env();
     let db_path = app.path().app_data_dir()?.join(DATABASE_FILE);
+    let paths = RealPaths {
+        downloads: app.path().app_local_data_dir()?.join(DOWNLOADS_DIR),
+    };
     let runtime = tauri::async_runtime::handle().inner().clone();
     let ui = Arc::new(events::TauriEvents::new(app.handle().clone()));
-    let state = services::AppState::open(&db_path, ui, runtime, services::system_clock())?;
+    let browser = Arc::new(SystemBrowser(app.handle().clone()));
+    let state =
+        services::AppState::open(&db_path, ui, runtime, services::system_clock(), |storage| {
+            Strategies::from_flags(flags, &CatalogEnv::from_env(), storage, &paths, browser)
+        })?;
+    let running = state.flags();
+    tauri::async_runtime::spawn(state.startup());
     app.manage(state);
     tracing::info!(version = env!("CARGO_PKG_VERSION"), "Paparats started");
-    Ok(())
+    Ok(running)
 }
 
 /// The native shell: window, tray, login entry and `paparats://` links. The window stays hidden
 /// until the UI reports its first frame (`shell_window_ready`), or until asked when the login
 /// entry started us; the stored settings give the tray its language and the close button its
-/// meaning before the UI has loaded.
-fn init_shell(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
+/// meaning before the UI has loaded. `flags` are the real strategies running (sign-in callbacks
+/// go to the account flow only with real sign-in).
+fn init_shell(app: &mut tauri::App, flags: RealFlags) -> Result<(), Box<dyn std::error::Error>> {
     let handle = app.handle().clone();
     let stored = StoredSettings::read(&app.path().app_data_dir()?.join(SETTINGS_FILE));
     let args: Vec<String> = std::env::args().collect();
@@ -182,6 +214,7 @@ fn init_shell(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
         hidden: shell::launched_by_autostart(&args),
         minimize_to_tray: stored.tray,
         locale: stored.locale,
+        sign_in_callbacks: flags.account,
     };
 
     app.manage(MainWindow::prepare(&handle, &stored));
@@ -269,8 +302,8 @@ pub fn run() {
         })
         .setup(move |app| {
             builder.mount_events(app);
-            init_state(app)?;
-            init_shell(app)
+            let running = init_state(app)?;
+            init_shell(app, running)
         })
         .build(tauri::generate_context!());
 

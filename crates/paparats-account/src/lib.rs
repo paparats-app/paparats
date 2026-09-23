@@ -1,13 +1,21 @@
 //! The account service: profile, devices, two-factor, the Pro subscription and the idea
-//! thank-you gift, sign-in state. Today the account is the local mock world in
-//! `paparats-storage`; M7 adds OAuth 2 PKCE through the system browser and tokens in the Windows
-//! Credential Manager. Passwords are never stored or logged.
+//! thank-you gift, sign-in state. The account snapshot lives in `paparats-storage`
+//! ([`AccountStore`]). Signing in is either the prototype's local sign-in ([`Auth::Simulated`],
+//! the default) or, with `PAPARATS_REAL=account`, OAuth 2 PKCE through the system browser with
+//! tokens in the Windows Credential Manager ([`Auth::Real`], see [`auth`]). Passwords and tokens
+//! are never stored in the database or logged.
+
+pub mod auth;
+mod flags;
 
 use std::sync::Arc;
 
 use paparats_core::dates::{self, DateError};
-use paparats_core::{Account, IDEA_BONUS_MONTHS, PlanId, ProfilePatch};
+use paparats_core::{Account, IDEA_BONUS_MONTHS, PlanId, Profile, ProfilePatch};
 use paparats_storage::{Storage, StorageError};
+
+pub use auth::{AuthError, OAuthAccount, OAuthConfig};
+pub use flags::{Auth, from_flags};
 
 #[derive(Debug, thiserror::Error)]
 pub enum AccountError {
@@ -128,8 +136,8 @@ impl AccountStore {
         })
     }
 
-    /// Signs in as `email` (trimmed, required). The password is checked by the account API in
-    /// M7; it never reaches this crate.
+    /// The simulated sign-in: signs in as `email` (trimmed, required). The password never reaches
+    /// this crate; real sign-in happens in the browser ([`OAuthAccount`]).
     pub fn sign_in(&self, email: &str) -> Result<Account> {
         let email = required(email, "email")?;
         self.storage.update_account(|a| {
@@ -142,6 +150,16 @@ impl AccountStore {
     pub fn sign_out(&self) -> Result<Account> {
         self.storage.update_account(|a| {
             a.signed_in = false;
+            Ok::<_, AccountError>(())
+        })
+    }
+
+    /// Signs in with the profile the account API returned (real sign-in): the profile is
+    /// replaced, the account marked signed in. Devices, activity and subscription stay local.
+    pub fn apply_remote_profile(&self, profile: Profile) -> Result<Account> {
+        self.storage.update_account(|a| {
+            a.profile = profile;
+            a.signed_in = true;
             Ok::<_, AccountError>(())
         })
     }
@@ -245,6 +263,24 @@ mod tests {
         assert!(a.signed_in);
         assert_eq!(a.profile.email, "new@example.com");
         assert!(matches!(s.sign_in(" "), Err(AccountError::Invalid(_))));
+    }
+
+    #[test]
+    fn remote_profile_signs_in() {
+        let s = store();
+        s.sign_out().unwrap();
+        let before = s.get().unwrap();
+        let profile = Profile {
+            name: "Remote Name".into(),
+            email: "remote@example.com".into(),
+            since: "2023-01-02".into(),
+            ..before.profile.clone()
+        };
+        let a = s.apply_remote_profile(profile.clone()).unwrap();
+        assert!(a.signed_in);
+        assert_eq!(a.profile, profile);
+        assert_eq!(a.devices, before.devices, "local parts untouched");
+        assert_eq!(a.subscription, before.subscription);
     }
 
     #[test]

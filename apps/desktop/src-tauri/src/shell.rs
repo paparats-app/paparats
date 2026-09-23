@@ -11,7 +11,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use paparats_core::{Locale, Settings, ThemePreference};
 use serde_json::Value;
 
-use crate::deep_link::{self, DeepLink, DeepLinkTarget};
+use crate::deep_link::{self, AuthCallback, DeepLink, DeepLinkTarget};
 use crate::tray::{TrayAction, TrayItem, TrayLabels};
 
 /// Argument the login entry passes (tauri-plugin-autostart): start hidden in the tray.
@@ -27,6 +27,8 @@ pub trait ShellHost: Send + Sync + 'static {
     fn relabel_tray(&self, labels: &TrayLabels);
     fn emit_deep_link(&self, target: &DeepLinkTarget);
     fn emit_tray_action(&self, action: TrayAction);
+    /// Hands the browser sign-in's return link to the account flow (real sign-in only).
+    fn sign_in_callback(&self, callback: AuthCallback);
     /// Exits the app (tray › Quit).
     fn quit(&self);
 }
@@ -38,6 +40,8 @@ pub struct ShellStart {
     pub hidden: bool,
     pub minimize_to_tray: bool,
     pub locale: Locale,
+    /// Real sign-in is on (`PAPARATS_REAL=account`): `paparats://auth/callback` links finish it.
+    pub sign_in_callbacks: bool,
 }
 
 #[derive(Default)]
@@ -56,6 +60,7 @@ pub struct Shell {
     ui_ready: AtomicBool,
     shown: AtomicBool,
     links: Mutex<LinkQueue>,
+    sign_in_callbacks: bool,
 }
 
 impl Shell {
@@ -68,6 +73,7 @@ impl Shell {
             ui_ready: AtomicBool::new(false),
             shown: AtomicBool::new(false),
             links: Mutex::new(LinkQueue::default()),
+            sign_in_callbacks: start.sign_in_callbacks,
         }
     }
 
@@ -142,9 +148,15 @@ impl Shell {
                 self.deliver(target);
                 self.show();
             }
-            // The PKCE sign-in (M7) will finish here; never log the query (authorization code).
-            Ok(DeepLink::AuthCallback) => {
-                tracing::info!("sign-in callback received; ignored until browser sign-in lands");
+            // The browser sign-in comes back: the account flow finishes it and the window comes
+            // forward. Never log the link (its query holds the authorization code).
+            Ok(DeepLink::AuthCallback(callback)) if self.sign_in_callbacks => {
+                tracing::info!("sign-in callback received");
+                self.host.sign_in_callback(callback);
+                self.show();
+            }
+            Ok(DeepLink::AuthCallback(_)) => {
+                tracing::info!("sign-in callback ignored: real sign-in is off");
             }
             Err(e) => tracing::warn!(error = %e, "ignored a link"),
         }
@@ -240,6 +252,7 @@ pub mod testing {
         Relabel(&'static str),
         DeepLink(DeepLinkTarget),
         TrayAction(TrayAction),
+        SignInCallback(String),
         Quit,
     }
 
@@ -277,6 +290,9 @@ pub mod testing {
         fn emit_tray_action(&self, action: TrayAction) {
             self.push(Call::TrayAction(action));
         }
+        fn sign_in_callback(&self, callback: AuthCallback) {
+            self.push(Call::SignInCallback(callback.url().as_str().to_owned()));
+        }
         fn quit(&self) {
             self.push(Call::Quit);
         }
@@ -287,6 +303,7 @@ pub mod testing {
             hidden,
             minimize_to_tray: true,
             locale: Locale::En,
+            sign_in_callbacks: false,
         }
     }
 
@@ -403,6 +420,23 @@ mod tests {
         s.open_url(&url("https://paparats.app/app/obs"));
         assert!(rec.calls().is_empty());
         assert!(s.take_deep_links().is_empty());
+    }
+
+    #[test]
+    fn sign_in_callbacks_go_to_the_account_flow_when_real_sign_in_is_on() {
+        let recorder = testing::Recorder::default();
+        let start = ShellStart {
+            sign_in_callbacks: true,
+            ..testing::start(false)
+        };
+        let s = Shell::new(recorder.clone(), &start);
+        let raw = "paparats://auth/callback?code=secret&state=xyz";
+        s.open_url(&url(raw));
+        assert_eq!(
+            recorder.calls(),
+            [Call::SignInCallback(raw.into()), Call::Reveal]
+        );
+        assert!(s.take_deep_links().is_empty(), "never handed to the UI");
     }
 
     #[test]

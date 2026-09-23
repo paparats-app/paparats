@@ -4,6 +4,7 @@
 pub mod account;
 pub mod catalog;
 pub mod channel;
+pub mod detection;
 pub mod idea;
 pub mod library;
 pub mod package;
@@ -13,6 +14,7 @@ pub mod text;
 pub use account::*;
 pub use catalog::*;
 pub use channel::*;
+pub use detection::*;
 pub use idea::*;
 pub use library::*;
 pub use package::*;

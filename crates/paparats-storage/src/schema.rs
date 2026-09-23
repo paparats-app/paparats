@@ -55,6 +55,22 @@ const MIGRATIONS: &[&str] = &[
         value TEXT NOT NULL
     );
     ",
+    // 2 — M7 remote catalog: the last verified copy of every fetched manifest (raw envelope bytes
+    // and ETag, for conditional requests and offline use) and per-channel reachability.
+    "
+    CREATE TABLE manifest_cache (
+        url     TEXT PRIMARY KEY NOT NULL,
+        etag    TEXT,
+        body    BLOB NOT NULL,
+        fetched TEXT NOT NULL
+    );
+    CREATE TABLE channel_health (
+        channel_id    TEXT PRIMARY KEY NOT NULL,
+        failures      INTEGER NOT NULL,
+        first_failure TEXT NOT NULL,
+        last_failure  TEXT NOT NULL
+    );
+    ",
 ];
 
 /// The schema version this build creates and understands.

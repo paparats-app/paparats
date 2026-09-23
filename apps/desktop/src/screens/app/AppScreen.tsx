@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import { EmptyState } from "@/components/EmptyState";
 import { PLACEHOLDER_SHOTS, ScreenshotViewer } from "@/components/ScreenshotViewer";
 import { useAppIndex } from "@/hooks";
@@ -22,13 +22,15 @@ import styles from "./AppScreen.module.css";
  */
 export function AppScreen() {
   const { appId = "" } = useParams();
+  const { key: visit } = useLocation();
   const catalog = useCatalog().data;
   const app = useAppIndex().get(appId);
   // The navigation skeleton covers the first frames while the catalog loads.
   if (!catalog) return null;
-  // Keyed by id: opening another app from "More in" starts on its first screenshot, no rating
-  // and two versions (the prototype resets these on every navigation).
-  return app ? <AppPage key={app.id} app={app} catalog={catalog} /> : <AppNotFound />;
+  // Keyed by the visit (every navigation is a new location key): each opening of an app page,
+  // the same app included, starts on its first screenshot, no rating and two versions, as the
+  // prototype's go() resets shot, myRating and showAllVersions on every navigation.
+  return app ? <AppPage key={`${app.id}:${visit}`} app={app} catalog={catalog} /> : <AppNotFound />;
 }
 
 function AppNotFound() {

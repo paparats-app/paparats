@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import type * as belarusianModule from "./belarusian";
 import { belarusian, hasLocaleData } from "./belarusian";
-import { createFormat } from "./createFormat";
+import { createFormat, createNumberFormat } from "./createFormat";
 
 // Node's full ICU has the `be` data Chromium lacks: it is the oracle for the hand-written patterns.
 vi.mock("./belarusian", async (importOriginal) => {
@@ -19,6 +19,7 @@ const intl = {
     maximumFractionDigits: 1,
   }),
   number: new Intl.NumberFormat("be"),
+  fixed1: new Intl.NumberFormat("be", { minimumFractionDigits: 1, maximumFractionDigits: 1 }),
   percent: new Intl.NumberFormat("be", { style: "percent", maximumFractionDigits: 0 }),
   date: new Intl.DateTimeFormat("be", { day: "numeric", month: "long", year: "numeric" }),
   month: new Intl.DateTimeFormat("be", { month: "long", year: "numeric" }),
@@ -38,6 +39,8 @@ describe("Belarusian formatting without ICU data", () => {
       expect(belarusian.size(n)).toBe(intl.size.format(n));
       expect(belarusian.number(n)).toBe(intl.number.format(n));
     }
+    for (const n of [4.6, 4.25, 4, 12345.67])
+      expect(belarusian.fixed(n, 1)).toBe(intl.fixed1.format(n));
     for (const gb of [0.8, 1.2, 12.04, 1536])
       expect(belarusian.sizeGb(gb)).toBe(intl.gb.format(gb));
     for (const n of [0, 18, 43, 100])
@@ -89,6 +92,18 @@ describe("Belarusian formatting without ICU data", () => {
     expect(fallback.price(4.99, "EUR")).toBe(native.price(4.99, "EUR"));
     expect(fallback.percent(43.4)).toBe(native.percent(43.4));
     expect(fallback.list(["Nilesoft", "Winaero"])).toBe(native.list(["Nilesoft", "Winaero"]));
+    expect(fallback.fixed(4.6, 1)).toBe(native.fixed(4.6, 1));
+  });
+
+  it("is what createNumberFormat('be') returns when the runtime lacks be", () => {
+    const native = createNumberFormat("be");
+    vi.mocked(hasLocaleData).mockReturnValueOnce(false);
+    const fallback = createNumberFormat("be");
+    expect(fallback.number).toBe(belarusian.number);
+    for (const n of [1204, 12345.6]) expect(fallback.number(n)).toBe(native.number(n));
+    expect(fallback.fixed(4.6, 1)).toBe(native.fixed(4.6, 1));
+    expect(fallback.plus(10000)).toBe(native.plus(10000));
+    expect(fallback.percent(62)).toBe(native.percent(62));
   });
 
   it("formats i18next `{{…, number}}` in be the same way when the runtime lacks be", async () => {

@@ -1,5 +1,6 @@
 import type { MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
+import { useNumberFormat } from "@/i18n/format";
 import { Icon } from "../Icon";
 import { cx } from "../internal/cx";
 import styles from "./VoteButton.module.css";
@@ -18,7 +19,8 @@ export interface VoteButtonProps {
  * (prototype lines 1230 and 1287). Clicks do not bubble to a clickable card.
  */
 export function VoteButton({ votes, voted, onVote, size = "card", className }: VoteButtonProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const format = useNumberFormat();
   const detail = size === "detail";
   const verb = voted ? t("ideas.voted") : t("ideas.vote");
   const onClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -35,7 +37,7 @@ export function VoteButton({ votes, voted, onVote, size = "card", className }: V
       onClick={onClick}
     >
       <Icon name="chevron-up" size={detail ? 18 : 14} strokeWidth={2.4} />
-      <span className={styles.count}>{new Intl.NumberFormat(i18n.language).format(votes)}</span>
+      <span className={styles.count}>{format.number(votes)}</span>
       {detail && <span className={styles.verb}>{verb}</span>}
     </button>
   );

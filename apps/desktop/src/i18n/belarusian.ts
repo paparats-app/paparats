@@ -81,6 +81,8 @@ function pluralIndex(n: number): 0 | 1 | 2 {
 
 export const belarusian = {
   number: (n: number): string => decimal(n, 0, 3),
+  /** Exactly `digits` decimals: "4,6". */
+  fixed: (n: number, digits: number): string => decimal(n, digits, digits),
   size: (mb: number): string => `${decimal(mb, 0, 1)} МБ`,
   sizeGb: (gb: number): string => `${decimal(gb, 1, 1)} ГБ`,
   percent: (n: number): string => `${decimal(n, 0, 0)}${NBSP}%`,

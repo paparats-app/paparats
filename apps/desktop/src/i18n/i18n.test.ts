@@ -309,6 +309,12 @@ describe("createFormat", () => {
 
   it("formats numbers, plus-counts, percents and lists", () => {
     expect(en.number(1234.5)).toBe("1,234.5");
+    expect([en.fixed(4.6, 1), en.fixed(4, 1), ru.fixed(4.25, 1), be.fixed(4.6, 1)]).toEqual([
+      "4.6",
+      "4.0",
+      "4,3",
+      "4,6",
+    ]);
     expect(en.plus(10000)).toBe("10,000+");
     expect(norm(ru.plus(10000))).toBe("10 000+");
     expect(en.percent(45.6)).toBe("46%");

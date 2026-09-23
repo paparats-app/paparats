@@ -1,7 +1,9 @@
 import { useRef, type KeyboardEvent } from "react";
 import { useTranslation } from "react-i18next";
+import { useNumberFormat } from "@/i18n/format";
+import { Icon } from "../Icon";
 import { cx } from "../internal/cx";
-import { STAR_PATH, Stars } from "./Stars";
+import { Stars } from "./Stars";
 import styles from "./RatingSummary.module.css";
 
 export interface RatingBar {
@@ -37,14 +39,9 @@ export function RatingSummary({
   onRate,
   className,
 }: RatingSummaryProps) {
-  const { t, i18n } = useTranslation();
-  const decimal = new Intl.NumberFormat(i18n.language, {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1,
-  });
-  const integer = new Intl.NumberFormat(i18n.language);
-  const percent = new Intl.NumberFormat(i18n.language, { style: "percent" });
-  const averageText = decimal.format(average);
+  const { t } = useTranslation();
+  const format = useNumberFormat();
+  const averageText = format.fixed(average, 1);
   const rateRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const tabStop = myRating >= 1 && myRating <= 5 ? myRating - 1 : 0;
 
@@ -68,11 +65,11 @@ export function RatingSummary({
       <div className={styles.histogram}>
         {histogram.map((bar) => (
           <div key={bar.stars} className={styles.bar}>
-            <span>{integer.format(bar.stars)}</span>
+            <span>{format.number(bar.stars)}</span>
             <span className={styles.track} aria-hidden="true">
               <span className={styles.fill} style={{ width: `${bar.pct}%` }} />
             </span>
-            <span className={styles.pct}>{percent.format(bar.pct / 100)}</span>
+            <span className={styles.pct}>{format.percent(bar.pct)}</span>
           </div>
         ))}
       </div>
@@ -90,15 +87,13 @@ export function RatingSummary({
               type="button"
               role="radio"
               aria-checked={n === myRating}
-              aria-label={integer.format(n)}
+              aria-label={format.number(n)}
               tabIndex={index === tabStop ? 0 : -1}
               className={cx(styles.rateStar, n <= myRating && styles.rateOn)}
               onClick={() => onRate(n)}
               onKeyDown={(event) => onRateKey(event, index)}
             >
-              <svg width={20} height={20} viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path d={STAR_PATH} />
-              </svg>
+              <Icon name="star" size={20} fill="currentColor" stroke="none" />
             </button>
           ))}
         </div>

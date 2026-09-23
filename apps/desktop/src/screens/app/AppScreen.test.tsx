@@ -304,8 +304,11 @@ describe("AppScreen", () => {
   });
 });
 
-/** Opens Obsidian from a section with `useNav`, like a card would. */
-function Harness() {
+/**
+ * Opens Obsidian from a section with `useNav`, like a card would; `reopen` adds a button on the
+ * app page that opens Obsidian again (as search or a deep link can).
+ */
+function Harness({ reopen = false }: { reopen?: boolean }) {
   const { go, section } = useNav();
   return (
     <Routes>
@@ -314,6 +317,11 @@ function Harness() {
         element={
           <>
             <output aria-label="section">{section}</output>
+            {reopen && (
+              <button type="button" onClick={() => go({ to: "app", appId: "obsidian" })}>
+                reopen
+              </button>
+            )}
             <AppScreen />
           </>
         }
@@ -357,5 +365,37 @@ describe("AppScreen navigation", () => {
 
     await user.click(screen.getByRole("button", { name: "Back" }));
     expect(router.state.location.pathname).toBe("/updates");
+  });
+
+  it("starts the same app page fresh on every navigation to it, and Back still works", async () => {
+    const user = userEvent.setup();
+    const { router } = await renderWithProviders(<Harness reopen />, { route: "/library" });
+    await user.click(screen.getByRole("button", { name: "open" }));
+    await screen.findByRole("heading", { name: "Obsidian" });
+    const rate = () => screen.getByRole("radiogroup", { name: "Rate this app" });
+    const caption = () => screen.getByText(/^Screenshot \d$/, { selector: "figcaption" });
+
+    // Per-visit state: second screenshot, a 4-star rating, all versions shown.
+    await user.click(screen.getByRole("button", { name: "Next" }));
+    await user.click(within(rate()).getByRole("radio", { name: "4" }));
+    await user.click(screen.getByRole("button", { name: "Show all versions" }));
+    expect(caption()).toHaveTextContent("Screenshot 2");
+    expect(within(rate()).getByRole("radio", { name: "4" })).toBeChecked();
+    expect(screen.getByText("1.8.7")).toBeInTheDocument();
+
+    // The same app again (search, a deep link, the tray): the prototype's go() resets all three.
+    await user.click(screen.getByRole("button", { name: "reopen" }));
+    expect(router.state.location.pathname).toBe("/app/obsidian");
+    expect(caption()).toHaveTextContent("Screenshot 1");
+    expect(within(rate()).queryByRole("radio", { checked: true })).toBeNull();
+    expect(screen.getByRole("button", { name: "Show all versions" })).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
+    expect(screen.queryByText("1.8.7")).toBeNull();
+    expect(screen.getByRole("status", { name: "section" })).toHaveTextContent("library");
+
+    await user.click(screen.getByRole("button", { name: "Back" }));
+    expect(router.state.location.pathname).toBe("/library");
   });
 });

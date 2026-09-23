@@ -1324,3 +1324,16 @@ reload by an edit during a run).
 - Rendering-only: subpixel versus greyscale antialiasing on some surfaces with identical geometry,
   and structure-only differences (a divider drawn as a border, the split button's radius on its
   halves instead of a clipping wrapper) with no pixel difference.
+
+### D63 — One native resize listener for the window controls (M9)
+Found in the real app (`pnpm tauri dev`, M9 acceptance): 6 of 8 cold starts logged
+`[TAURI] Couldn't find callback id …`. The window controls subscribe to `tauri://resize` to swap
+Maximise / Restore; React's development StrictMode unmounts and remounts that effect while the
+window is shown and sized for the first frame, and Tauri's `unlisten` drops the JS callback
+before the core hears of it, so the resize emitted in between reached a missing callback.
+`platform/window.ts › nativeWindow.onResized` now registers the native listener once, on the
+first subscription, keeps it for the life of the window and fans the event out to its
+subscribers (a failed registration is retried on the next subscription). Production builds did
+not double-mount, but any unsubscribe during a resize had the same race. Regression test:
+`platform/window.test.ts` (a fake core that keeps a listener until the unlisten reaches it); after
+the fix, 0 of 6 cold starts warned.

@@ -1,5 +1,6 @@
 import type { MouseEvent } from "react";
 import { useTranslation } from "react-i18next";
+import { useNumberFormat } from "@/i18n/format";
 import type { IdeaStatus } from "@/services/types";
 import type { AppIconSource } from "../AppCard";
 import { AppIcon } from "../AppIcon";
@@ -70,7 +71,8 @@ export function IdeaCard({
   onTake,
   className,
 }: IdeaCardProps) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
+  const format = useNumberFormat();
   // The whole card opens the idea by mouse; the title button is the keyboard route.
   const onCardClick = (event: MouseEvent<HTMLElement>) => {
     if ((event.target as HTMLElement).closest("button, a, input, textarea, select")) return;
@@ -137,7 +139,7 @@ export function IdeaCard({
           <span aria-hidden="true">·</span>
           <span className={styles.comments} title={t("ideas.commentsCount", { count: comments })}>
             <Icon name="message-circle" size={13} strokeWidth={2} />
-            {new Intl.NumberFormat(i18n.language).format(comments)}
+            {format.number(comments)}
           </span>
         </div>
       </div>

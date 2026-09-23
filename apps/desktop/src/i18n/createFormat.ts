@@ -14,6 +14,8 @@ export type Format = {
   /** Past time relative to today: today, yesterday, 3 days ago, last week, 2 months ago. */
   relative(iso: IsoDate): string;
   number(n: number): string;
+  /** Exactly `digits` decimals, e.g. an average rating: "4.6" / "4,6". */
+  fixed(n: number, digits: number): string;
   /** "10,000+" / "10 000+". */
   plus(n: number): string;
   /** "$4.99", "$49" / "4,99 $", "49 $": decimals only when the amount has cents. */
@@ -23,6 +25,9 @@ export type Format = {
   /** "Nilesoft and Winaero" / "Nilesoft і Winaero". */
   list(items: readonly string[]): string;
 };
+
+/** The part of `Format` that needs no "today": what presentational components use (`useNumberFormat`). */
+export type NumberFormat = Pick<Format, "number" | "fixed" | "plus" | "percent">;
 
 const DAY_MS = 86_400_000;
 
@@ -34,13 +39,43 @@ function atNoon(iso: IsoDate): Date | null {
   return Number.isNaN(date.getTime()) ? null : date;
 }
 
+/** The number formatters of `createFormat`; `belarusianFallback` as decided there. */
+function numberFormat(locale: Locale, belarusianFallback: boolean): NumberFormat {
+  if (belarusianFallback) {
+    const be = belarusian;
+    return {
+      number: be.number,
+      fixed: be.fixed,
+      plus: (n) => `${be.number(n)}+`,
+      percent: (n) => be.percent(n),
+    };
+  }
+  const tag = locale === "en" ? "en-GB" : locale;
+  const numberFmt = new Intl.NumberFormat(tag);
+  const percentFmt = new Intl.NumberFormat(tag, { style: "percent", maximumFractionDigits: 0 });
+  return {
+    number: (n) => numberFmt.format(n),
+    fixed: (n, digits) =>
+      new Intl.NumberFormat(tag, {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+      }).format(n),
+    plus: (n) => `${numberFmt.format(n)}+`,
+    percent: (n) => percentFmt.format(Math.round(n) / 100),
+  };
+}
+
+/** Just the number formatters of `createFormat(locale, …)`, with the same Belarusian fallback. */
+export function createNumberFormat(locale: Locale): NumberFormat {
+  return numberFormat(locale, locale === "be" && !hasLocaleData("be"));
+}
+
 /**
  * Pure formatter set for `locale`, with `today` as the reference for `relative`. English uses
  * en-GB conventions ("15 September 2026") except prices, which follow en-US ("$4.99").
  */
 export function createFormat(locale: Locale, today: IsoDate): Format {
   const tag = locale === "en" ? "en-GB" : locale;
-  const numberFmt = new Intl.NumberFormat(tag);
   const mbFmt = new Intl.NumberFormat(tag, {
     style: "unit",
     unit: "megabyte",
@@ -55,7 +90,6 @@ export function createFormat(locale: Locale, today: IsoDate): Format {
   const dateFmt = new Intl.DateTimeFormat(tag, { day: "numeric", month: "long", year: "numeric" });
   const monthFmt = new Intl.DateTimeFormat(tag, { month: "long", year: "numeric" });
   const relFmt = new Intl.RelativeTimeFormat(tag, { numeric: "auto" });
-  const percentFmt = new Intl.NumberFormat(tag, { style: "percent", maximumFractionDigits: 0 });
   const listFmt = new Intl.ListFormat(tag, { style: "long", type: "conjunction" });
   const todayNoon = atNoon(today);
 
@@ -67,9 +101,12 @@ export function createFormat(locale: Locale, today: IsoDate): Format {
 
   // Chromium has no Belarusian ICU data (WebView2 falls back to ru-BY, Chrome to en-US): the
   // CLDR `be` patterns are applied by hand there, so the app reads the same in every runtime.
-  if (locale === "be" && !hasLocaleData("be")) {
+  const belarusianFallback = locale === "be" && !hasLocaleData("be");
+  const numbers = numberFormat(locale, belarusianFallback);
+  if (belarusianFallback) {
     const be = belarusian;
     return {
+      ...numbers,
       size: be.size,
       sizeGb: (mb) => be.sizeGb(mb / 1024),
       date: (iso) => {
@@ -91,15 +128,13 @@ export function createFormat(locale: Locale, today: IsoDate): Format {
         if (days < 30) return be.ago(Math.round(days / 7), "week");
         return be.ago(Math.round(days / 30), "month");
       },
-      number: be.number,
-      plus: (n) => `${be.number(n)}+`,
       price: (amount, currency) => be.price(amount, currency, Number.isInteger(amount) ? 0 : 2),
-      percent: (n) => be.percent(n),
       list: be.list,
     };
   }
 
   return {
+    ...numbers,
     size: (mb) => mbFmt.format(mb),
     sizeGb: (mb) => gbFmt.format(mb / 1024),
     date,
@@ -114,8 +149,6 @@ export function createFormat(locale: Locale, today: IsoDate): Format {
       if (days < 30) return relFmt.format(-Math.round(days / 7), "week");
       return relFmt.format(-Math.round(days / 30), "month");
     },
-    number: (n) => numberFmt.format(n),
-    plus: (n) => `${numberFmt.format(n)}+`,
     price(amount, currency) {
       const digits = Number.isInteger(amount) ? 0 : 2;
       return new Intl.NumberFormat(locale === "en" ? "en-US" : locale, {
@@ -126,7 +159,6 @@ export function createFormat(locale: Locale, today: IsoDate): Format {
         maximumFractionDigits: digits,
       }).format(amount);
     },
-    percent: (n) => percentFmt.format(Math.round(n) / 100),
     list: (items) => listFmt.format(items),
   };
 }

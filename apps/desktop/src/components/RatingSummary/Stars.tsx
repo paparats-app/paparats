@@ -1,3 +1,4 @@
+import { Icon } from "../Icon";
 import { cx } from "../internal/cx";
 import styles from "./Stars.module.css";
 
@@ -11,10 +12,10 @@ export interface StarsProps {
   className?: string;
 }
 
-/** The prototype's filled star glyph (lucide `star` outline is used elsewhere). */
-export const STAR_PATH = "m12 2 3.1 6.3 6.9 1-5 4.9 1.2 6.8L12 17.8 5.8 21l1.2-6.8-5-4.9 6.9-1z";
-
-/** Read-only row of five filled stars (prototype `starFills`). */
+/**
+ * Read-only row of five filled stars (prototype `starFills`): the Icon `star` glyph (the
+ * prototype's path) filled, without a stroke.
+ */
 export function Stars({ value, size = 16, label, className }: StarsProps) {
   const filled = Math.round(value);
   return (
@@ -25,17 +26,13 @@ export function Stars({ value, size = 16, label, className }: StarsProps) {
       aria-hidden={label ? undefined : true}
     >
       {[1, 2, 3, 4, 5].map((n) => (
-        <svg
+        <Icon
           key={n}
-          width={size}
-          height={size}
-          viewBox="0 0 24 24"
+          name="star"
+          size={size}
+          stroke="none"
           className={n <= filled ? styles.on : styles.off}
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path d={STAR_PATH} />
-        </svg>
+        />
       ))}
     </span>
   );

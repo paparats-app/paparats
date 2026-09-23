@@ -739,3 +739,56 @@ Known gaps:
   directly, so in Belarusian they get the runtime's fallback: WebView2's `ru-BY` writes the same
   "4,4", "64 %" and three-digit counts as `be` (it would group a four-digit count, "1 234", where
   `be` writes "1234"); Chrome writes en-US.
+
+## M9 — Acceptance of the real app (2026-09-23)
+
+`pnpm tauri dev` (WebView2 + Rust core, no `PAPARATS_REAL`) on a fresh profile (both app-data
+folders moved aside, restored byte-identical afterwards: 5 + 1 162 files, SHA-256), driven over
+the WebView2 debugging port (`WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=9227`)
+with trusted CDP mouse and keyboard input; the tray through its window messages and native menu.
+The M8 startup (async `createServices`, lazy mock chunk) boots the Tauri set: the log shows
+`seeded the local database` and `Paparats started`, no mock chunk.
+
+| # | End-to-end flow | Result |
+|---|---|---|
+| 1 | Sidebar from all 8 sections, Profile, app, channel and idea pages (83 moves); detail pages keep their section highlighted and Back returns to it (Home, Browse, Library, Updates, Ideas, Settings › Sources) | PASS |
+| 2 | Browse: categories, Pro, portable, source, all four sorts, filter search, both Clear all | PASS |
+| 3 | Categories → Browse with the category preset | PASS |
+| 4 | Release notes toggle; Update all → per-row progress (2 at a time) → "Updated just now" → badge 6 → 4 → 2 → none → "All updates installed"; Pause all / Resume all / Cancel all | PASS |
+| 5 | Library tabs, sort, list/grid, collections + breadcrumb, quick filters, Open ("Opening …"), favourite on/off, uninstall ("7-Zip uninstalled", focus to the next control), empty states (favourites, updates, downloads) | PASS |
+| 6 | Choose plan → confirm dialog → current plan; Pro pill in the sidebar, subscription and profile cards; Cancel plan back to Free | PASS |
+| 7 | All 10 Settings sections; theme and language apply on the click and persist (`settings.json`, tray relabelled); parallel downloads 1 → 4 → 2 changes the running queue | PASS |
+| 8 | About › Check for updates → "Checking…" → "You're up to date!" (updater endpoint unreachable reads as up to date); the same from the tray | PASS |
+| 9 | Profile: five tabs, Edit → Save → "Profile saved", device removed, Data & Privacy (inert Export/Delete, as the prototype) | PASS |
+| 10 | Search: six-row skeleton → results in ≈ 0.3 s; "Nothing found"; offline "Search needs a connection" | PASS |
+| 11 | Add by address and by handle (community → trust dialog; verified → direct), not found, already followed; pause/resume, unsubscribe, sync, copy address (clipboard read back), report; stale callout Keep / Unsubscribe | PASS |
+| 12 | Propose (5-char title refused), vote/unvote, comment; developer view Take → Mark as released (app + version); the author's note → Activate 3 months of Pro → Pro in sidebar, Subscription, Profile, Settings | PASS |
+| 13 | Scene plays on the fresh profile, not after a restart; locale and theme persist; Replay (Advanced, developer mode) runs the timeline 0 → 0.1 → 1.4 → 2.8 → 4.2 → 5.4 s; reduced motion starts at the language step with no running animation | PASS |
+| 14 | Offline (simulated and real, via CDP network emulation): banner with Retry, Get/Update inert ("You're offline"), downloads freeze and resume, "Back online" | PASS |
+
+Also PASS: 36 screen states (every screen, the 10 Settings sections, 5 Profile tabs, 3 Library
+tabs, grid, search, three dialogs) in en/be/ru × dark/light with no raw keys, `{{`, `undefined` or
+`NaN` in text or ARIA attributes; no WARN/ERROR in the app log (99 INFO lines); minimise to tray
+(close hides, process stays), tray left click and menu (Open, Check for updates, Quit; labels
+follow the language), single instance (second launch exits 0 and brings the window forward),
+`paparats://app/obsidian` both warm and as the launching link; D61 (focus rescue, Settings ›
+Account › Sign in after a sign-out with the profile email, row tiles as `div`).
+
+Fixed (D63): `[TAURI] Couldn't find callback id …` on 6 of 8 cold starts — the window controls'
+resize listener was unlistened by StrictMode's remount while the window was being shown. One
+native listener now serves every subscriber (`platform/window.ts`, `platform/window.test.ts`);
+0 warnings in 6 cold starts afterwards.
+
+Checks: `pnpm typecheck`, `pnpm lint`, `pnpm test` (138 files, 1 021 tests), `pnpm format:check`,
+`cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings`,
+`cargo test --workspace` (348 + 6 ignored) and `pnpm specta:check` are green.
+
+Known gaps:
+
+- After Quit from the tray (the core calls `exit(0)`), `pnpm tauri dev` ends with
+  `ELIFECYCLE … exit code -1` and Chromium logs `Failed to unregister class Chrome_WidgetWin_0`;
+  the exit code of the app itself was not captured under the CLI.
+- Not driven: an empty Library (uninstalling every app), a production build (`pnpm tauri build`),
+  real installers (`PAPARATS_REAL`).
+- Relative times follow the real clock in the Tauri app, so the seeded data reads older than in the
+  mock world (the current device "last active last week", channels "synced last week").

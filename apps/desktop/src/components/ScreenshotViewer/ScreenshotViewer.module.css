@@ -1,5 +1,6 @@
 /* Screenshot viewer — prototype lines 1000–1014. `--tint` is the app's data colour; the label and
-   arrow overlays are the prototype's black washes, derived from `--scrim`. */
+   arrow overlays are the prototype's black washes, derived from `--scrim`; shapes, arrows and the
+   arrow ring are white (`--on-image-bright`), the label #e6ecec. */
 .viewer {
   font-family: var(--font-sans);
 }
@@ -21,7 +22,7 @@
 
 .rect {
   position: absolute;
-  background: var(--on-image);
+  background: var(--on-image-bright);
 }
 
 .image {
@@ -39,11 +40,11 @@
   padding: var(--sp-4) var(--sp-10);
   border-radius: var(--r-8);
   background: color-mix(in srgb, var(--scrim) 73%, transparent);
-  color: var(--on-image);
+  color: var(--on-image-caption);
   font-size: var(--fs-meta);
 }
 
-/* rgba(0,0,0,.35) = 64% of the scrim; hover ≈ .6 = the scrim itself. */
+/* rgba(0,0,0,.35) = 64% of the scrim; hover rgba(0,0,0,.6); ring rgba(255,255,255,.15). */
 .nav {
   position: absolute;
   top: 50%;
@@ -53,16 +54,16 @@
   width: 36px;
   height: 36px;
   padding: 0;
-  border: 1px solid var(--ghost-on-image-border);
+  border: 1px solid color-mix(in srgb, var(--on-image-bright) 15%, transparent);
   border-radius: var(--r-full);
   background: color-mix(in srgb, var(--scrim) 64%, transparent);
-  color: var(--on-image);
+  color: var(--on-image-bright);
   cursor: pointer;
   transform: translateY(-50%);
 }
 
 .nav:hover {
-  background: var(--scrim);
+  background: var(--scrim-strong);
 }
 
 .nav:active {

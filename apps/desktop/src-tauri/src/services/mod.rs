@@ -159,13 +159,18 @@ pub(crate) mod testing {
     }
 
     pub fn state() -> (AppState, Arc<Recorder>) {
+        state_with_random(1.0)
+    }
+
+    /// Like [`state`], with a fixed `random` in `[0, 1]` (+`3 + random·7` % per tick).
+    pub fn state_with_random(random: f64) -> (AppState, Arc<Recorder>) {
         let recorder = Arc::new(Recorder::default());
         let state = AppState::new(
             Arc::new(Storage::open_in_memory().unwrap()),
             Arc::clone(&recorder) as Arc<dyn UiEvents>,
             Handle::current(),
             fixed_clock(TODAY),
-            Arc::new(SimulatedTransfer::with_random(|| 1.0)),
+            Arc::new(SimulatedTransfer::with_random(move || random)),
             Arc::new(SimulatedInstaller::new()),
         )
         .unwrap();

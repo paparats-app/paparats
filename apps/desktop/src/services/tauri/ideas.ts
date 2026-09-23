@@ -1,15 +1,15 @@
-// No ideas commands in bindings.ts yet: every method delegates to the mock. To switch one,
-// replace its body with `unwrap(commands.<name>(…))` (see ./result.ts).
+import { commands } from "@/bindings";
 import type { IdeasService } from "../contracts";
+import { unwrap } from "./result";
 
-export function createTauriIdeasService(mock: IdeasService): IdeasService {
+export function createTauriIdeasService(): IdeasService {
   return {
-    getIdeas: () => mock.getIdeas(),
-    vote: (ideaId) => mock.vote(ideaId),
-    propose: (draft) => mock.propose(draft),
-    comment: (ideaId, text, actor) => mock.comment(ideaId, text, actor),
-    take: (ideaId, channelId) => mock.take(ideaId, channelId),
-    release: (ideaId, appId, version) => mock.release(ideaId, appId, version),
-    dismissReleaseNote: (ideaId) => mock.dismissReleaseNote(ideaId),
+    getIdeas: () => unwrap(commands.ideasGet()),
+    vote: (ideaId) => unwrap(commands.ideasVote(ideaId)),
+    propose: (draft) => unwrap(commands.ideasPropose(draft)),
+    comment: (ideaId, text, actor) => unwrap(commands.ideasComment(ideaId, text, actor)),
+    take: (ideaId, channelId) => unwrap(commands.ideasTake(ideaId, channelId)),
+    release: (ideaId, appId, version) => unwrap(commands.ideasRelease(ideaId, appId, version)),
+    dismissReleaseNote: (ideaId) => unwrap(commands.ideasDismissReleaseNote(ideaId)),
   };
 }

@@ -27,7 +27,13 @@ export function CompactUpdatedRow({
   return (
     <div className={cx(styles.row, className)}>
       <button type="button" className={styles.identity} onClick={onOpen}>
-        <AppIcon mono={icon.mono} tint={icon.tint} iconUrl={icon.iconUrl} size={44} />
+        <AppIcon
+          mono={icon.mono}
+          tint={icon.tint}
+          iconUrl={icon.iconUrl}
+          size={44}
+          className={styles.icon}
+        />
         <span className={styles.text}>
           <span className={styles.name}>{name}</span>
           <span className={styles.meta}>{`${version} · ${updated}`}</span>

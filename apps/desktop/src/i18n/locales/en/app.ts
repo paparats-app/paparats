@@ -37,4 +37,6 @@ export const app = {
     "From {{channel}}, a verified channel. Paparats reviewed the author and mirrors the files; the app itself is the author’s.",
   srcCommunityNote:
     "From {{channel}}, a community channel. Not reviewed by Paparats; downloaded from the author’s server.",
+  notFound: "App not found",
+  notFoundHint: "It may have been removed from the catalog.",
 } as const;

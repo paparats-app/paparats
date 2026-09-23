@@ -25,6 +25,7 @@
 }
 
 .link {
+  position: relative;
   flex: none;
   display: inline-flex;
   align-items: center;
@@ -37,6 +38,13 @@
   font-family: var(--font-sans);
   font-size: var(--fs-secondary);
   cursor: pointer;
+}
+
+/* Hit target ≥ 32px tall (the link itself is one 18px line) without moving it. */
+.link::before {
+  content: "";
+  position: absolute;
+  inset: -7px -4px;
 }
 
 .link:hover {

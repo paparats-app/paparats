@@ -1,13 +1,13 @@
-// No install/inventory commands in bindings.ts yet: every method delegates to the mock. To switch
-// one, replace its body with `unwrap(commands.<name>(…))` (see ./result.ts).
+import { commands } from "@/bindings";
 import type { InstallService } from "../contracts";
+import { unwrap, unwrapVoid } from "./result";
 
-export function createTauriInstallService(mock: InstallService): InstallService {
+export function createTauriInstallService(): InstallService {
   return {
-    getLibrary: () => mock.getLibrary(),
-    setFavorite: (appId, favorite) => mock.setFavorite(appId, favorite),
-    uninstall: (appId) => mock.uninstall(appId),
-    open: (appId) => mock.open(appId),
-    openInstallFolder: (appId) => mock.openInstallFolder(appId),
+    getLibrary: () => unwrap(commands.installGetLibrary()),
+    setFavorite: (appId, favorite) => unwrap(commands.installSetFavorite(appId, favorite)),
+    uninstall: (appId) => unwrap(commands.installUninstall(appId)),
+    open: (appId) => unwrapVoid(commands.installOpen(appId)),
+    openInstallFolder: (appId) => unwrapVoid(commands.installOpenFolder(appId)),
   };
 }

@@ -1,0 +1,168 @@
+/* App page header — prototype lines 969–998. */
+.header {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) 260px;
+  gap: var(--sp-24);
+  align-items: start;
+  padding-bottom: var(--sp-26);
+  border-bottom: 1px solid var(--line);
+}
+
+/* The app page's monogram is 36px (the shared 96px tile uses the channel page's 34px). */
+.icon.icon {
+  font-size: 36px;
+}
+
+.main {
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--fs-app);
+  font-weight: 700;
+  letter-spacing: var(--ls-tight);
+  line-height: 1.15;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-8) var(--sp-12);
+  margin-top: var(--sp-8);
+  color: var(--text2);
+  font-size: var(--fs-body);
+}
+
+/* Source channel chip (line 975): 2/9/2/8 padding, 6px gap; a 32px hit area around it. */
+.channel.channel {
+  position: relative;
+  gap: var(--sp-6);
+  padding: var(--sp-2) 9px var(--sp-2) var(--sp-8);
+}
+
+.channel::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--sp-8)) 0;
+}
+
+/* Category and Free chips (lines 976–977) take the meta row's line height, like the prototype. */
+.chip.chip,
+.channel.channel,
+.pro.pro {
+  line-height: inherit;
+}
+
+/* Pro pill on the header (line 978): 2/9 padding, radius 10. */
+.pro.pro {
+  padding: var(--sp-2) 9px;
+  border-radius: var(--r-10);
+}
+
+.tagline {
+  max-width: 620px;
+  margin: var(--sp-12) 0 0;
+  color: var(--text2);
+  font-size: var(--fs-title-lg);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+/* Source note and "Also offered by" (lines 980–981). */
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-8);
+  max-width: 620px;
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.sourceNote {
+  margin-top: var(--sp-12);
+}
+
+.altNote {
+  margin-top: var(--sp-8);
+}
+
+.noteIcon {
+  flex: none;
+  margin-top: var(--sp-2);
+  color: var(--text3);
+}
+
+/* ---- Action column (260px) --------------------------------------------------------------- */
+.aside {
+  min-width: 0;
+  padding-top: var(--sp-4);
+}
+
+/* The group fills the 260px column including its 1px border (the prototype's auto width). */
+.split.split {
+  box-sizing: border-box;
+}
+
+/* Queued / Installing… keep the tone at full strength while inert (D15). */
+.split button:disabled {
+  opacity: 1;
+}
+
+.busy {
+  margin-top: var(--sp-10);
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-8);
+  margin-top: var(--sp-8);
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.statusText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Underlined text action; the pseudo-element gives it a 32px hit area. */
+.cancel {
+  position: relative;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-2);
+  background: none;
+  color: var(--text2);
+  font: inherit;
+  font-size: var(--fs-secondary-sm);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.cancel::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--sp-8)) calc(-1 * var(--sp-6));
+}
+
+.cancel:hover {
+  color: var(--text);
+}
+
+.sub {
+  margin-top: var(--sp-10);
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+  text-align: center;
+}

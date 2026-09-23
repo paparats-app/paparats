@@ -34,6 +34,12 @@
   outline-offset: var(--focus-ring-offset);
 }
 
+/* This row's 44px tile: radius 10 and no monogram tracking (line 272), unlike the shared 44px tile. */
+.icon.icon {
+  border-radius: var(--r-10);
+  letter-spacing: normal;
+}
+
 .text {
   display: flex;
   flex-direction: column;

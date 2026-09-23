@@ -13,8 +13,8 @@ import styles from "./Layout.module.css";
 
 /**
  * The window (prototype lines 59–151): sidebar + content column (window controls, top bar,
- * offline banner, scrolling content). While a search query is typed the content shows the
- * results instead of the route; the route stays mounted underneath so its state survives.
+ * offline banner, scrolling content, toast and dialogs). While a search query is typed the content
+ * shows the results instead of the route; the route stays mounted underneath so its state survives.
  */
 export function Layout() {
   const query = useUiStore((s) => s.query);
@@ -49,9 +49,11 @@ export function Layout() {
             {searching && <SearchScreen />}
           </div>
         </main>
+        {/* Inside the column, like the prototype's (they live in its `main`): dialogs dim and
+            centre on the content column, the sidebar stays uncovered. */}
+        <ToastHost />
+        <DialogHost />
       </div>
-      <ToastHost />
-      <DialogHost />
     </div>
   );
 }

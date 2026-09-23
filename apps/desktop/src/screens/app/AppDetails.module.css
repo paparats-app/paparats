@@ -1,0 +1,46 @@
+/* Details column (320px) — prototype lines 1040–1045. */
+.details {
+  min-width: 0;
+}
+
+.heading {
+  margin: 0 0 var(--sp-6);
+}
+
+.table {
+  margin: 0;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: var(--sp-12);
+  padding: 9px 0;
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-secondary);
+  line-height: 1.35;
+}
+
+.label {
+  color: var(--text2);
+}
+
+.value {
+  min-width: 0;
+  margin: 0;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-8);
+  margin-top: var(--sp-14);
+}
+
+/* Report / Suggest: 34px outline, 10px before the 14px icon, 12px after the label, 7px gap. */
+.action.action {
+  gap: 7px;
+  padding: 0 var(--sp-12) 0 var(--sp-10);
+}

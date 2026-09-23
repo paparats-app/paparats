@@ -1,0 +1,9 @@
+/* Report a problem — prototype lines 1404–1416. */
+.field {
+  margin-top: var(--sp-14);
+}
+
+/* Send: 36px primary with 18px sides (Cancel keeps the 16px of the medium size). */
+.send.send {
+  --btn-px: var(--sp-18);
+}

@@ -3,4 +3,7 @@ import type { LocaleCatalog } from "../../types";
 
 export const home: LocaleCatalog<typeof En> = {
   recentlyUpdated: "Нядаўна абноўленыя",
+  heroLabel: "Галоўнае",
+  previousSlide: "Папярэдні слайд",
+  nextSlide: "Наступны слайд",
 };

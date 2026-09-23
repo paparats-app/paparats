@@ -1,0 +1,57 @@
+/* App detail page — prototype lines 967–1118. */
+.page {
+  min-width: 0;
+}
+
+/* "‹ Back" (line 968): 13px/500 `--text2`, pulled 4px up; the pseudo-element grows the hit area
+   to 32px without moving the layout. */
+.back {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-6);
+  margin: calc(-1 * var(--sp-4)) 0 var(--sp-18);
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-4);
+  background: none;
+  color: var(--text2);
+  font: inherit;
+  font-size: var(--fs-secondary);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.back::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--sp-8)) calc(-1 * var(--sp-6));
+}
+
+.back:hover {
+  color: var(--text);
+}
+
+.back:active {
+  transform: translateY(1px);
+}
+
+/* Section titles (Screenshots, About, Details, Ratings, Version history): 16px/600. Each use
+   sets its own margin in its module (no shared margin to fight over). */
+.heading {
+  color: var(--text);
+  font-size: var(--fs-title-lg);
+  font-weight: 600;
+}
+
+.shotsHeading {
+  margin: var(--sp-26) 0 var(--sp-12);
+}
+
+/* About (+ Pro, origins) | Details (line 1017). */
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 40px;
+  margin-top: 28px;
+}

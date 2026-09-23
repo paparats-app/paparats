@@ -10,6 +10,12 @@
   filter: brightness(1.15);
 }
 
+/* The mint ground stays `--mint` under the brightness filter (Button's primary hover would also
+   swap it for `--mint2`, which the prototype's rows never do). */
+.action.action[data-tone="primary"]:hover:not(:disabled) {
+  background: var(--mint);
+}
+
 .action.action:disabled {
   opacity: 1;
 }

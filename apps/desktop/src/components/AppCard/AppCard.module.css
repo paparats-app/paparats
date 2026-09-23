@@ -83,13 +83,18 @@ button.identity {
   -webkit-line-clamp: 2;
 }
 
-/* The prototype's category chip (margin-top 8) + channel chip (margin-left 4). */
+/* The prototype's category chip (margin-top 8) + channel chip (margin 8 0 0 4): the 4px stays
+   when the channel chip wraps onto its own line, so it is a margin, not a column gap. */
 .chips {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--sp-8) var(--sp-4);
+  gap: var(--sp-8) 0;
   max-width: 100%;
   margin-top: var(--sp-8);
+}
+
+.chips > :not(:first-child) {
+  margin-left: var(--sp-4);
 }
 
 .actions {

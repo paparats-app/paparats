@@ -1,0 +1,98 @@
+/* Search results — prototype lines 152–199. */
+.search {
+  min-width: 0;
+}
+
+.title {
+  margin: 0 0 var(--sp-4);
+  color: var(--text);
+  font-size: var(--fs-idea);
+  font-weight: 600;
+  letter-spacing: var(--ls-tight);
+}
+
+.count {
+  margin-bottom: var(--sp-20);
+  color: var(--text2);
+  font-size: var(--fs-body);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--grid-gap);
+}
+
+/* ---- Nothing found: "Try one of these" + Categories link ------------------------------------
+   EmptyState stacks its parts 6px apart and puts the action 16px lower; these margins add up to
+   the prototype's 22 / 8 / 16 px under the hint, the label and the chips. */
+.suggest {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-6);
+}
+
+.tryLabel {
+  margin-top: var(--sp-6);
+  color: var(--text3);
+  font-size: var(--fs-chip);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--sp-8);
+  margin-top: var(--sp-8);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-8);
+  box-sizing: border-box;
+  height: var(--control-h-sm);
+  padding: 0 var(--sp-12) 0 var(--sp-6);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-full);
+  background: var(--card);
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--mint);
+}
+
+.chip:active {
+  transform: translateY(1px);
+}
+
+.chip:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.categoriesLink {
+  margin-top: var(--sp-16);
+}
+
+.categoriesLink:first-child {
+  margin-top: 0;
+}
+
+/* The text link is 18px tall; widen its hit area to 32px without moving the layout. */
+.categoriesLink::before {
+  position: absolute;
+  inset: -7px -6px;
+  content: "";
+}

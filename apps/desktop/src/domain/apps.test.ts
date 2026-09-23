@@ -10,6 +10,7 @@ import {
   isBusy,
   libraryList,
   pendingUpdates,
+  pickByIds,
   recordInstalled,
   searchApps,
   sortApps,
@@ -151,6 +152,17 @@ describe("searchApps", () => {
 
   it("matches nothing for a blank query", () => {
     expect(search("   ")).toEqual([]);
+  });
+});
+
+describe("pickByIds", () => {
+  it("keeps the order of the ids and skips apps that are not in the list", () => {
+    const apps = ["everything", "vscode", "sevenzip"].map(appById);
+    expect(ids(pickByIds(apps, ["sevenzip", "hidden", "everything"]))).toEqual([
+      "sevenzip",
+      "everything",
+    ]);
+    expect(pickByIds(apps, [])).toEqual([]);
   });
 });
 

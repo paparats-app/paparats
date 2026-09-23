@@ -69,6 +69,12 @@
   margin-top: var(--sp-6);
 }
 
+/* With a channel chip (margin-top 8, bottom-aligned in the prototype's line box) both chips sit
+   8px under the tagline. */
+.chips:has(> :nth-child(2)) {
+  margin-top: var(--sp-8);
+}
+
 .action.action {
   --btn-px: var(--sp-18);
 }

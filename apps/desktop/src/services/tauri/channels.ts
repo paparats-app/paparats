@@ -1,17 +1,17 @@
-// No channel commands in bindings.ts yet: every method delegates to the mock. To switch one,
-// replace its body with `unwrap(commands.<name>(…))` (see ./result.ts).
+import { commands } from "@/bindings";
 import type { ChannelService } from "../contracts";
+import { unwrap } from "./result";
 
-export function createTauriChannelService(mock: ChannelService): ChannelService {
+export function createTauriChannelService(): ChannelService {
   return {
-    getChannels: () => mock.getChannels(),
-    getSubscriptions: () => mock.getSubscriptions(),
-    lookup: (address) => mock.lookup(address),
-    subscribe: (channelId) => mock.subscribe(channelId),
-    unsubscribe: (channelId) => mock.unsubscribe(channelId),
-    setPaused: (channelId, paused) => mock.setPaused(channelId, paused),
-    acknowledgeStale: (channelId) => mock.acknowledgeStale(channelId),
-    sync: (channelId) => mock.sync(channelId),
-    report: (target, text) => mock.report(target, text),
+    getChannels: () => unwrap(commands.channelsGetChannels()),
+    getSubscriptions: () => unwrap(commands.channelsGetSubscriptions()),
+    lookup: (address) => unwrap(commands.channelsLookup(address)),
+    subscribe: (channelId) => unwrap(commands.channelsSubscribe(channelId)),
+    unsubscribe: (channelId) => unwrap(commands.channelsUnsubscribe(channelId)),
+    setPaused: (channelId, paused) => unwrap(commands.channelsSetPaused(channelId, paused)),
+    acknowledgeStale: (channelId) => unwrap(commands.channelsAcknowledgeStale(channelId)),
+    sync: (channelId) => unwrap(commands.channelsSync(channelId)),
+    report: (target, text) => unwrap(commands.channelsReport(target, text)),
   };
 }

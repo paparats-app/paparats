@@ -1,10 +1,10 @@
-// No catalog commands in bindings.ts yet: every method delegates to the mock. To switch one,
-// replace its body with `unwrap(commands.<name>())` (see ./result.ts).
+import { commands } from "@/bindings";
 import type { CatalogService } from "../contracts";
+import { unwrap } from "./result";
 
-export function createTauriCatalogService(mock: CatalogService): CatalogService {
+export function createTauriCatalogService(): CatalogService {
   return {
-    getCatalog: () => mock.getCatalog(),
-    getPlatform: () => mock.getPlatform(),
+    getCatalog: () => unwrap(commands.catalogGetCatalog()),
+    getPlatform: () => unwrap(commands.catalogGetPlatform()),
   };
 }

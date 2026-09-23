@@ -104,7 +104,7 @@ it("waits in the queue while the parallel slots are busy", async () => {
   await flush();
   expect(result.current).toMatchObject({
     label: "Queued",
-    tone: "muted",
+    tone: "quiet",
     disabled: true,
     state: "queued",
   });

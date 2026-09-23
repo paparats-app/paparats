@@ -140,10 +140,12 @@ pub async fn downloads_cancel_all(state: St<'_>) -> AppResult<()> {
     Ok(())
 }
 
+/// "Parallel downloads": any whole number ≥ 1 (the UI offers 1, 2 and 4; values above 255 run
+/// 255 at a time); 0 is `invalid`, like the TypeScript mock.
 #[tauri::command]
 #[specta::specta]
-pub async fn downloads_set_concurrency(state: St<'_>, limit: u8) -> AppResult<()> {
-    state.set_download_concurrency(limit)
+pub async fn downloads_set_concurrency(state: St<'_>, limit: u32) -> AppResult<()> {
+    state.set_download_concurrency(u8::try_from(limit).unwrap_or(u8::MAX))
 }
 
 #[tauri::command]

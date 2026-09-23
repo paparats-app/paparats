@@ -20,6 +20,8 @@ export interface EmptyStateProps {
   framed?: boolean;
   /** `lg`: 60px padding, 18px title (search, Updates) · `md`: 16px title, 13px hint (library, lists). */
   size?: "md" | "lg";
+  /** The hint runs the full width instead of wrapping at 360px (search, prototype lines 177/184). */
+  wideHint?: boolean;
   className?: string;
 }
 
@@ -34,6 +36,7 @@ export function EmptyState({
   action,
   framed = false,
   size = "lg",
+  wideHint = false,
   className,
 }: EmptyStateProps) {
   let visual: ReactNode = null;
@@ -52,7 +55,9 @@ export function EmptyState({
     <div className={cx(styles.empty, styles[size], framed && styles.framed, className)}>
       {visual && <div className={styles.media}>{visual}</div>}
       <div className={styles.title}>{title}</div>
-      {hint !== undefined && <div className={styles.hint}>{hint}</div>}
+      {hint !== undefined && (
+        <div className={cx(styles.hint, wideHint && styles.wideHint)}>{hint}</div>
+      )}
       {action !== undefined && <div className={styles.action}>{action}</div>}
     </div>
   );

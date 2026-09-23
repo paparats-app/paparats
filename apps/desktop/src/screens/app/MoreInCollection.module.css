@@ -1,0 +1,10 @@
+/* "More in “…”" — prototype lines 1098–1117. */
+.header.header {
+  margin: 32px 0 var(--sp-14);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--sp-12);
+}

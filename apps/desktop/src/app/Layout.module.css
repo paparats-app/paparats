@@ -21,12 +21,15 @@
   height: 32px;
 }
 
+/* `contain: layout` makes the column the containing block of the fixed toast and dialog
+   backdrop: the prototype's dialogs (lines 1355–1515, inside its `main`) dim only this column. */
 .column {
   position: relative;
   display: flex;
   flex-direction: column;
   min-width: 0;
   min-height: 0;
+  contain: layout;
 }
 
 .content {

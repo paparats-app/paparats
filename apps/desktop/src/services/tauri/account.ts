@@ -1,17 +1,18 @@
-// No account commands in bindings.ts yet: every method delegates to the mock. To switch one,
-// replace its body with `unwrap(commands.<name>(…))` (see ./result.ts).
+import { commands } from "@/bindings";
 import type { AccountService } from "../contracts";
+import { unwrap } from "./result";
 
-export function createTauriAccountService(mock: AccountService): AccountService {
+export function createTauriAccountService(): AccountService {
   return {
-    getAccount: () => mock.getAccount(),
-    updateProfile: (patch) => mock.updateProfile(patch),
-    removeDevice: (deviceId) => mock.removeDevice(deviceId),
-    setTwoFactor: (enabled) => mock.setTwoFactor(enabled),
-    purchase: (plan) => mock.purchase(plan),
-    cancelPlan: () => mock.cancelPlan(),
-    claimIdeaBonus: () => mock.claimIdeaBonus(),
-    signIn: (email, password) => mock.signIn(email, password),
-    signOut: () => mock.signOut(),
+    getAccount: () => unwrap(commands.accountGet()),
+    updateProfile: (patch) => unwrap(commands.accountUpdateProfile(patch)),
+    removeDevice: (deviceId) => unwrap(commands.accountRemoveDevice(deviceId)),
+    setTwoFactor: (enabled) => unwrap(commands.accountSetTwoFactor(enabled)),
+    purchase: (plan) => unwrap(commands.accountPurchase(plan)),
+    cancelPlan: () => unwrap(commands.accountCancelPlan()),
+    claimIdeaBonus: () => unwrap(commands.accountClaimIdeaBonus()),
+    // The password goes to the core, which drops it (no account API before M7, D24).
+    signIn: (email, password) => unwrap(commands.accountSignIn(email, password)),
+    signOut: () => unwrap(commands.accountSignOut()),
   };
 }

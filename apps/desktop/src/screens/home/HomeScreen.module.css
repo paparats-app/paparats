@@ -1,0 +1,27 @@
+/* Home — prototype lines 200–279. The hero comes first; every section header sits 30px below
+   the block above it and 14px above its grid (margin: 30px 0 14px). */
+.header.header {
+  margin: var(--sp-30) 0 var(--sp-14);
+}
+
+.featured,
+.quarters,
+.thirds {
+  display: grid;
+  gap: var(--sp-12);
+}
+
+/* Featured apps: 6 store cards. */
+.featured {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+/* Collections and New and notable. */
+.quarters {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* Recently updated. */
+.thirds {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}

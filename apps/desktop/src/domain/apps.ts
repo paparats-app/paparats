@@ -121,6 +121,22 @@ export function totalUpdateMb(apps: readonly App[], manifests: readonly UpdateMa
 }
 
 // ---------------------------------------------------------------------------------------------
+// Editorial lists
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * The apps of `ids` found in `apps`, in `ids` order; ids missing from `apps` (hidden or unknown)
+ * are skipped — the prototype's `byIds()` for featured, notable and collection lists.
+ */
+export function pickByIds(apps: readonly App[], ids: readonly AppId[]): App[] {
+  const byId = new Map(apps.map((app) => [app.id, app]));
+  return ids.flatMap((id) => {
+    const app = byId.get(id);
+    return app ? [app] : [];
+  });
+}
+
+// ---------------------------------------------------------------------------------------------
 // Search
 // ---------------------------------------------------------------------------------------------
 
@@ -205,7 +221,7 @@ export function browseFilter(
     ? collections.find((c) => c.id === filters.collection)
     : undefined;
   if (collection) {
-    return collection.apps.flatMap((id) => apps.filter((app) => app.id === id));
+    return pickByIds(apps, collection.apps);
   }
   return apps.filter(
     (app) =>

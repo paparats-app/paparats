@@ -1,0 +1,115 @@
+/* Version history — prototype lines 1085–1096. */
+.heading {
+  margin: 34px 0 var(--sp-12);
+}
+
+.card {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+}
+
+/* Every row has a 1px top rule; the first one's is transparent (the prototype keeps the 1px). */
+.row {
+  display: grid;
+  grid-template-columns: 150px 170px minmax(0, 1fr);
+  gap: var(--sp-16);
+  align-items: start;
+  padding: var(--sp-14) var(--sp-18);
+  border-top: 1px solid var(--line);
+}
+
+.row:first-child {
+  border-top-color: transparent;
+}
+
+.version {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--sp-6);
+}
+
+.number {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.pill {
+  padding: var(--sp-2) var(--sp-8);
+  border-radius: var(--r-9);
+  font-size: var(--fs-chip);
+  font-weight: 600;
+}
+
+.current {
+  background: var(--mint-soft);
+  color: var(--mint2);
+}
+
+.installed {
+  background: var(--card2);
+  color: var(--text2);
+}
+
+.meta {
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  line-height: 1.5;
+}
+
+.notes {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.note {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-10);
+  color: var(--text2);
+  font-size: 13.5px;
+}
+
+.bullet {
+  position: relative;
+  top: -2px;
+  flex: none;
+  width: 5px;
+  height: 5px;
+  border-radius: var(--r-3);
+  background: var(--text3);
+}
+
+/* "Show all versions" / "Show less": a 40px full-width row. */
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-6);
+  width: 100%;
+  height: 40px;
+  padding: 0 var(--sp-18);
+  border: 0;
+  border-top: 1px solid var(--line);
+  background: none;
+  color: var(--mint2);
+  font: inherit;
+  font-size: var(--fs-secondary);
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.toggle:hover {
+  background: var(--hover);
+}
+
+.toggle:focus-visible {
+  outline-offset: calc(-1 * var(--focus-ring-w));
+}

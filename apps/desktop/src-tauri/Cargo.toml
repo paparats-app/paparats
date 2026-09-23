@@ -36,6 +36,7 @@ paparats-account.workspace = true
 tauri.workspace = true
 tauri-plugin-window-state.workspace = true
 tauri-plugin-opener.workspace = true
+tauri-plugin-store.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true

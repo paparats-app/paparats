@@ -1,6 +1,7 @@
 import { act, screen, waitFor, waitForElementToBeRemoved, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
+import { useDialogStore } from "@/stores/useDialogStore";
 import { useDownloadsStore } from "@/stores/useDownloadsStore";
 import { useSettingsStore } from "@/stores/useSettingsStore";
 import { useUiStore } from "@/stores/useUiStore";
@@ -134,6 +135,22 @@ describe("App shell", () => {
     expect(useDownloadsStore.getState().justUpdated).toEqual({ vscode: true });
     await user.click(navItem("Library"));
     expect(useDownloadsStore.getState().justUpdated).toEqual({});
+  });
+
+  it("keeps dialogs and toasts in the content column, beside the sidebar", async () => {
+    await renderApp({ route: "/app/obsidian" });
+    act(() =>
+      useDialogStore
+        .getState()
+        .open({ kind: "report", target: { appId: "obsidian", channelId: "paparats" } }),
+    );
+    act(() => useUiStore.getState().notify("Sent to Paparats"));
+    const dialog = await screen.findByRole("dialog");
+    // The prototype's dialogs live in its `main`: the scrim dims the column, not the sidebar.
+    const column = screen.getByTestId("screen").closest("main")?.parentElement;
+    expect(column).toContainElement(dialog);
+    expect(column).toContainElement(screen.getByText("Sent to Paparats"));
+    expect(sidebar()).not.toContainElement(dialog);
   });
 
   // The gallery is heavy in jsdom (see DevScreen.test.tsx).

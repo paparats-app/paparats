@@ -4,6 +4,7 @@ export * from "./useAppIndex";
 export * from "./useChannelContext";
 export * from "./useInstalledIndex";
 export * from "./useInstallState";
+export * from "./useLocale";
 export * from "./useOffline";
 export * from "./usePro";
 export * from "./useToday";

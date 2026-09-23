@@ -8,7 +8,7 @@
   border: 1px solid var(--line);
   border-radius: var(--r-12);
   background: radial-gradient(ellipse at 78% 50%, var(--tint) 0%, var(--featured-ground) 62%);
-  color: var(--on-image);
+  color: var(--on-image-strong);
   font-family: var(--font-sans);
 }
 

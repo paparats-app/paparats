@@ -28,7 +28,10 @@
   font-size: var(--fs-secondary);
 }
 
+/* A block-level row like the prototype's flex div: as an inline-flex span the line box added
+   5.6px under the stars. */
 .stars.stars {
+  display: flex;
   margin-top: var(--sp-8);
 }
 

@@ -8,7 +8,7 @@
   border: 1px solid var(--line);
   border-radius: var(--r-12);
   background: var(--hero-gradient);
-  color: var(--on-image);
+  color: var(--on-image-strong);
   font-family: var(--font-sans);
 }
 
@@ -95,7 +95,7 @@
   font-size: var(--fs-title);
   line-height: var(--lh-body);
   text-align: right;
-  text-shadow: var(--on-image-shadow);
+  text-shadow: var(--on-image-shadow-quote);
   text-wrap: balance;
 }
 
@@ -119,7 +119,7 @@
   border: 0;
   border-radius: var(--r-6);
   background: none;
-  color: var(--on-image-meta);
+  color: var(--on-image-control);
   cursor: pointer;
 }
 
@@ -130,7 +130,7 @@
 }
 
 .arrow:hover {
-  color: var(--on-image);
+  color: var(--on-image-bright);
 }
 
 .arrow:active {

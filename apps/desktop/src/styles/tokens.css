@@ -51,6 +51,12 @@
   --featured-ground: #101c20; /* Browse featured hero, around the app tint */
   --category-ground: #0d1a1e;
   --on-image: #eef3f2;
+  /* Hero titles (Home, Browse featured) and the category tile icon: the prototype's #f2f4f2. */
+  --on-image-strong: #f2f4f2;
+  /* Pure white on imagery: hero arrow hover, screenshot arrows and placeholder shapes. */
+  --on-image-bright: #ffffff;
+  --on-image-caption: #e6ecec; /* screenshot label */
+  --on-image-control: #b7c1bb; /* Home hero carousel arrows */
   --on-image-2: #c3cbc6; /* banner subtitle */
   --on-image-body: #c9d2cd; /* hero body, category description */
   --on-image-motto: #d6ded9;
@@ -59,6 +65,7 @@
   --on-image-quiet: #a9b3ad; /* Updates banner size line */
   --on-image-lead: #e2e8e4; /* Subscription banner lead */
   --on-image-shadow: 0 1px 10px rgba(0, 0, 0, 0.7);
+  --on-image-shadow-quote: 0 1px 14px rgba(0, 0, 0, 0.7); /* Home hero pull quote */
   --on-image-shadow-soft: 0 1px 10px rgba(0, 0, 0, 0.6);
   --cta-mint: #5fd39a; /* hero/banner CTAs sit on dark imagery in both themes */
   --cta-mint-hover: #79dfae;
@@ -70,6 +77,7 @@
   --close-hover: #c42b1c; /* window close button */
   --on-danger: #ffffff;
   --scrim: rgba(0, 0, 0, 0.55); /* modal backdrop */
+  --scrim-strong: rgba(0, 0, 0, 0.6); /* screenshot arrow hover */
   --offline-ground: rgba(224, 122, 106, 0.1);
   --offline-border: rgba(224, 122, 106, 0.3);
   --on-tint: #ffffff; /* monogram text and initials on app/channel tint tiles */

@@ -18,6 +18,9 @@ function sanitize(value: unknown): Partial<Settings> {
   return result as Partial<Settings>;
 }
 
+// The Tauri settings store (services/tauri/settings.ts) applies the same rules to settings.json.
+export { sanitize as sanitizeSettings };
+
 /** Stored settings merged over `DEFAULT_SETTINGS`; unreadable storage means defaults. */
 export function readStoredSettings(storage: Storage | null): Settings {
   return { ...DEFAULT_SETTINGS, ...sanitize(parseStored(storage)) };

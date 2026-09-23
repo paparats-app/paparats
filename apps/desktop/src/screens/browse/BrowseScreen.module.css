@@ -1,0 +1,98 @@
+/* Browse — prototype lines 280–412. */
+
+/* Content column + 220px sticky filter panel (line 288). */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  gap: var(--sp-24);
+  align-items: start;
+}
+
+.main {
+  min-width: 0;
+}
+
+/* H2 18px/600 with "See all" on the right; 26px above, 12px below (lines 303, 324, 337). */
+.sectionHeader.sectionHeader {
+  margin: var(--sp-26) 0 var(--sp-12);
+}
+
+/* ---- Grids (lists of cards) ------------------------------------------------------------- */
+.cards,
+.notable,
+.categories {
+  display: grid;
+  gap: var(--grid-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cards {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+
+.notable {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.categories {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+/* The card fills its cell (equal heights per row, like the prototype's direct grid items). */
+.item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+
+/* ---- Result mode: "N apps" + "Clear all" (line 350) ------------------------------------ */
+.resultsHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin: 0 0 var(--sp-14);
+}
+
+.count {
+  color: var(--text2);
+  font-size: var(--fs-body);
+}
+
+.clear {
+  position: relative;
+  display: inline-flex;
+  gap: var(--sp-6);
+  align-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-4);
+  background: none;
+  color: var(--mint2);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-secondary);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* A 32px+ hit area around the text link without changing its layout. */
+.clear::before {
+  position: absolute;
+  inset: calc(-1 * var(--sp-8)) calc(-1 * var(--sp-6));
+  content: "";
+}
+
+.clear:hover {
+  filter: brightness(1.15);
+}
+
+.clear:active {
+  transform: translateY(1px);
+}
+
+.clear:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}

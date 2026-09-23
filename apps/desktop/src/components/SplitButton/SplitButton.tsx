@@ -14,7 +14,10 @@ export interface SplitButtonProps {
   /** `compact` = 32px parts (cards), `lg` = 40px parts (app page). */
   size?: "compact" | "lg";
   disabled?: boolean;
-  /** Icon of the secondary part: `chevron-right` (open) by default, `heart` for favourites. */
+  /**
+   * Icon of the secondary part: `chevron-right` (open) by default; store cards pass
+   * `chevron-down`, the app page `star` (favourite). Drawn at stroke 2: 14px compact, 16px lg.
+   */
   secondaryIcon?: IconName;
   /** Accessible name of the secondary part. */
   secondaryLabel: string;
@@ -70,7 +73,9 @@ export function SplitButton({
         disabled={secondaryDisabled}
         onClick={onSecondaryClick}
       >
-        <Icon name={secondaryIcon} size={size === "lg" ? 18 : 16} />
+        {/* The prototype's glyphs: 14px on every store card (lines 231, 316…), 16px on the app
+            page (line 987), both at stroke 2. */}
+        <Icon name={secondaryIcon} size={size === "lg" ? 16 : 14} strokeWidth={2} />
       </button>
     </div>
   );

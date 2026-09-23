@@ -1,6 +1,8 @@
 export const categories = {
   categoriesSub: "Explore our curated collection of apps.",
   featuredIn: "Featured in {{category}}",
+  /** Signature under the closing brand line. */
+  signature: "— Paparats",
   items: {
     productivity: { label: "Productivity", desc: "Get more done." },
     development: { label: "Development", desc: "Build. Test. Ship." },

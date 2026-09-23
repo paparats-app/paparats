@@ -9,7 +9,9 @@
   overflow: hidden;
   font-family: var(--font-sans);
   font-weight: 700;
-  line-height: 1;
+  /* The prototype's tiles inherit 1.4: the glyph is centred either way, but the same line box
+     rounds to the same pixel (1 gave a 0.6px lower monogram on fractional rows). */
+  line-height: var(--lh-body);
   letter-spacing: var(--ls-tight);
   color: var(--on-tint);
   user-select: none;
@@ -85,10 +87,12 @@
   font-size: 17px;
 }
 
+/* Browse › New and notable (prototype line 332): no letter-spacing on this size. */
 .s52 {
   --tile: 52px;
   border-radius: var(--r-12);
   font-size: var(--fs-lead);
+  letter-spacing: 0;
 }
 
 .s56 {

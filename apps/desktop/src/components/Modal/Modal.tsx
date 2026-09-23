@@ -179,11 +179,11 @@ const ICON_TONE = {
   warn: styles.iconWarn,
 } as const;
 
-/** 36px header tile, radius 9, with an 18px icon. */
+/** 36px header tile, radius 9, with an 18px icon at stroke 2 (every prototype dialog). */
 export function ModalIcon({ name, tone = "mint" }: ModalIconProps) {
   return (
     <span className={cx(styles.icon, ICON_TONE[tone])} aria-hidden="true">
-      <Icon name={name} size={18} />
+      <Icon name={name} size={18} strokeWidth={2} />
     </span>
   );
 }

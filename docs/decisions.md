@@ -42,6 +42,8 @@ and the WebView's connectivity and clipboard. In Tauri mode the delegated mock i
 land). Each milestone replaces its services' delegation with `unwrap(commands.x())` and removes
 the line here: catalog (M2), install + downloads (M3), account + settings (M4), channels + ideas
 (M5).
+**Superseded in M2 by D26:** the Rust core branch landed every command at once, so no adapter
+delegates to the mock any more.
 
 ## D7 — "Updated just now" clears when leaving Updates (M1)
 The README says an updated app shows "Updated just now" "until you leave the screen"; the
@@ -195,3 +197,85 @@ comes from the data set until CI stamps one).
 `build.rs` embeds the Common-Controls v6 manifest (same content as tauri-build's default) with
 `/MANIFEST:EMBED` for every target instead of tauri-build's resource, which only reaches `bins`:
 test binaries on Tauri's mock runtime otherwise fail to load (`STATUS_ENTRYPOINT_NOT_FOUND`).
+
+### D26 — Tauri adapters over the core (M2)
+- Every `services/tauri/*` method calls its command through `unwrap(commands.x(…))`; there is no
+  mock instance in Tauri mode (D6 is superseded). A rejection that is not an `AppError` — Tauri
+  answers arguments that do not deserialize, unknown commands and denied permissions with a plain
+  string — becomes `ServiceError("internal")`.
+- `DownloadService.subscribe` listens to `download://progress` / `download://state` and maps them
+  onto `DownloadEvent`; `getSnapshot()` first waits for pending listener registrations, so the
+  downloads bridge (subscribe, then snapshot) cannot miss an event that follows the snapshot.
+  `setConcurrency` rejects a non-integer or a value below 1 with `invalid` before invoking, like
+  the mock; the command takes a `u32` and runs values above 255 at 255 at a time, so any whole
+  number ≥ 1 is accepted as D20 says.
+- `SystemService.today()` stays synchronous: it returns the core's `system_today` answer for the
+  local day it was asked on and asks again when the local date changes; until the answer arrives
+  (or if the call fails) the local date stands in — both read the same Windows clock (D21).
+  `setAutostart` has no Rust side yet and resolves without doing anything, like the mock.
+- Settings persist through `tauri-plugin-store` in `app_data_dir()/settings.json`, one key per
+  changed setting, saved explicitly before `updateSettings` resolves (no auto-save debounce). Reads
+  merge the file over `DEFAULT_SETTINGS` with the mock's sanitising rules (unknown keys and values
+  of the wrong type are ignored — the file is user-editable). Calls are serialised; a failed save
+  reloads the store from disk so a later read cannot return the rejected change. Settings stored
+  in WebView2 `localStorage` by M1 builds are not migrated (there were no users).
+
+## Discovery screens (M2)
+
+### D27 — Store cards: one connected card, prototype colours
+- Every store grid card (Home, Browse, Categories, search, the app page's "More in"; the channel
+  page next) is `screens/shared › StoreAppCard`: `useAppAction()` for the action, category and
+  source-channel chips (off on Categories › "Featured in …", as in the prototype), and a
+  `chevron-down` "Details" part (the prototype's glyph on every store card; `SplitButton` draws
+  it at 14 px, the app page's star at 16 px, both at stroke 2). Screens keep no local copies.
+- `useAppAction().tone` is `quiet` (`--text2`) for Queued and `muted` (`--text3`) for Offline,
+  as the prototype's `actColor`; M1 had both muted.
+- Store cards show download progress only in the action label (`43% · Pause`), never as the 2 px
+  bar: the prototype's store cards have none. The app page shows the 4 px bar and status line.
+- Category chips truncate with an ellipsis where the prototype let a long label ("Development",
+  "Продуктивность") run past the card's text column. A wrapped channel chip keeps the prototype's
+  4 px indent.
+- Editorial lists (featured, notable, collections, "More in", search suggestions) skip apps that
+  are not visible (`domain/apps.ts › pickByIds`, the prototype's `byIds`). A Browse hero whose
+  app is hidden is skipped; the prototype showed an empty slide. "Try one of these" is hidden
+  when no featured app is visible.
+
+### D28 — Entries into Browse from Home
+Home's "See all" links and the hero's "Explore apps" open Browse with every filter reset
+(`{to:'browse', filters:{}}`, like the sidebar); the prototype's `go('browse')` kept earlier
+filters, so "See all" under Featured apps could open a filtered list. Browse's own "See all"
+links apply their sort (A–Z, Newest), the Collections cards their collection, Categories tiles
+their category — each resetting the other filters (D10's preset rule).
+
+### D29 — Browse hero call to action
+"Get <App>" runs the app's action (download, subscribe/trust flow, or the offline notice) while
+the app has no install state; once it is installed, updatable or in the download queue, the
+button opens the app page (the prototype always opened the app page). A button labelled
+"Get Obsidian" therefore never pauses a download or launches the app.
+
+### D30 — Loading and missing data
+- Home and the app page render nothing until the catalog (Home: also library and channels) has
+  loaded; the 420 ms navigation skeleton covers it, so no card shows a wrong action for a frame.
+- Search shows its skeleton and "Searching…" while the catalog, library or channels are still
+  loading, not only for 340 ms after a keystroke, so "Nothing found" never flashes. Offline wins.
+- An unknown `/app/:appId` shows "App not found" with Back; the prototype fell back to the first
+  app. There is no catalog error state yet (the handoff has no copy for one).
+
+### D31 — App page and report dialog details
+- The status line reads "Downloading… 43% · 12 MB of 87 MB", "Paused · 43%" (README; the
+  prototype also appended the size while paused), "Queued", "Installing…".
+- The favourite star shows its pressed state (`aria-pressed`, `--mint2`); the prototype never
+  showed it. The average rating is formatted per language ("4,4" in ru/be).
+- The Pro card's button is "Learn more" → Subscription (the prototype's copy).
+- Report a problem: Send is disabled while the text is blank and the text is trimmed; if sending
+  fails the dialog keeps the text and shows no toast (no failure copy in the handoff). The
+  receipt is toasted: "Sent to <Channel> · copy to Paparats" or "Sent to Paparats".
+
+### D32 — Accessibility beyond the prototype
+Text links shorter than 32 px ("See all", "Clear all", "Categories →", Back, Cancel, the header
+channel chip, "N ideas for this app") get an invisible `::before` hit area of at least 32 px
+without moving the layout; they also get the focus ring and the 1 px pressed nudge the M1
+components have. Card grids are named `ul`/`li` lists or `section`s labelled by their heading;
+result counts are `role="status"`, so a changed count is announced. The page has no favicon
+(`<link rel="icon" href="data:,">`): the window icon is native, and WebView2 no longer logs a
+`/favicon.ico` 404.

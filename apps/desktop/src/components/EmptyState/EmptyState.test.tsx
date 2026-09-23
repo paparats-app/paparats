@@ -24,4 +24,9 @@ describe("EmptyState", () => {
     expect(img).toHaveAttribute("alt", "");
     expect(img?.getAttribute("src")).toMatch(/paparats-mark-light/);
   });
+
+  it("lets the hint run the full width with wideHint", () => {
+    render(<EmptyState title="Nothing found" hint="Try a shorter query." wideHint />);
+    expect(screen.getByText("Try a shorter query.")).toHaveClass("hint", "wideHint");
+  });
 });

@@ -139,6 +139,79 @@ fn commands_round_trip_through_ipc() {
 }
 
 #[test]
+fn concurrency_accepts_any_whole_number_from_one() {
+    let (_app, w) = app();
+    invoke(&w, "downloads_set_concurrency", json!({"limit": 300})).unwrap();
+    let snapshot = invoke(&w, "downloads_snapshot", json!({})).unwrap();
+    assert_eq!(snapshot["concurrency"], 255, "saturates at 255");
+}
+
+#[test]
+fn malformed_arguments_are_rejected_before_the_command_runs() {
+    // Tauri rejects arguments that do not deserialize with a plain string, not an `AppError`:
+    // the UI adapters (`services/tauri/result.ts`) map such errors to `internal` and validate
+    // what the mock validates (e.g. a fractional concurrency) before invoking.
+    let (_app, w) = app();
+    for args in [json!({"limit": -1}), json!({"limit": 1.5}), json!({})] {
+        let err = invoke(&w, "downloads_set_concurrency", args).unwrap_err();
+        assert!(err.is_string(), "{err}");
+    }
+    let snapshot = invoke(&w, "downloads_snapshot", json!({})).unwrap();
+    assert_eq!(snapshot["concurrency"], 2, "unchanged");
+}
+
+#[test]
+fn official_channel_idea_and_account_rules_cross_ipc_as_typed_errors() {
+    // The rules the UI tests exercise on the mock (docs/decisions.md D12), end to end.
+    let (_app, w) = app();
+    let err = invoke(
+        &w,
+        "channels_set_paused",
+        json!({"channelId": "paparats", "paused": true}),
+    )
+    .unwrap_err();
+    assert_eq!(err["kind"], "invalid");
+    let err = invoke(
+        &w,
+        "channels_set_paused",
+        json!({"channelId": "winaero", "paused": true}),
+    )
+    .unwrap_err();
+    assert_eq!(err["kind"], "notFound", "not followed");
+    let err = invoke(&w, "channels_subscribe", json!({"channelId": "ghost"})).unwrap_err();
+    assert_eq!(err["kind"], "notFound");
+
+    invoke(
+        &w,
+        "ideas_take",
+        json!({"ideaId": "clip", "channelId": "nilesoft"}),
+    )
+    .unwrap();
+    let err = invoke(
+        &w,
+        "ideas_take",
+        json!({"ideaId": "clip", "channelId": "nilesoft"}),
+    )
+    .unwrap_err();
+    assert_eq!(err["kind"], "invalid", "only open ideas can be taken");
+    let err = invoke(
+        &w,
+        "ideas_comment",
+        json!({"ideaId": "clip", "text": "  ", "actor": {"kind": "user"}}),
+    )
+    .unwrap_err();
+    assert_eq!(err["kind"], "invalid");
+
+    let err = invoke(&w, "account_remove_device", json!({"deviceId": "dev-1"})).unwrap_err();
+    assert_eq!(err["kind"], "invalid", "this PC");
+    let account = invoke(&w, "account_purchase", json!({"plan": "yearly"})).unwrap();
+    assert_eq!(account["subscription"]["renewsOn"], "2027-09-15");
+    let account = invoke(&w, "account_cancel_plan", json!({})).unwrap();
+    assert_eq!(account["subscription"]["plan"], "free");
+    assert_eq!(account["subscription"]["renewsOn"], Value::Null);
+}
+
+#[test]
 fn download_events_arrive_after_the_library_is_updated() {
     let (app, w) = app();
     let (tx, rx) = mpsc::channel::<(Value, Option<String>)>();

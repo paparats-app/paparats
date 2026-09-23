@@ -1,4 +1,5 @@
 import { useDialogStore, type DialogState } from "@/stores/useDialogStore";
+import { ReportDialog } from "./dialogs/ReportDialog";
 
 /**
  * Renders the open dialog (`useDialogStore`). The dialogs themselves arrive with the screens that
@@ -12,10 +13,11 @@ export function DialogHost() {
 
 function renderDialog(dialog: DialogState) {
   switch (dialog.kind) {
+    case "report":
+      return <ReportDialog target={dialog.target} />;
     case "plan":
     case "addChannel":
     case "trustConfirm":
-    case "report":
     case "suggestIdea":
     case "releaseIdea":
       return null;

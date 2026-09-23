@@ -1,0 +1,48 @@
+/* Categories — prototype lines 413–450. */
+.screen {
+  min-width: 0;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--grid-gap);
+}
+
+.featuredHeader {
+  margin: var(--sp-30) 0 var(--sp-14);
+}
+
+.apps {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: var(--grid-gap);
+}
+
+/* Closing brand line: the motto as a quote, signed. */
+.brand {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--sp-16);
+  margin-top: var(--sp-22);
+  padding-top: var(--sp-18);
+  border-top: 1px solid var(--line);
+}
+
+.quote,
+.signature {
+  margin: 0;
+}
+
+.quote {
+  color: var(--text2);
+  font-size: var(--fs-title);
+  font-style: italic;
+}
+
+.signature {
+  flex: none;
+  color: var(--text3);
+  font-size: var(--fs-secondary-sm);
+}

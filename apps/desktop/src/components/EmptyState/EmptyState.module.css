@@ -68,6 +68,10 @@
   text-wrap: pretty;
 }
 
+.wideHint {
+  max-width: none;
+}
+
 .md .hint {
   font-size: var(--fs-secondary);
 }

@@ -1,0 +1,136 @@
+/* About column — prototype lines 1018–1038. */
+.about {
+  min-width: 0;
+}
+
+.heading {
+  margin: 0 0 var(--sp-10);
+}
+
+.long {
+  max-width: 680px;
+  margin: 0;
+  color: var(--text2);
+  font-size: var(--fs-title);
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+/* ---- Pro features (line 1022) ------------------------------------------------------------ */
+/* The prototype's 680px max-width is content-box (the cards render 718px wide with the padding
+   and border), so these two cards are content-box too. */
+.pro.pro {
+  box-sizing: content-box;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-14);
+  max-width: 680px;
+  margin-top: var(--sp-22);
+  padding: var(--sp-16) var(--sp-18);
+}
+
+.proIcon {
+  flex: none;
+  color: var(--mint2);
+}
+
+.proText {
+  flex: 1;
+  min-width: 0;
+}
+
+.proTitle {
+  font-size: var(--fs-title);
+  font-weight: 600;
+}
+
+.proHint {
+  margin-top: var(--sp-2);
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+}
+
+.proButton.proButton {
+  gap: var(--sp-6);
+}
+
+/* ---- Grew from an idea (line 1029) -------------------------------------------------------- */
+.origins.origins {
+  box-sizing: content-box;
+  max-width: 680px;
+  margin-top: var(--sp-22);
+  padding: var(--sp-16) var(--sp-18);
+}
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  color: var(--mint2);
+  font-size: var(--fs-chip);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.origin {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-14);
+  margin-top: var(--sp-12);
+}
+
+.originText {
+  flex: 1;
+  min-width: 0;
+}
+
+.originTitle {
+  font-size: var(--fs-title);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.originLine {
+  margin-top: var(--sp-3);
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+}
+
+/* "See the idea": 32px, radius 8, 12px sides (the compact size is radius 7, 14px sides). */
+.seeIdea.seeIdea {
+  --btn-r: var(--r-8);
+  --btn-px: var(--sp-12);
+}
+
+/* ---- "N ideas for this app" link (line 1037) ----------------------------------------------- */
+.ideasLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-6);
+  margin-top: var(--sp-16);
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-4);
+  background: none;
+  color: var(--mint2);
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.ideasLink::before {
+  content: "";
+  position: absolute;
+  inset: calc(-1 * var(--sp-8)) calc(-1 * var(--sp-4));
+}
+
+.ideasLink:hover {
+  text-decoration: underline;
+}
+
+.ideasLink:active {
+  transform: translateY(1px);
+}

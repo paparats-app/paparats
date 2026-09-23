@@ -115,15 +115,16 @@ export function EmptyStatesSection() {
           hint={t("common.upToDateHint")}
         />
       </Specimen>
-      <Specimen caption='logo size="lg" (search)' wide>
-        <EmptyState logo title={t("common.noResults")} hint={t("search.noResultsHint")} />
+      <Specimen caption='logo size="lg" wideHint (search)' wide>
+        <EmptyState logo title={t("common.noResults")} hint={t("search.noResultsHint")} wideHint />
       </Specimen>
-      <Specimen caption='iconTone="danger" · action' wide>
+      <Specimen caption='iconTone="danger" wideHint · action' wide>
         <EmptyState
           icon="wifi-off"
           iconTone="danger"
           title={t("search.offlineSearch")}
           hint={t("search.offlineSearchHint")}
+          wideHint
           action={<Button>{t("nav.library")}</Button>}
         />
       </Specimen>

@@ -30,7 +30,8 @@
   pointer-events: none;
 }
 
-/* 16px inside the 1px border (content-box, as the prototype renders it): 18px overall. */
+/* 16px inside the 1px border (content-box, as the prototype renders it): 18px overall. The
+   prototype's radius is 8px on that 18px box, a circle with barely flattened sides. */
 .circle {
   flex: none;
   display: grid;
@@ -39,7 +40,7 @@
   width: 16px;
   height: 16px;
   border: 1px solid var(--line2);
-  border-radius: var(--r-full);
+  border-radius: var(--r-8);
 }
 
 .row:hover:not(.disabled) .circle:not(.checked) {

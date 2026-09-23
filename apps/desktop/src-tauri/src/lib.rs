@@ -147,6 +147,9 @@ pub fn run() {
     let result = tauri::Builder::default()
         .plugin(tauri_plugin_window_state::Builder::default().build())
         .plugin(tauri_plugin_opener::init())
+        // Settings: `settings.json` in the app data dir, read and written by the UI's
+        // SettingsService (`services/tauri/settings.ts`).
+        .plugin(tauri_plugin_store::Builder::default().build())
         .invoke_handler(builder.invoke_handler())
         .setup(move |app| {
             builder.mount_events(app);

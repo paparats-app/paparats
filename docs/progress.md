@@ -85,3 +85,70 @@ Known gaps (by milestone):
 - The main JS chunk is ≈ 505 kB minified (fixtures and three catalogs; Vite warns above 500 kB).
   Revisit code-splitting when real data replaces the fixtures.
 - The `/dev` gallery tests take 3–6 s in jsdom and run with a 20 s timeout.
+
+## M2 — Discovery (2026-09-23)
+
+What exists now (decisions D26–D32 in `docs/decisions.md`):
+
+- **Home** (`screens/home`). The hero carousel over `catalog.heroSlides` (slide kept in
+  `useHomeStore`, glow wired to `useHomeStore.heroGlow` for M6), Featured apps (6 columns),
+  Collections, New and notable, Recently updated (the six newest visible apps). Every "See all"
+  and the hero CTAs reach their screen.
+- **Browse** (`screens/browse`). Banner (or the open collection's title), the curated view
+  (featured-app hero with "Get <App>", Featured apps, New and notable, Top categories) and the
+  results view ("N apps", Clear all, 5-column grid), beside the sticky filter panel: category
+  checkboxes with "Search filters…", Pro features, Portable build, Source (with more than one
+  active channel, per-channel counts), Sort by Featured / Newest / A–Z / Size.
+- **Categories** (`screens/categories`). Nine photo tiles with counts → Browse filtered to the
+  category; Featured in Productivity; the brand line.
+- **Search** (`screens/search`). Results over name, publisher, tagline, category and source
+  channel in the UI language; the 6-card skeleton while "Searching…" (and while data loads);
+  "Nothing found" with four featured suggestions and a Categories link; the offline state with a
+  way to the Library.
+- **App page** (`screens/app`, `/app/:appId`). Header with source chip → channel, source notes
+  ("verified/community channel", "Also offered by"), the split action with favourite star,
+  progress bar and status line with Cancel; screenshots; About with the Pro and "Grew from an
+  idea" cards and the ideas link; Details with Report a problem and Suggest an improvement;
+  ratings (tap to rate), reviews, version history, "More in “<collection>”"; "App not found" for
+  unknown ids. Back returns to the section (and filters) the page was opened from.
+- **Report dialog** (`app/dialogs/ReportDialog`, registered in `DialogHost`): routes to the
+  channel author with a copy to Paparats, or to the Paparats team; toasts the receipt.
+- **Shared pieces.** `screens/shared › StoreAppCard` (+ `useStoreAppView`, `toActionView`) is the
+  one connected store card; `hooks/useLocale`; `domain/apps.ts › pickByIds`. Component additions:
+  `EmptyState.wideHint`; `SplitButton` draws the prototype's 14 px / 16 px stroke-2 glyphs and
+  its action paints its own ground (hover brightens it); `SectionHeader` "See all" has a 32 px hit
+  area; `AppCard` keeps a wrapped channel chip's 4 px indent; `NotableRow` and `RatingSummary`
+  spacing fixes; `CompactUpdatedRow` icon radius 10.
+- **Rust backend (D26).** Every `services/tauri/*` adapter calls its Rust command; downloads
+  follow the typed `download://progress` / `download://state` events; settings persist in
+  `settings.json` (tauri-plugin-store). `downloads_set_concurrency` takes a `u32` (capped at 255).
+- **Tests.** Vitest: 88 files, 563 tests — screen smoke and flow tests for all five screens and
+  the report dialog, the Tauri adapters over `mockIPC` (66), and `app/discovery.test.tsx`, which
+  runs the M2 flows through the whole shell and fails on any console error or warning. Rust:
+  126 tests (32 in `paparats-desktop`, including download parity with the TypeScript mock and IPC
+  tests).
+- **Checks.** typecheck, lint, test, format:check, cargo fmt, clippy (`-D warnings`) and cargo
+  test are green. Clicked through in Chrome on `pnpm dev` (mock services) and in the real app
+  (`pnpm tauri dev`, Rust backend, driven over the WebView2 debugging port): sidebar navigation
+  from Home, Browse, Categories, an app page and the search overlay to all eight sections; detail
+  pages back to their section with Browse filters kept; every Browse filter, the filter search,
+  sorting and both Clear all; Categories → Browse; search skeleton, results, empty state,
+  suggestions and offline; Get → progress events → Pause → Resume → Cancel, favourite, report.
+  No console errors in either.
+
+Known gaps (by milestone):
+
+- Library and Updates are still placeholders (M3); Subscription, Settings, Profile (M4);
+  Ideas, Idea, Channel, the suggest-idea dialog (the app page opens `{kind:'suggestIdea'}`, which
+  renders nothing yet) and the other channel dialogs (M5); first launch and the hero glow (M6).
+- No catalog error state (no copy in the handoff); no failure toast for a report that cannot be
+  sent.
+- M1 token choices that differ slightly from the prototype on images: hero and
+  `ScreenshotViewer` text use `--on-image` (#eef3f2) where the prototype has #f2f4f2 / #e6ecec.
+- Cyrillic text renders 1–6 px narrower than in the prototype (the prototype falls back to
+  another font where Onest has Cyrillic); Latin text matches to the pixel.
+- The dev data set in `%APPDATA%/com.paparats.desktop` (SQLite, `settings.json`) carries changes
+  from the M2 checks (files installed, Obsidian updated); delete the folder to reseed (D22).
+- The main JS chunk is now ≈ 544 kB minified (the M2 screens on top of the fixtures and three
+  catalogs; the mock world is still bundled in Tauri builds). Split the mock services and
+  fixtures into a lazy chunk before release.

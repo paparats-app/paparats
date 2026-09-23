@@ -55,6 +55,8 @@
 .action {
   flex: 1;
   min-width: 0;
+  /* Its own ground (the prototype's actBg), so the hover brightness lifts it too. */
+  background: var(--card2);
   padding: 0 var(--sp-8);
   border-start-start-radius: var(--split-inner-r);
   border-end-start-radius: var(--split-inner-r);

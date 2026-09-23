@@ -33,6 +33,10 @@ export const commands = {
   downloadsPauseAll: () => typedError<null, AppError>(__TAURI_INVOKE("downloads_pause_all")),
   downloadsResumeAll: () => typedError<null, AppError>(__TAURI_INVOKE("downloads_resume_all")),
   downloadsCancelAll: () => typedError<null, AppError>(__TAURI_INVOKE("downloads_cancel_all")),
+  /**
+   *  "Parallel downloads": any whole number ≥ 1 (the UI offers 1, 2 and 4; values above 255 run
+   *  255 at a time); 0 is `invalid`, like the TypeScript mock.
+   */
   downloadsSetConcurrency: (limit: number) =>
     typedError<null, AppError>(__TAURI_INVOKE("downloads_set_concurrency", { limit })),
   downloadsSetOnline: (online: boolean) =>

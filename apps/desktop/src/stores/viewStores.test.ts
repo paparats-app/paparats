@@ -183,6 +183,15 @@ describe("useHomeStore", () => {
     home().step(1, 0);
     expect(home().heroIndex).toBe(1);
   });
+
+  it("switches the first-launch hero glow and resets it with the other stores", () => {
+    const home = () => useHomeStore.getState();
+    expect(home().heroGlow).toBe(false);
+    home().setHeroGlow(true);
+    expect(home().heroGlow).toBe(true);
+    resetStores();
+    expect(home().heroGlow).toBe(false);
+  });
 });
 
 describe("useDialogStore", () => {

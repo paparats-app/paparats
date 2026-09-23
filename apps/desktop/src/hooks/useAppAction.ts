@@ -14,9 +14,10 @@ import { useOffline } from "./useOffline";
 
 /**
  * neutral: `--card2` / `--text` · primary: `--mint` / `--ink` (Update) ·
- * progress: `--mint2` text (downloading, paused, installing) · muted: queued or offline.
+ * progress: `--mint2` text (downloading, paused, installing) · quiet: `--text2` (queued) ·
+ * muted: `--text3` (offline) — the prototype's `actColor`.
  */
-export type ActionTone = "neutral" | "primary" | "progress" | "muted";
+export type ActionTone = "neutral" | "primary" | "progress" | "quiet" | "muted";
 
 export interface AppAction {
   state: AppInstallState;
@@ -63,7 +64,8 @@ export function useAppAction(app: App): AppAction {
   else label = t("common.get");
 
   let tone: ActionTone;
-  if (offlineBlocked || state === "queued") tone = "muted";
+  if (offlineBlocked) tone = "muted";
+  else if (state === "queued") tone = "quiet";
   else if (state === "update") tone = "primary";
   else if (state === "downloading" || state === "paused" || state === "installing") {
     tone = "progress";

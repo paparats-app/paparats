@@ -33,7 +33,7 @@ export function AppCardsSection() {
       action: { label: `${t("common.installing")}…`, tone: "progress", disabled: true },
       progress: 100,
     },
-    { id: "notepadpp", action: { label: t("common.queued"), tone: "muted", disabled: true } },
+    { id: "notepadpp", action: { label: t("common.queued"), tone: "quiet", disabled: true } },
     { id: "everything", action: { label: t("common.unavailableOffline"), tone: "muted" } },
   ];
 

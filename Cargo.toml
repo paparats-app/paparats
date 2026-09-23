@@ -56,6 +56,8 @@ tauri = { version = "2.11", features = [] }
 tauri-build = { version = "2.6", features = [] }
 tauri-plugin-window-state = "2.4"
 tauri-plugin-opener = "2.5"
+# Settings persistence (settings.json in the app data dir, STACK.md decision 4).
+tauri-plugin-store = "2.4"
 
 [workspace.lints.rust]
 unsafe_code = "deny"

@@ -40,6 +40,13 @@ describe("Modal", () => {
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
+  it("draws the header icon at 18px, stroke 2, like every prototype dialog", () => {
+    const { container } = render(<ModalIcon name="flag" tone="neutral" />);
+    const svg = container.querySelector("svg");
+    expect(svg).toHaveAttribute("width", "18");
+    expect(svg).toHaveAttribute("stroke-width", "2");
+  });
+
   it("is a labelled modal dialog that focuses the first footer button", async () => {
     render(<ConfirmDemo />);
     await userEvent.click(screen.getByRole("button", { name: "Choose plan" }));

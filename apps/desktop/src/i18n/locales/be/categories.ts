@@ -4,6 +4,8 @@ import type { LocaleCatalog } from "../../types";
 export const categories: LocaleCatalog<typeof En> = {
   categoriesSub: "Даследуйце нашу адабраную калекцыю праграм.",
   featuredIn: "Рэкамендаваныя: {{category}}",
+  /** Signature under the closing brand line. */
+  signature: "— Paparats",
   items: {
     productivity: { label: "Прадукцыйнасць", desc: "Рабіце больш." },
     development: { label: "Распрацоўка", desc: "Будуйце. Тэстуйце. Выпускайце." },

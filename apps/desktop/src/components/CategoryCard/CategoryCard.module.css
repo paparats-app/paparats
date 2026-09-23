@@ -50,6 +50,11 @@
   position: relative;
 }
 
+/* The prototype draws the glyph in #f2f4f2, a shade brighter than the tile's text. */
+.icon {
+  color: var(--on-image-strong);
+}
+
 .body {
   display: flex;
   flex-direction: column;

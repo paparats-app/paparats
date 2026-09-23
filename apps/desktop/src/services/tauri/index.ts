@@ -1,11 +1,7 @@
-// Services over the Rust core (tauri-specta `commands` / events in bindings.ts).
-//
-// Only `app_info` exists on the Rust side today, so every service delegates to an in-memory mock
-// instance except `system` (real date, opener, connectivity). Each service has its own file: switch
-// a method to `unwrap(commands.<name>(…))` (./result.ts) as its command lands, and drop the note in
-// docs/decisions.md when the last delegate is gone.
+// Services over the Rust core: tauri-specta `commands` / `events` from bindings.ts (one command per
+// contract method, docs/decisions.md D18), settings through tauri-plugin-store, and the WebView's
+// own connectivity and clipboard. Errors reach callers as `ServiceError` (./result.ts).
 import type { Services } from "../contracts";
-import { createMockServices } from "../mock";
 import type { MockServiceOptions } from "../mock";
 import { createTauriAccountService } from "./account";
 import { createTauriCatalogService } from "./catalog";
@@ -14,23 +10,26 @@ import { createTauriDownloadService } from "./downloads";
 import { createTauriIdeasService } from "./ideas";
 import { createTauriInstallService } from "./install";
 import { createTauriSettingsService } from "./settings";
-import { createTauriSystemService, localToday } from "./system";
+import { createTauriSystemService } from "./system";
 
-export function createTauriServices(options: MockServiceOptions = {}): Services {
-  // The delegates stamp dates (installs, ideas, renewals) with the same real "today".
-  const mock = createMockServices({ today: localToday(), ...options });
+/**
+ * The Rust-backed service set. `_options` exists only so `createServices(mode, options)` can pass
+ * the same argument to either set: the core owns its timings, dates and storage.
+ */
+export function createTauriServices(_options?: MockServiceOptions): Services {
   return {
-    catalog: createTauriCatalogService(mock.catalog),
-    install: createTauriInstallService(mock.install),
-    downloads: createTauriDownloadService(mock.downloads),
-    channels: createTauriChannelService(mock.channels),
-    ideas: createTauriIdeasService(mock.ideas),
-    account: createTauriAccountService(mock.account),
-    settings: createTauriSettingsService(mock.settings),
-    system: createTauriSystemService(mock.system),
+    catalog: createTauriCatalogService(),
+    install: createTauriInstallService(),
+    downloads: createTauriDownloadService(),
+    channels: createTauriChannelService(),
+    ideas: createTauriIdeasService(),
+    account: createTauriAccountService(),
+    settings: createTauriSettingsService(),
+    system: createTauriSystemService(),
   };
 }
 
 export { localToday } from "./system";
-export { unwrap, toServiceError } from "./result";
+export { SETTINGS_STORE_FILE } from "./settings";
+export { unwrap, unwrapVoid, toServiceError } from "./result";
 export type { CommandResult } from "./result";

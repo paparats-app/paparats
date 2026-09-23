@@ -16,6 +16,8 @@ apps/desktop/src/
   screens/<name>/          one folder per screen, public API = index.ts (`<Name>Screen`)
                            home browse categories updates library ideas idea subscription settings
                            profile app channel search dev first-launch
+  screens/shared/          connected pieces several screens share (StoreAppCard, useStoreAppView,
+                           toActionView) — they read hooks and navigate, unlike components/
   components/<Name>/       shared components: <Name>.tsx + <Name>.module.css (+ test), index.ts
   services/                contracts.ts (interfaces), types.ts (domain types), errors.ts,
                            registry.ts (createServices + ServicesProvider + useServices),
@@ -47,8 +49,9 @@ screen ─┬─ queries/* (TanStack Query) ─── services (contracts.ts) �
 - Screens and components never import `@/bindings` or `@tauri-apps/api/core` (ESLint enforces it).
 - Domain types come from `@/services/types` (re-exports of the generated bindings).
 - `createServices(mode)` picks `mock` or `tauri` once at startup (`platform/runtime.ts` ›
-  `shouldUseMockServices()`: plain browser, Vitest or `PAPARATS_MOCK=1` → mock). Until a service's
-  Rust commands exist, its tauri adapter delegates to the mock (`docs/decisions.md` D6).
+  `shouldUseMockServices()`: plain browser, Vitest or `PAPARATS_MOCK=1` → mock). The tauri set
+  calls the Rust commands for every service; settings live in `settings.json` through
+  tauri-plugin-store (`docs/decisions.md` D26).
 - Startup (`main.tsx`): `createServices()` → `app/bootstrap.ts › bootstrap(services)` (installs the
   set, hydrates `useSettingsStore`, applies theme/motion to `<html>`, `initI18n(locale)`) → render
   `<App services/>`. The first frame already has the user's theme and language.
@@ -98,7 +101,7 @@ claimIdeaBonus, signIn, signOut}.
 | `useLibraryStore` | `tab`, `sort` ('recent'\|'name'\|'size'), `view` ('list'\|'grid'), `collection`, `filter` ('all'\|'updates'\|'downloads'\|'favorites'), `menuFor` | |
 | `useUpdatesStore` | `expanded: Record<AppId,boolean>` (vscode, obsidian open), `historyOpen` | |
 | `useIdeasStore` | `tab`, `statuses`, `sort` ('top'\|'new'), `appFilter` | `focusApp(appId)` (All tab, no status chips) |
-| `useHomeStore` | `heroIndex` | |
+| `useHomeStore` | `heroIndex`, `heroGlow` | `setHeroIndex`, `step(delta, count)`, `setHeroGlow(on)` (the first-launch exit turns the hero glow on, then off after ~1.7 s — M6) |
 | `useDialogStore` | `dialog: DialogState \| null` | `open(d)`, `close()`; rendered by `app/DialogHost` |
 
 `DialogState` = `{kind:'plan', plan:'monthly'|'yearly'}` · `{kind:'addChannel'}` ·
@@ -119,7 +122,10 @@ Hooks (names are the contract):
   `AppInstallState` = `'none'|'installed'|'update'|'queued'|'downloading'|'paused'|'installing'`.
 - `useAppAction(app)` — the primary card/button action exactly like the prototype's `card()`:
   label (Get / Open / Update / Subscribe / Offline / Queued / Installing… / `NN% · Pause` /
-  Resume), `tone` ('neutral'|'primary'|'progress'|'muted'), `disabled`, `run()`, `cancel()`.
+  Resume), `tone` ('neutral'|'primary'|'progress'|'quiet' (queued)|'muted' (offline)),
+  `disabled`, `run()`, `cancel()`.
+- `useLocale(): Locale` — the UI language as a catalog locale, for `pickText` / `pickLocalized`
+  (the prototype's `L()`) and locale-aware sorting.
 - `useUpdates()` — `{ apps, count, totalMb }` pending updates (installed ≠ catalog version,
   source channel active and reachable).
 - `usePro()` — `{ isPro, isGift, planId, renewsOn, giftUntil }`.
@@ -132,7 +138,8 @@ Hooks (names are the contract):
   `flush`, `resetStores`); not exported by the barrel.
 
 Domain modules: `domain/channels.ts`, `domain/apps.ts` (install state, filters, sorting, search
-matching over name/publisher/tagline/category/source channel), `domain/ideas.ts` (tab filters,
+matching over name/publisher/tagline/category/source channel, `pickByIds` — the prototype's
+`byIds()` for featured/notable/collection lists, hidden ids skipped), `domain/ideas.ts` (tab filters,
 `canTake`, `nextVersion`, `excerpt`, `releaseNotes` for the sidebar Ideas badge),
 `domain/appDetail.ts` (deterministic rating, histogram,
 reviews, version history — the prototype's generators), `domain/settings.ts` (`DEFAULT_SETTINGS`,
@@ -217,7 +224,11 @@ exports its component(s) from `index.ts`; props are documented on the component.
 | Account & settings | `SubscriptionPlan` (+ `BenefitStrip`), `ProfileHeader`, `SettingsRow` (+ `SettingsCard`), `FilterPanel` (+ `FilterGroup`, `FilterCheckOption`, `FilterRadioOptions`), `ChannelRow` |
 | Ideas | `VoteButton`, `IdeaCard`, `Timeline`, `CommentThread` |
 
-Mapping `useAppAction()` onto a card: `{ label, tone, disabled, onClick: run }` (`AppActionView`).
+Mapping `useAppAction()` onto a card: `{ label, tone, disabled, onClick: run }` (`AppActionView`,
+`screens/shared › toActionView`). A store grid card wired to an app — action, category and
+source-channel chips, chevron-down "Details", identity and chevron open the app page — is
+`screens/shared › StoreAppCard` (Home, Browse, Categories, search, the app page's "More in"; the
+channel page should use it too); `useStoreAppView(app)` gives the same fields for rows.
 The `/dev` gallery (`screens/dev/sections/index.ts › DEV_SECTIONS`) shows every component; add a
 section there for every new shared component.
 
@@ -256,4 +267,6 @@ The HTML is a reference, not code to copy: no `{{ }}`, no prototype runtime, no 
   services, reset the stores, the `<html>` attributes and the language).
 - Pure `domain/*` functions get unit tests; stores get behaviour tests; each screen gets at least
   one smoke test plus tests for its end-to-end flows.
+- Each milestone's end-to-end flows also run through the whole shell (`renderApp`) in one file
+  per milestone, which fails on any `console.error`/`console.warn`: `app/discovery.test.tsx` (M2).
 - Rust: unit tests per crate; `crates/paparats-core/tests/fixtures.rs` keeps fixtures ↔ model in sync.

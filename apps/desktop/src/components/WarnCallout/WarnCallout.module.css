@@ -36,10 +36,17 @@
 .actions {
   display: flex;
   flex: none;
+  gap: var(--sp-12);
+}
+
+/* Sources (sm, line 847): the buttons sit in the callout's own 12px gap; the channel page (md,
+   line 1149) groups them 8px apart. */
+.md .actions {
   gap: var(--sp-8);
 }
 
 .action {
+  position: relative;
   box-sizing: border-box;
   height: var(--control-h-xs);
   padding: 0 var(--sp-12);
@@ -53,6 +60,13 @@
   font-weight: 500;
   white-space: nowrap;
   cursor: pointer;
+}
+
+/* The 30px buttons get an invisible hit area of at least 32px without moving anything (D32). */
+.action::before {
+  content: "";
+  position: absolute;
+  inset: -2px -1px;
 }
 
 .md .action {

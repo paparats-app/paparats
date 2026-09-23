@@ -1,0 +1,23 @@
+/* Suggest an idea — prototype lines 1417–1469. */
+
+/* The fields read like the rest of the window (1.4, `--text`), not like modal body copy. */
+.form {
+  color: var(--text);
+  line-height: var(--lh-body);
+}
+
+/* 16px between the kind toggle and each field (lines 1430, 1441, 1452, 1458). */
+.field {
+  margin-top: var(--sp-16);
+}
+
+/* Cancel and Publish sit 12px apart, like the note before them (line 1465). */
+.actions {
+  display: flex;
+  gap: var(--sp-12);
+}
+
+/* Publish: 36px primary with 18px sides (Cancel keeps the 16px of the medium size). */
+.publish.publish {
+  --btn-px: var(--sp-18);
+}

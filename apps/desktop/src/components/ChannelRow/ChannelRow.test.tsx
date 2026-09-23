@@ -29,7 +29,10 @@ describe("ChannelRow", () => {
     expect(toggle).toHaveAttribute("aria-checked", "false");
     await userEvent.click(toggle);
     expect(onEnabledChange).toHaveBeenCalledWith(true);
-    await userEvent.click(screen.getByRole("button", { name: "FOSS Friends" }));
+    const chevron = screen.getByRole("button", { name: "FOSS Friends" });
+    // The chevron is the prototype's 16px glyph at stroke 2 (line 838).
+    expect(chevron.querySelector("svg")).toHaveAttribute("stroke-width", "2");
+    await userEvent.click(chevron);
     expect(onOpen).toHaveBeenCalledTimes(1);
   });
 

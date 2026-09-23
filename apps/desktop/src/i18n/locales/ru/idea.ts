@@ -19,4 +19,7 @@ export const idea: LocaleCatalog<typeof En> = {
   post: "Отправить",
   authorBadge: "Автор",
   noComments: "Комментариев пока нет. Начните обсуждение.",
+  progress: "Ход работы",
+  notFound: "Идея не найдена",
+  notFoundHint: "Возможно, её убрали с доски.",
 };

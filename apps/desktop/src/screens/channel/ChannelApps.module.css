@@ -1,0 +1,27 @@
+/* "Apps in this channel" — prototype lines 1165–1182. */
+.header {
+  margin: var(--sp-22) 0 var(--sp-14);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--grid-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The card fills its cell (equal heights per row, like the prototype's direct grid items). */
+.item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+
+/* Empty card (line 1182): 40px 20px, radius 12, the hint 4px under the title. */
+.empty.empty {
+  gap: var(--sp-4);
+  padding: 40px var(--sp-20);
+  border-radius: var(--r-12);
+}

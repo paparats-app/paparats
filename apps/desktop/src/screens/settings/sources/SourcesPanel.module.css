@@ -1,6 +1,16 @@
-/* Settings › Sources header — prototype line 825 (placeholder until M5). */
+/* Settings › Sources — prototype lines 823–865. */
+
+/* ---- Header (line 824): title + subtitle beside Add channel ------------------------------- */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-16);
+  margin: var(--sp-6) 0 var(--sp-14);
+}
+
 .title {
-  margin: var(--sp-6) 0 0;
+  margin: 0;
   font-size: var(--fs-h2);
   font-weight: 600;
   letter-spacing: var(--ls-h2);
@@ -10,4 +20,83 @@
   margin-top: var(--sp-4);
   color: var(--text2);
   font-size: var(--fs-secondary);
+}
+
+/* 36px mint with the plus glyph: padding 0 16px 0 12px (line 826). */
+.add.add {
+  padding: 0 var(--sp-16) 0 var(--sp-12);
+}
+
+/* ---- Followed channels (line 828) ---------------------------------------------------------- */
+/* Each row's top rule overlaps the previous row's last pixel (`margin-top: -1px`, line 830). */
+.list > * + * {
+  margin-top: -1px;
+}
+
+/* ---- Trust levels (lines 853–862) ---------------------------------------------------------- */
+.overline {
+  margin: var(--sp-22) 0 var(--sp-10);
+  color: var(--text3);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  letter-spacing: var(--ls-overline);
+  text-transform: uppercase;
+}
+
+.levels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--grid-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.level {
+  padding: var(--sp-14) var(--sp-16);
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+}
+
+.levelHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+.levelIcon {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-13);
+}
+
+.official {
+  background: var(--mint-soft);
+  color: var(--mint2);
+}
+
+.verified {
+  background: var(--card2);
+  color: var(--text);
+}
+
+.community {
+  background: var(--warn-soft);
+  color: var(--warn);
+}
+
+.levelLabel {
+  font-size: var(--fs-body);
+  font-weight: 600;
+}
+
+.levelHint {
+  margin-top: var(--sp-8);
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+  line-height: var(--lh-body);
+  text-wrap: pretty;
 }

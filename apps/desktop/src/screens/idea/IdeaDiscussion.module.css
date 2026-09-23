@@ -1,0 +1,12 @@
+/* "Discussion N" — prototype line 1326: 34px under the timeline, 16px/600, the count `--text3`/500. */
+.heading {
+  margin: 34px 0 var(--sp-10);
+  color: var(--text);
+  font-size: var(--fs-title-lg);
+  font-weight: 600;
+}
+
+.count {
+  color: var(--text3);
+  font-weight: 500;
+}

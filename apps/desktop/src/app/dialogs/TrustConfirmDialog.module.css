@@ -1,0 +1,57 @@
+/* Trust confirmation — prototype lines 1500–1517. */
+
+/* The channel box sits 16px under the header (line 1504); the confirm body already starts 14px
+   down. It keeps the dialog's 1.4 line height (the body text below is 1.5). */
+.channel {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+  margin-top: var(--sp-2);
+  padding: var(--sp-12) var(--sp-14);
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--bg);
+  color: var(--text);
+  line-height: var(--lh-body);
+  text-wrap: wrap;
+}
+
+/* The 40px monogram here has no tracking (line 1505; the catalog rows' tiles have -.02em). */
+.tile.tile {
+  letter-spacing: 0;
+}
+
+.text {
+  min-width: 0;
+}
+
+.nameLine {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+.name {
+  font-size: var(--fs-body);
+  font-weight: 600;
+}
+
+.meta {
+  margin-top: var(--sp-2);
+  overflow: hidden;
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 14px/1.5 `--text2` (the confirm body's style), 14px under the channel box. Doubled to win over
+   the modal's `.body > p { margin: 0 }`. */
+.body.body {
+  margin-top: var(--sp-14);
+}
+
+/* Add channel: 36px primary with 18px sides (Cancel keeps the 16px of the medium size). */
+.confirm.confirm {
+  --btn-px: var(--sp-18);
+}

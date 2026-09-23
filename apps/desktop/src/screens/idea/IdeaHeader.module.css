@@ -1,0 +1,43 @@
+/* Idea header — prototype lines 1286–1297: grid 72px | text | 300px status card, 26px above the
+   1px rule. */
+.header {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 300px;
+  gap: var(--sp-24);
+  align-items: start;
+  padding-bottom: var(--sp-26);
+  border-bottom: 1px solid var(--line);
+}
+
+.main {
+  min-width: 0;
+}
+
+/* Kind chip, status pill, "by <author>" · date: 12.5px `--text3`, 8px apart. */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-8);
+  align-items: center;
+  color: var(--text3);
+  font-size: var(--fs-secondary-sm);
+}
+
+.title {
+  margin: var(--sp-10) 0 0;
+  color: var(--text);
+  font-size: var(--fs-idea);
+  font-weight: 700;
+  letter-spacing: var(--ls-tight);
+  line-height: 1.2;
+  text-wrap: pretty;
+}
+
+.body {
+  max-width: 680px;
+  margin: var(--sp-12) 0 0;
+  color: var(--text2);
+  font-size: 15.5px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}

@@ -147,7 +147,13 @@ export function Modal({
             {subtitle !== undefined && <div className={styles.subtitle}>{subtitle}</div>}
           </div>
           {closeLabel !== undefined && (
-            <IconButton icon="x" label={closeLabel} size="compact" onClick={onClose} />
+            <IconButton
+              icon="x"
+              label={closeLabel}
+              size="compact"
+              iconStrokeWidth={2}
+              onClick={onClose}
+            />
           )}
         </div>
         {children !== undefined && (

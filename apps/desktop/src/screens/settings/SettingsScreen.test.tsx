@@ -295,7 +295,9 @@ describe("SettingsScreen", () => {
     await user.click(navItem("Sources"));
     expect(screen.getByTestId("sources-panel")).toBeInTheDocument();
     expect(screen.getByRole("heading", { level: 2, name: "Sources" })).toBeInTheDocument();
-    expect(screen.queryByRole("switch")).toBeNull();
+    // The followed channels, not the row card: no settings rows, one switch per pausable channel.
+    expect(await screen.findByRole("switch", { name: "Nilesoft" })).toBeChecked();
+    expect(screen.getAllByRole("switch")).toHaveLength(2);
   });
 
   it("the About section renders its own panel", async () => {

@@ -1,0 +1,99 @@
+/* Ideas board — prototype lines 1184–1283. */
+.screen {
+  min-width: 0;
+}
+
+/* ---- Banner actions: developer pill + Suggest an idea, gap 16 (line 1189) ---------------- */
+.bannerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-16);
+}
+
+/* Content-box like the prototype's div: 34px + the 1px border = 36px tall (line 1190). */
+.devPill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-8);
+  box-sizing: content-box;
+  height: 34px;
+  padding: 0 var(--sp-12) 0 var(--sp-6);
+  border: 1px solid color-mix(in srgb, var(--on-image-bright) 14%, transparent);
+  border-radius: var(--r-17);
+  background: color-mix(in srgb, var(--on-image-bright) 8%, transparent);
+  color: var(--on-image);
+  font-size: var(--fs-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* ---- Released-idea note (lines 1195–1205) ------------------------------------------------ */
+.note {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-16);
+  margin-bottom: var(--sp-22);
+}
+
+/* 44px tile, radius 12, 16px monogram without tracking (the shared 44px tile is radius 11). */
+.noteTile.noteTile {
+  border-radius: var(--r-12);
+  letter-spacing: 0;
+}
+
+.noteText {
+  flex: 1;
+  min-width: 0;
+}
+
+.noteTitle {
+  margin: 0;
+  font-size: var(--fs-title);
+  font-weight: 600;
+  line-height: var(--lh-body);
+}
+
+.noteBody {
+  margin: 3px 0 0;
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.noteActions {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+/* Open <App>: 36px secondary, 14px sides, 13px/600. */
+.noteOpen.noteOpen {
+  --btn-px: var(--sp-14);
+  --btn-fs: var(--fs-secondary);
+  font-weight: 600;
+}
+
+/* Activate 3 months of Pro: 36px mint, 16px sides, 13px/600, crown 7px from the label. */
+.noteActivate.noteActivate {
+  --btn-fs: var(--fs-secondary);
+  gap: 7px;
+}
+
+/* ×: 32px ghost, radius 8. */
+.noteDismiss.noteDismiss {
+  --btn-r: var(--r-8);
+}
+
+/* ---- Two columns: content + 290px, gap 24 (line 1207) ------------------------------------ */
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 290px;
+  gap: var(--sp-24);
+  align-items: start;
+}
+
+.main {
+  min-width: 0;
+}

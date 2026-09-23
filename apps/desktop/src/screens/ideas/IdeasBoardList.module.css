@@ -1,0 +1,154 @@
+/* Ideas board — toolbar, app filter chip, cards (prototype lines 1208–1247). */
+
+/* Tabs | status chips + sort; wraps with 10px rows / 16px columns (line 1210). */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-10) var(--sp-16);
+  margin-bottom: var(--sp-14);
+}
+
+/* The strip keeps its size; the chips wrap under it when a long language fills the row. */
+.tabs.tabs {
+  flex: none;
+}
+
+.toolbarEnd {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+.chips {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+}
+
+/* Status chips: 32px pills, 1px `--line2`, 7px status dot; on = mint border on `--mint-soft`. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  box-sizing: border-box;
+  height: 32px;
+  padding: 0 var(--sp-12);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-16);
+  background: transparent;
+  color: var(--text2);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.chip:hover {
+  border-color: var(--text3);
+}
+
+.chip:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+.chipOn {
+  border-color: var(--mint);
+  background: var(--mint-soft);
+  color: var(--text);
+}
+
+.dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: var(--r-4);
+}
+
+.dotOpen {
+  background: var(--text3);
+}
+
+.dotWork {
+  background: var(--warn);
+}
+
+.dotReleased {
+  background: var(--mint);
+}
+
+/* The sort select sits 6px further out (line 1218). */
+.sort {
+  margin-left: var(--sp-6);
+}
+
+/* ---- "Filters: For <App> ×" (line 1226) -------------------------------------------------- */
+.filterRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  margin-bottom: var(--sp-12);
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+}
+
+.appChip {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-6);
+  box-sizing: border-box;
+  height: 28px;
+  padding: 0 var(--sp-10);
+  border: 1px solid var(--mint);
+  border-radius: var(--r-14);
+  background: var(--mint-soft);
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-sans);
+  font-size: var(--fs-secondary-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+/* A 32px hit area around the 28px chip, without moving the layout (D32). */
+.appChip::before {
+  content: "";
+  position: absolute;
+  inset: -3px 0;
+}
+
+.appChip:hover {
+  filter: brightness(1.1);
+}
+
+.appChip:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* ---- Cards (line 1227) ------------------------------------------------------------------- */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-10);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  min-width: 0;
+}
+
+/* "Nothing here yet": 40px/20px padding, radius 12, 4px between the lines (line 1247). */
+.empty.empty {
+  gap: var(--sp-4);
+  padding: 40px var(--sp-20);
+  border-radius: var(--r-12);
+}

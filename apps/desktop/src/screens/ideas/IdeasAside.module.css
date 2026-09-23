@@ -1,0 +1,192 @@
+/* Ideas right column — prototype lines 1250–1280. */
+.aside {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-16);
+  min-width: 0;
+}
+
+.card {
+  min-width: 0;
+  padding: var(--sp-16) var(--sp-18);
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+  color: var(--text);
+}
+
+/* ---- Developer panel (line 1252) --------------------------------------------------------- */
+.devHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-12);
+}
+
+/* 40px tile, 15px monogram without tracking. */
+.devTile.devTile {
+  letter-spacing: 0;
+}
+
+.devName {
+  min-width: 0;
+}
+
+.devTitle {
+  margin: 0;
+  font-size: var(--fs-title);
+  font-weight: 600;
+  line-height: var(--lh-body);
+}
+
+.devRole {
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+}
+
+.devHint {
+  margin: var(--sp-12) 0 0;
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+.devStats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sp-8);
+  margin-top: var(--sp-14);
+}
+
+/* ---- How it works (lines 1260–1267) ------------------------------------------------------ */
+.howTitle,
+.yourTitle {
+  margin: 0;
+  font-size: var(--fs-body);
+  font-weight: 600;
+  line-height: var(--lh-body);
+}
+
+.howTitle {
+  margin-bottom: var(--sp-12);
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-12);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-12);
+}
+
+.stepNumber {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--r-12);
+  background: var(--mint-soft);
+  color: var(--mint2);
+  font-size: var(--fs-meta);
+  font-weight: 700;
+}
+
+.stepText {
+  min-width: 0;
+}
+
+.stepTitle {
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.stepBody {
+  margin-top: var(--sp-2);
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+/* ---- Your ideas (lines 1268–1278) -------------------------------------------------------- */
+.yourTitle {
+  margin-bottom: var(--sp-6);
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rowItem {
+  border-top: 1px solid var(--line);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-10);
+  width: 100%;
+  padding: 9px 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-family: var(--font-sans);
+  text-align: left;
+  cursor: pointer;
+}
+
+.row:focus-visible {
+  outline: var(--focus-ring-w) solid var(--mint);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: var(--r-4);
+}
+
+.rowText {
+  flex: 1;
+  min-width: 0;
+}
+
+.rowTitle {
+  display: block;
+  overflow: hidden;
+  font-size: var(--fs-secondary);
+  font-weight: 500;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.rowSub {
+  display: block;
+  margin-top: var(--sp-2);
+  color: var(--text3);
+  font-size: var(--fs-meta);
+}
+
+/* The rows' pill has 8px sides (the cards' has 9). */
+.rowStatus.rowStatus {
+  padding: var(--sp-2) var(--sp-8);
+}
+
+.empty {
+  margin: 0;
+  padding-top: var(--sp-6);
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+}
+
+/* Activate 3 months of Pro: 34px secondary in `--mint2`, 13px/600, 12px under the list. */
+.rail.rail {
+  margin-top: var(--sp-12);
+  font-weight: 600;
+}

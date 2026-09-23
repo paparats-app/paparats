@@ -13,12 +13,14 @@ apps/desktop/src/
   app/                     shell: App, bootstrap, providers, routes, navigation (useNav), Layout,
                            Sidebar, TopBar, WindowControls, OfflineBanner, NavigationSkeleton,
                            ToastHost, DialogHost, documentSettings (theme/motion/locale → <html>);
-                           app/dialogs/ holds the dialogs DialogHost renders (PlanDialog, ReportDialog)
+                           app/dialogs/ holds the dialogs DialogHost renders (PlanDialog, ReportDialog,
+                           AddChannelDialog, TrustConfirmDialog, SuggestIdeaDialog, ReleaseIdeaDialog)
   screens/<name>/          one folder per screen, public API = index.ts (`<Name>Screen`)
                            home browse categories updates library ideas idea subscription settings
                            profile app channel search dev first-launch
   screens/shared/          connected pieces several screens share (StoreAppCard, useStoreAppView,
-                           toActionView, useDownloadStatus, useProStatusView) — they read hooks
+                           toActionView, useDownloadStatus, useProStatusView, BackLink, the channel
+                           labels + useChannelMeta, useIdeaView, useTakeIdea) — they read hooks
                            and navigate, unlike components/
   components/<Name>/       shared components: <Name>.tsx + <Name>.module.css (+ test), index.ts
   services/                contracts.ts (interfaces), types.ts (domain types), errors.ts,
@@ -123,6 +125,14 @@ Hooks (names are the contract):
 - `useOffline(): boolean` — real connectivity OR `settings.simulateOffline`.
 - `useViewAs(): 'user' | 'developer'` — developer when `settings.dev && settings.viewAsDeveloper`.
 - `useChannelContext()` — `{ channels, byId, subscriptions, ready, subscriptionOf(id), isFollowed(id), isActive(id), sourceOf(app), alternativesOf(app), downDays(id), isStale(id) }` (source rule: most trusted *active* channel; official › verified › community).
+- `useChannelFollow()` — what following a channel does anywhere (Settings › Sources, the channel
+  dialogs, the channel page, a card's Subscribe): `follow(channel)` (community → opens
+  `{kind:'trustConfirm'}`, else subscribes), `subscribe`, `unsubscribe`, `setPaused(channel,
+  paused)`, `keep` — each calls the channel service, toasts like the prototype, drops the channel
+  from the Browse source filter where it applies, and resolves `false` on a refusal (no toast).
+- `useDeveloperChannel()` — `{ id, channel, apps }`: the channel the developer view acts as
+  (`DEVELOPER_CHANNEL_ID` = `nilesoft`, `fixtures/meta.json › developerChannel`, D46) and the apps
+  it publishes (`domain/ideas › myApps`).
 - `useVisibleApps(): App[]` — apps whose channels are followed and enabled, plus installed ones.
 - `useAppIndex()` — `{ byId, get(id) }` over the full catalog.
 - `useInstalledIndex(): InstalledIndex` — `Map<AppId, InstalledApp>` over the library.
@@ -239,8 +249,14 @@ exports its component(s) from `index.ts`; props are documented on the component.
 Mapping `useAppAction()` onto a card: `{ label, tone, disabled, onClick: run }` (`AppActionView`,
 `screens/shared › toActionView`). A store grid card wired to an app — action, category and
 source-channel chips, chevron-down "Details", identity and chevron open the app page — is
-`screens/shared › StoreAppCard` (Home, Browse, Categories, search, the app page's "More in"; the
-channel page should use it too); `useStoreAppView(app)` gives the same fields for rows.
+`screens/shared › StoreAppCard` (Home, Browse, Categories, search, the app page's "More in", the
+channel page with `channelChip={false}`); `useStoreAppView(app)` gives the same fields for rows.
+Channel copy: `components/TrustBadge › TRUST_KEY` (level names, next to `TRUST_ICON`) and
+`screens/shared › KIND_KEY`, `HOST_KEY`, `TRUST_LEVELS`, `channelIcon(channel)`,
+`useChannelMeta()` ("Developer · by Nilesoft · 12 apps"). Ideas: `screens/shared › useIdeaView()`
+(title, body, kind chip, developer line, author, released app — board, idea page and release
+dialog) and `useTakeIdea()` (Take + "Pinned to … · author notified"). The detail pages' "‹ Back" is
+`screens/shared › BackLink`.
 What a queued app says about its download — "Downloading… 43%", "Paused · 43%", "Queued",
 "Installing…", the "12 MB of 87 MB" size and the one-line form — is
 `screens/shared › useDownloadStatus(app, state, progress)` (pure `downloadStatus()` underneath),
@@ -285,5 +301,5 @@ The HTML is a reference, not code to copy: no `{{ }}`, no prototype runtime, no 
   one smoke test plus tests for its end-to-end flows.
 - Each milestone's end-to-end flows also run through the whole shell (`renderApp`) in one file
   per milestone, which fails on any `console.error`/`console.warn`: `app/discovery.test.tsx` (M2),
-  `app/libraryUpdates.test.tsx` (M3), `app/account.test.tsx` (M4).
+  `app/libraryUpdates.test.tsx` (M3), `app/account.test.tsx` (M4), `app/channelsIdeas.test.tsx` (M5).
 - Rust: unit tests per crate; `crates/paparats-core/tests/fixtures.rs` keeps fixtures ↔ model in sync.

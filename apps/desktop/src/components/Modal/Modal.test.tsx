@@ -85,7 +85,10 @@ describe("Modal", () => {
     const backdrop = screen.getByRole("dialog").parentElement as HTMLElement;
     await userEvent.click(backdrop);
     expect(onClose).toHaveBeenCalledTimes(1);
-    await userEvent.click(screen.getByRole("button", { name: "Close" }));
+    // The × is the prototype's 16px glyph at stroke 2 (lines 1373, 1423).
+    const close = screen.getByRole("button", { name: "Close" });
+    expect(close.querySelector("svg")).toHaveAttribute("stroke-width", "2");
+    await userEvent.click(close);
     expect(onClose).toHaveBeenCalledTimes(2);
   });
 });

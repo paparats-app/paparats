@@ -317,3 +317,101 @@ Known gaps (by milestone):
   Profile tab label sits 1.3 px right of the prototype's.
 - The main JS chunk is now ≈ 595 kB minified (≈ 181 kB gzip); the mock services and fixtures are
   still bundled in Tauri builds.
+
+## M5 — Channels and Ideas (2026-09-23)
+
+What exists now (decisions D42–D47 in `docs/decisions.md`):
+
+- **Settings › Sources** (`screens/settings/sources`). The header with Add channel; one card with
+  the followed channels in catalog order (monogram, trust badge, "Developer · by Nilesoft · 1 app",
+  "Synced today" / "Not synced yet" / "Unreachable for 16 days" in `--warn`, "Always on" for the
+  official catalog, the pause switch — paused rows at .55 — and the chevron to the channel page);
+  the stale callout (unreachable ≥ 14 days, not kept) with Keep / Unsubscribe; the three "Trust
+  levels" cards.
+- **Add channel** (`app/dialogs/AddChannelDialog`): the address field (full address, host,
+  `@handle` or handle) with Add / Enter and the two inline errors ("No channel at this address…",
+  "You already follow this channel."), then the catalog of channels not followed yet with Learn
+  more and Subscribe. A verified channel is followed at once ("Subscribed to <Channel>"); a
+  community channel opens **the trust confirmation** (`TrustConfirmDialog`, "Add <Channel>?"),
+  and Cancel returns to the dialog with the address typed. The confirmation also stands alone for
+  `{kind:'trustConfirm'}` (a card's or the channel page's Subscribe).
+- **Channel page** (`screens/channel`, `/channel/:channelId`). The 96 px tile, name, trust badge,
+  kind chip, "by … · @handle · N subscribers", the description; Subscribe (community → the
+  confirmation) or "Subscribed" + Enabled/Paused + Unsubscribe (not for the official catalog);
+  Copy address, Report a problem (the report dialog, routed to the channel's author), Sync now
+  ("Channel synced" / "<Channel> is still unreachable"); the stale callout; the Pro / official
+  notes; the Details card (Trust, Type, Author, Address, Files, Review, Support, Last sync, the
+  community warning); "Apps in this channel" as store cards, or the empty card; "Channel not
+  found" for unknown ids. Back returns to where the page was opened from (Settings › Sources too).
+- **Ideas** (`screens/ideas`). Banner with Suggest an idea (and the "Developer view · Nilesoft"
+  pill); the "Your idea became an app" note (Open <App>, Activate 3 months of Pro, ×); boxed
+  tabs with counts per view, the Open / In work / Released chips, Top/Newest; the "Filters: For
+  <App> ×" chip from an app page; idea cards (vote/unvote, open, Take in the developer view);
+  right column: the developer panel with three numbers, How it works, Your ideas with the
+  Activate rail. Activating the gift dismisses the notes, clears the Ideas badge and makes Pro
+  appear in the sidebar, on Subscription and on Profile.
+- **Suggest an idea** (`app/dialogs/SuggestIdeaDialog`): New app (category) / Improve an app
+  (visible apps A–Z, the app page's app preselected), title ≥ 6 characters with the inline error,
+  description; Publish → the idea page and "Idea published — developers can see it now".
+- **Idea page** (`screens/idea`, `/ideas/:ideaId`). The 72×76 vote button, kind chip, status pill,
+  "by … · date", title and body; the status card (developer and hint, the released app with Open
+  and the author's thank-you; in the developer view Take this idea, Mark as released or "In work at
+  <developer>"); the Proposed · In work · Released timeline; the discussion with "You", Author and
+  "Developer · <Channel>" badges and the composer (as the channel in the developer view).
+- **Release** (`app/dialogs/ReleaseIdeaDialog`): the developer's app (select for a new-app idea,
+  fixed for an improvement), the version prefilled with the next patch, "<Author> and N voters
+  will be notified…", Release → "Released · N people notified".
+- **Developer view.** `hooks/useDeveloperChannel` (the channel the view acts as, D46); the top bar
+  avatar shows the channel's monogram on its tint (D16 closed).
+- **Shared pieces (D47).** `hooks/useChannelFollow` (every follow/pause/unsubscribe/keep with its
+  toast and the Browse source filter, also behind a card's Subscribe); `screens/shared ›
+  channels.ts` (`KIND_KEY`, `HOST_KEY`, `TRUST_LEVELS`, `channelIcon`, `useChannelMeta`),
+  `useIdeaView`, `useTakeIdea`, `BackLink`; `components/TrustBadge › TRUST_KEY`. Component
+  additions: `StoreAppCard.channelChip`, `TrustBadge.iconSize`; parity fixes in `WarnCallout`,
+  `ChannelRow`, `Modal` (form ×), `CommentThread` (Post) and the `IdeaCard` Take hit area. Token
+  `--r-17`. All five M5 dialog kinds are registered in `DialogHost`.
+- **Rust backend.** The channel and idea commands already existed (D26); the Tauri adapters call
+  them (`services/tauri/channels.ts`, `ideas.ts`), nothing new to wire.
+- **Tests.** Vitest: 111 files, 776 tests. M5: Sources (10), Add channel (14), trust confirmation
+  (5), channel page (18), Ideas (16), Suggest an idea (8), idea page (19), `ideaDetail` (3), the
+  release dialog (7), `useDeveloperChannel` (1), and `app/channelsIdeas.test.tsx` (3), which runs
+  the M5 flows through the whole shell and fails on any console error or warning: adding channels
+  by address, by handle (community → confirmation) and from the catalog; Browse gaining the Source
+  group; the app page's install-source rule following a follow and a pause; the stale callout,
+  Sync now, Copy address, the report, Keep, pause and unsubscribe on the channel page; proposing
+  (short title refused), unvote/vote, commenting; the developer view (avatar, Take, Mark as
+  released with a version); the author's note, Activate and Pro on the sidebar, Subscription and
+  Profile. Rust: 126 tests.
+- **Checks.** typecheck, lint, test, format:check, cargo fmt, clippy (`-D warnings`) and cargo
+  test are green.
+  - Chrome on `pnpm dev` (mock services, driven by script): Add channel — not found, already
+    followed, `@winaero` → confirmation → Cancel (address kept) → Add channel, `mpv.io/paparats`
+    → confirmation; Browse's Source group with per-channel counts; Winaero Tweaker's "Also offered
+    by Winaero" and its disappearance after pausing Winaero; FOSS Friends: the stale callout, Sync
+    now, Copy address (clipboard stubbed: the background tab has no focus), the report, Keep;
+    Nilesoft: pause/resume, unsubscribe, subscribe; Suggest an idea (short title refused, publish
+    → page and toast), unvote/vote, a comment; Settings › Advanced → Developer mode → View Ideas as
+    a channel developer (avatar "Ni" on the channel tint, the pill, the developer tabs), Take on
+    the board, Mark as released with 1.10.0; developer mode off → the note → Activate → toast, Pro
+    pill, Ideas badge cleared, "Paparats Pro · gift" on Subscription and Profile. No console
+    errors.
+  - The real app (`pnpm tauri dev`, Rust backend, driven over the WebView2 debugging port): the
+    same Sources, channel-page and Ideas flows end to end with no console errors (FOSS Friends
+    reads 24 days there: the core's local today, D21; the gift runs to 23 December 2026).
+    The dev data set in `%APPDATA%/com.paparats.desktop` was backed up before and restored after.
+
+Known gaps (by milestone):
+
+- Copy address in the real app was not confirmed: driven over the debugging port without OS
+  focus, WebView2's `navigator.clipboard.writeText` never settles (no toast, nothing copied). A
+  user's click focuses the window; check it by hand once (Vitest covers the flow with a spy).
+- The first-launch scene, the hero glow and Replay first launch doing something visible (M6).
+- No failure copy for a failed subscribe, pause, lookup, sync, copy, vote, take, comment, publish,
+  release or activation: each returns quietly (D42–D45).
+- `VoteButton`, `IdeaCard` (comment count), `RatingSummary` and `ReviewCard` format numbers with
+  `Intl.NumberFormat(i18n.language)` inside the presentational components (M1); the output equals
+  `useFormat().number` for every language, but it bypasses the formatter.
+- Cyrillic text still renders 1–6 px narrower than in the prototype (M2 gap); Belarusian was
+  checked by tests, not visually.
+- The main JS chunk is now ≈ 635 kB minified (≈ 192 kB gzip); the mock services and fixtures are
+  still bundled in Tauri builds.

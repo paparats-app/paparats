@@ -1,12 +1,11 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useParams } from "react-router";
-import { useNav } from "@/app/navigation";
 import { EmptyState } from "@/components/EmptyState";
-import { Icon } from "@/components/Icon";
 import { PLACEHOLDER_SHOTS, ScreenshotViewer } from "@/components/ScreenshotViewer";
 import { useAppIndex } from "@/hooks";
 import { useCatalog } from "@/queries";
+import { BackLink } from "@/screens/shared";
 import type { App, Catalog } from "@/services/types";
 import { AppAbout } from "./AppAbout";
 import { AppDetails } from "./AppDetails";
@@ -32,22 +31,11 @@ export function AppScreen() {
   return app ? <AppPage key={app.id} app={app} catalog={catalog} /> : <AppNotFound />;
 }
 
-function BackLink() {
-  const { t } = useTranslation();
-  const { back } = useNav();
-  return (
-    <button type="button" className={styles.back} onClick={back}>
-      <Icon name="chevron-left" size={16} strokeWidth={2} />
-      {t("common.back")}
-    </button>
-  );
-}
-
 function AppNotFound() {
   const { t } = useTranslation();
   return (
     <div className={styles.page}>
-      <BackLink />
+      <BackLink label={t("common.back")} />
       <EmptyState icon="package" title={t("app.notFound")} hint={t("app.notFoundHint")} />
     </div>
   );
@@ -58,7 +46,7 @@ function AppPage({ app, catalog }: { app: App; catalog: Catalog }) {
   const [shot, setShot] = useState(0);
   return (
     <div className={styles.page}>
-      <BackLink />
+      <BackLink label={t("common.back")} />
       <AppHeader app={app} />
 
       <h2 className={`${styles.heading} ${styles.shotsHeading}`}>{t("app.screenshots")}</h2>

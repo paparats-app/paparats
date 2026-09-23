@@ -72,4 +72,9 @@ export const ideas = {
   forYourApps: "For your apps",
   noIdeas: "Nothing here yet",
   noIdeasHint: "Be the first to suggest something.",
+  dismissNote: "Dismiss",
+  statusFilter: "Filter by status",
+  removeFilter: "Remove filter",
+  filtersLabel: "Filters:",
+  ideaKind: "Kind of idea",
 } as const;

@@ -83,4 +83,9 @@ export const ideas: LocaleCatalog<typeof En> = {
   forYourApps: "Для вашых праграм",
   noIdeas: "Пакуль пуста",
   noIdeasHint: "Прапануйце нешта першым.",
+  dismissNote: "Схаваць",
+  statusFilter: "Фільтр па статусе",
+  removeFilter: "Прыбраць фільтр",
+  filtersLabel: "Фільтры:",
+  ideaKind: "Тып ідэі",
 };

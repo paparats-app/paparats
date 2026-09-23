@@ -74,6 +74,13 @@
   font-weight: 600;
 }
 
+/* The 30px button (prototype line 1231) gets a 32px hit area without moving anything (D32). */
+.take::before {
+  content: "";
+  position: absolute;
+  inset: -1px 0;
+}
+
 .meta {
   display: flex;
   flex-wrap: wrap;

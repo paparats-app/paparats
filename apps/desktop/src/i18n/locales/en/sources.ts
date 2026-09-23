@@ -30,6 +30,7 @@ export const sources = {
   channelsCount_other: "{{count, number}} channels",
   notFound: "No channel at this address",
   notFoundHint: "Check the link or ask the author for a short code.",
+  notFoundError: "No channel at this address. Check the link or ask the author for a short code.",
   alreadySubscribed: "You already follow this channel.",
   confirmChannelTitle: "Add {{channel}}?",
   confirmChannelBody:

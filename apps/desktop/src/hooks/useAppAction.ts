@@ -2,13 +2,13 @@ import { useTranslation } from "react-i18next";
 import { updateSizeMb, type AppInstallState } from "@/domain/apps";
 import { candidates, homeChannel } from "@/domain/channels";
 import { useFormat } from "@/i18n/format";
-import { useCatalog, useChannelActions } from "@/queries";
+import { useCatalog } from "@/queries";
 import { useServices } from "@/services";
 import type { App } from "@/services/types";
-import { useDialogStore } from "@/stores/useDialogStore";
 import { useDownloadsStore } from "@/stores/useDownloadsStore";
 import { useUiStore } from "@/stores/useUiStore";
 import { useChannelContext } from "./useChannelContext";
+import { useChannelFollow } from "./useChannelFollow";
 import { useInstallState } from "./useInstallState";
 import { useOffline } from "./useOffline";
 
@@ -43,8 +43,7 @@ export function useAppAction(app: App): AppAction {
   const channels = useChannelContext();
   const offline = useOffline();
   const manifests = useCatalog().data?.updates;
-  const channelActions = useChannelActions();
-  const openDialog = useDialogStore((s) => s.open);
+  const { follow } = useChannelFollow();
   const notify = useUiStore((s) => s.notify);
   const downloads = useDownloadsStore.getState;
 
@@ -75,13 +74,8 @@ export function useAppAction(app: App): AppAction {
     const channelId = homeChannel(app);
     const channel = channels.byId[channelId];
     if (!channel || channels.isFollowed(channelId)) return;
-    if (channel.trust === "community") {
-      openDialog({ kind: "trustConfirm", channelId });
-      return;
-    }
-    channelActions
-      .subscribe(channelId)
-      .then(() => notify(t("channel.subscribedTo", { channel: channel.name })), ignore);
+    // A community channel asks for the trust confirmation first.
+    follow(channel);
   }
 
   function run() {

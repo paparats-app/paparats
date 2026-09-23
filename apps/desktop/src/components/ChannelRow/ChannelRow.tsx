@@ -5,7 +5,7 @@ import { AppIcon } from "../AppIcon";
 import { Button, IconButton } from "../Button";
 import { cx } from "../internal/cx";
 import { Toggle } from "../Toggle";
-import { TrustBadge } from "../TrustBadge";
+import { TRUST_KEY, TrustBadge } from "../TrustBadge";
 import { WarnCallout } from "../WarnCallout";
 import styles from "./ChannelRow.module.css";
 
@@ -51,12 +51,6 @@ export type ChannelRowProps = ChannelRowBase &
         onSubscribe: () => void;
       }
   );
-
-const TRUST_KEY = {
-  official: "sources.trustOfficial",
-  verified: "sources.trustVerified",
-  community: "sources.trustCommunity",
-} as const;
 
 /**
  * Channel list row: monogram tile, name + trust badge, meta, then sync state, the pause toggle
@@ -127,6 +121,7 @@ export function ChannelRow(props: ChannelRowProps) {
           label={name}
           size="compact"
           iconSize={16}
+          iconStrokeWidth={2}
           className={styles.chevron}
           onClick={onOpen}
         />

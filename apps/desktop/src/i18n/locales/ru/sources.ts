@@ -37,6 +37,8 @@ export const sources: LocaleCatalog<typeof En> = {
   channelsCount_other: "{{count, number}} канала",
   notFound: "По этому адресу канала нет",
   notFoundHint: "Проверьте ссылку или попросите у автора короткий код.",
+  notFoundError:
+    "По этому адресу канала нет. Проверьте ссылку или попросите у автора короткий код.",
   alreadySubscribed: "Вы уже подписаны на этот канал.",
   confirmChannelTitle: "Добавить {{channel}}?",
   confirmChannelBody:

@@ -155,6 +155,11 @@
   padding: var(--sp-20) var(--sp-24) 0;
 }
 
+/* The × of the form dialogs is a 32px ghost at radius 8 (lines 1373, 1423). */
+.form .header > button {
+  --btn-r: var(--r-8);
+}
+
 .form .body {
   padding: var(--sp-18) var(--sp-24) 0;
 }

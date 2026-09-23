@@ -83,4 +83,9 @@ export const ideas: LocaleCatalog<typeof En> = {
   forYourApps: "Для ваших приложений",
   noIdeas: "Пока пусто",
   noIdeasHint: "Предложите что-нибудь первым.",
+  dismissNote: "Скрыть",
+  statusFilter: "Фильтр по статусу",
+  removeFilter: "Убрать фильтр",
+  filtersLabel: "Фильтры:",
+  ideaKind: "Тип идеи",
 };

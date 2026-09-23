@@ -1,0 +1,86 @@
+/* Add channel — prototype lines 1367–1403. */
+
+/* 560px, at most 780px tall (content-box, like the prototype's). Doubled to win over `.dialog`. */
+.dialog.dialog {
+  max-height: min(780px, calc(100% - 2px));
+}
+
+/* The form body is 1.5 `--text2` with pretty wrapping; this dialog keeps the window's 1.4. */
+.content {
+  color: var(--text);
+  line-height: var(--lh-body);
+  text-wrap: wrap;
+}
+
+/* ---- Address (lines 1375–1382) ----------------------------------------------------------- */
+.addressRow {
+  display: flex;
+  gap: var(--sp-8);
+}
+
+/* 40px, radius 9, `--input`; the mint border is the focus indicator (it also wins over the
+   error border while the field is focused, as the prototype's `style-focus`). No hover state. */
+.input {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  height: var(--control-h);
+  padding: 0 var(--sp-14);
+  border: 1px solid var(--line2);
+  border-radius: var(--r-9);
+  background: var(--input);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--fs-body);
+  outline: none;
+}
+
+.input[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.input:focus {
+  border-color: var(--mint);
+}
+
+/* Add: 40px mint, radius 9, 18px sides, 14px/600. */
+.add.add {
+  --btn-r: var(--r-9);
+  --btn-px: var(--sp-18);
+  --btn-fs: var(--fs-body);
+}
+
+/* ---- Channel catalog (lines 1384–1400) ---------------------------------------------------- */
+.catalogHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-12);
+  padding: var(--sp-22) 0 var(--sp-10);
+}
+
+.catalogTitle {
+  font-size: var(--fs-secondary);
+  font-weight: 600;
+}
+
+.catalogCount {
+  color: var(--text3);
+  font-size: var(--fs-secondary-sm);
+}
+
+/* A bordered list at radius 10; each row's top rule overlaps the previous row's last pixel. */
+.catalog.catalog {
+  border-radius: var(--r-10);
+}
+
+.catalog > * + * {
+  margin-top: -1px;
+}
+
+.empty {
+  padding: var(--sp-18) var(--sp-14);
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  text-align: center;
+}

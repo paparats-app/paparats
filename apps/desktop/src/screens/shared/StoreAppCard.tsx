@@ -12,6 +12,11 @@ export interface StoreAppCardProps {
    * default; off on Categories › "Featured in …" (prototype line 441).
    */
   chips?: boolean;
+  /**
+   * The source channel chip alone (with `chips` on). On by default; off on the channel page,
+   * whose cards show only the category chip (prototype line 1166).
+   */
+  channelChip?: boolean;
 }
 
 /**
@@ -21,7 +26,7 @@ export interface StoreAppCardProps {
  * Prototype lines 224–233 (the same card repeats on Browse, Categories, search and the app page;
  * `card()` in the logic).
  */
-export function StoreAppCard({ app, chips = true }: StoreAppCardProps) {
+export function StoreAppCard({ app, chips = true, channelChip = true }: StoreAppCardProps) {
   const { t } = useTranslation();
   const { go } = useNav();
   const action = useAppAction(app);
@@ -34,7 +39,7 @@ export function StoreAppCard({ app, chips = true }: StoreAppCardProps) {
       icon={view.icon}
       tagline={view.tagline}
       category={chips ? view.category : undefined}
-      channel={chips ? view.channel : undefined}
+      channel={chips && channelChip ? view.channel : undefined}
       action={toActionView(action)}
       secondary={{ label: t("common.details"), icon: "chevron-down", onClick: open }}
       onOpen={open}

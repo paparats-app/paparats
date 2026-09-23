@@ -1,0 +1,139 @@
+/* Channel page header — prototype lines 1121–1164. */
+.header {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr) 280px;
+  gap: var(--sp-24);
+  align-items: start;
+  padding-bottom: var(--sp-26);
+  border-bottom: 1px solid var(--line);
+}
+
+.main {
+  min-width: 0;
+}
+
+/* H1 + trust badge + kind chip (line 1124). */
+.titleRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-10);
+}
+
+.title {
+  margin: 0;
+  color: var(--text);
+  font-size: var(--fs-app);
+  font-weight: 700;
+  letter-spacing: var(--ls-tight);
+  line-height: 1.15;
+}
+
+/* Kind chip: 3px 9px (the shared chip is 2px 9px). */
+.kind.kind {
+  padding-top: var(--sp-3);
+  padding-bottom: var(--sp-3);
+}
+
+/* "by Nilesoft · @nilesoft · 1,840 subscribers" (line 1129). */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-6) var(--sp-10);
+  margin-top: var(--sp-8);
+  color: var(--text2);
+  font-size: var(--fs-body);
+}
+
+.sep {
+  color: var(--text3);
+}
+
+.handle {
+  font-family: var(--font-mono);
+  font-size: var(--fs-secondary);
+}
+
+.desc {
+  max-width: 620px;
+  margin: var(--sp-12) 0 0;
+  color: var(--text2);
+  font-size: var(--fs-title-lg);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+/* ---- Action row (38px buttons, radius 9; lines 1131–1143) -------------------------------- */
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-10);
+  margin-top: var(--sp-18);
+}
+
+/* Subscribe: 18px right / 14px left padding around the 16px plus. */
+.subscribe.subscribe {
+  padding: 0 var(--sp-18) 0 var(--sp-14);
+}
+
+/* "Subscribed" status chip (not a control). */
+.subscribed {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-8);
+  box-sizing: border-box;
+  height: 38px;
+  padding: 0 var(--sp-14);
+  border-radius: var(--r-9);
+  background: var(--mint-soft);
+  color: var(--mint2);
+  font-size: var(--fs-body);
+  font-weight: 600;
+}
+
+/* Enabled / Paused: the 34×20 switch graphic in a `--card` outline button. */
+.toggle.toggle {
+  gap: var(--sp-10);
+  padding: 0 var(--sp-14) 0 var(--sp-12);
+  background: var(--card);
+  color: var(--text);
+}
+
+.unsubscribe.unsubscribe {
+  padding: 0 var(--sp-14);
+}
+
+.unsubscribe.unsubscribe:hover:not(:disabled) {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* Copy address / Report a problem / Sync now: 15px glyph, 7px gap, 12px left padding. */
+.secondary.secondary {
+  gap: 7px;
+  padding: 0 var(--sp-14) 0 var(--sp-12);
+}
+
+/* ---- Warnings (lines 1144–1156) ---------------------------------------------------------- */
+.stale {
+  margin-top: var(--sp-16);
+}
+
+.note {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-8);
+  margin-top: var(--sp-14);
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+}
+
+.infoIcon {
+  color: var(--text3);
+}
+
+.officialIcon {
+  color: var(--mint2);
+}

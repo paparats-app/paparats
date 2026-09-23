@@ -105,8 +105,11 @@
   gap: var(--sp-12);
 }
 
+/* The catalog name keeps the dialog's 1.4 (line 1392; only the Sources name is 1.25): a name that
+   wraps its trust badge ("Софт па-беларуску") makes the row 2px taller, as in the prototype. */
 .catalog .name {
   font-size: var(--fs-body);
+  line-height: var(--lh-body);
 }
 
 .catalog .meta {

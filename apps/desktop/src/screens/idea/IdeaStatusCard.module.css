@@ -1,0 +1,127 @@
+/* Status card — prototype lines 1298–1314: `--card`, 1px `--line`, radius 12, padding 16/18. */
+.card {
+  min-width: 0;
+  padding: var(--sp-16) var(--sp-18);
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+  color: var(--text);
+}
+
+.statusRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-8);
+  align-items: center;
+}
+
+/* The card's pill is a size up from the board's: 3px 10px, 12px/600 (line 1299). */
+.pill.pill {
+  padding: var(--sp-3) var(--sp-10);
+  font-size: var(--fs-meta);
+}
+
+.developer {
+  display: inline-flex;
+  gap: var(--sp-6);
+  align-items: center;
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+}
+
+.devDot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-4);
+}
+
+.hint {
+  margin-top: var(--sp-10);
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  line-height: 1.45;
+  text-wrap: pretty;
+}
+
+/* Released app (line 1302): 36px tile, name + version, Open. */
+.appRow {
+  display: flex;
+  gap: var(--sp-10);
+  align-items: center;
+  margin-top: var(--sp-14);
+  padding: var(--sp-10) var(--sp-12);
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--bg);
+}
+
+/* The prototype's 36px tile has no monogram tracking. */
+.appTile.appTile {
+  letter-spacing: 0;
+}
+
+.appText {
+  flex: 1;
+  min-width: 0;
+}
+
+.appName {
+  overflow: hidden;
+  font-size: var(--fs-body);
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.appVersion {
+  color: var(--text3);
+  font-size: var(--fs-meta);
+}
+
+/* Open: 30px, radius 8, 13px/600 (line 1305); the pseudo-element makes the hit area 32px. */
+.open.open {
+  --btn-r: var(--r-8);
+  font-weight: 600;
+}
+
+.open::before {
+  content: "";
+  position: absolute;
+  inset: -1px 0;
+}
+
+.bonus {
+  display: flex;
+  gap: var(--sp-8);
+  align-items: flex-start;
+  margin-top: var(--sp-12);
+  color: var(--text2);
+  font-size: var(--fs-secondary-sm);
+  line-height: var(--lh-body);
+}
+
+.crown {
+  flex: none;
+  margin-top: var(--sp-2);
+  color: var(--mint2);
+}
+
+/* Take this idea / Mark as released: 38px, radius 9, full width, 14px/600 (lines 1308, 1311). */
+.cta.cta {
+  margin-top: var(--sp-14);
+}
+
+.takeHint {
+  margin-top: var(--sp-8);
+  color: var(--text3);
+  font-size: var(--fs-secondary-sm);
+  line-height: var(--lh-body);
+  text-wrap: pretty;
+}
+
+.takenBy {
+  margin-top: var(--sp-12);
+  color: var(--text3);
+  font-size: var(--fs-secondary-sm);
+}

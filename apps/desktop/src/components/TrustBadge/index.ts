@@ -1,1 +1,1 @@
-export { TrustBadge, TRUST_ICON, type TrustBadgeProps } from "./TrustBadge";
+export { TrustBadge, TRUST_ICON, TRUST_KEY, type TrustBadgeProps } from "./TrustBadge";

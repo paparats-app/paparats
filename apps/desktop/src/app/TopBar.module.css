@@ -41,3 +41,9 @@
   font-size: var(--fs-secondary);
   font-weight: 600;
 }
+
+/* Developer view: the acting channel's monogram on its tint (per-item data colour). */
+.tinted {
+  background: var(--tint);
+  color: var(--on-tint);
+}

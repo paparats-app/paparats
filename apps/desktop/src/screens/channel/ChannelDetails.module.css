@@ -1,0 +1,60 @@
+/* Details card — prototype lines 1158–1162. */
+.card {
+  box-sizing: border-box;
+  min-width: 0;
+  padding: var(--sp-16) var(--sp-18);
+  border: 1px solid var(--line);
+  border-radius: var(--r-12);
+  background: var(--card);
+}
+
+/* Overline "DETAILS": 12px/600, .08em, uppercase, `--text3`. */
+.title {
+  margin: 0 0 var(--sp-6);
+  color: var(--text3);
+  font-size: var(--fs-meta);
+  font-weight: 600;
+  letter-spacing: var(--ls-overline);
+  line-height: var(--lh-body);
+  text-transform: uppercase;
+}
+
+.list {
+  margin: 0;
+}
+
+/* 13px key/value rows with a 1px `--line` rule above each. */
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--sp-12);
+  padding: 9px 0;
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-secondary);
+}
+
+.label {
+  flex: none;
+  color: var(--text2);
+}
+
+.value {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--text);
+  text-align: right;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Community warning box (line 1162): 10px gap, the icon on the first line (1px down). */
+.community.community {
+  gap: var(--sp-10);
+  align-items: flex-start;
+  margin-top: var(--sp-12);
+}
+
+.community > svg {
+  margin-top: 1px;
+}

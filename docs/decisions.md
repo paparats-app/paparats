@@ -459,3 +459,151 @@ D31 — the prototype kept it). The Library row keeps the prototype's two lines:
   its initials render in Chrome's default Arial; the caps sit within ≈ 0.6 px of the prototype's.
 - `subscription.testimonialBy` carries the dash ("— A happy user"), which the prototype's markup
   prepended (like `sources.staleTitle`'s period, D13).
+
+## Channels and Ideas (M5)
+
+### D42 — Settings › Sources and the channel dialogs
+- The trust confirmation's button reads "Add channel" (`sources.addChannel`, prototype line 1512),
+  not "Confirm" as the README wrote.
+- A followed channel that never synced shows "Not synced yet" (`sources.neverSynced`, README); the
+  prototype left the sync text empty (e.g. Winaero right after subscribing).
+- The trust confirmation opened from Add channel is rendered inside `AddChannelDialog`, which hides
+  its own modal meanwhile and keeps its state (the prototype's `hasChannelDialog = chDialog &&
+  !chPending`): Cancel or Escape return to it with the address still typed and focus in the field
+  (`cancelTrust`); confirming closes both. `useDialogStore` keeps `{kind:'addChannel'}` while it
+  shows. `{kind:'trustConfirm', channelId}` opened from a card's or the channel page's Subscribe
+  stands alone; Cancel just closes it.
+- Lookup accepts the full address (scheme, `www.`, case and a trailing `/` ignored), the host, the
+  `@handle` or the bare handle. A blank address or a bare `https://` does nothing. The two inline
+  errors are one catalog string each (`sources.notFoundError`, `sources.alreadySubscribed`; no
+  `notFound + '. ' + notFoundHint` join, D13 — the old keys stay as keymap targets); typing clears
+  them. A lookup call that fails shows nothing.
+- Toasts, and closing a dialog, happen after the service resolves; a failed call shows nothing and
+  keeps the dialog (no failure copy, D38–D40). The prototype toasted at once. The pause switches
+  (Sources rows and the channel page's Enabled/Paused) show the requested state at once and revert
+  if the call fails.
+- `useBrowseStore.dropSource` runs on pause, on resume (the prototype's `toggleChannel` filtered
+  `fSources` both ways) and on unsubscribe.
+- Unsubscribing removes the whole subscription, including `staleAcknowledged`: re-following a
+  channel that is still unreachable shows the stale callout again (the prototype kept `staleAck`
+  across unsubscribing).
+- The address field is the shared `Field` around the dialog's own `<input>`: `TextField` cannot
+  put Add beside the input with the message spanning the row, has a hover border the prototype's
+  input lacks, and its inner `Field` would override the outer `aria-invalid`/`aria-describedby`.
+  With an error the border is `--danger`; the mint focus border wins while focused (prototype
+  `style-focus`).
+- Both dialogs, and the Sources list card, render nothing until channels and the catalog have
+  loaded, so no "0 channels" / "0 apps" flashes (like D30). The header and the trust-level cards
+  render at once.
+- The modal body scrolls as a whole when the column is shorter than the dialog; the prototype
+  scrolled only the catalog list. A backdrop click closes (the shared `Modal` default); the
+  prototype's backdrops had no handler. Repeated Add / Subscribe / confirm clicks while a call is
+  in flight are ignored, with no spinner (the prototype has none).
+- The trust-level cards are a list labelled by the "Trust levels" overline (D32); visually the
+  prototype's divs.
+
+### D43 — Channel page
+- An unknown channel id shows "Channel not found" with Back (`EmptyState`, rss icon; like D30);
+  the prototype fell back to the first channel.
+- Copy address copies `channel.addr` exactly as the Address row shows it (`nilesoft.org/paparats`,
+  no scheme), which the add-channel lookup accepts. "Address copied" is toasted after the
+  clipboard write resolves; a failed write shows nothing. The browser Clipboard API needs the
+  window focused (a click gives it focus).
+- Every toast (subscribe, unsubscribe, pause/resume, sync, copy) follows the service result (D42).
+  Sync now: "Channel synced" and Last sync → today, or "<Channel> is still unreachable".
+- Only a followed channel reports an outage (the prototype's `down = isSub ? downDays(c) : 0`).
+  The stale callout stays while the channel is down; Keep and Unsubscribe show only while it is
+  stale and not kept. Last sync reads the outage date, then the synced date, then "Not synced yet".
+- An empty Support value shows `channel.notProvided` ("—"), the prototype's `c.support || '—'`.
+- The apps grid uses `StoreAppCard` with `channelChip={false}` (category chip only, line 1166);
+  the header badge is `TrustBadge` `size="lg"` `iconSize={12}` (line 1126).
+- Accessibility additions with no visual change: the Details overline is an `<h2>` naming the
+  `<aside>`, its rows a `<dl>`; Enabled/Paused is `role="switch"`; the `·` separators are
+  `aria-hidden`; the apps grid is a list named by its heading.
+- lucide `info` and `rotate-ccw` differ slightly from the prototype's hand-drawn info and sync
+  glyphs.
+
+### D44 — Ideas board and Suggest an idea
+- The status chips and the numbered "How it works" circles are local to `screens/ideas` (only
+  Ideas uses them), so no shared `ToggleChip` was added (M1 note closed).
+- Tabs follow the view (user: All / New apps / Existing apps / My ideas; developer: All / New
+  apps / For my apps / My work); a stored tab the view lacks falls back to All.
+- Take (developer view, only on ideas `canTake` allows) pins the idea to the developer channel and
+  toasts "Pinned to Nilesoft · author notified" (`screens/shared › useTakeIdea`, shared with the
+  idea page); a refusal (someone took it first) changes nothing.
+- Activate 3 months of Pro claims the thank-you, then dismisses every release note on screen (the
+  prototype marked them seen, D16) and toasts "Paparats Pro is active until <date>" with the
+  account's returned `giftUntil` (mock `meta.ideaBonusUntil`, Rust today + 3 months, D21), not the
+  prototype's constant. Repeated presses while it runs are ignored. "Bonus claimed" (hides the
+  Your ideas rail) is `subscription.giftUntil !== null`; the prototype had a separate flag.
+- A released idea whose app is not in the catalog: the note hides "Open <App>" and draws a mint
+  tile; the card hides its developer line (the prototype drew an inert "Open " and an empty line).
+  Never happens with the fixtures.
+- Suggest an idea:
+  - "Which app?" lists the visible apps A–Z; from an app page whose channel is not followed (mpv)
+    that app is added and selected (the prototype showed the first option while publishing for
+    the hidden app). From the board the default is the first catalog app among the options
+    (Obsidian, the prototype's `D.apps[0]`), not the first A–Z.
+  - The title gets focus on open, Enter submits (a form; Publish is `type=submit`), and Publish
+    shows the shared spinner while the call runs (like ReportDialog). A title under 6 characters
+    after trimming, or a service `invalid` rejection, shows `ideas.ideaTitleShort`; any edit
+    clears it. Any other failure keeps the dialog and the text.
+  - Publishing puts the idea on top as mine/Open with the author's vote, opens its page and toasts.
+- Accessibility additions with no visual change: the status chips are toggle buttons
+  (`aria-pressed`) in a group named "Filter by status"; the sort select is "Sort by"; the 28 px app
+  filter chip has `aria-description` "Remove filter" and a 34 px hit area; the Your ideas rows are
+  buttons; the aside cards and the note are sections named by their `<h2>`.
+
+### D45 — Idea page and the release dialog
+- An unknown idea id shows "Idea not found" with Back (`EmptyState`, lightbulb; like D30); the
+  prototype fell back to the first idea.
+- Release is disabled while the version is blank or no app is chosen (the service rejects blank
+  versions, D12); the prototype accepted anything. The version is prefilled with the app's next
+  patch version and recomputed when another app is picked (a typed version is dropped, as in the
+  prototype); Release trims it. A failed release keeps the dialog without a toast.
+- The release dialog renders nothing until ideas, catalog, channels and account have loaded (so
+  the prefill is never "1.0.0" with an empty picker); an unknown `ideaId` closes it.
+- Take, Post and Release ignore repeated clicks while their call runs, without a spinner; a failed
+  comment keeps its text. Post stays disabled while the text is blank (existing `CommentThread`
+  behaviour; the prototype's button was clickable and did nothing) and keeps full opacity.
+- In the developer view comments go out as the channel (author = the channel's author, Developer
+  badge, the channel monogram in the composer); the user's own comments read "You" in the user
+  view and the profile name in the developer view (prototype line 2086).
+- "Version 1.9.15" joins `common.version` and the version (D13, like About); the released hint
+  passes "<App> <version>" as `{{app}}`, as the prototype's `relName`.
+- Accessibility additions: the discussion is a region named by its heading, the timeline an `<ol>`
+  named "Progress"; Open is named "Open <App>" and gets a 32 px hit area (the prototype's button
+  is 30 px). The 36 px app tiles drop `AppIcon`'s monogram tracking (the prototype has none).
+
+### D46 — The developer channel and the developer-view avatar
+- No service exposes the catalog meta yet, so the channel the developer view acts as is
+  `hooks/useDeveloperChannel › DEVELOPER_CHANNEL_ID` (`nilesoft`), in one place; it mirrors
+  `fixtures/meta.json › developerChannel` and paparats-catalog's embedded `developer_channel`.
+  Its apps are `domain/ideas › myApps` once the channel is loaded (until then only the apps
+  published on the channel itself).
+- In the developer view the top bar avatar shows that channel's monogram on its tint with
+  `--on-tint` text (the prototype's `avatarText` / `avatarBg` / `avatarColor`); the user view keeps
+  the profile initials. This closes the avatar part of D16.
+
+### D47 — Shared pieces and parity fixes at integration (M5)
+- One implementation per flow: `hooks/useChannelFollow` (follow with the community confirmation,
+  subscribe, unsubscribe, pause, keep — toasts and `dropSource`) serves Settings › Sources, both
+  channel dialogs, the channel page and `useAppAction`'s Subscribe. The channel labels
+  (`KIND_KEY`, `HOST_KEY`, `TRUST_LEVELS`), `channelIcon` and `useChannelMeta` live in
+  `screens/shared/channels.ts`; the trust level names are `components/TrustBadge › TRUST_KEY`
+  (`ChannelRow` uses it too). `useIdeaView` (board, idea page, release dialog) and `useTakeIdea`
+  (board and idea page) moved to `screens/shared`, and the app, channel and idea pages share
+  `screens/shared › BackLink`. `app/dialogs` import only `screens/shared`, not another screen.
+- Additive component props: `StoreAppCard.channelChip` (default true), `TrustBadge.iconSize`
+  (default 11).
+- Component parity fixes, each per the prototype markup: `WarnCallout` actions are 12 px apart at
+  the default size (Sources, line 847) and 8 px at `md` (channel page, line 1149), and its 30 px
+  buttons get an invisible 32 px hit area; the catalog `ChannelRow` name uses line-height 1.4
+  (line 1392); the × of form-layout dialogs is radius 8 (lines 1373, 1423); the `CommentThread`
+  Post button has 16 px sides, no border and a 1.1 brightness hover (line 1342); the `IdeaCard`
+  Take button (30 px, line 1231) gets a 32 px hit area.
+- Token `--r-17` for the developer-view pill (34 px high, prototype line 1190).
+- New catalog keys, none with variables: `sources.notFoundError`; `channel.notFound`,
+  `channel.notFoundHint`, `channel.notProvided`; `ideas.dismissNote`, `ideas.statusFilter`,
+  `ideas.removeFilter`, `ideas.filtersLabel` (keeps the prototype's colon), `ideas.ideaKind`;
+  `idea.progress`, `idea.notFound`, `idea.notFoundHint`.

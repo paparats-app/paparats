@@ -1,6 +1,10 @@
 import { useDialogStore, type DialogState } from "@/stores/useDialogStore";
+import { AddChannelDialog } from "./dialogs/AddChannelDialog";
 import { PlanDialog } from "./dialogs/PlanDialog";
+import { ReleaseIdeaDialog } from "./dialogs/ReleaseIdeaDialog";
 import { ReportDialog } from "./dialogs/ReportDialog";
+import { SuggestIdeaDialog } from "./dialogs/SuggestIdeaDialog";
+import { TrustConfirmDialog } from "./dialogs/TrustConfirmDialog";
 
 /**
  * Renders the open dialog (`useDialogStore`). The dialogs themselves arrive with the screens that
@@ -18,10 +22,13 @@ function renderDialog(dialog: DialogState) {
       return <ReportDialog target={dialog.target} />;
     case "plan":
       return <PlanDialog plan={dialog.plan} />;
-    case "addChannel":
-    case "trustConfirm":
-    case "suggestIdea":
     case "releaseIdea":
-      return null;
+      return <ReleaseIdeaDialog ideaId={dialog.ideaId} />;
+    case "addChannel":
+      return <AddChannelDialog />;
+    case "trustConfirm":
+      return <TrustConfirmDialog channelId={dialog.channelId} />;
+    case "suggestIdea":
+      return <SuggestIdeaDialog appId={dialog.appId} />;
   }
 }

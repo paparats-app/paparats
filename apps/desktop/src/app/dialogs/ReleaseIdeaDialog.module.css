@@ -1,0 +1,60 @@
+/* Release the idea — prototype lines 1470–1499. The dialog body's own 14px top margin is part of
+   the prototype's 16px above the app, so the first block adds 2px. */
+.content {
+  color: var(--text);
+  line-height: var(--lh-body);
+}
+
+.appField {
+  margin-top: var(--sp-2);
+}
+
+/* An improvement ships in its own app (line 1488): tile, name, current version. */
+.fixedApp {
+  display: flex;
+  gap: var(--sp-10);
+  align-items: center;
+  margin-top: var(--sp-2);
+  padding: var(--sp-10) var(--sp-12);
+  border: 1px solid var(--line);
+  border-radius: var(--r-10);
+  background: var(--bg);
+}
+
+/* The prototype's 36px tile has no monogram tracking. */
+.tile.tile {
+  letter-spacing: 0;
+}
+
+.appText {
+  min-width: 0;
+}
+
+.appName {
+  font-size: var(--fs-body);
+  font-weight: 600;
+}
+
+.appCurrent {
+  color: var(--text3);
+  font-size: var(--fs-meta);
+}
+
+/* Version (line 1491): a 180px, 40px field under its 13px/600 label. */
+.version {
+  width: 180px;
+  margin-top: var(--sp-14);
+}
+
+.note {
+  margin: var(--sp-14) 0 0;
+  color: var(--text2);
+  font-size: var(--fs-secondary);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+
+/* Release: 36px primary with 18px sides (Cancel keeps the 16px of the medium size). */
+.release.release {
+  --btn-px: var(--sp-18);
+}

@@ -11,4 +11,7 @@ export const channel = {
   inChannel: "Apps in this channel",
   noChannelApps: "Nothing here yet",
   noChannelAppsHint: "The author hasn’t published any apps yet.",
+  notFound: "Channel not found",
+  notFoundHint: "It may no longer be available.",
+  notProvided: "—",
 } as const;

@@ -14,4 +14,8 @@ export const idea = {
   post: "Post",
   authorBadge: "Author",
   noComments: "No comments yet. Start the discussion.",
+  /** Accessible name of the Proposed · In work · Released timeline. */
+  progress: "Progress",
+  notFound: "Idea not found",
+  notFoundHint: "It may have been removed from the board.",
 } as const;

@@ -14,4 +14,7 @@ export const channel: LocaleCatalog<typeof En> = {
   inChannel: "Приложения в этом канале",
   noChannelApps: "Пока пусто",
   noChannelAppsHint: "Автор ещё не опубликовал приложения.",
+  notFound: "Канал не найден",
+  notFoundHint: "Возможно, он больше недоступен.",
+  notProvided: "—",
 };

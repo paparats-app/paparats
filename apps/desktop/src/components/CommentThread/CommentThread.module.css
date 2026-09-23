@@ -111,9 +111,17 @@
   margin-top: var(--sp-8);
 }
 
+/* Post (line 1342): 34px, 16px sides, no border in either state, 13px/600. */
 .post.post {
-  border-color: transparent;
+  --btn-px: var(--sp-16);
+  border-width: 0;
   font-weight: 600;
+}
+
+/* The prototype brightens the button on hover instead of switching to `--mint2`. */
+.post.post:hover:not(:disabled) {
+  background: var(--mint);
+  filter: brightness(1.1);
 }
 
 .post.post:disabled {

@@ -96,20 +96,13 @@
   cursor: pointer;
 }
 
+/* `--text2`, hover `--text`, in both states (line 627): `aria-pressed` carries the favourite. */
 .favorite:hover {
   color: var(--text);
 }
 
 .favorite:active {
   transform: translateY(1px);
-}
-
-.favorite[aria-pressed="true"] {
-  color: var(--mint2);
-}
-
-.favorite[aria-pressed="true"] svg {
-  fill: currentColor;
 }
 
 .progress.progress {

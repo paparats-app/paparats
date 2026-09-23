@@ -118,12 +118,17 @@
   font-weight: 600;
 }
 
-/* The prototype brightens the button on hover instead of switching to `--mint2`. */
-.post.post:hover:not(:disabled) {
-  background: var(--mint);
+/* The prototype brightens the button on hover (mint or, while blank, `--card2`) instead of
+   switching to `--mint2`. */
+.post.post:hover {
   filter: brightness(1.1);
 }
 
-.post.post:disabled {
-  opacity: 1;
+.post.post[data-variant="primary"]:hover {
+  background: var(--mint);
+}
+
+/* Blank: inert (nothing to post), so no pressed nudge. */
+.post.post[aria-disabled="true"]:active {
+  transform: none;
 }

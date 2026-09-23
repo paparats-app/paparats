@@ -46,6 +46,7 @@ export type NavTarget =
   | { to: "browse"; filters?: Partial<BrowseFilters> }
   /** `appFilter` given (an app id or `null`): the board shows that app's ideas (or all). */
   | { to: "ideas"; appFilter?: AppId | null }
+  /** `section` absent (the sidebar): the section last shown (the prototype's `section` state). */
   | { to: "settings"; section?: SettingsSectionId }
   | { to: "app"; appId: AppId }
   | { to: "channel"; channelId: ChannelId }
@@ -138,6 +139,17 @@ export function initialPathFromHash(hash: string): string {
   return path && parsePath(path) ? path : "/home";
 }
 
+/**
+ * `go()`'s target with Settings resolved: without a section it reopens the one last shown
+ * (`useUiStore.settingsSection`, which the Settings screen keeps), as the prototype's `section`
+ * state survives navigation; explicit sections (Update settings, About) set it.
+ */
+export function resolveTarget(target: NavTarget): NavTarget {
+  if (target.to !== "settings" || target.section !== undefined) return target;
+  const section = useUiStore.getState().settingsSection;
+  return section === "general" ? target : { to: "settings", section };
+}
+
 export interface Nav {
   /** The section the sidebar highlights (see `activeSection`). */
   section: Section;
@@ -158,7 +170,8 @@ export function useNav(): Nav {
   const section = activeSection(pathname, state);
 
   const go = useCallback(
-    (target: NavTarget) => {
+    (requested: NavTarget) => {
+      const target = resolveTarget(requested);
       if (sectionOfPath(pathname) === "updates" && target.to !== "updates") {
         useDownloadsStore.getState().clearJustUpdated();
       }

@@ -604,3 +604,138 @@ Known gaps:
 - Account: an unreadable credential blocks sign-in and sign-out until removed; the UI still asks
   for a password; first launch signs in only with a typed email.
 - `windows` 0.62 and 0.61 (Tauri's) both build; `winreg` has three versions in the lock.
+
+## M8 — Prototype parity (2026-09-23)
+
+What changed (decisions D58–D60 in `docs/decisions.md`). The aim is an app that looks identical
+to the prototype. Earlier deliberate deviations were reverted, every icon draws the prototype's
+glyph, and the mock world left the startup path.
+
+- **Parity pass** (D58; each superseded bullet in D27, D31, D34, D36, D38, D39, D42, D45 and D49
+  is marked):
+  - The store card's category chip wraps like the prototype's inline-block chip (`Chip wrap`).
+  - Hover styles the prototype lacks are gone: idle carousel dots, checkbox/radio boxes, and
+    input borders.
+  - The favourite stars stay `--text2` in both states.
+  - Report › Send is always enabled.
+  - "Paused · 61% · 7 MB of 12 MB" on the app page and in Updates rows.
+  - The overflow menu has no pop-in.
+  - Plan cards in the Pro state show both pills, and the current plan's button looks enabled
+    but is inert (`aria-disabled`). Blank Post and blank Release work the same way.
+  - Settings from the sidebar reopens the section last shown (`useUiStore.settingsSection`,
+    `app/navigation › resolveTarget`).
+  - A never-synced channel's Sources row has empty sync text.
+
+  Measured side by side at 1440 × 920, with the app in a same-origin iframe over the prototype,
+  in en/be/ru.
+- **Icon glyph parity** (D59). Each registry name draws the prototype's glyph: 25 stock lucide
+  icons, and 39 prototype paths through `createLucideIcon` (`components/Icon/glyphs.ts`). New
+  name `info-serif` for the app-header and channel notes. The window controls and the Library
+  row's star have butt caps. `Icon.test.tsx` reads the prototype file and pins every glyph.
+  Checked by the set of (glyph, size, stroke, caps, fill) on every screen, dialog and first-launch
+  step listed in D59.
+- **Startup and build** (D60):
+  - `createServices` is async, and the mock services and fixtures are a lazy chunk a Tauri
+    build never loads.
+  - `services/common.ts` holds what both service sets share.
+  - `vite.config.ts` splits `react` / `vendor` / `fixtures`.
+  - `main.tsx` has no top-level await, which had disabled rolldown's chunk merging.
+  - The startup loads `index` 367 kB, `react` 296 kB, `vendor` 122 kB and one stylesheet, and
+    no chunk warning remains.
+  - `hooks/useConnectivity` carries the offline banner's Retry.
+- **Integration** (D60): reconciled the parity, icon and service-split changes; the service-split
+  engineer left no report, so D60 is written from the code. `docs/architecture.md` §1, §2, §5,
+  §6, §7, §9 and §11 were brought up to date. The re-export shim in `mock/system.ts` is removed.
+  CRLF working copies (`decisions.md`, `progress.md`, `paparats-install/src/error.rs`) are
+  normalised to LF.
+- **Tests.** Vitest: 134 files, 985 tests.
+  - New: `hooks/useConnectivity.test.tsx` and `services/startup.test.ts`. The startup test checks
+    that the static graph from `main.tsx` does not reach the mock world and that no module uses
+    top-level await.
+  - Registry tests cover the async `createServices`.
+  - The glyph pin test.
+  - Parity tests: Chip wrap, the AppCard category wrap, `resolveTarget` and the sidebar Settings
+    memory through the shell, a blank report sent, the inert Post / Release / current-plan
+    buttons, and both plan pills.
+
+  Rust: 348 tests + 6 `#[ignore]`d (unchanged).
+- **Checks.** All green:
+  - `pnpm typecheck`, `pnpm lint`, `pnpm test` and `pnpm format:check`;
+  - `cargo fmt --all --check`, `cargo clippy --workspace --all-targets -- -D warnings` and
+    `cargo test --workspace`;
+  - `pnpm specta`, with no drift;
+  - `pnpm build`, with no chunk-size warning.
+
+  The production build, served by `vite preview` and loaded in headless Edge, boots on the lazy
+  mock chunk and renders the Library.
+
+Known gaps:
+
+- `pnpm tauri dev` was not run in M8. The startup change keeps the order (services → bootstrap →
+  render) and the Tauri set is created without the mock chunk, but only the browser build was
+  exercised.
+- Deliberate deviations kept:
+  - The Pro-state plan card's second pill wraps inside the card; the prototype's overflowed and
+    was clipped.
+  - The inert current-plan, blank Post and blank Release buttons are focusable and announced as
+    unavailable; the prototype's were plain enabled buttons, and its Release released a blank
+    version.
+  - Queued, Installing… and "Updated just now" stay native-disabled; the prototype's "Updated
+    just now" toasted "Opening …".
+- Only the likely hover suspects were checked against the prototype; a full audit of every
+  remaining `:hover` rule was not done.
+- Russian Cyrillic renders ≈ 2–3 % narrower than in the prototype ('Образование' 87.7 vs 89.6 px).
+  The likely cause is the bundled `@fontsource/onest` versus the prototype's Google Fonts Onest.
+  Belarusian and English match, and row and card heights are unaffected.
+- The icon comparison did not render some surfaces; their markup was read instead:
+  - the Release idea and Trust-confirm dialogs;
+  - the toast and the offline banner;
+  - the offline search and Updates "up to date" empty states;
+  - the Ideas developer view;
+  - search results.
+
+  Glyphs were not compared separately in the light theme or in be/ru.
+- `components/RatingSummary` still draws filled rating stars as inline `<svg>` with `STAR_PATH`
+  (the same path as the `star` glyph).
+
+## M8 — Acceptance (2026-09-23)
+
+What changed (decisions D61–D62 in `docs/decisions.md`):
+
+- **Functional acceptance** (D61, written from the code): focus rescue for controls that disappear
+  with their row or block (`app/focusRescue.ts`), Settings › Account › Sign in after a sign-out
+  (the first launch's Account step alone, `useFirstLaunchStore.openSignIn()`), and the Library /
+  Updates row icon tile as a plain `div` (no focusable hidden button).
+- **Visual acceptance** (D62): every screen and state compared with the prototype side by side,
+  same origin, at 1440 × 920 and 1280 × 800, dark and light, en/be/ru, top of the page and
+  scrolled, with forced hover and the first-launch phases (method in D62). Fixed:
+  - `CountPill` line height 1.4 (Library tab counts were a pixel row off);
+  - `AppIcon` without the overflow clip (monograms lost subpixel antialiasing);
+  - `Modal` balances only its description paragraphs (the Suggest an idea placeholder wrapped
+    differently);
+  - `SettingsRow` hints wrap normally, `prettyHint` for Profile › Delete account;
+  - `NotableRow` chips laid out inline like the prototype's (wrapped chips at 1280 px);
+  - `layout-grid` draws the prototype's glyph;
+  - Belarusian formats in Chromium, which has no `be` ICU data (`i18n/belarusian.ts`: sizes
+    "18,4 МБ", dates, relative times, lists, numbers, prices);
+  - test selectors that assumed a row tile button.
+- **Tests.** Vitest: `i18n/belarusian.test.ts` (the hand-written `be` patterns against Node's ICU,
+  `createFormat("be")` and i18next's `number` without runtime data).
+- **Checks.** `pnpm typecheck`, `pnpm lint`, `pnpm test` (136 files, 1 008 tests),
+  `pnpm format:check` and `pnpm build` (no chunk warning) are green; `cargo fmt --all --check` is
+  green, and no Rust file changed after the M8 integration (clippy and cargo test not re-run).
+  The functional pass's files had CRLF working copies and failing Library tests (selectors); both
+  fixed.
+
+Known gaps:
+
+- The comparison ran in headless Chrome against the mock services; `pnpm tauri dev` (WebView2)
+  was not driven. The Belarusian formats were checked in Edge 153 (the WebView2 runtime's ICU):
+  `be` resolves to `ru-BY` there, which the fallback now covers.
+- An app page re-opened on itself (the same app from search) keeps its expanded version history,
+  rating and screenshot; the prototype's `go()` reset them on every navigation.
+- Only `createFormat` and i18next's `number` format handle the missing `be` data.
+  `RatingSummary`, `ReviewCard`, `IdeaCard` and `VoteButton` call `Intl.NumberFormat(language)`
+  directly, so in Belarusian they get the runtime's fallback: WebView2's `ru-BY` writes the same
+  "4,4", "64 %" and three-digit counts as `be` (it would group a four-digit count, "1 234", where
+  `be` writes "1234"); Chrome writes en-US.

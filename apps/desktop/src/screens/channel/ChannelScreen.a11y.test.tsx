@@ -1,5 +1,6 @@
 // Channel page, keyboard only: the tab order through the action row into the apps; Unsubscribe
-// and Subscribe hand the focus to what replaces them; the Enabled/Paused switch reports its state;
+// and Subscribe hand the focus to what replaces them (a community channel's Subscribe through the
+// trust confirmation, too); the Enabled/Paused switch reports its state;
 // Sync now is busy (and syncs once) while it runs.
 import { screen, waitFor, within } from "@testing-library/react";
 import { vi } from "vitest";
@@ -54,6 +55,34 @@ describe("Channel a11y", () => {
     const paused = await within(content()).findByRole("switch", { name: "Paused" });
     expect(paused).toHaveAttribute("aria-checked", "false");
     expect(paused).toHaveFocus();
+  });
+
+  it("hands the focus from Subscribe through the trust confirmation to the switch", async () => {
+    const { user } = await openChannel("winaero");
+    button("Subscribe").focus();
+    await user.keyboard("{Enter}");
+    // A community channel asks first; the dialog takes the focus (Cancel, as in every confirm).
+    const dialog = await screen.findByRole("dialog", { name: "Add Winaero?" });
+    expect(within(dialog).getByRole("button", { name: "Cancel" })).toHaveFocus();
+    await user.tab();
+    expect(within(dialog).getByRole("button", { name: "Add channel" })).toHaveFocus();
+    await user.keyboard("{Enter}");
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    // Subscribe is gone; its replacement, the Enabled switch, has the focus.
+    await waitFor(() =>
+      expect(within(content()).getByRole("switch", { name: "Enabled" })).toHaveFocus(),
+    );
+    expect(within(content()).queryByRole("button", { name: "Subscribe" })).toBeNull();
+  });
+
+  it("gives the focus back to Subscribe when the trust confirmation is cancelled", async () => {
+    const { user } = await openChannel("winaero");
+    button("Subscribe").focus();
+    await user.keyboard("{Enter}");
+    await screen.findByRole("dialog", { name: "Add Winaero?" });
+    await user.keyboard("{Escape}");
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(button("Subscribe")).toHaveFocus();
   });
 
   it("keeps Sync now busy and syncs once while it runs", async () => {

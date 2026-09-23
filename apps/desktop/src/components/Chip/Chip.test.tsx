@@ -10,6 +10,13 @@ describe("Chip", () => {
     expect(chip).toHaveAttribute("data-tone", "neutral");
   });
 
+  it("lets a long label wrap instead of the ellipsis with `wrap` (store-card category)", () => {
+    const { rerender } = render(<Chip>Образ жизни</Chip>);
+    expect(screen.getByText("Образ жизни").parentElement).not.toHaveClass("wrap");
+    rerender(<Chip wrap>Образ жизни</Chip>);
+    expect(screen.getByText("Образ жизни").parentElement).toHaveClass("wrap");
+  });
+
   it("draws the channel dot in the given tint", () => {
     const { container } = render(
       <Chip tone="outline" dot="#3b6fd1">

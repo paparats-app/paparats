@@ -20,10 +20,7 @@
   color: var(--text3);
 }
 
-.textarea:hover:not(:disabled, :focus) {
-  border-color: var(--text3);
-}
-
+/* Focus only: the prototype's text areas have no hover state (lines 1341, 1409, 1459). */
 .textarea:focus {
   border-color: var(--mint);
 }

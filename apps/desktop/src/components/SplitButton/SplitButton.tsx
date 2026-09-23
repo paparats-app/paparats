@@ -22,7 +22,7 @@ export interface SplitButtonProps {
   /** Accessible name of the secondary part. */
   secondaryLabel: string;
   onSecondaryClick?: (event: MouseEvent<HTMLButtonElement>) => void;
-  /** Toggle state of the secondary part (e.g. favourite) → `aria-pressed`. */
+  /** Toggle state of the secondary part (e.g. favourite) → `aria-pressed` only (no colour). */
   secondaryPressed?: boolean;
   secondaryDisabled?: boolean;
   className?: string;

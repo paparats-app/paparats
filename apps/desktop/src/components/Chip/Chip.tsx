@@ -16,6 +16,12 @@ export interface ChipProps {
   /** Makes the chip a button (hover `--text`, border `--text3`). */
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   title?: string;
+  /**
+   * A label longer than the room wraps onto more lines and a single long word runs past the
+   * container, instead of the ellipsis (the prototype's inline-block category chip on store
+   * cards, lines 227, 313).
+   */
+  wrap?: boolean;
   className?: string;
 }
 
@@ -27,6 +33,7 @@ export function Chip({
   leading,
   onClick,
   title,
+  wrap = false,
   className,
 }: ChipProps) {
   const classes = cx(
@@ -34,6 +41,7 @@ export function Chip({
     styles[tone],
     leading !== undefined && styles.withLeading,
     onClick && styles.interactive,
+    wrap && styles.wrap,
     className,
   );
   const content = (

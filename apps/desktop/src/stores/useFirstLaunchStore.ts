@@ -1,7 +1,8 @@
 // First launch (FIRST_LAUNCH_SPEC.md, prototype `startIntro / skipIntro / introStep / finishIntro`):
 // the phase of the night scene and onboarding, the startup decision (`launch()`), Settings ›
-// Advanced › Replay first launch (`replay()`), and the `paparats.firstRun` record written on
-// finish. The store holds no timers: the scene (`screens/first-launch`) runs the timeline while it
+// Advanced › Replay first launch (`replay()`), the `paparats.firstRun` record written on
+// finish, and Settings › Account › Sign in after a sign-out (`openSignIn()`: the Account step
+// alone, docs/decisions.md D61). The store holds no timers: the scene (`screens/first-launch`) runs the timeline while it
 // is mounted and calls `advance()` / `close()`, so nothing keeps ticking after it unmounts.
 import { create } from "zustand";
 import { localStore } from "@/platform/storage";
@@ -94,6 +95,13 @@ export function sceneMotionAllowed(): boolean {
   return useSettingsStore.getState().settings.animations && !prefersReducedMotion();
 }
 
+/**
+ * `intro`: the first launch (scene, then Language → Appearance → Account; finishing records it and
+ * hands over to Home). `signIn`: Settings › Account › Sign in — the Account step alone over the
+ * shell, no scene or motion, no Back; finishing records nothing and stays where the user was.
+ */
+export type FirstLaunchMode = "intro" | "signIn";
+
 export interface FirstLaunchState {
   /** Bumped by every `replay()`; 0 until a replay is requested this session. */
   replayRequested: number;
@@ -103,23 +111,28 @@ export interface FirstLaunchState {
   run: number;
   /** This run animates (false: reduced motion — it began at `lang`, nothing moves). */
   motion: boolean;
+  /** What this run is for (see `FirstLaunchMode`). */
+  mode: FirstLaunchMode;
   /** Startup: plays the scene unless the first-run record says it was seen. */
   launch(): void;
   /** Asks the first-launch scene to play again (language, appearance, sign-in). */
   replay(): void;
   /** Starts a new run: `seed` (or `lang` without motion); the Home hero glow goes off. */
   start(): void;
+  /** Settings › Account › Sign in (signed out): a `signIn` run that shows the Account step. */
+  openSignIn(): void;
   /** Timeline tick of run `run`: moves forward to `phase` (never back, never past `lang`). */
   advance(run: number, phase: FirstLaunchPhase): void;
   /** Click on the scene / `››` during phases 0–4: straight to `lang`. No-op once a step shows. */
   skip(): void;
   /** Continue: lang → theme → signin. */
   next(): void;
-  /** Back: signin → theme → lang. */
+  /** Back: signin → theme → lang (not in a `signIn` run). */
   back(): void;
   /**
    * Later / Sign in: writes the first-run record (current locale and theme), switches to `done`
-   * and turns the Home hero glow on. `false` (nothing changed) unless a step is showing.
+   * and turns the Home hero glow on — in a `signIn` run only `done`. `false` (nothing changed)
+   * unless a step is showing.
    */
   finish(): boolean;
   /** The exit of run `run` is over: the overlay goes. */
@@ -131,6 +144,7 @@ export const useFirstLaunchStore = create<FirstLaunchState>()((set, get) => ({
   phase: null,
   run: 0,
   motion: true,
+  mode: "intro",
 
   launch() {
     if (!hasSeenFirstLaunch()) get().start();
@@ -144,7 +158,12 @@ export const useFirstLaunchStore = create<FirstLaunchState>()((set, get) => ({
   start() {
     const motion = sceneMotionAllowed();
     useHomeStore.getState().setHeroGlow(false);
-    set((s) => ({ phase: motion ? "seed" : "lang", run: s.run + 1, motion }));
+    set((s) => ({ phase: motion ? "seed" : "lang", run: s.run + 1, motion, mode: "intro" }));
+  },
+
+  openSignIn() {
+    if (get().phase !== null) return;
+    set((s) => ({ phase: "signin", run: s.run + 1, motion: false, mode: "signIn" }));
   },
 
   advance(run, phase) {
@@ -170,14 +189,18 @@ export const useFirstLaunchStore = create<FirstLaunchState>()((set, get) => ({
   },
 
   back() {
-    const { phase } = get();
-    if (!isStep(phase)) return;
+    const { phase, mode } = get();
+    if (!isStep(phase) || mode === "signIn") return;
     const previous = FIRST_LAUNCH_STEPS[FIRST_LAUNCH_STEPS.indexOf(phase) - 1];
     if (previous) set({ phase: previous });
   },
 
   finish() {
     if (!isStep(get().phase)) return false;
+    if (get().mode === "signIn") {
+      set({ phase: "done" });
+      return true;
+    }
     const { locale, theme } = useSettingsStore.getState().settings;
     const record: FirstRunRecord = { seen: true, locale, theme, at: new Date().toISOString() };
     localStore.writeJson(FIRST_RUN_KEY, record);

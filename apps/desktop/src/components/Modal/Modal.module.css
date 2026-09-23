@@ -110,11 +110,13 @@
   overflow: auto;
   color: var(--text2);
   line-height: 1.5;
-  text-wrap: pretty;
 }
 
+/* Only the description paragraphs balance their last line (the prototype's dialog `<p>`s); form
+   fields, placeholders and the channel catalog wrap normally, as there. */
 .body > p {
   margin: 0;
+  text-wrap: pretty;
 }
 
 .footer {

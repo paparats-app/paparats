@@ -1,6 +1,6 @@
+/* Round caps and joins come from lucide's own attributes, so a call site can pass
+   `strokeLinecap="butt"` / `strokeLinejoin="miter"` where the prototype draws square ends. */
 .icon {
   flex: none;
   display: block;
-  stroke-linecap: round;
-  stroke-linejoin: round;
 }

@@ -9,10 +9,15 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  # The gate: the same commands, in the same order, as `pnpm check` (package.json), one step each.
+  # Change both together.
   checks:
     name: Checks (windows-latest)
     runs-on: windows-latest
@@ -57,10 +62,7 @@ jobs:
         run: cargo test --workspace
 
       - name: Bindings are up to date
-        shell: bash
-        run: |
-          pnpm specta
-          git diff --exit-code -- apps/desktop/src/bindings.ts
+        run: pnpm specta:check
 
   build:
     name: Build installer

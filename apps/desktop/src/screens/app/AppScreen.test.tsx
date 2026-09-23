@@ -140,7 +140,7 @@ describe("AppScreen", () => {
 
       fireEvent.click(top.getByRole("button", { name: "40% · Pause" }));
       await flush();
-      expect(top.getByText("Paused · 40%")).toBeInTheDocument();
+      expect(top.getByText("Paused · 40% · 35 MB of 88 MB")).toBeInTheDocument();
       fireEvent.click(top.getByRole("button", { name: "Resume" }));
       await flush(6 * TICK);
       expect(top.getByRole("button", { name: "Installing…" })).toBeDisabled();
@@ -236,9 +236,8 @@ describe("AppScreen", () => {
       ),
     ).toBeInTheDocument();
     const send = within(dialog).getByRole("button", { name: "Send" });
-    expect(send).toBeDisabled();
+    expect(send).toBeEnabled();
     await user.type(within(dialog).getByRole("textbox", { name: "What went wrong?" }), "   ");
-    expect(send).toBeDisabled();
     await user.type(within(dialog).getByRole("textbox"), "The menu disappears after an update");
     await user.click(send);
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());

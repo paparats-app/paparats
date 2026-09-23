@@ -28,8 +28,20 @@
   gap: var(--sp-10);
 }
 
+/* The prototype's name block keeps its automatic minimum (its longest word) and the pills never
+   shrink, so with two pills the name wraps down to that minimum (line 701). Here the block takes
+   the room the pills leave: the same line breaks, and the pills wrap below each other in the
+   remaining width rather than overflow the card. */
 .names {
-  min-width: 0;
+  flex: 1 1 0%;
+}
+
+.pills {
+  display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--sp-6) var(--sp-10);
 }
 
 .name {
@@ -124,6 +136,7 @@
   background: var(--mint);
 }
 
-.button.button:disabled {
-  opacity: 1;
+/* The current plan's inert button: no pressed nudge (it does nothing). */
+.button.button[aria-disabled="true"]:active {
+  transform: none;
 }

@@ -19,6 +19,11 @@ export interface LanguageOption {
 interface RowBase {
   title: string;
   hint?: string;
+  /**
+   * Balance the hint's last line (`text-wrap: pretty`), as the prototype does for a few hints only
+   * (Profile › Delete account); other hints wrap normally. The note row always does.
+   */
+  prettyHint?: boolean;
   className?: string;
 }
 
@@ -68,13 +73,15 @@ export type SettingsRowProps = RowBase &
 export function SettingsRow(props: SettingsRowProps) {
   const { t } = useTranslation();
   const titleId = useId();
-  const { title, hint, className } = props;
+  const { title, hint, prettyHint = false, className } = props;
   const label = (hintNode: ReactNode = hint) => (
     <div className={styles.label}>
       <div id={titleId} className={styles.title}>
         {title}
       </div>
-      {hintNode !== undefined && <div className={styles.hint}>{hintNode}</div>}
+      {hintNode !== undefined && (
+        <div className={cx(styles.hint, prettyHint && styles.pretty)}>{hintNode}</div>
+      )}
     </div>
   );
 

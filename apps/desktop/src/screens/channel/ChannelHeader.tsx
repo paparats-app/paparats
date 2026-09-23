@@ -98,7 +98,7 @@ export function ChannelHeader({ channel }: { channel: ChannelInfo }) {
           </div>
         ) : (
           <div className={styles.note}>
-            <Icon name="info" size={15} strokeWidth={2} className={styles.infoIcon} />
+            <Icon name="info-serif" size={15} strokeWidth={2} className={styles.infoIcon} />
             {t("channel.proNotCovered")}
           </div>
         )}

@@ -70,7 +70,10 @@ describe("M4 account surfaces in the shell", () => {
     expect(toast()).toBe("Welcome to Paparats Pro");
     expect(services.world.account.subscription.plan).toBe("yearly");
 
-    expect(within(plans().yearly).getByRole("button", { name: "Current plan" })).toBeDisabled();
+    expect(within(plans().yearly).getByRole("button", { name: "Current plan" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
     expect(within(plans().free).getByRole("button", { name: "Cancel plan" })).toBeEnabled();
     // Sidebar Pro pill and the Subscription status card.
     expect(within(subscriptionItem()).getByText("Pro")).toBeInTheDocument();

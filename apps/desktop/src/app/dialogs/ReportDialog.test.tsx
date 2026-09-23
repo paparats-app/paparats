@@ -1,4 +1,5 @@
-// Report a problem (prototype lines 1404–1416): title, routing line, Send gating, receipt toast.
+// Report a problem (prototype lines 1404–1416): title, routing line, Send (always enabled), receipt
+// toast.
 import { act, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { changeLocale } from "@/i18n";
@@ -34,7 +35,7 @@ describe("ReportDialog", () => {
     ).toBeInTheDocument();
     const text = within(dialog).getByRole("textbox", { name: "What went wrong?" });
     expect(text).toHaveFocus();
-    expect(within(dialog).getByRole("button", { name: "Send" })).toBeDisabled();
+    expect(within(dialog).getByRole("button", { name: "Send" })).toBeEnabled();
 
     await user.type(text, "Tweaks reset after reboot");
     await user.click(within(dialog).getByRole("button", { name: "Send" }));
@@ -62,6 +63,21 @@ describe("ReportDialog", () => {
       "Crashes on scan",
     );
     expect(useUiStore.getState().toast?.message).toBe("Sent to FOSS Friends · copy to Paparats");
+  });
+
+  it("sends a blank report, as the prototype does", async () => {
+    const user = userEvent.setup();
+    const services = createTestServices();
+    const report = vi.spyOn(services.channels, "report");
+    await openReport({ appId: "shell", channelId: "nilesoft" }, services);
+    const dialog = await screen.findByRole("dialog", {
+      name: "Report a problem with Nilesoft Shell",
+    });
+    await user.type(within(dialog).getByRole("textbox"), "   ");
+    await user.click(within(dialog).getByRole("button", { name: "Send" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+    expect(report).toHaveBeenCalledWith({ appId: "shell", channelId: "nilesoft" }, "");
+    expect(useUiStore.getState().toast?.message).toBe("Sent to Nilesoft · copy to Paparats");
   });
 
   it("goes to the Paparats team for the official catalog", async () => {
@@ -109,7 +125,7 @@ describe("ReportDialog", () => {
     await openReport({ appId: null, channelId: "nilesoft" });
     await act(() => changeLocale("be"));
     expect(await screen.findByRole("dialog", { name: "Праблема з Nilesoft" })).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Адправіць" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Адправіць" })).toBeEnabled();
     expect(screen.getByRole("textbox", { name: "Што пайшло не так?" })).toBeInTheDocument();
   });
 });

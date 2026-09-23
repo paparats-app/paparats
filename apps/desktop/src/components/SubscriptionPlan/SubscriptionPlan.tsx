@@ -12,9 +12,12 @@ export interface SubscriptionPlanProps {
   price: string;
   period: string;
   features: readonly string[];
-  /** "Most popular" / "Save 18%" pill (`--mint-soft` / `--mint2`). */
+  /** "Most popular" / "Save 18%" pill (`--mint-soft` / `--mint2`); kept on the current plan too. */
   badge?: string;
-  /** The plan in effect: `--mint` border, "Current plan" pill, disabled button. */
+  /**
+   * The plan in effect: `--mint` border, a "Current plan" pill after the badge, and an inert
+   * "Current plan" button (`aria-disabled`, no action) that keeps the pointer and the hover.
+   */
   current?: boolean;
   /** Recommended plan (monthly): `--mint-border` border and a mint button. */
   recommended?: boolean;
@@ -25,8 +28,10 @@ export interface SubscriptionPlanProps {
 }
 
 /**
- * Subscription plan card: header + badge, 32px price block over a 1px rule, mint-check features,
- * 40px footer button (prototype lines 700–707).
+ * Subscription plan card: header + pills, 32px price block over a 1px rule, mint-check features,
+ * 40px footer button (prototype lines 700–707, `planList`). The pills sit beside the name as in
+ * the prototype; when both show (the promo pill and "Current plan") and they do not fit side by
+ * side, they wrap onto a second row inside the card instead of running past it.
  */
 export function SubscriptionPlan({
   name,
@@ -62,11 +67,15 @@ export function SubscriptionPlan({
           </h3>
           <div className={styles.sub}>{subtitle}</div>
         </div>
-        {badge !== undefined && <span className={styles.badge}>{badge}</span>}
-        {current && (
-          <span className={cx(styles.badge, styles.badgeCurrent)}>
-            {t("subscription.currentPlan")}
-          </span>
+        {(badge !== undefined || current) && (
+          <div className={styles.pills}>
+            {badge !== undefined && <span className={styles.badge}>{badge}</span>}
+            {current && (
+              <span className={cx(styles.badge, styles.badgeCurrent)}>
+                {t("subscription.currentPlan")}
+              </span>
+            )}
+          </div>
         )}
       </div>
       <div id={priceId} className={styles.priceBlock}>
@@ -86,11 +95,12 @@ export function SubscriptionPlan({
         tone={current ? "muted" : "default"}
         size="lg"
         fullWidth
-        disabled={current}
+        // The prototype's current-plan button is an enabled no-op (pointer, hover): inert here.
+        aria-disabled={current || undefined}
         // Two cards say "Choose plan": the plan's name and price tell them apart.
         aria-describedby={`${nameId} ${priceId}`}
         className={styles.button}
-        onClick={onSelect}
+        onClick={current ? undefined : onSelect}
       >
         {current ? t("subscription.currentPlan") : buttonLabel}
       </Button>

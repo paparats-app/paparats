@@ -96,12 +96,14 @@ function SourceRow({ channel, meta }: SourceRowProps) {
   const official = id === OFFICIAL_CHANNEL;
   const enabled = requested ?? !ctx.subscriptionOf(id)?.paused;
   const down = ctx.downDays(id);
+  // Empty for a channel that never synced (the prototype's `synced: ''`, e.g. Winaero right after
+  // subscribing); the channel page's Last sync says "Not synced yet".
   const syncText =
     down > 0
       ? t("sources.unreachableFor", { count: down })
       : channel.synced
         ? t("sources.syncedRel", { when: format.relative(channel.synced) })
-        : t("sources.neverSynced");
+        : "";
 
   const setEnabled = (on: boolean) => {
     setRequested(on);

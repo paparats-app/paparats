@@ -70,7 +70,7 @@ export function AppHeader({ app }: { app: App }) {
         <p className={styles.tagline}>{pickText(app.tagline, locale)}</p>
         {sourceNote !== null && (
           <div className={`${styles.note} ${styles.sourceNote}`}>
-            <Icon name="info" size={15} strokeWidth={2} className={styles.noteIcon} />
+            <Icon name="info-serif" size={15} strokeWidth={2} className={styles.noteIcon} />
             <span>{sourceNote}</span>
           </div>
         )}

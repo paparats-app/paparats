@@ -43,10 +43,6 @@
   border-radius: var(--r-8);
 }
 
-.row:hover:not(.disabled) .circle:not(.checked) {
-  border-color: var(--text3);
-}
-
 .row:active:not(.disabled) .circle {
   transform: scale(0.94);
 }

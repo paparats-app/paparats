@@ -28,15 +28,24 @@ describe("SubscriptionPlan", () => {
     expect(onSelect).toHaveBeenCalledTimes(1);
   });
 
-  it("marks the current plan and disables its button", async () => {
+  it("marks the current plan, keeps its badge and makes its button inert", async () => {
     const onSelect = vi.fn();
-    render(<SubscriptionPlan {...base} current recommended onSelect={onSelect} />);
+    render(
+      <SubscriptionPlan {...base} badge="Most popular" current recommended onSelect={onSelect} />,
+    );
     const card = screen.getByRole("article");
     expect(card).toHaveClass("current");
     expect(card).not.toHaveClass("recommended");
     expect(card).toHaveAttribute("aria-current", "true");
+    // Both pills, badge first (the prototype's order).
+    expect(within(card).getByText("Most popular").nextElementSibling).toHaveTextContent(
+      "Current plan",
+    );
     const button = screen.getByRole("button", { name: "Current plan" });
-    expect(button).toBeDisabled();
+    // An enabled no-op in the prototype: focusable, announced as unavailable, does nothing.
+    expect(button).toBeEnabled();
+    expect(button).toHaveAttribute("aria-disabled", "true");
+    expect(button).toHaveAttribute("data-variant", "secondary");
     expect(within(card).getAllByText("Current plan")).toHaveLength(2);
     await userEvent.click(button);
     expect(onSelect).not.toHaveBeenCalled();

@@ -141,13 +141,19 @@ export function AppearanceStep({ stepRef, onContinue }: StepProps & { onContinue
   );
 }
 
+/** The account as the Account step found it: who signs in when no email was typed. */
+export interface CurrentAccount {
+  signedIn: boolean;
+  email: string;
+}
+
 export interface AccountStepProps extends StepProps {
   email: string;
   password: string;
   onEmailChange: (email: string) => void;
   onPasswordChange: (password: string) => void;
-  /** Sign in; `fallbackEmail` is the signed-in account's email, shown when none was typed. */
-  onSignIn: (fallbackEmail: string | null) => void;
+  /** Sign in; `current` is the account (null while it loads), used when no email was typed. */
+  onSignIn: (current: CurrentAccount | null) => void;
   onLater: () => void;
 }
 
@@ -164,7 +170,9 @@ export function AccountStep({
   const { t } = useTranslation();
   const account = useAccount().data;
   const { openExternal } = useSystemActions();
-  const fallback = account?.signedIn ? account.profile.email : null;
+  const current: CurrentAccount | null = account
+    ? { signedIn: account.signedIn, email: account.profile.email }
+    : null;
 
   return (
     <div ref={stepRef} className={styles.step} tabIndex={-1} data-step="signin">
@@ -176,7 +184,7 @@ export function AccountStep({
         noValidate
         onSubmit={(event) => {
           event.preventDefault();
-          onSignIn(fallback);
+          onSignIn(current);
         }}
       >
         <input

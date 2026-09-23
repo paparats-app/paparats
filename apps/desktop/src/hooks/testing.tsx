@@ -6,14 +6,14 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { vi } from "vitest";
 import "@/i18n";
 import { createQueryClient } from "@/queries";
+import { ServicesProvider, type Services } from "@/services";
+// Tests import the mock set directly; the app loads it on demand (services/registry.ts).
 import {
   createMemoryStorage,
   createMockServices,
-  ServicesProvider,
   type MockServiceOptions,
   type MockServices,
-  type Services,
-} from "@/services";
+} from "@/services/mock";
 import { useBrowseStore } from "@/stores/useBrowseStore";
 import { useDialogStore } from "@/stores/useDialogStore";
 import { useDownloadsStore } from "@/stores/useDownloadsStore";

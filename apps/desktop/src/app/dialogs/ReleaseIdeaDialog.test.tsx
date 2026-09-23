@@ -110,7 +110,12 @@ describe("ReleaseIdeaDialog", () => {
     const { dialog, queryClient } = await openRelease("clip", services);
     const version = dialog.getByRole("textbox", { name: "Version" });
     await user.clear(version);
-    expect(dialog.getByRole("button", { name: "Release" })).toBeDisabled();
+    // Blank: inert, not disabled (the prototype's button stays enabled); a press does nothing.
+    const button = dialog.getByRole("button", { name: "Release" });
+    expect(button).toHaveAttribute("aria-disabled", "true");
+    await user.click(button);
+    expect(release).not.toHaveBeenCalled();
+    expect(screen.getByRole("dialog")).toBeInTheDocument();
     await user.type(version, " 2.0.0 ");
     await user.click(dialog.getByRole("button", { name: "Release" }));
 

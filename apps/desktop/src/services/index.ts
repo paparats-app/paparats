@@ -11,6 +11,8 @@ export {
   useServices,
 } from "./registry";
 export type { ServicesMode, ServicesProviderProps } from "./registry";
-export { createMockServices, createMemoryStorage, FIXTURE_TODAY } from "./mock";
+// The mock set is not re-exported as values: that would put `services/mock/**` and the fixtures
+// back into the startup chunk. `createServices("mock")` loads it on demand; tests import
+// `@/services/mock` (or `createTestServices` from `@/hooks/testing`) directly.
 export type { MockServices, MockServiceOptions } from "./mock";
 export { createTauriServices } from "./tauri";

@@ -184,7 +184,7 @@ describe("UpdatesScreen", () => {
 
       fireEvent.click(sharex().getByRole("button", { name: "40% · Pause" }));
       await flush(3 * TICK);
-      expect(sharex().getByText("Paused · 40%")).toBeInTheDocument();
+      expect(sharex().getByText("Paused · 40% · 3 MB of 8 MB")).toBeInTheDocument();
       fireEvent.click(sharex().getByRole("button", { name: "Resume" }));
 
       await flush(6 * TICK);
@@ -247,7 +247,7 @@ describe("UpdatesScreen", () => {
       await flush();
       expect(screen.getByRole("button", { name: "Resume all" })).toBeInTheDocument();
       expect(labels().slice(0, 2)).toEqual(["Resume", "Resume"]);
-      expect(within(row("Obsidian")).getByText("Paused · 10%")).toBeInTheDocument();
+      expect(within(row("Obsidian")).getByText("Paused · 10% · 1 MB of 12 MB")).toBeInTheDocument();
       await flush(5 * TICK);
       expect(labels().slice(0, 2)).toEqual(["Resume", "Resume"]);
 

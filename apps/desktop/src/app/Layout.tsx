@@ -5,6 +5,7 @@ import { SearchScreen } from "@/screens/search";
 import { useFirstLaunchStore } from "@/stores/useFirstLaunchStore";
 import { useUiStore } from "@/stores/useUiStore";
 import { DialogHost } from "./DialogHost";
+import { focusColumn, useFocusRescue } from "./focusRescue";
 import { NavigationSkeleton } from "./NavigationSkeleton";
 import { OfflineBanner } from "./OfflineBanner";
 import { Sidebar } from "./Sidebar";
@@ -35,6 +36,8 @@ export function Layout() {
   // paparats:// links and the tray's "Check for updates" navigate like the sidebar does.
   useDeepLinks();
   useTrayActions();
+  // A control that disappears with its row or block hands the focus to its neighbour (D61).
+  const restoreFocus = useFocusRescue(contentRef);
 
   useLayoutEffect(() => {
     const content = contentRef.current;
@@ -47,10 +50,13 @@ export function Layout() {
   }, [navCount]);
 
   // Later / Sign in: the scene stops covering the shell (a passive effect, so it runs after the
-  // scene has lifted `inert`) and the focus, still on the finishing button, moves to Home.
+  // scene has lifted `inert`) and the focus, still on the finishing button, moves to Home — or,
+  // after Settings › Account › Sign in, back to where it was (D61).
   useEffect(() => {
-    if (firstLaunchExiting && contentRef.current) focusColumn(contentRef.current);
-  }, [firstLaunchExiting]);
+    if (!firstLaunchExiting || !contentRef.current) return;
+    if (useFirstLaunchStore.getState().mode === "signIn") restoreFocus();
+    else focusColumn(contentRef.current);
+  }, [firstLaunchExiting, restoreFocus]);
 
   // The route commits after the navigation (a transition): whatever held the focus on the screen
   // that left — e.g. the opener a closing dialog gave it back to — takes it along.
@@ -95,14 +101,4 @@ export function Layout() {
       <FirstLaunch />
     </div>
   );
-}
-
-/**
- * Focuses the content column. It takes `tabindex="-1"` only while it holds the focus, so a press
- * on plain text in the column still leaves the focus where the browser puts it.
- */
-function focusColumn(column: HTMLElement): void {
-  column.setAttribute("tabindex", "-1");
-  column.addEventListener("blur", () => column.removeAttribute("tabindex"), { once: true });
-  column.focus({ preventScroll: true });
 }

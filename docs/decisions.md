@@ -233,8 +233,8 @@ test binaries on Tauri's mock runtime otherwise fail to load (`STATUS_ENTRYPOINT
 - Store cards show download progress only in the action label (`43% · Pause`), never as the 2 px
   bar: the prototype's store cards have none. The app page shows the 4 px bar and status line.
 - Category chips truncate with an ellipsis where the prototype let a long label ("Development",
-  "Продуктивность") run past the card's text column. A wrapped channel chip keeps the prototype's
-  4 px indent.
+  "Продуктивность") run past the card's text column (**superseded by D58**: they wrap and overflow
+  as there). A wrapped channel chip keeps the prototype's 4 px indent.
 - Editorial lists (featured, notable, collections, "More in", search suggestions) skip apps that
   are not visible (`domain/apps.ts › pickByIds`, the prototype's `byIds`). A Browse hero whose
   app is hidden is skipped; the prototype showed an empty slide. "Try one of these" is hidden
@@ -263,12 +263,14 @@ button opens the app page (the prototype always opened the app page). A button l
 
 ### D31 — App page and report dialog details
 - The status line reads "Downloading… 43% · 12 MB of 87 MB", "Paused · 43%" (README; the
-  prototype also appended the size while paused), "Queued", "Installing…".
+  prototype also appended the size while paused), "Queued", "Installing…". **Superseded by D58**
+  (paused keeps the size).
 - The favourite star shows its pressed state (`aria-pressed`, `--mint2`); the prototype never
-  showed it. The average rating is formatted per language ("4,4" in ru/be).
+  showed it (**superseded by D58**: `--text2` in both states). The average rating is formatted per
+  language ("4,4" in ru/be).
 - The Pro card's button is "Learn more" → Subscription (the prototype's copy).
-- Report a problem: Send is disabled while the text is blank and the text is trimmed; if sending
-  fails the dialog keeps the text and shows no toast (no failure copy in the handoff). The
+- Report a problem: Send is disabled while the text is blank (**superseded by D58**: always
+  enabled) and the text is trimmed; if sending fails the dialog keeps the text and shows no toast (no failure copy in the handoff). The
   receipt is toasted: "Sent to <Channel> · copy to Paparats" or "Sent to Paparats".
 
 ### D32 — Accessibility beyond the prototype
@@ -296,7 +298,7 @@ about its download, for the app page, the Updates rows and the Library rows and 
   downloads its manifest's size), else the full install size (the prototype's `dlSize`);
 - `text`, the one-line form: "Downloading… 43% · 12 MB of 87 MB"; every other state is `line`.
 The app page and the Updates rows use `text`, so a paused one-line status drops the size (README;
-D31 — the prototype kept it). The Library row keeps the prototype's two lines: `line` on top and
+D31 — the prototype kept it; **superseded by D58**: `text` keeps it). The Library row keeps the prototype's two lines: `line` on top and
 `size` under it, also while paused. Row and card actions keep the prototype's `card()` labels
 (`43% · Pause`, Resume, Queued, Installing… in `--mint2`), not the README's "Installing… NN%".
 
@@ -342,6 +344,7 @@ D31 — the prototype kept it). The Library row keeps the prototype's two lines:
   empty grid; the fixtures always have collections).
 - The ⋯ menu keeps the M1 pop-in animation; the grid card's favourite button keeps its pressed
   state (mint, `aria-pressed`), like the app page's star (D31). The prototype showed neither.
+  **Superseded by D58** (no animation, `--text2` in both states).
 
 ### D37 — Parity fixes at integration (M3)
 - Library and Updates row names, and the Updates version line, wrap in a narrow window as the
@@ -360,7 +363,7 @@ D31 — the prototype kept it). The Library row keeps the prototype's two lines:
   "Current plan" (README §6: "… or 'Current plan'"). The prototype rendered both in the Pro state;
   the second pill ran out of the monthly card, was clipped by the yearly one and wrapped the plan
   name. So in the Pro state our cards are 8–18 px shorter than the prototype's; the Free state is
-  identical. The `/dev` gallery follows the same rule.
+  identical. The `/dev` gallery follows the same rule. **Superseded by D58** (both pills).
 - The confirmation names the charge and the renewal date: today + 1 month or 1 year, clamped to
   the month's last day (31 January → 28 February), formatted per language. The status cards show
   the account's `renewsOn`, which the core computes from the same local today (D21), so the two
@@ -383,7 +386,8 @@ D31 — the prototype kept it). The Library row keeps the prototype's two lines:
 ### D39 — Settings
 - Picking a section replaces the route (`/settings/<id>`) without `go()`: no skeleton, enter
   animation or scroll reset, like the prototype's `setState({section})`. `/settings` always opens
-  General; the prototype remembered the last section across navigation.
+  General; the prototype remembered the last section across navigation (**superseded by D58**:
+  Settings from the sidebar reopens the last section).
 - The section nav shows `--hover` on hover even on the active item, and the link rows (Profile,
   Subscription, Component gallery) have no hover ground: both are the prototype's styles (its
   hover styles are `!important`). The app sidebar keeps its own active ground on hover.
@@ -466,7 +470,8 @@ D31 — the prototype kept it). The Library row keeps the prototype's two lines:
 - The trust confirmation's button reads "Add channel" (`sources.addChannel`, prototype line 1512),
   not "Confirm" as the README wrote.
 - A followed channel that never synced shows "Not synced yet" (`sources.neverSynced`, README); the
-  prototype left the sync text empty (e.g. Winaero right after subscribing).
+  prototype left the sync text empty (e.g. Winaero right after subscribing). **Superseded by D58**
+  (empty, as in the prototype).
 - The trust confirmation opened from Add channel is rendered inside `AddChannelDialog`, which hides
   its own modal meanwhile and keeps its state (the prototype's `hasChannelDialog = chDialog &&
   !chPending`): Cancel or Escape return to it with the address still typed and focus in the field
@@ -521,7 +526,7 @@ D31 — the prototype kept it). The Library row keeps the prototype's two lines:
   `<aside>`, its rows a `<dl>`; Enabled/Paused is `role="switch"`; the `·` separators are
   `aria-hidden`; the apps grid is a list named by its heading.
 - lucide `info` and `rotate-ccw` differ slightly from the prototype's hand-drawn info and sync
-  glyphs.
+  glyphs (superseded by D59: both now draw the prototype's glyphs).
 
 ### D44 — Ideas board and Suggest an idea
 - The status chips and the numbered "How it works" circles are local to `screens/ideas` (only
@@ -558,14 +563,16 @@ D31 — the prototype kept it). The Library row keeps the prototype's two lines:
 - An unknown idea id shows "Idea not found" with Back (`EmptyState`, lightbulb; like D30); the
   prototype fell back to the first idea.
 - Release is disabled while the version is blank or no app is chosen (the service rejects blank
-  versions, D12); the prototype accepted anything. The version is prefilled with the app's next
-  patch version and recomputed when another app is picked (a typed version is dropped, as in the
-  prototype); Release trims it. A failed release keeps the dialog without a toast.
+  versions, D12); the prototype accepted anything (**superseded by D58**: inert, not disabled).
+  The version is prefilled with the app's next patch version and recomputed when another app is
+  picked (a typed version is dropped, as in the prototype); Release trims it. A failed release
+  keeps the dialog without a toast.
 - The release dialog renders nothing until ideas, catalog, channels and account have loaded (so
   the prefill is never "1.0.0" with an empty picker); an unknown `ideaId` closes it.
 - Take, Post and Release ignore repeated clicks while their call runs, without a spinner; a failed
   comment keeps its text. Post stays disabled while the text is blank (existing `CommentThread`
-  behaviour; the prototype's button was clickable and did nothing) and keeps full opacity.
+  behaviour; the prototype's button was clickable and did nothing) and keeps full opacity
+  (**superseded by D58**: inert, not disabled).
 - In the developer view comments go out as the channel (author = the channel's author, Developer
   badge, the channel monogram in the composer); the user's own comments read "You" in the user
   view and the profile name in the developer view (prototype line 2086).
@@ -705,7 +712,8 @@ D31 — the prototype kept it). The Library row keeps the prototype's two lines:
   are the full-size targets. Idea cards open from anywhere by mouse; their 20px title button is the
   keyboard route.
 - **Disabled.** Inert states are native `disabled` (out of the tab order): Free/Windows filters,
-  the current plan, Post/Send while empty, Queued, Installing…. "Offline" keeps answering a press
+  the current plan, Post/Send while empty, Queued, Installing…. (**Superseded by D58** for the
+  current plan, Post, Send and Release: the prototype's enabled no-ops are `aria-disabled`.) "Offline" keeps answering a press
   with the offline toast (prototype), so it is `aria-disabled` and stays focusable.
 - **Loading.** `Button loading` = `aria-busy` + presses ignored at once; the spinner replaces the
   leading icon, or — without one — fades in over the label after 150 ms (the label turns
@@ -1067,3 +1075,252 @@ integration from the code's behaviour.
   catalog, explorer.exe embedded and tampered, an unsigned copy), a signed system program as a
   stand-in EXE installer, a portable install/update/uninstall in a temp folder, and the catalog,
   OAuth and download flows against local HTTP servers.
+
+## Parity pass (M8)
+
+### D58 — Parity pass: the prototype's look and behaviour restored
+M8 aims at an app that looks identical to the prototype. Each item below reverts an earlier
+deliberate deviation (the older bullet is marked "superseded by D58"). Checked against the
+prototype markup and `renderVals`, and measured side by side at 1440 × 920 (the app in a
+same-origin iframe over the prototype, `getBoundingClientRect`) in en/be/ru.
+
+- **Store-card category chip** (D27): `AppCard` renders it as `Chip wrap`, the prototype's
+  inline-block chip (lines 227, 313): a label longer than the text column wraps inside the chip,
+  which grows (ru "Образ жизни", be "Стыль жыцця" → two lines, 34.8 px, and the card and its grid
+  row grow with it), and a single long word is not clipped — ru "Продуктивность" and be
+  "Прадукцыйнасць" run past the text column and ≈ 10 px past the card border into the grid gap, as
+  in the prototype. Chip boxes and positions and the Browse row heights (180 / 168 / 152 px) equal
+  the prototype's in all three languages. The channel chip still ends in an ellipsis (line 227).
+- **Hover affordances the prototype lacks are gone** (M1 component states): idle carousel dots keep
+  their colour on hover and every dot shows the pointer, the active one too (lines 213, 300); a
+  filter checkbox or radio keeps its box border when the row is hovered (only the label turns
+  `--text`, lines 380–406); `TextField`, `SearchBox` and `TextArea` change their border only on
+  focus (no input in the prototype has a hover style; `ProfileHeader`'s override that cancelled
+  the hover went with it). Two `title` tooltips the prototype does not show were dropped where an
+  `aria-label` already names the control: the Library grid card's favourite and the profile
+  camera badge. Pressed states and focus rings stay.
+- **Favourite toggles** (D31, D36): the app page's star (`SplitButton`'s secondary part) and the
+  Library grid card's star stay `--text2` in both states, with the prototype's hovers (`--hover`
+  ground, line 987; `--text`, line 627) and no fill. `aria-pressed` still carries the state; the
+  favourite is shown by the mint star after the name in Library rows (line 600).
+- **Report a problem** (D31): Send is always enabled, as the prototype's (line 1412; `sendReport`
+  checks nothing): a blank report is sent (the text is trimmed, so possibly `""`). Both channel
+  services accept it (the Rust command ignores the text, D24). Busy state and failure handling
+  are unchanged.
+- **Paused status** (D31, D34): the one-line status keeps the size while paused — "Paused · 61% ·
+  7 MB of 12 MB" on the app page (line 992: a paused download is still `downloading` there, so
+  `isDownloading` appends `dlSize`) and in the Updates rows (`range = [dlLine, dlSize].join(' · ')`).
+  `downloadStatus().text`; the Library row's two lines are unchanged.
+- **Overflow menu** (D36): `PopoverSurface` appears at once, without the pop-in; the prototype
+  animates none of its popovers (line 606).
+- **Plan cards in the Pro state** (D38): the current paid plan shows both pills, the promo pill
+  ("Most popular" / "Save 18%") and then "Current plan" (`planList`: `hasBadge` and `current` are
+  independent); the screen and the `/dev` gallery pass the badge on every card. The name block
+  keeps the prototype's automatic minimum width, so the name and subtitle wrap exactly as there
+  (monthly / yearly card heights at 1440 px: en 446.1 / 409.7, be 446.1 / 427.9, ru 483.9 /
+  465.7 — the prototype's). The prototype's second pill ran 37–85 px past the card's content edge
+  (14–62 px past its border) and was clipped by the next card; here the pills sit in a
+  right-aligned wrapping group beside the name: when they do not fit side by side the second one
+  wraps 6 px under the first, inside the card (right edges on the content edge). With room for
+  both (a wider window) they stay side by side, 10 px apart, as in the prototype. The Free state
+  is unchanged.
+- **The current plan's button** (D38, D49): an enabled no-op in the prototype (pointer,
+  `brightness(1.12)` hover on `--card2` / `--text3`). It keeps that look and is inert:
+  `aria-disabled="true"`, no `onSelect`, no pressed nudge; it is now in the tab order (a native
+  `disabled` button was skipped).
+- **The prototype's other enabled no-ops** (D45, D49), the same way: Post with a blank comment
+  (line 1342: `--card2` / `--text3`, `brightness(1.1)` hover) and Release with a blank version
+  (line 1495: full mint, `--mint2` hover — it was at .5 opacity) are `aria-disabled`, focusable,
+  keep the pointer and the hover, and do nothing. Release still never sends a blank version (D12).
+- **Settings remembers its section** (D39): Settings opened without a section (the sidebar)
+  reopens the section last shown, like the prototype's `section` state that survives navigation;
+  explicit targets (Updates › Update settings, Subscription › Learn more, the tray's Check for
+  updates, Back from a channel page opened from Sources) set it. The Settings screen keeps
+  `useUiStore.settingsSection` (reset like every store in tests) and `go()` resolves
+  `{to:'settings'}` through `app/navigation › resolveTarget`; General keeps the bare `/settings`
+  path. A fresh start opens General.
+- **Never-synced channels** (D42): the Settings › Sources row shows no sync text (the empty slot
+  and its 14 px gap stay, like the prototype's empty div, line 838); the channel page's Last sync
+  still reads "Not synced yet" (`t.neverSynced` in `ch.details`, line 2025, D43).
+- **Kept on purpose**: localised number, percent, date and list formats (D13, D31, D38); Onest in
+  the top-bar avatar (D41); focus rings, hit-target padding and pressed states (D32, D49); Queued,
+  Installing… and "Updated just now" as native-disabled row actions with no visual change (D15,
+  D35, D49 — the prototype's Queued and Installing… did nothing either; its "Updated just now"
+  toasted "Opening …"); the Free / Windows filter rows (divs in the prototype); behaviour that changes no pixels
+  (D12 validation, D30 loading, D42 backdrop click and in-flight guards). The idea card's comment
+  count keeps its `title` (its only description for assistive tech).
+
+### D59 — Icon glyph parity
+The README asks for the platform icon library and CLAUDE.md for lucide-react only, but lucide 1.x
+redrew many icons the prototype draws in their classic form (r 9 circles, sharp stars and bolts,
+no tassel or ferrule, another arrow head). Each prototype glyph (`static ICONS`, line 1628, and
+the inline `<svg>`s of the markup) was rendered next to its lucide candidates at every size and
+stroke it is used at (1× and 2×, share of differing ink).
+
+- **Rule**: a stock lucide glyph where it draws the same strokes and differs by at most ≈ 10 % of
+  the ink (corner rounding, sub-pixel offsets); otherwise the prototype's path data, verbatim,
+  through lucide-react's `createLucideIcon` (`components/Icon/glyphs.ts`, `paparats-*` class
+  names), which keeps the 24 × 24 grid, the Icon's stroke and round caps/joins.
+- **Stock lucide** (21 of the 56 ICONS glyphs, and 4 inline ones): rss, triangle-alert,
+  layout-grid (rx 1 vs 1.5; **superseded by D62**: the prototype's rx 1.5 squares, which
+  rasterise visibly rounder in the sidebar), the four chevrons, check, x, code, laptop → `LaptopMinimal` (exact),
+  gamepad-2, infinity, users, bell, folder, lock, monitor, mail, refresh-cw, external-link, plus,
+  minus, hard-drive, history → `RotateCcwClock`; inline: wifi-off, lightbulb, flag, the vote
+  chevron (`chevron-up`).
+- **Custom glyphs** (39): from ICONS — house (`home`), layers, download (an arrow onto a line:
+  neither lucide `download` nor `arrow-down-to-line`), book-open (`book`), crown, settings,
+  search, user, ellipsis (`more`: 0.01-long dots; lucide's r 1 circles draw bigger dots), list,
+  arrow-right, badge-check, palette, play, wrench, leaf, graduation-cap, zap, heart, shield,
+  sliders-horizontal, info, globe, clock, camera, star, pencil, briefcase, square, package,
+  trash; inline — rotate-ccw (Sync now, lines 39/1142), git-branch (982), pen-line (1080), copy
+  (1140), message-circle (1242), circle-check (1473), chevrons-right (1553) and **`info-serif`**,
+  the serifed "i" of the app-header and channel notes (981, 1156), a new registry name (the
+  About section keeps the prototype's plain `info`).
+- **Names stay** as data and call sites use them (lucide kebab-case; fixtures and the Rust seed
+  name `laptop`, `layout-grid`, `gamepad-2`, …): the registry maps each name to its glyph. The
+  window-restore glyph (`copy`) now uses the prototype's copy drawing too.
+- **Square ends**: the prototype draws the window controls (lines 110–112) and the Library row's
+  favourite star (line 601) without round caps/joins; those call sites pass
+  `strokeLinecap="butt"` / `strokeLinejoin="miter"`. `Icon.module.css` no longer forces round
+  caps (lucide's attributes set them), so a call site can.
+- **Pinned** by `Icon.test.tsx`, which reads the prototype file: every ICONS name and every inline
+  glyph maps to a registry name and either the expected lucide component or the prototype's exact
+  path data.
+- **Verified** at 1440 × 920 with the app in a same-origin iframe over the prototype: the set of
+  (glyph, size, stroke width, caps/joins, fill) of every rendered icon is identical on Home,
+  Browse, Categories, Updates, Library (list, grid, collections, row menu), Ideas, Subscription,
+  Profile (all five tabs), the ten Settings sections, app pages (obsidian, shell, mpv), channel
+  pages (paparats, nilesoft, winaero), idea pages, the Add channel, Report and Suggest an idea
+  dialogs and first launch (an early phase and the language step). D43's note on lucide `info` /
+  `rotate-ccw` is superseded.
+
+### D60 — Integration (M8): the mock world off the startup path, build chunks
+Written at integration from the code: the engineer who split the services left no notes.
+
+- **The mock world is a lazy chunk.** `createServices(mode)` is async: `tauri` returns the
+  adapters, `mock` runs `await import("./mock")`. Before, `services/registry.ts` imported
+  `./mock` statically, and the Tauri adapters took helpers from `mock/system` and
+  `mock/settings`. So every build parsed the mock services and the 78 kB fixture set before the
+  first frame. The pieces both sets share moved to `services/common.ts`: WebView connectivity and
+  clipboard, `externalUrl`, `sanitizeSettings` and `SELF_UPDATE_CHECK_MS`. The `@/services`
+  barrel no longer re-exports mock values (only their types); tests import `@/services/mock` or
+  `createTestServices` from `@/hooks/testing`. `createTauriServices()` takes no options.
+  `services/startup.test.ts` walks the static imports from `main.tsx` and fails if they reach
+  `services/mock/**` or `@fixtures/*`.
+- **Build chunks** (`vite.config.ts › build.rolldownOptions.output.codeSplitting`): `react`
+  (react, react-dom, react-router, scheduler) and `vendor` (the other `node_modules`) are tagged
+  `$initial`, so a library that only a lazy chunk uses stays out of them; `fixtures` names the data
+  set that the mock chunk and the `/dev` gallery share. The startup loads `index` 367 kB, `react`
+  296 kB, `vendor` 122 kB and one 153 kB stylesheet; `mock` (8 kB), `fixtures` (78 kB) and `dev`
+  (50 kB) load on demand. No chunk reaches Vite's 500 kB warning.
+- **No top-level await.** `main.tsx` awaited `createServices` and `bootstrap` at module level.
+  Rolldown turns its chunk optimizations off (common-chunk merging, redundant-load avoidance) for
+  a module graph with top-level await, so the startup loaded seven scripts and two stylesheets:
+  small shared chunks named after whichever module rolldown picked (`Toast`, `channels`,
+  `common`). `main.tsx` now calls `void start(root)`. The order (services → bootstrap → render)
+  and a startup failure (an unhandled rejection in the console) are unchanged. The startup test
+  fails on any module-level `await`.
+- **Offline banner Retry** moved from `app/OfflineBanner`, which read `useServices()` and two
+  stores itself, into `hooks/useConnectivity` (`{ offline, retry }`, with tests). Behaviour is
+  unchanged.
+- **Reconciled.** D58 (parity) and D59 (icons) do not collide. The files both passes touched
+  change independent things: the Library row's favourite star has butt caps (D59), and the grid
+  card's and app page's stars lost their pressed colour (D58). `docs/architecture.md` now covers
+  D58 (§5 `settingsSection`, §7 `resolveTarget`), D59 (§9, Icons) and this entry (§1, §2, §6,
+  §11). The re-export shim in `mock/system.ts` is gone; callers import `services/common`.
+  `.gitattributes` asks for LF, but `docs/decisions.md`, `docs/progress.md` and
+  `paparats-install/src/error.rs` had CRLF in the working copy; they are LF again.
+- **Verified**: the production build served by `vite preview` and loaded in headless Edge
+  (1440 × 920, `#/library`) boots on the mock chunk and renders the Library with the fixture apps.
+
+## Acceptance (M8)
+
+### D61 — Functional acceptance: focus rescue, Sign in after sign-out, row icon tiles
+Written at the visual acceptance from the code and its tests; the functional acceptance pass left
+no notes.
+
+- **Focus rescue** (`app/focusRescue.ts › useFocusRescue`, mounted once by the layout on the
+  content column). When the control holding the focus leaves the document with its row or block
+  and nothing else takes the focus, the focus goes to the nearest control where the block was: in
+  the removed block's container (then the containers around it) the first control after that spot
+  — a replacement rendered in its place, the next row — else the last one before it, else the
+  content column. Covered: Library ⋯ → Uninstall, the stale callout's Keep / Unsubscribe (Settings
+  › Sources and the channel page), the Ideas note's ×, an idea card's Take, Cancel plan. The
+  screens' own hand-overs (D49) run first and win; focus let go on purpose (a press on plain text,
+  another window) is not followed. `restore()` gives an overlay that ends without a navigation the
+  same hand-back. `focusColumn` moved here from the layout.
+- **Settings › Account › Sign in.** Signed out, the account row's action reads "Sign in"
+  (`settings.signIn`, en/be/ru; it was a disabled "Sign out") and opens the first launch's Account
+  step alone: `useFirstLaunchStore.openSignIn()` starts a run in mode `signIn` — no scene, motion,
+  step indicator or Back; finishing writes no first-run record, turns no hero glow on, stays on the
+  screen and gives the focus back (`restore()`). Signing in without a typed email signs a
+  signed-out account back in with its profile email (the prototype's `signInIntro` signs in as the
+  profile); a signed-in account is kept, as before.
+- **Row icon tiles.** The 44/48 px icon tile of the Library and Updates rows is a `div` with the
+  click handler and `aria-hidden` (it was a `button` with `tabIndex=-1` and `aria-hidden`, which a
+  mouse press still focused — a focused element hidden from assistive tech). The name button beside
+  it is the control. No visual change (`user-select: none` keeps the monogram unselectable, as on
+  the prototype's button).
+
+### D62 — Visual acceptance: method, fixes, differences kept
+**Method.** The prototype and the app side by side in headless Chrome 153, same origin (the
+prototype through Vite's `/@fs/`), at 1440 × 920 and 1280 × 800 (the prototype's window root
+resized; the app's viewport), dark and light, en/be/ru. Every state was set on both sides — the
+prototype's component state, the app's stores, router and mock services — and compared after
+`document.fonts.ready` with finite animations finished: word by word (position, size, font,
+colour), icons (geometry, stroke, fill), images and boxes (background, border, radius, shadow),
+then pixel by pixel; long screens were compared again scrolled in steps of ¾ of the window;
+hover states were forced with CDP mouse events. The first-launch phases were compared with
+their loops frozen at 0 (pixel-identical) and by the timing of every running animation and
+transition (durations, delays, easings match). 224 states: 152 (screens, filters, dialogs,
+downloads, plans, overlays, first-launch steps) in all 12 combinations of theme, language and
+size; 20 more (app-page interactions, developer tabs, idea composer, empty favourites) in 9 of
+them; 41 hover targets and the 11 first-launch phases in English (dark and light at 1440 × 920,
+dark at 1280 × 800) — 4 275 captures with the scrolled ones. Harness artefacts were re-run (a state left by the previous scenario, a page
+reload by an edit during a run).
+
+**Fixed:**
+- `CountPill`: line height 1.4, the root's value the prototype's pills inherit (1 put the Library
+  tab counts 0.2 px lower, a pixel row off).
+- `AppIcon`: no `overflow: hidden` on the tile (the prototype has none); the rounded clip made
+  Chrome draw every monogram with greyscale instead of subpixel antialiasing.
+- `Modal`: `text-wrap: pretty` only on the description `<p>`s, as in the prototype; on the whole
+  body it re-wrapped placeholders, fields and the channel catalog ("…Anything that comes / close
+  today?" in Suggest an idea).
+- `SettingsRow`: hints wrap normally; only the note row and rows with the new `prettyHint`
+  (Profile › Delete account) balance the last line (prototype lines 761–790, 945). A Belarusian
+  hint at 1280 px broke before "у Windows." instead of after.
+- `NotableRow` (Browse › New and notable): the chips are inline content of the text column like
+  the prototype's (category chip margin-top 6 on the baseline, channel chip margin 8 0 0 4
+  bottom-aligned, category chip `wrap`). A flex row matched on one line only; when the channel
+  chip wraps (1280 px, be) the category chip now keeps 6 px and the channel chip its 4 px indent.
+- `layout-grid` draws the prototype's rx 1.5 squares (D59 kept lucide's rx 1; the Browse item in
+  the sidebar rasterised visibly squarer). 24 stock lucide glyphs and 40 prototype paths now.
+- **Belarusian formats in Chromium.** Chromium ships no Belarusian ICU data: WebView2 resolves
+  `be` to `ru-BY` (Russian month names, "3 дня назад", "A и B") and Chrome to `en-US`
+  ("September 15, 2026", "18.4 MB" — the prototype's "18,4 МБ" differed on every size). Where
+  `Intl.DateTimeFormat("be")` does not resolve to `be`, `createFormat("be")` and i18next's
+  `number` format apply the CLDR `be` patterns by hand (`i18n/belarusian.ts`); tests compare them
+  with Node's full ICU. Plural rules have their data everywhere.
+- Test selectors that assumed the row tile was a `button` (D61).
+
+**Kept on purpose** (no change):
+- Localised numbers, percents, decimals and prices in be/ru ("43 %", "4,9", "10 000+", "4,99 $";
+  CLDR `be` does not group four digits: "3120" where the prototype's data string had "3 120") —
+  D13, D31. Belarusian dates and relative times are Belarusian; the prototype printed them in
+  English in Chrome for want of ICU data.
+- Onest in the top-bar avatar (the prototype's fell back to Arial) — D41.
+- Focus: dialogs focus their first field on open (Add channel address, Suggest an idea title), so
+  its mint focus border shows; a failed Publish keeps the focus in the title (mint rather than the
+  red error border); a menu opened from the keyboard rings its first item — D44, D49.
+- The Pro-state plan cards' second pill wraps inside the card — D58.
+- Developer-mode rows in Settings › Advanced and the "Back online" toast after a simulated
+  outage — D5.
+- The first-launch scene scales with the window (`s = min(W/1440, H/920)`, 0.87 at 1280 × 800),
+  as `FIRST_LAUNCH_SPEC.md` asks; the prototype's fixed-size scene does not — D50. At 1440 × 920
+  every phase is pixel-identical.
+- At 1280 px the prototype's Library-row favourite star, a shrinkable flex item beside a name
+  that wraps, is squeezed to 2–6 px or to nothing; the app keeps it 12 px (`flex: none`).
+- Rendering-only: subpixel versus greyscale antialiasing on some surfaces with identical geometry,
+  and structure-only differences (a divider drawn as a border, the split button's radius on its
+  halves instead of a clipping wrapper) with no pixel difference.

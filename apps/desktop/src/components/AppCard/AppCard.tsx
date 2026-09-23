@@ -25,7 +25,7 @@ export interface AppCardProps {
   tagline?: string;
   /** Optional single line above the tagline. */
   publisher?: string;
-  /** Category chip (`--card2`). */
+  /** Category chip (`--card2`); a long label wraps inside the chip, as in the prototype. */
   category?: string;
   /** Source channel chip (outline + 6px tint dot); screens pass it for non-official sources. */
   channel?: ChannelMark;
@@ -86,7 +86,7 @@ export function AppCard({
         {tagline !== undefined && <span className={styles.tagline}>{tagline}</span>}
         {chips && (
           <span className={styles.chips}>
-            {category !== undefined && <Chip>{category}</Chip>}
+            {category !== undefined && <Chip wrap>{category}</Chip>}
             {channel !== undefined && (
               <Chip tone="outline" dot={channel.tint}>
                 {channel.name}

@@ -69,10 +69,7 @@
   appearance: none;
 }
 
-.input:hover:not(:disabled, :focus) {
-  border-color: var(--text3);
-}
-
+/* Focus only: the prototype's search fields have no hover state (lines 118, 375). */
 .input:focus {
   border-color: var(--mint);
 }

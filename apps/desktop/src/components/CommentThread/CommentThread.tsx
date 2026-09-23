@@ -54,6 +54,7 @@ function Avatar({ initials, tint }: { initials: string; tint?: string }) {
 /**
  * Idea discussion: rows separated by 1px `--line` (34px initials avatar, author, badge, date,
  * text) and the composer — textarea + Post, mint once there is text (prototype lines 1328–1344).
+ * A blank Post is the prototype's enabled no-op (pointer, hover): inert here (`aria-disabled`).
  */
 export function CommentThread({ comments, composer, emptyText, className }: CommentThreadProps) {
   const { t } = useTranslation();
@@ -109,7 +110,7 @@ export function CommentThread({ comments, composer, emptyText, className }: Comm
                 size="sm"
                 variant={canPost ? "primary" : "secondary"}
                 tone={canPost ? "default" : "muted"}
-                disabled={!canPost}
+                aria-disabled={!canPost || undefined}
                 loading={composer.posting}
                 className={styles.post}
               >

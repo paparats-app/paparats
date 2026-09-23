@@ -6,6 +6,7 @@ export const settings = {
   historyCleared: "Search history cleared",
   signedOut: "Signed out",
   notSignedIn: "Not signed in",
+  signIn: "Sign in",
   sectionsLabel: "Settings sections",
   sections: {
     general: "General",

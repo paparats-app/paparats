@@ -61,18 +61,25 @@
   white-space: nowrap;
 }
 
+/* The prototype's chips are inline content of the text column (14px / 1.4 line boxes): the
+   category chip with margin-top 6 on the baseline, the channel chip with margin 8 0 0 4,
+   bottom-aligned. Laid out the same way they sit 8px under the tagline side by side, and when the
+   channel chip wraps (a narrow window, a long label) the category chip keeps its 6px and the
+   channel chip its 4px indent, as there. */
 .chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--sp-6) var(--sp-4);
+  display: block;
   max-width: 100%;
-  margin-top: var(--sp-6);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
 }
 
-/* With a channel chip (margin-top 8, bottom-aligned in the prototype's line box) both chips sit
-   8px under the tagline. */
-.chips:has(> :nth-child(2)) {
-  margin-top: var(--sp-8);
+.chips > :first-child {
+  margin-top: var(--sp-6);
+  vertical-align: baseline;
+}
+
+.chips > :nth-child(2) {
+  margin: var(--sp-8) 0 0 var(--sp-4);
 }
 
 .action.action {

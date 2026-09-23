@@ -16,7 +16,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "specta": "cargo run --quiet -p paparats-desktop --example export-bindings && prettier --write apps/desktop/src/bindings.ts",
-    "check": "pnpm typecheck && pnpm lint && pnpm test && cargo fmt --all --check && cargo clippy --workspace --all-targets -- -D warnings && cargo test --workspace"
+    "specta:check": "node scripts/check-bindings.mjs",
+    "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm format:check && cargo fmt --all --check && cargo clippy --workspace --all-targets -- -D warnings && cargo test --workspace && pnpm specta:check"
   },
   "devDependencies": {
     "prettier": "^3.9.8"

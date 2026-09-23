@@ -58,3 +58,8 @@
 .release.release {
   --btn-px: var(--sp-18);
 }
+
+/* Inert while the version is blank: no pressed nudge. */
+.release.release[aria-disabled="true"]:active {
+  transform: none;
+}

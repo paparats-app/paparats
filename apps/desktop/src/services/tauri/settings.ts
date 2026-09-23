@@ -1,13 +1,13 @@
 // Settings persist in `settings.json` in the app data directory through tauri-plugin-store
 // (STACK.md decision 4): one key per setting, only the ones the user changed. Reads merge the file
 // over `DEFAULT_SETTINGS` and drop unknown keys and values of the wrong type — the file is
-// user-editable — with the same rules as the mock's localStorage.
+// user-editable — with the same rules as the mock's localStorage (../common › sanitizeSettings).
 import { load } from "@tauri-apps/plugin-store";
 import type { Store } from "@tauri-apps/plugin-store";
 import { DEFAULT_SETTINGS } from "@/domain/settings";
+import { sanitizeSettings } from "../common";
 import type { SettingsService } from "../contracts";
 import { ServiceError } from "../errors";
-import { sanitizeSettings } from "../mock/settings";
 import type { Settings } from "../types";
 import { toServiceError } from "./result";
 

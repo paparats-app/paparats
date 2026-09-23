@@ -40,7 +40,7 @@ export function NotableRow({
           <span className={styles.tagline}>{tagline}</span>
           {(category !== undefined || channel !== undefined) && (
             <span className={styles.chips}>
-              {category !== undefined && <Chip>{category}</Chip>}
+              {category !== undefined && <Chip wrap>{category}</Chip>}
               {channel && (
                 <Chip tone="outline" dot={channel.tint}>
                   {channel.name}

@@ -192,7 +192,7 @@ describe("SourcesPanel", () => {
     expect(router.state.location.pathname).toBe("/channel/fossfriends");
   });
 
-  it("Add channel opens the dialog; a new channel lists as not synced yet", async () => {
+  it("Add channel opens the dialog; a new channel lists without a sync line", async () => {
     const user = userEvent.setup();
     await openSources();
     await user.click(screen.getByRole("button", { name: "Add channel" }));
@@ -209,7 +209,8 @@ describe("SourcesPanel", () => {
     );
     await waitFor(() => expect(toast()).toBe("Subscribed to mpv builds"));
     expect(rowNames()).toEqual(["Paparats", "Nilesoft", "FOSS Friends", "mpv builds"]);
-    expect(within(row("mpv builds")).getByText("Not synced yet")).toBeInTheDocument();
+    // Never synced: no sync text, as in the prototype (the channel page says "Not synced yet").
+    expect(row("mpv builds")).not.toHaveTextContent(/Synced|Not synced yet|Unreachable/);
     expect(visible()).toContain("mpv");
   });
 

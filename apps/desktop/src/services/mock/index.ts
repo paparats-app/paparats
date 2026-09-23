@@ -47,4 +47,4 @@ export type { MockWorld, FixtureMeta } from "./world";
 export { FIXTURE_TODAY } from "./world";
 export { INSTALL_HOLD_TICKS } from "./downloads";
 export { SETTINGS_STORAGE_KEY } from "./settings";
-export { SELF_UPDATE_CHECK_MS } from "./system";
+export { SELF_UPDATE_CHECK_MS } from "../common";

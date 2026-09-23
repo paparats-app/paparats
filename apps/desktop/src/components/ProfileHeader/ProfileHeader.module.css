@@ -122,15 +122,10 @@
   font-weight: 400;
 }
 
-/* The prototype's inputs are content-box (38px + the 1px border = 40px) with radius 8, and have
-   no hover state (line 887). */
+/* The prototype's inputs are content-box (38px + the 1px border = 40px) with radius 8 (line 887). */
 .field input {
   height: 40px;
   border-radius: var(--r-8);
-}
-
-.field input:hover:not(:focus, [aria-invalid="true"]) {
-  border-color: var(--line2);
 }
 
 .formActions {

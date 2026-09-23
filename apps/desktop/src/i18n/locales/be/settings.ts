@@ -9,6 +9,7 @@ export const settings: LocaleCatalog<typeof En> = {
   historyCleared: "Гісторыя пошуку ачышчана",
   signedOut: "Вы выйшлі з уліковага запісу",
   notSignedIn: "Уваход не выкананы",
+  signIn: "Увайсці",
   sectionsLabel: "Раздзелы налад",
   sections: {
     general: "Агульныя",

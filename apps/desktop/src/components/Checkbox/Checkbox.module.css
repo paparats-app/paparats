@@ -39,10 +39,6 @@
   color: var(--ink);
 }
 
-.row:hover:not(.disabled) .box:not(.checked) {
-  border-color: var(--text3);
-}
-
 .row:active:not(.disabled) .box {
   transform: scale(0.94);
 }

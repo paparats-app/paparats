@@ -16,15 +16,15 @@ import { check } from "@tauri-apps/plugin-updater";
 import { commands, events } from "@/bindings";
 import type { DeepLinkTarget, TrayAction } from "@/bindings";
 import { toIso } from "@/domain/dates";
-import type { SystemService, Unsubscribe } from "../contracts";
-import type { IsoDate, Locale, SelfUpdateCheck } from "../types";
 import {
   SELF_UPDATE_CHECK_MS,
   browserCopyToClipboard,
   browserIsOnline,
   browserOnConnectivityChange,
   externalUrl,
-} from "../mock/system";
+} from "../common";
+import type { SystemService, Unsubscribe } from "../contracts";
+import type { IsoDate, Locale, SelfUpdateCheck } from "../types";
 import { toServiceError, unwrap, unwrapVoid } from "./result";
 
 export type { DeepLinkTarget, TrayAction };

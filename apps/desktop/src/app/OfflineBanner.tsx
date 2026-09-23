@@ -1,28 +1,19 @@
 import { useTranslation } from "react-i18next";
 import { Button } from "@/components/Button";
 import { Icon } from "@/components/Icon";
-import { useOffline } from "@/hooks/useOffline";
-import { useServices } from "@/services";
-import { useSettingsStore } from "@/stores/useSettingsStore";
-import { useUiStore } from "@/stores/useUiStore";
+import { useConnectivity } from "@/hooks/useConnectivity";
 import styles from "./OfflineBanner.module.css";
 
 /**
  * Offline banner under the top bar (prototype lines 126–133). Retry ends a simulated outage
  * (Settings › Advanced › Simulate offline); a real one is re-checked and, when the network is
- * still down, answered with the offline toast. The "Back online" toast comes from the providers.
+ * still down, answered with the offline toast (`hooks/useConnectivity`). The "Back online" toast
+ * comes from the providers.
  */
 export function OfflineBanner() {
   const { t } = useTranslation();
-  const { system } = useServices();
-  const offline = useOffline();
+  const { offline, retry } = useConnectivity();
   if (!offline) return null;
-
-  const retry = () => {
-    const { settings, update } = useSettingsStore.getState();
-    if (settings.simulateOffline) void update({ simulateOffline: false });
-    if (!system.isOnline()) useUiStore.getState().notify(t("common.offline"));
-  };
 
   return (
     <div className={styles.banner} role="status">

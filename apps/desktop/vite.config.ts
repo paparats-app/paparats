@@ -33,5 +33,34 @@ export default defineConfig({
   },
   build: {
     target: "es2022",
+    rolldownOptions: {
+      output: {
+        // Startup chunks (docs/architecture.md §2): the app's own code, React + router, and the
+        // other libraries the first frame needs. `$initial` keeps a library that only a lazy
+        // chunk uses out of the startup set. The mock world (services/mock/**) is split off by
+        // its dynamic import; its data set gets a readable name here (the dev gallery shares it).
+        codeSplitting: {
+          groups: [
+            {
+              name: "react",
+              test: /[\\/]node_modules[\\/](react|react-dom|react-router|scheduler)[\\/]/,
+              tags: ["$initial"],
+              priority: 3,
+            },
+            {
+              name: "vendor",
+              test: /[\\/]node_modules[\\/]/,
+              tags: ["$initial"],
+              priority: 2,
+            },
+            {
+              name: "fixtures",
+              test: /[\\/]fixtures[\\/][^\\/]+\.json$/,
+              priority: 1,
+            },
+          ],
+        },
+      },
+    },
   },
 });

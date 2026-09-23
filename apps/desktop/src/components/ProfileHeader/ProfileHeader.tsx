@@ -77,7 +77,6 @@ export function ProfileHeader({
             type="button"
             className={styles.camera}
             aria-label={photoLabel}
-            title={photoLabel}
             onClick={onChangePhoto}
           >
             <Icon name="camera" size={14} strokeWidth={2.2} />

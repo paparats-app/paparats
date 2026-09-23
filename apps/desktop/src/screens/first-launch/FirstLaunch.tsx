@@ -31,7 +31,13 @@ import {
 import { useHomeStore } from "@/stores/useHomeStore";
 import { useUiStore } from "@/stores/useUiStore";
 import { cx } from "./cx";
-import { AccountStep, AppearanceStep, LanguageStep, StepIndicator } from "./FirstLaunchSteps";
+import {
+  AccountStep,
+  AppearanceStep,
+  LanguageStep,
+  StepIndicator,
+  type CurrentAccount,
+} from "./FirstLaunchSteps";
 import {
   AUTHORED,
   FIREFLIES,
@@ -72,17 +78,26 @@ export function FirstLaunch() {
   const phase = useFirstLaunchStore((s) => s.phase);
   const run = useFirstLaunchStore((s) => s.run);
   const motion = useFirstLaunchStore((s) => s.motion);
+  const signInOnly = useFirstLaunchStore((s) => s.mode === "signIn");
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const { signIn } = useAccountActions();
   const schedule = useTimers();
 
-  /** Later / Sign in: persist, hand over to Home and start the exit. */
+  /**
+   * Later / Sign in: persist, hand over to Home and start the exit. A `signIn` run (Settings ›
+   * Account › Sign in) only starts the exit: the user stays where they were.
+   */
   const finish = useCallback((): boolean => {
     const store = useFirstLaunchStore.getState();
+    const signInOnly = store.mode === "signIn";
     if (!store.finish()) return false;
     const finishedRun = store.run;
+    if (signInOnly) {
+      schedule(() => useFirstLaunchStore.getState().close(finishedRun), FIRST_LAUNCH_EXIT_MS);
+      return true;
+    }
     // Like the prototype's `finishIntro` (`screen: 'home'`): Home is under the fading overlay at
     // once — no navigation skeleton.
     const ui = useUiStore.getState();
@@ -97,16 +112,22 @@ export function FirstLaunch() {
   }, [navigate, pathname, schedule]);
 
   const signInAndFinish = useCallback(
-    (email: string, password: string, fallbackEmail: string | null) => {
+    (email: string, password: string, current: CurrentAccount | null) => {
       const typed = email.trim();
       if (!finish()) return;
-      // A typed email signs in (and becomes the profile email); none keeps the current account.
-      const shown: Promise<string | null> = typed
-        ? signIn(typed, password).then(
-            (account) => account.profile.email,
-            () => null,
-          )
-        : Promise.resolve(fallbackEmail);
+      // A typed email signs in (and becomes the profile email); none keeps a signed-in account,
+      // and signs a signed-out one in with its profile email (the prototype signs in as the
+      // profile, `signInIntro`).
+      const signInAs = typed || (current && !current.signedIn ? current.email : "");
+      let shown: Promise<string | null>;
+      if (signInAs) {
+        shown = signIn(signInAs, password).then(
+          (account) => account.profile.email,
+          () => null,
+        );
+      } else {
+        shown = Promise.resolve(current?.signedIn ? current.email : null);
+      }
       schedule(() => {
         void shown.then((value) => {
           if (value) useUiStore.getState().notify(t("firstLaunch.signedInAs", { email: value }));
@@ -123,6 +144,7 @@ export function FirstLaunch() {
       phase={phase}
       run={run}
       motion={motion}
+      signInOnly={signInOnly}
       onLater={finish}
       onSignIn={signInAndFinish}
     />
@@ -152,8 +174,10 @@ interface SceneProps {
   phase: FirstLaunchPhase;
   run: number;
   motion: boolean;
+  /** Settings › Account › Sign in: the Account step alone, without the step indicator. */
+  signInOnly: boolean;
   onLater: () => void;
-  onSignIn: (email: string, password: string, fallbackEmail: string | null) => void;
+  onSignIn: (email: string, password: string, current: CurrentAccount | null) => void;
 }
 
 /** Numbers as CSS custom properties: `{ left: 40 }` → `--left: 40` (units are added in CSS). */
@@ -223,7 +247,7 @@ function Stage({ children }: { children: ReactNode }) {
   return <div className={styles.stage}>{children}</div>;
 }
 
-function Scene({ phase, run, motion, onLater, onSignIn }: SceneProps) {
+function Scene({ phase, run, motion, signInOnly, onLater, onSignIn }: SceneProps) {
   const { t } = useTranslation();
   const rootRef = useRef<HTMLDivElement>(null);
   const stepRef = useRef<HTMLDivElement>(null);
@@ -358,13 +382,13 @@ function Scene({ phase, run, motion, onLater, onSignIn }: SceneProps) {
                 password={password}
                 onEmailChange={setEmail}
                 onPasswordChange={setPassword}
-                onSignIn={(fallback) => onSignIn(email, password, fallback)}
+                onSignIn={(current) => onSignIn(email, password, current)}
                 onLater={onLater}
               />
             )}
           </div>
         </Stage>
-        <StepIndicator phase={phase} onBack={back} hidden={!frame.panel} />
+        {!signInOnly && <StepIndicator phase={phase} onBack={back} hidden={!frame.panel} />}
       </div>
 
       {/* The window is frameless and the scene covers the shell's drag strip: an invisible one

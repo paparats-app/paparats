@@ -59,6 +59,36 @@ describe("Settings in the shell", () => {
     expect(screen.getByRole("switch", { name: "Automatic updates" })).toBeInTheDocument();
   });
 
+  it("reopens the section last shown from the sidebar, as the prototype's `section` state", async () => {
+    const user = userEvent.setup();
+    await openShell();
+    const settingsItem = () => within(sidebar()).getByRole("button", { name: "Settings" });
+    const current = () =>
+      within(sectionNav())
+        .getAllByRole("button")
+        .find((b) => b.getAttribute("aria-current") === "page")?.textContent;
+
+    await user.click(settingsItem());
+    expect(current()).toBe("General");
+    await user.click(within(sectionNav()).getByRole("button", { name: "Privacy" }));
+    await user.click(within(sidebar()).getByRole("button", { name: /^Home/ }));
+    await user.click(settingsItem());
+    expect(h1()).toBe("Settings");
+    expect(current()).toBe("Privacy");
+
+    // An explicit target (Update settings) sets it; the sidebar then keeps that one.
+    await user.click(within(sidebar()).getByRole("button", { name: /^Updates/ }));
+    await user.click(await screen.findByRole("button", { name: /^Update settings/ }));
+    expect(current()).toBe("Updates");
+    await user.click(within(sidebar()).getByRole("button", { name: /^Library/ }));
+    await user.click(settingsItem());
+    expect(current()).toBe("Updates");
+    await user.click(within(sectionNav()).getByRole("button", { name: "General" }));
+    await user.click(within(sidebar()).getByRole("button", { name: /^Home/ }));
+    await user.click(settingsItem());
+    expect(current()).toBe("General");
+  });
+
   it("applies theme and language to the whole window and toasts in the shell", async () => {
     const user = userEvent.setup();
     await openShell("/settings");
@@ -93,5 +123,40 @@ describe("Settings in the shell", () => {
     expect(await screen.findByText("Version 1.2.3 (Build 20260915)")).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "What’s new" }));
     expect(h1()).toBe("Updates");
+  });
+  it("signs back in after Sign out through the first launch's Account step, staying in Settings", async () => {
+    const user = userEvent.setup();
+    const { services } = await openShell("/settings/account");
+    await user.click(await screen.findByRole("button", { name: "Sign out" }));
+    expect(await screen.findByText("Not signed in")).toBeInTheDocument();
+
+    const signIn = screen.getByRole("button", { name: "Sign in" });
+    signIn.focus();
+    await user.keyboard("{Enter}");
+    // The Account step alone: no scene, no step indicator, no Back.
+    const scene = await screen.findByTestId("first-launch");
+    expect(scene).toHaveAttribute("data-phase", "signin");
+    expect(within(scene).getByRole("heading", { name: "Sign in to Paparats" })).toBeInTheDocument();
+    expect(within(scene).queryByRole("button", { name: "Back" })).toBeNull();
+    expect(within(scene).queryByRole("list", { name: "Setup steps" })).toBeNull();
+
+    // Nothing typed: signs in as the profile (the prototype's `signInIntro`).
+    await user.click(within(scene).getByRole("button", { name: "Sign in" }));
+    // "Signed in as …" is toasted 1.6 s later, as after the first launch.
+    await waitFor(
+      () =>
+        expect(screen.getByRole("status")).toHaveTextContent("Signed in as serj.kaje@example.com"),
+      { timeout: 3000 },
+    );
+    expect((await services.account.getAccount()).signedIn).toBe(true);
+    expect(h1()).toBe("Settings");
+    expect(screen.getByRole("button", { name: "Sign out" })).toBeInTheDocument();
+    // The first-run record is not rewritten and the scene goes after its exit.
+    expect(window.localStorage.getItem("paparats.firstRun")).toBeNull();
+    await waitFor(() => expect(screen.queryByTestId("first-launch")).toBeNull(), {
+      timeout: 3000,
+    });
+    // The focus is back on the row it came from.
+    expect(screen.getByRole("button", { name: "Sign out" })).toHaveFocus();
   });
 });

@@ -62,7 +62,7 @@ describe("App page a11y", () => {
     expect(third).toHaveAttribute("aria-checked", "true");
   });
 
-  it("opens Report a problem on Enter; Send waits for text; Escape gives the focus back", async () => {
+  it("opens Report a problem on Enter; Send is reachable; Escape gives the focus back", async () => {
     const { user } = await openApp("obsidian");
     const report = within(content()).getByRole("button", { name: "Report a problem" });
     report.focus();
@@ -71,9 +71,12 @@ describe("App page a11y", () => {
     const text = within(dialog).getByRole("textbox");
     expect(text).toHaveFocus();
     const send = within(dialog).getByRole("button", { name: "Send" });
-    expect(send).toBeDisabled();
-    await user.keyboard("Crashes on start");
+    // Always enabled, as in the prototype: the next Tab after Cancel lands on it.
     expect(send).toBeEnabled();
+    await user.keyboard("Crashes on start");
+    await user.tab();
+    await user.tab();
+    expect(send).toHaveFocus();
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(report).toHaveFocus();

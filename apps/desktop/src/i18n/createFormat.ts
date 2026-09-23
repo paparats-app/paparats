@@ -1,4 +1,5 @@
 import type { IsoDate, Locale } from "@/services/types";
+import { belarusian, hasLocaleData } from "./belarusian";
 
 /** Locale-aware formatters for the current UI language. See docs/i18n.md › Formatting. */
 export type Format = {
@@ -63,6 +64,40 @@ export function createFormat(locale: Locale, today: IsoDate): Format {
     return d ? fmt.format(d) : iso;
   };
   const date = onDate(dateFmt);
+
+  // Chromium has no Belarusian ICU data (WebView2 falls back to ru-BY, Chrome to en-US): the
+  // CLDR `be` patterns are applied by hand there, so the app reads the same in every runtime.
+  if (locale === "be" && !hasLocaleData("be")) {
+    const be = belarusian;
+    return {
+      size: be.size,
+      sizeGb: (mb) => be.sizeGb(mb / 1024),
+      date: (iso) => {
+        const d = atNoon(iso);
+        return d ? be.date(d) : iso;
+      },
+      month: (iso) => {
+        const d = atNoon(iso);
+        return d ? be.month(d) : iso;
+      },
+      relative(iso) {
+        const then = atNoon(iso);
+        if (!then || !todayNoon) {
+          return then ? be.date(then) : iso;
+        }
+        const days = Math.round((todayNoon.getTime() - then.getTime()) / DAY_MS);
+        if (days < 1) return be.ago(0, "day");
+        if (days < 7) return be.ago(days, "day");
+        if (days < 30) return be.ago(Math.round(days / 7), "week");
+        return be.ago(Math.round(days / 30), "month");
+      },
+      number: be.number,
+      plus: (n) => `${be.number(n)}+`,
+      price: (amount, currency) => be.price(amount, currency, Number.isInteger(amount) ? 0 : 2),
+      percent: (n) => be.percent(n),
+      list: be.list,
+    };
+  }
 
   return {
     size: (mb) => mbFmt.format(mb),

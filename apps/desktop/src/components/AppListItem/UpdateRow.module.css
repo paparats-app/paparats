@@ -27,14 +27,17 @@
   cursor: pointer;
 }
 
+/* The tile is a pointer shortcut (a plain box, not a button: the name button is the control), so
+   the monogram is not selectable, as on the prototype's button. */
 .tile {
   display: grid;
   width: 48px;
   height: 48px;
   border-radius: var(--r-11);
+  user-select: none;
 }
 
-/* The tile is a button (line 486): no monogram tracking and, with the button's UA font, no
+/* The prototype's tile is a button (line 486): no monogram tracking and, with the button's UA font, no
    tabular figures, unlike the shared tile. */
 .icon.icon {
   letter-spacing: normal;

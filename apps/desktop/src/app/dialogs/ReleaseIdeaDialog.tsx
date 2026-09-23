@@ -92,7 +92,9 @@ function ReleaseForm({ idea }: { idea: Idea }) {
           <Button
             variant="primary"
             className={styles.release}
-            disabled={!ready}
+            // Always the full mint button, as in the prototype; with no version (the service
+            // refuses a blank one, D12) it is inert.
+            aria-disabled={!ready || undefined}
             loading={releasing}
             onClick={() => void confirm()}
           >

@@ -1,6 +1,7 @@
 import i18next, { type InitOptions } from "i18next";
 import { initReactI18next } from "react-i18next";
 import type { Locale } from "@/services/types";
+import { belarusian, hasLocaleData } from "./belarusian";
 import { LOCALES, resources } from "./resources";
 
 export { LANGUAGES, isLocale, toLocale, type Language } from "./languages";
@@ -25,6 +26,16 @@ i18n.on("languageChanged", (lng) => {
   if (typeof document !== "undefined") document.documentElement.lang = lng;
 });
 void i18n.init(OPTIONS);
+// `{{count, number}}` in Belarusian: Chromium has no `be` number data (Chrome writes "3,120",
+// WebView2 borrows ru-BY), so the CLDR `be` pattern is applied by hand there, as in
+// `createFormat` (docs/decisions.md D62).
+if (!hasLocaleData("be")) {
+  i18n.services.formatter?.add("number", (value: unknown, lng: string | undefined, options) =>
+    lng === "be" && typeof value === "number"
+      ? belarusian.number(value)
+      : new Intl.NumberFormat(lng, options as Intl.NumberFormatOptions).format(value as number),
+  );
+}
 
 /** Sets the UI language at startup (from settings). Safe to call more than once. */
 export async function initI18n(locale: Locale): Promise<void> {

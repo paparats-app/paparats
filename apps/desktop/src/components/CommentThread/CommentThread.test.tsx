@@ -54,15 +54,19 @@ describe("CommentThread", () => {
     expect(screen.getByText("No comments yet. Start the discussion.")).toBeInTheDocument();
   });
 
-  it("enables Post once there is text", async () => {
+  it("keeps a blank Post inert and posts once there is text", async () => {
     const onPost = vi.fn();
     render(<Harness onPost={onPost} />);
     const post = screen.getByRole("button", { name: "Post" });
-    expect(post).toBeDisabled();
+    // The prototype's enabled no-op: focusable, announced as unavailable, does nothing.
+    expect(post).toHaveAttribute("aria-disabled", "true");
+    await userEvent.click(post);
     await userEvent.type(screen.getByRole("textbox", { name: "Add to the discussion…" }), "   ");
-    expect(post).toBeDisabled();
+    expect(post).toHaveAttribute("aria-disabled", "true");
+    await userEvent.click(post);
+    expect(onPost).not.toHaveBeenCalled();
     await userEvent.type(screen.getByRole("textbox"), "Count me in");
-    expect(post).toBeEnabled();
+    expect(post).not.toHaveAttribute("aria-disabled");
     expect(post).toHaveAttribute("data-variant", "primary");
     await userEvent.click(post);
     expect(onPost).toHaveBeenCalledWith("   Count me in");

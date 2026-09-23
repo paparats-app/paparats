@@ -79,13 +79,15 @@ function ConnectedRow({ row, settings }: ConnectedRowProps) {
   if (!isRowCopyId(i18n, row.id)) return null;
   const id: RowCopyId = row.id;
   const hint = hasHint(i18n, id) ? t(`settings.rows.${id}.hint`) : undefined;
-  const actionLabel = hasAction(i18n, id) ? t(`settings.rows.${id}.action`) : "";
+  let actionLabel: string = hasAction(i18n, id) ? t(`settings.rows.${id}.action`) : "";
   let title: string = t(`settings.rows.${id}.title`, { email: "" });
+  // Signed out, the row offers Sign in: the first launch's Account step (D61).
+  const signedOut = id === "signOut" && account?.signedIn === false;
   if (id === "signOut") {
-    title =
-      account && !account.signedIn
-        ? t("settings.notSignedIn")
-        : t("settings.rows.signOut.title", { email: account?.profile.email ?? "" });
+    title = signedOut
+      ? t("settings.notSignedIn")
+      : t("settings.rows.signOut.title", { email: account?.profile.email ?? "" });
+    if (signedOut) actionLabel = t("settings.signIn");
   }
 
   switch (row.type) {
@@ -178,7 +180,6 @@ function ConnectedRow({ row, settings }: ConnectedRowProps) {
       );
     case "action": {
       let onAction = () => {};
-      let disabled = false;
       switch (row.action) {
         case "clearHistory":
           onAction = () => {
@@ -193,7 +194,10 @@ function ConnectedRow({ row, settings }: ConnectedRowProps) {
           };
           break;
         case "signOut":
-          disabled = account?.signedIn === false;
+          if (signedOut) {
+            onAction = () => useFirstLaunchStore.getState().openSignIn();
+            break;
+          }
           onAction = () => {
             if (signingOut) return;
             setSigningOut(true);
@@ -217,7 +221,6 @@ function ConnectedRow({ row, settings }: ConnectedRowProps) {
           hint={hint}
           actionLabel={actionLabel}
           onAction={onAction}
-          disabled={disabled}
           busy={row.action === "signOut" && signingOut}
         />
       );

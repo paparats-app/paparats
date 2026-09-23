@@ -23,23 +23,27 @@ async function openIdea(services = createTestServices()) {
 }
 
 describe("Idea a11y", () => {
-  it("tabs Back → vote → composer; Post joins once there is text", async () => {
+  it("tabs Back → vote → composer → Post; a blank Post is inert", async () => {
     const { user } = await openIdea();
     focusBeforeScreen();
     await expectTabOrder(user, [
       within(content()).getByRole("button", { name: "Ideas" }),
       within(content()).getByRole("button", { name: /votes?$/ }),
       composer(),
+      post(),
     ]);
-    expect(post()).toBeDisabled();
+    expect(post()).toHaveAttribute("aria-disabled", "true");
+    await user.keyboard("{Enter}");
+    expect(post()).toHaveFocus();
+    composer().focus();
     await user.keyboard("Pinned snippets would be great");
-    expect(post()).toBeEnabled();
+    expect(post()).not.toHaveAttribute("aria-disabled");
     await user.tab();
     expect(post()).toHaveFocus();
     await user.keyboard("{Enter}");
     expect(await screen.findByText("Pinned snippets would be great")).toBeInTheDocument();
     expect(composer()).toHaveValue("");
-    expect(post()).toBeDisabled();
+    expect(post()).toHaveAttribute("aria-disabled", "true");
     expectNamedControls();
   });
 

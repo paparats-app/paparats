@@ -3,6 +3,7 @@ export * from "./useAppAction";
 export * from "./useAppIndex";
 export * from "./useChannelContext";
 export * from "./useChannelFollow";
+export * from "./useConnectivity";
 export * from "./useDeveloperChannel";
 export * from "./useInstalledIndex";
 export * from "./useInstallState";

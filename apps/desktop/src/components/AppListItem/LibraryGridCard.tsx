@@ -55,7 +55,6 @@ export function LibraryGridCard({
           type="button"
           className={styles.favorite}
           aria-label={favoriteLabel}
-          title={favoriteLabel}
           aria-pressed={favorite}
           onClick={onToggleFavorite}
         >

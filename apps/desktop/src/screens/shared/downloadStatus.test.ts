@@ -18,11 +18,11 @@ describe("downloadStatus", () => {
       size: "37 MB of 87 MB",
       text: "Downloading… 43% · 37 MB of 87 MB",
     });
-    // Paused: the one-line form drops the size (D31); the Library's second line keeps it.
+    // Paused keeps the size in the one-line form too (the prototype's `range` / app page line).
     expect(downloadStatus("paused", 43.4, 87, copy, en)).toEqual({
       line: "Paused · 43%",
       size: "38 MB of 87 MB",
-      text: "Paused · 43%",
+      text: "Paused · 43% · 38 MB of 87 MB",
     });
     expect(downloadStatus("queued", 0, 87, copy, en)).toEqual({
       line: "Queued",

@@ -35,7 +35,13 @@ export function WindowControls() {
         aria-label={t("shell.minimize")}
         onClick={nativeWindow.minimize}
       >
-        <Icon name="minus" size={10} strokeWidth={2.2} />
+        <Icon
+          name="minus"
+          size={10}
+          strokeWidth={2.2}
+          strokeLinecap="butt"
+          strokeLinejoin="miter"
+        />
       </button>
       <button
         type="button"
@@ -43,7 +49,13 @@ export function WindowControls() {
         aria-label={maximized ? t("shell.restore") : t("shell.maximize")}
         onClick={nativeWindow.toggleMaximize}
       >
-        <Icon name={maximized ? "copy" : "square"} size={10} strokeWidth={2.2} />
+        <Icon
+          name={maximized ? "copy" : "square"}
+          size={10}
+          strokeWidth={2.2}
+          strokeLinecap="butt"
+          strokeLinejoin="miter"
+        />
       </button>
       <button
         type="button"
@@ -51,7 +63,7 @@ export function WindowControls() {
         aria-label={t("shell.close")}
         onClick={nativeWindow.close}
       >
-        <Icon name="x" size={10} strokeWidth={2.2} />
+        <Icon name="x" size={10} strokeWidth={2.2} strokeLinecap="butt" strokeLinejoin="miter" />
       </button>
     </div>
   );

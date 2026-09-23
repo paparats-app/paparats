@@ -234,6 +234,7 @@ export function DataPanel() {
         type="action"
         title={t("profile.deleteAccount")}
         hint={t("profile.deleteHint")}
+        prettyHint
         actionLabel={t("profile.deleteBtn")}
         destructive
         onAction={() => undefined}

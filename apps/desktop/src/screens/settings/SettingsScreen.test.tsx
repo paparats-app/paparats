@@ -245,7 +245,7 @@ describe("SettingsScreen", () => {
     await waitFor(() => expect(toast()).toBe("Search history cleared"));
   });
 
-  it("account: the links open Profile and Subscription; Sign out signs out with a toast", async () => {
+  it("account: the links open Profile and Subscription; Sign out signs out, Sign in comes back", async () => {
     const user = userEvent.setup();
     const { router } = await openSettings("/settings/account");
     await user.click(screen.getByRole("button", { name: /^Profile/ }));
@@ -260,7 +260,14 @@ describe("SettingsScreen", () => {
     await user.click(screen.getByRole("button", { name: "Sign out" }));
     await waitFor(() => expect(toast()).toBe("Signed out"));
     expect(await screen.findByText("Not signed in")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Sign out" })).toBeDisabled();
+    // Signed out, the row offers Sign in: the first launch's Account step alone (D61).
+    expect(screen.queryByRole("button", { name: "Sign out" })).toBeNull();
+    await user.click(screen.getByRole("button", { name: "Sign in" }));
+    expect(useFirstLaunchStore.getState()).toMatchObject({
+      phase: "signin",
+      mode: "signIn",
+      motion: false,
+    });
   });
 
   it("developer tools show only in developer mode and work", async () => {

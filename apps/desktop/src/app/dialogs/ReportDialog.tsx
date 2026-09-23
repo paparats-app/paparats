@@ -18,7 +18,8 @@ export interface ReportDialogProps {
 /**
  * "Report a problem with <App or Channel>" (prototype lines 1404–1416, logic `openReport` /
  * `sendReport`): the report goes to the channel author with a copy to Paparats, or to the
- * Paparats team for the official catalog. Send stays disabled while the text is blank.
+ * Paparats team for the official catalog. Send is always enabled, as in the prototype: a blank
+ * report is sent too (the text is trimmed).
  */
 export function ReportDialog({ target }: ReportDialogProps) {
   const { t } = useTranslation();
@@ -37,7 +38,7 @@ export function ReportDialog({ target }: ReportDialogProps) {
       : t("report.reportRoute", { author: channel.author, channel: channel.name });
 
   const send = async () => {
-    if (text.trim() === "" || sending) return;
+    if (sending) return;
     setSending(true);
     try {
       const receipt = await report(target, text.trim());
@@ -66,7 +67,6 @@ export function ReportDialog({ target }: ReportDialogProps) {
           <Button
             variant="primary"
             className={styles.send}
-            disabled={text.trim() === ""}
             loading={sending}
             onClick={() => void send()}
           >

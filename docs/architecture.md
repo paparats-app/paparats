@@ -25,7 +25,10 @@ apps/desktop/src/
   components/<Name>/       shared components: <Name>.tsx + <Name>.module.css (+ test), index.ts
   services/                contracts.ts (interfaces), types.ts (domain types), errors.ts,
                            registry.ts (createServices + ServicesProvider + useServices),
-                           mock/ (in-memory, fixtures), tauri/ (adapters over bindings.ts)
+                           common.ts (what both sets share: WebView connectivity and clipboard,
+                           the openExternal link rule, the settings sanitizer),
+                           mock/ (in-memory, fixtures; a lazy chunk), tauri/ (adapters over
+                           bindings.ts)
   queries/                 TanStack Query hooks over services (reads + mutations)
   stores/                  Zustand stores (UI + client state), one file per domain
   hooks/                   derived hooks combining queries + stores (useVisibleApps, useAppAction…)
@@ -58,15 +61,26 @@ screen ─┬─ queries/* (TanStack Query) ─── services (contracts.ts) �
 
 - Screens and components never import `@/bindings` or `@tauri-apps/api/core` (ESLint enforces it).
 - Domain types come from `@/services/types` (re-exports of the generated bindings).
-- `createServices(mode)` picks `mock` or `tauri` once at startup (`platform/runtime.ts` ›
+- `await createServices(mode)` picks `mock` or `tauri` once at startup (`platform/runtime.ts` ›
   `shouldUseMockServices()`: plain browser, Vitest or `PAPARATS_MOCK=1` → mock). The tauri set
   calls the Rust commands for every service; settings live in `settings.json` through
-  tauri-plugin-store (`docs/decisions.md` D26).
-- Startup (`main.tsx`): `createServices()` → `app/bootstrap.ts › bootstrap(services)` (installs the
-  set, hydrates `useSettingsStore`, applies theme/motion to `<html>`, `initI18n(locale)`, then
-  `useFirstLaunchStore.launch()` — the first-launch scene plays unless `localStorage ›
-  paparats.firstRun` says it was seen) → render `<App services/>`. The first frame already has the
-  user's theme and language. Tests never auto-play the scene: only `bootstrap()` launches it.
+  tauri-plugin-store (`docs/decisions.md` D26). The mock set is loaded with a dynamic
+  `import("./mock")`, so `services/mock/**` and `fixtures/*.json` are a chunk of their own that a
+  Tauri build never loads (D60). Nothing the entry reaches imports `./mock` or `@fixtures/*`
+  statically (`services/startup.test.ts` checks it); the barrel `@/services` exports only the mock
+  set's types, and tests import `@/services/mock` or `createTestServices` from `@/hooks/testing`.
+- Build chunks (`vite.config.ts`, D60): the startup loads `index` (the app), `react` (React,
+  react-dom, react-router, scheduler), `vendor` (the other libraries the first frame needs) and one
+  stylesheet; `mock`, `fixtures` and `dev` (the gallery) load on demand. No chunk passes Vite's
+  500 kB warning. No module may use top-level await: rolldown then turns off its chunk merging and
+  the startup splits into several small shared chunks (`main.tsx` runs an async `start()`;
+  `services/startup.test.ts` fails on a module-level `await`).
+- Startup (`main.tsx › start()`): `createServices()` → `app/bootstrap.ts › bootstrap(services)`
+  (installs the set, hydrates `useSettingsStore`, applies theme/motion to `<html>`,
+  `initI18n(locale)`, then `useFirstLaunchStore.launch()` — the first-launch scene plays unless
+  `localStorage › paparats.firstRun` says it was seen) → render `<App services/>`. The first
+  frame already has the user's theme and language. Tests never auto-play the scene: only
+  `bootstrap()` launches it.
 - Mutations return the new authoritative state → `queryClient.setQueryData`, no refetch.
 
 ## 3. Services (see `services/contracts.ts`)
@@ -110,7 +124,7 @@ One-off service calls with nothing to cache (`queries/system.ts`): `useSystemAct
 
 | Store | State | Notes |
 |---|---|---|
-| `useUiStore` | `query`, `searching`, `toast {id,message}`, `navCount`, `loading` | `setQuery(q, {skeleton?})` (searching for 340 ms), `clearQuery`, `notify(msg)` (2.8 s), `dismissToast`, `beginNavigation({skeleton})` (clears the search, navCount+1, skeleton 420 ms when `skeleton`) |
+| `useUiStore` | `query`, `searching`, `toast {id,message}`, `navCount`, `loading`, `settingsSection` (the Settings section last shown, default `'general'`) | `setQuery(q, {skeleton?})` (searching for 340 ms), `clearQuery`, `notify(msg)` (2.8 s), `dismissToast`, `beginNavigation({skeleton})` (clears the search, navCount+1, skeleton 420 ms when `skeleton`), `setSettingsSection(id)` (the Settings screen keeps it; `resolveTarget` reads it, §7) |
 | `useSettingsStore` | `settings: Settings`, `hydrated` | `hydrate()`, `update(patch)` — optimistic, persists via SettingsService, rolls back on failure. Never touches the DOM: `app/documentSettings.ts` applies theme/locale/motion to `<html>` |
 | `useDownloadsStore` | `items: Record<AppId, DownloadItem>`, `order`, `batch {ids} \| null`, `justUpdated: Record<AppId,true>` | actions call DownloadService (`enqueue`, `startBatch`, pause/resume/cancel (+All), `clearJustUpdated(id?)`); selectors `batchProgress`, `allPaused`; kept in sync by `useDownloadsBridge()` (`stores/useDownloadsBridge.ts`, mounted once in the providers) |
 | `useBrowseStore` | `categories`, `pro`, `portable`, `sort` ('featured'\|'newest'\|'name'\|'size'), `collection`, `filterQuery`, `sources`, `heroIndex` | `apply(preset)` resets the six filters then applies the preset (navigation into Browse), `clearAll()`, toggles, `dropSource(id)` (unsubscribe/pause); select filters with `useShallow(selectBrowseFilters)` |
@@ -131,6 +145,8 @@ One-off service calls with nothing to cache (`queries/system.ts`): `useSystemAct
 Hooks (names are the contract):
 - `useToday(): IsoDate` — from SystemService.
 - `useOffline(): boolean` — real connectivity OR `settings.simulateOffline`.
+- `useConnectivity()` — `{ offline, retry }` for the offline banner: `retry()` ends a simulated
+  outage and, when the network is really down, toasts "You’re offline".
 - `useViewAs(): 'user' | 'developer'` — developer when `settings.dev && settings.viewAsDeveloper`.
 - `useChannelContext()` — `{ channels, byId, subscriptions, ready, subscriptionOf(id), isFollowed(id), isActive(id), sourceOf(app), alternativesOf(app), downDays(id), isStale(id) }` (source rule: most trusted *active* channel; official › verified › community).
 - `useChannelFollow()` — what following a channel does anywhere (Settings › Sources, the channel
@@ -159,7 +175,9 @@ Hooks (names are the contract):
   `date(iso)` "15 September 2026", `month(iso)`, `relative(iso)` (days/weeks/months vs today),
   `number(n)`, `plus(n)` "10,000+", `price(amount, currency)`, `percent(n)`,
   `list(items)` "Nilesoft and Winaero". The same functions without React:
-  `@/i18n/createFormat › createFormat(locale, today)` (domain code, stores, tests).
+  `@/i18n/createFormat › createFormat(locale, today)` (domain code, stores, tests). Chromium has
+  no Belarusian ICU data, so for `be` there it uses the hand-written CLDR patterns of
+  `i18n/belarusian.ts` (also i18next's `number` format; `docs/i18n.md` §5, D62).
 - Test-only helpers for hooks: `hooks/testing.tsx` (`createTestServices`, `renderWithServices`,
   `flush`, `resetStores`); not exported by the barrel.
 
@@ -198,7 +216,12 @@ Memory router (react-router 8, `createMemoryRouter`). Routes: `/home` `/browse` 
 - Inside Settings, picking a section is not a `go()`: the screen calls react-router's
   `navigate(pathOf({to:'settings', section}), {replace:true})`, so the panel swaps without the
   skeleton, enter animation or scroll reset (the prototype's `setState({section})`), while the path
-  still carries the section for detail pages that return to it. `/settings` opens General.
+  still carries the section for detail pages that return to it. `/settings` shows General.
+- `go({to:'settings'})` without a section (the sidebar) reopens the section last shown, like the
+  prototype's `section` state that survives navigation: `go()` passes every target through
+  `resolveTarget(target)`, which fills in `useUiStore.settingsSection` (set by the Settings screen
+  for whatever it shows, so explicit targets such as Update settings or the tray's About set it
+  too). A fresh start opens General (D58).
 - `/dev` (component gallery, a lazy chunk) is opened from Settings › Advanced › Component gallery
   in developer mode (schema row `gallery`, link `dev`; rendered by the Settings screen), or in a
   plain browser with `http://localhost:1420/#/dev` (the initial route comes from the URL hash;
@@ -267,6 +290,8 @@ Search is not a route: while `useUiStore.query` is non-blank the content area re
   - Tab order: sidebar → search → avatar → screen → window controls.
 - Icons: `lucide-react` through `components/Icon` (`<Icon name="layout-grid" size={20} />`,
   stroke 1.75, round caps/joins), so data can name icons (fixtures use lucide kebab-case names).
+  Each name draws the prototype's glyph: a stock lucide icon, or the prototype's path data through
+  `createLucideIcon` (`components/Icon/glyphs.ts`) where lucide 1.x redrew it (D59).
 - App icons: `components/AppIcon` — `iconUrl` when present, else the monogram tile (`mono` on `tint`).
 
 ## 9a. Shared components (`components/`)
@@ -344,6 +369,10 @@ The HTML is a reference, not code to copy: no `{{ }}`, no prototype runtime, no 
   M6: the first-launch run through the shell is `screens/first-launch/FirstLaunch.test.tsx ›
   FirstLaunch in the shell`; the native shell (links, tray actions, first frame) is
   `app/nativeShell.test.tsx`, over `@tauri-apps/api/mocks`.
+- Startup graph: `services/startup.test.ts` walks the static imports from `main.tsx` and fails if
+  they reach `services/mock/**` or the fixtures, or if any module uses top-level await (§2).
+- Icon glyphs: `components/Icon/Icon.test.tsx` reads the prototype file (`?raw`) and pins every
+  glyph it draws to a registry name and its lucide component or path data (D59).
 - Keyboard/a11y smoke per screen: `screens/<name>/<Name>Screen.a11y.test.tsx` and
   `app/shell.a11y.test.tsx`, with `screens/shared/a11yTesting.tsx` (`openScreen(route)` — the
   shell with animations off, `focusBeforeScreen()`, `expectTabOrder(user, targets)`,

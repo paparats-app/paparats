@@ -1,17 +1,29 @@
 // Picks the service implementation once at startup and hands it to React (`useServices()`) and to
 // non-React code such as Zustand store actions (`getServices()`).
+//
+// The mock world (`./mock/**` and `fixtures/*.json`) is reached only through the dynamic import
+// below, so it is a chunk of its own that a Tauri build never loads or parses. Keep it that way:
+// no static import of `./mock` from anything the app's entry reaches (tests may import it freely).
 import { createContext, createElement, useContext } from "react";
 import type { ReactNode } from "react";
 import type { Services } from "./contracts";
-import { createMockServices } from "./mock";
 import type { MockServiceOptions } from "./mock";
 import { createTauriServices } from "./tauri";
 
 export type ServicesMode = "mock" | "tauri";
 
-/** `mock`: in-memory fixtures; `tauri`: the Rust core (see `platform/runtime.ts` › `shouldUseMockServices`). */
-export function createServices(mode: ServicesMode, options?: MockServiceOptions): Services {
-  return mode === "mock" ? createMockServices(options) : createTauriServices(options);
+/**
+ * `tauri`: the Rust core; `mock`: in-memory fixtures with the prototype's timings, loaded on
+ * demand (see `platform/runtime.ts` › `shouldUseMockServices`). `options` apply to the mock set
+ * only: the core owns its timings, dates and storage.
+ */
+export async function createServices(
+  mode: ServicesMode,
+  options?: MockServiceOptions,
+): Promise<Services> {
+  if (mode === "tauri") return createTauriServices();
+  const { createMockServices } = await import("./mock");
+  return createMockServices(options);
 }
 
 let current: Services | null = null;

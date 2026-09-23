@@ -151,7 +151,7 @@ export function ChannelRowsSection() {
                       ? t("sources.unreachableFor", { count: down })
                       : c.synced
                         ? t("sources.syncedRel", { when: format.relative(c.synced) })
-                        : t("sources.neverSynced")
+                        : ""
                   }
                   unreachable={down > 0}
                   official={official}

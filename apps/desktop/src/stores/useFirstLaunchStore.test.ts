@@ -173,4 +173,24 @@ describe("useFirstLaunchStore", () => {
       getItem.mockRestore();
     }
   });
+  it("openSignIn() shows the Account step alone and finishes without a record or hero glow", () => {
+    store().openSignIn();
+    expect(store()).toMatchObject({ phase: "signin", mode: "signIn", motion: false, run: 1 });
+    // No Back to the other steps, and no second run while one shows.
+    store().back();
+    expect(store().phase).toBe("signin");
+    store().openSignIn();
+    expect(store().run).toBe(1);
+
+    expect(store().finish()).toBe(true);
+    expect(store().phase).toBe("done");
+    expect(localStorage.getItem(FIRST_RUN_KEY)).toBeNull();
+    expect(useHomeStore.getState().heroGlow).toBe(false);
+    store().close(1);
+    expect(store().phase).toBeNull();
+
+    // A replay afterwards is the whole first launch again.
+    store().replay();
+    expect(store()).toMatchObject({ phase: "seed", mode: "intro" });
+  });
 });

@@ -13,8 +13,8 @@ export interface DownloadStatus {
   /** "12 MB of 87 MB" while downloading or paused; `null` when queued or installing. */
   size: string | null;
   /**
-   * The one-line form (README; decision D31): "Downloading… 43% · 12 MB of 87 MB", and `line` in
-   * every other state — a paused download does not repeat its size.
+   * The one-line form (the prototype's `[dlLine, dlSize].join(' · ')`): "Downloading… 43% · 12 MB
+   * of 87 MB", "Paused · 43% · 12 MB of 87 MB", else `line`.
    */
   text: string;
 }
@@ -48,12 +48,11 @@ export function downloadStatus(
       return { line: copy.queued, size: null, text: copy.queued };
     case "installing":
       return { line: copy.installing, size: null, text: copy.installing };
-    case "paused": {
-      const line = `${copy.paused} · ${percent}`;
-      return { line, size: size(), text: line };
-    }
+    case "paused":
     case "downloading": {
-      const line = `${copy.downloading}… ${percent}`;
+      // A paused download is still "downloading" in the prototype, so it keeps its size too.
+      const line =
+        state === "paused" ? `${copy.paused} · ${percent}` : `${copy.downloading}… ${percent}`;
       const received = size();
       return { line, size: received, text: `${line} · ${received}` };
     }

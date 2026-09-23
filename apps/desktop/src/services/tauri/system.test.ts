@@ -4,7 +4,7 @@
 import { emit } from "@tauri-apps/api/event";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
 import { ServiceError } from "../errors";
-import { SELF_UPDATE_CHECK_MS } from "../mock/system";
+import { SELF_UPDATE_CHECK_MS } from "../common";
 import type { DeepLinkTarget, TrayAction } from "./system";
 import {
   UPDATE_CHECK_TIMEOUT_MS,

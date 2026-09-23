@@ -92,13 +92,9 @@ export function LibraryRow({
 
   return (
     <div className={cx(styles.row, className)} data-library-row="">
-      <button
-        type="button"
-        className={styles.tile}
-        onClick={onOpen}
-        tabIndex={-1}
-        aria-hidden="true"
-      >
+      {/* A pointer shortcut to the name button beside it (the prototype's tile is a button):
+          not focusable and hidden from assistive tech, which use the name button. */}
+      <div className={styles.tile} onClick={onOpen} aria-hidden="true">
         <AppIcon
           mono={icon.mono}
           tint={icon.tint}
@@ -106,7 +102,7 @@ export function LibraryRow({
           size={44}
           className={styles.icon}
         />
-      </button>
+      </div>
       <button type="button" className={styles.identity} onClick={onOpen}>
         <span className={styles.nameLine}>
           <span className={styles.name}>{name}</span>
@@ -115,6 +111,8 @@ export function LibraryRow({
               name="star"
               size={12}
               strokeWidth={1.5}
+              strokeLinecap="butt"
+              strokeLinejoin="miter"
               className={styles.star}
               label={t("library.favorites")}
             />

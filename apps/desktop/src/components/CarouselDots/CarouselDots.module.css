@@ -1,4 +1,5 @@
-/* Hero dots — 6px idle, 18px active `--mint`, height 6, radius 3, `transition: width .2s`. */
+/* Hero dots — 6px idle, 18px active `--mint`, height 6, radius 3, `transition: width .2s`
+   (prototype lines 213, 300): no hover colour, the pointer on every dot (the active one too). */
 .dots {
   display: flex;
   align-items: center;
@@ -28,14 +29,6 @@
   background: var(--dot-idle);
 }
 
-.dot:hover:not(.active) {
-  background: var(--text3);
-}
-
-.onImage .dot:hover:not(.active) {
-  background: var(--on-image-2);
-}
-
 .dot:active {
   transform: scale(0.9);
 }
@@ -48,5 +41,4 @@
 .dots .active {
   width: 18px;
   background: var(--mint);
-  cursor: default;
 }

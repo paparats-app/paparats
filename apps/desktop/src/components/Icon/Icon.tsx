@@ -17,7 +17,11 @@ export interface IconProps extends Omit<SVGProps<SVGSVGElement>, "name" | "ref" 
   label?: string;
 }
 
-/** Outline icon (lucide) with the design's stroke and round caps/joins. */
+/**
+ * Outline icon (lucide) with the design's stroke and round caps/joins. The glyph is the
+ * prototype's drawing of that icon (`registry.ts`). SVG props pass through, e.g.
+ * `strokeLinecap="butt"` for the window controls, which the prototype draws with square ends.
+ */
 export function Icon({
   name,
   size = 20,

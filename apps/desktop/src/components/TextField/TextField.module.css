@@ -29,11 +29,8 @@
   color: var(--text3);
 }
 
-.input:hover:not(:disabled, :focus) {
-  border-color: var(--text3);
-}
-
-/* The design's focus indicator for text fields is the mint border. */
+/* The design's focus indicator for text fields is the mint border; there is no hover state (the
+   prototype's inputs change only on focus). */
 .input:focus {
   border-color: var(--mint);
 }

@@ -67,7 +67,7 @@ function libraryRow(name: string) {
   return within(el);
 }
 const libraryNames = () =>
-  [...document.querySelectorAll("[data-library-row] button + button span span")].map(
+  [...document.querySelectorAll("[data-library-row] > button span span")].map(
     (el) => el.textContent,
   );
 const tab = (name: RegExp) => screen.getByRole("tab", { name });
@@ -172,7 +172,9 @@ describe("Library and Updates (M3) end to end", () => {
     ).toBeInTheDocument();
     fireEvent.click(updateRow("Visual Studio Code").getByRole("button", { name: "40% · Pause" }));
     await flush(3 * TICK);
-    expect(updateRow("Visual Studio Code").getByText("Paused · 40%")).toBeInTheDocument();
+    expect(
+      updateRow("Visual Studio Code").getByText("Paused · 40% · 35 MB of 87 MB"),
+    ).toBeInTheDocument();
 
     // Back in the Library the Downloads filter is still on; the paused row keeps its size line.
     await go("Library");

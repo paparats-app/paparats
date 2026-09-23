@@ -64,13 +64,9 @@ export function UpdateRow({
   return (
     <div className={cx(styles.row, className)} data-expanded={expanded || undefined}>
       <div className={styles.main}>
-        <button
-          type="button"
-          className={styles.tile}
-          onClick={onOpen}
-          tabIndex={-1}
-          aria-hidden="true"
-        >
+        {/* A pointer shortcut to the name button beside it (the prototype's tile is a button):
+            not focusable and hidden from assistive tech, which use the name button. */}
+        <div className={styles.tile} onClick={onOpen} aria-hidden="true">
           <AppIcon
             mono={icon.mono}
             tint={icon.tint}
@@ -78,7 +74,7 @@ export function UpdateRow({
             size={48}
             className={styles.icon}
           />
-        </button>
+        </div>
         <button type="button" className={styles.identity} onClick={onOpen}>
           <span className={styles.nameLine}>
             <span className={styles.name}>{name}</span>

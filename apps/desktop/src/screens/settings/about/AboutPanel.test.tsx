@@ -1,7 +1,7 @@
 import { act, fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { vi } from "vitest";
-import { SELF_UPDATE_CHECK_MS } from "@/services/mock/system";
+import { SELF_UPDATE_CHECK_MS } from "@/services/common";
 import { useSettingsStore } from "@/stores/useSettingsStore";
 import { useUiStore } from "@/stores/useUiStore";
 import { createTestServices, flush, renderWithProviders } from "@/test/render";

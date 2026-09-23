@@ -1,6 +1,7 @@
-// Subscription, keyboard only: the tab order (the current plan's disabled button is skipped, the
-// two "Choose plan" buttons are told apart by their plan), the confirmation taking the focus,
-// trapping it and giving it back, and Confirm busy while the purchase runs.
+// Subscription, keyboard only: the tab order (the current plan's inert button is reached, as the
+// prototype's enabled no-op, and does nothing; the two "Choose plan" buttons are told apart by
+// their plan), the confirmation taking the focus, trapping it and giving it back, and Confirm busy
+// while the purchase runs.
 import { screen, within } from "@testing-library/react";
 import { vi } from "vitest";
 import { createTestServices } from "@/test/render";
@@ -20,10 +21,10 @@ async function openSubscription(services = createTestServices()) {
 }
 
 describe("Subscription a11y", () => {
-  it("tabs past the current plan and names each plan's button", async () => {
+  it("reaches the inert current plan and names each plan's button", async () => {
     const { user } = await openSubscription();
     const current = screen.getByRole("button", { name: "Current plan" });
-    expect(current).toBeDisabled();
+    expect(current).toHaveAttribute("aria-disabled", "true");
     const [monthly, yearly] = choose();
     if (!monthly || !yearly) throw new Error("expected two plan buttons");
     expect(monthly).toHaveAccessibleDescription(/^Paparats Pro .+\/ month$/);
@@ -33,11 +34,18 @@ describe("Subscription a11y", () => {
     await expectTabOrder(user, [
       screen.getByRole("button", { name: "Get Paparats Pro" }),
       screen.getByRole("button", { name: "Learn more" }),
+      current,
       monthly,
       yearly,
       screen.getByRole("button", { name: "See all" }),
     ]);
     expectNamedControls();
+
+    // Enter on the current plan does nothing.
+    current.focus();
+    await user.keyboard("{Enter}");
+    expect(screen.queryByRole("dialog")).toBeNull();
+    expect(current).toHaveFocus();
   });
 
   it("confirms a plan with the keyboard; Escape gives the focus back", async () => {

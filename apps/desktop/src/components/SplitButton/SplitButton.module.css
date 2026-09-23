@@ -110,12 +110,10 @@
   color: var(--text2);
 }
 
+/* A toggle (the app page's favourite star) keeps `--text2` in both states, as in the prototype
+   (line 987): `aria-pressed` carries the state; the Library rows show it as the mint star. */
 .secondary:hover:not(:disabled) {
   background: var(--hover);
-}
-
-.secondary[aria-pressed="true"] {
-  color: var(--mint2);
 }
 
 .secondary:disabled {

@@ -20,10 +20,16 @@
   font-weight: 600;
 }
 
+/* Hints wrap normally (prototype lines 761–788); only the note row's (line 790) and the rows
+   that ask for it (`prettyHint`) balance the last line. */
 .hint {
   margin-top: var(--sp-2);
   color: var(--text2);
   font-size: var(--fs-secondary);
+}
+
+.pretty,
+.note .hint {
   text-wrap: pretty;
 }
 

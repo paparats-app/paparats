@@ -1,7 +1,7 @@
 import { createMockServices } from "./index";
 import type { MockServices } from "./index";
 import { createMemoryStorage } from "./runtime";
-import { SELF_UPDATE_CHECK_MS, externalUrl } from "./system";
+import { SELF_UPDATE_CHECK_MS, externalUrl } from "../common";
 
 let services: MockServices;
 

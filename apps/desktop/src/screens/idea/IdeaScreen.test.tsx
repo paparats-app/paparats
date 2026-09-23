@@ -169,9 +169,10 @@ describe("IdeaScreen", () => {
   it("posts a comment as the user: “You”, today's date, the box cleared", async () => {
     const user = userEvent.setup();
     await openIdea("clip");
-    expect(postButton()).toBeDisabled();
+    expect(postButton()).toHaveAttribute("aria-disabled", "true");
     await user.type(composer(), "   ");
-    expect(postButton()).toBeDisabled();
+    await user.click(postButton());
+    expect(discussion().queryByText("You")).toBeNull();
     await user.clear(composer());
     await user.type(composer(), "  Please add image previews too.  ");
     await user.click(postButton());
@@ -292,7 +293,10 @@ describe("IdeaScreen", () => {
     ).toBeInTheDocument();
 
     await user.clear(version);
-    expect(dialog.getByRole("button", { name: "Release" })).toBeDisabled();
+    expect(dialog.getByRole("button", { name: "Release" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
     await user.type(version, "2.0.0");
     await user.click(dialog.getByRole("button", { name: "Release" }));
 

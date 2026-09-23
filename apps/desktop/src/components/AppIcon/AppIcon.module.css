@@ -6,7 +6,8 @@
   place-items: center;
   width: var(--tile);
   height: var(--tile);
-  overflow: hidden;
+  /* No overflow clip: the prototype's tiles have none, and a rounded clip made Chrome draw the
+     monogram with greyscale instead of subpixel antialiasing. The image rounds itself. */
   font-family: var(--font-sans);
   font-weight: 700;
   /* The prototype's tiles inherit 1.4: the glyph is centred either way, but the same line box

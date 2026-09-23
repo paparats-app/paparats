@@ -135,9 +135,9 @@ function Plans({ plans }: { plans: readonly Plan[] }) {
           features={FEATURE_INDEXES.slice(0, plan.featureCount).map((n) =>
             t(`subscription.plans.${plan.id}.features.f${n}`),
           )}
-          // "Most popular" / "Save 18%", or "Current plan" on the plan in effect (README §6): the
-          // prototype showed both, and the second pill ran out of the card.
-          badge={plan.badge && plan.id !== planId ? t(`subscription.${plan.badge}`) : undefined}
+          // "Most popular" / "Save 18%" on every card, the plan in effect adding "Current plan"
+          // (the prototype's `planList`: both pills on the current paid plan).
+          badge={plan.badge ? t(`subscription.${plan.badge}`) : undefined}
           current={plan.id === planId}
           recommended={plan.id === "monthly"}
           buttonLabel={

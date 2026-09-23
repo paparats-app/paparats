@@ -52,6 +52,18 @@
   text-overflow: ellipsis;
 }
 
+/* `wrap`: the prototype's inline-block chip — the label wraps inside the chip (which grows), and a
+   word longer than the room is not clipped, so the chip runs past its container. */
+.wrap {
+  max-width: none;
+  white-space: normal;
+}
+
+.wrap .text {
+  min-width: auto;
+  overflow: visible;
+}
+
 .interactive {
   cursor: pointer;
 }

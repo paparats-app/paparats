@@ -77,7 +77,10 @@ describe("SubscriptionScreen", () => {
     expect(within(free).getByText("forever")).toBeInTheDocument();
     expect(within(free).getAllByRole("listitem")).toHaveLength(5);
     expect(free).toHaveAttribute("aria-current", "true");
-    expect(within(free).getByRole("button", { name: "Current plan" })).toBeDisabled();
+    expect(within(free).getByRole("button", { name: "Current plan" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
 
     expect(within(monthly).getByText("$4.99")).toBeInTheDocument();
     expect(within(monthly).getByText("/ month")).toBeInTheDocument();
@@ -152,13 +155,15 @@ describe("SubscriptionScreen", () => {
     expect(within(banner()).queryByRole("button", { name: "Get Paparats Pro" })).toBeNull();
     expect(chip("Paparats Pro Monthly · Active")).toBeInTheDocument();
 
-    // The monthly card is current ("Current plan" replaces "Most popular"), the free one offers
-    // to cancel.
+    // The monthly card is current (both pills, "Most popular" and "Current plan", as in the
+    // prototype), the free one offers to cancel.
     const { free, monthly, yearly } = plans();
     expect(monthly).toHaveAttribute("aria-current", "true");
-    expect(within(monthly).getByRole("button", { name: "Current plan" })).toBeDisabled();
+    const currentButton = within(monthly).getByRole("button", { name: "Current plan" });
+    expect(currentButton).toHaveAttribute("aria-disabled", "true");
+    expect(currentButton).toBeEnabled();
     expect(within(monthly).getAllByText("Current plan")).toHaveLength(2);
-    expect(within(monthly).queryByText("Most popular")).toBeNull();
+    expect(within(monthly).getByText("Most popular")).toBeInTheDocument();
     expect(within(yearly).getByText("Save 18%")).toBeInTheDocument();
     expect(within(free).getByRole("button", { name: "Cancel plan" })).toBeEnabled();
     expect(within(yearly).getByRole("button", { name: "Choose plan" })).toBeEnabled();
@@ -224,7 +229,10 @@ describe("SubscriptionScreen", () => {
     await user.click(within(plans().free).getByRole("button", { name: "Cancel plan" }));
 
     await waitFor(() => expect(plans().free).toHaveAttribute("aria-current", "true"));
-    expect(within(plans().free).getByRole("button", { name: "Current plan" })).toBeDisabled();
+    expect(within(plans().free).getByRole("button", { name: "Current plan" })).toHaveAttribute(
+      "aria-disabled",
+      "true",
+    );
     expect(plans().monthly).not.toHaveAttribute("aria-current");
     expect(within(banner()).getByRole("button", { name: "Get Paparats Pro" })).toBeInTheDocument();
     expect(statusCard("Free plan")).toHaveTextContent("Upgrade");

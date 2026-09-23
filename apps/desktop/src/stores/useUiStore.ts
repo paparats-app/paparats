@@ -1,5 +1,7 @@
-// Shell UI state: search query, toast, navigation skeleton. Timings are the prototype's.
+// Shell UI state: search query, toast, navigation skeleton, the Settings section last shown.
+// Timings are the prototype's.
 import { create } from "zustand";
+import type { SettingsSectionId } from "@/domain/settings";
 
 /** "Searching…" skeleton after each keystroke. */
 export const SEARCH_SKELETON_MS = 340;
@@ -23,6 +25,11 @@ export interface UiState {
   navCount: number;
   /** The navigation skeleton is showing. */
   loading: boolean;
+  /**
+   * The Settings section last shown (the prototype's `section` state): Settings opened without a
+   * section (the sidebar) reopens it.
+   */
+  settingsSection: SettingsSectionId;
   /** `skeleton: false` sets the query without the searching state (search suggestion chips). */
   setQuery(query: string, options?: { skeleton?: boolean }): void;
   clearQuery(): void;
@@ -34,6 +41,7 @@ export interface UiState {
    * "Subtle animations" is off), shows the loading skeleton for 420 ms.
    */
   beginNavigation(options: { skeleton: boolean }): void;
+  setSettingsSection(section: SettingsSectionId): void;
 }
 
 let searchTimer: ReturnType<typeof setTimeout> | undefined;
@@ -47,6 +55,7 @@ export const useUiStore = create<UiState>()((set) => ({
   toast: null,
   navCount: 0,
   loading: false,
+  settingsSection: "general",
 
   setQuery(query, options) {
     clearTimeout(searchTimer);
@@ -77,5 +86,9 @@ export const useUiStore = create<UiState>()((set) => ({
     clearTimeout(loadTimer);
     set((s) => ({ query: "", searching: false, navCount: s.navCount + 1, loading: skeleton }));
     if (skeleton) loadTimer = setTimeout(() => set({ loading: false }), NAV_SKELETON_MS);
+  },
+
+  setSettingsSection(section) {
+    set({ settingsSection: section });
   },
 }));

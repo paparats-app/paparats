@@ -64,6 +64,20 @@ describe("LibraryRow", () => {
     await userEvent.click(screen.getByRole("button", { name: "More actions" }));
     expect(screen.getByRole("menuitem", { name: "Remove from favorites" })).toBeInTheDocument();
   });
+  it("opens the app from the icon tile, which is no control of its own", async () => {
+    const { onOpen } = renderRow();
+    const tile = document.querySelector(".tile");
+    if (!(tile instanceof HTMLElement)) throw new Error("no tile");
+    // Not a button, not in the tab order, hidden from assistive tech: the name button is the control.
+    expect(tile.tagName).toBe("DIV");
+    expect(tile).toHaveAttribute("aria-hidden", "true");
+    expect(tile.tabIndex).toBe(-1);
+    expect(tile).not.toHaveAttribute("tabindex");
+    expect(screen.getAllByRole("button").map((b) => b.textContent)).not.toContain("VS");
+    await userEvent.click(tile);
+    expect(onOpen).toHaveBeenCalledTimes(1);
+    expect(tile).not.toHaveFocus();
+  });
 });
 
 describe("LibraryGridCard", () => {
@@ -134,6 +148,32 @@ describe("UpdateRow", () => {
     expect(screen.getByText("What’s new")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "View details" }));
     expect(onOpen).toHaveBeenCalledTimes(1);
+  });
+
+  it("opens the app from the icon tile, which is no control of its own", async () => {
+    const onOpen = vi.fn();
+    render(
+      <UpdateRow
+        name="Visual Studio Code"
+        icon={icon}
+        versionLine="1.92.2 → 1.93.0"
+        sizeLabel="87 MB"
+        action={{ label: "Update", tone: "primary" }}
+        expanded={false}
+        onToggleExpanded={() => {}}
+        notes={[]}
+        onOpen={onOpen}
+      />,
+    );
+    const tile = document.querySelector(".tile");
+    if (!(tile instanceof HTMLElement)) throw new Error("no tile");
+    expect(tile.tagName).toBe("DIV");
+    expect(tile).toHaveAttribute("aria-hidden", "true");
+    expect(tile).not.toHaveAttribute("tabindex");
+    expect(screen.getAllByRole("button").map((b) => b.textContent)).not.toContain("VS");
+    await userEvent.click(tile);
+    expect(onOpen).toHaveBeenCalledTimes(1);
+    expect(tile).not.toHaveFocus();
   });
 
   it("settles to a disabled 'Updated just now' when done", () => {

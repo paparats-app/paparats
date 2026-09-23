@@ -25,8 +25,10 @@ describe("AppCard", () => {
     await userEvent.click(screen.getByRole("button", { name: "Get" }));
     expect(onOpen).toHaveBeenCalledTimes(1);
     expect(onClick).toHaveBeenCalledTimes(1);
-    expect(screen.getByText("Productivity")).toBeInTheDocument();
-    expect(screen.getByText("Nilesoft")).toBeInTheDocument();
+    // The category wraps like the prototype's inline-block chip; the channel chip keeps its
+    // ellipsis.
+    expect(screen.getByText("Productivity").parentElement).toHaveClass("wrap");
+    expect(screen.getByText("Nilesoft").parentElement).not.toHaveClass("wrap");
   });
 
   it("renders the split variant with a secondary part", async () => {

@@ -35,7 +35,10 @@ export type ChannelRowProps = ChannelRowBase &
     | {
         /** Settings › Sources list row. */
         variant?: "settings";
-        /** "Synced 2 days ago" / "Not synced yet" / "Unreachable for 16 days". */
+        /**
+         * "Synced 2 days ago" / "Unreachable for 16 days"; `""` for a channel that never synced
+         * (the prototype keeps the empty slot and its gap).
+         */
         syncText?: string;
         /** Sync text in `--warn`. */
         unreachable?: boolean;

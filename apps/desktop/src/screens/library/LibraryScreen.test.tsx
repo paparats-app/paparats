@@ -41,7 +41,7 @@ function rowNames(): string[] {
   if (!list) return [];
   return within(list)
     .getAllByRole("listitem")
-    .map((item) => item.querySelector("[data-library-row] button + button span span")?.textContent)
+    .map((item) => item.querySelector("[data-library-row] > button span span")?.textContent)
     .filter((name): name is string => Boolean(name));
 }
 

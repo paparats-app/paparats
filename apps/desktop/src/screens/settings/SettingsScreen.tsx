@@ -1,8 +1,10 @@
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router";
 import { parsePath, pathOf } from "@/app/navigation";
 import { Icon } from "@/components/Icon";
 import { isRowSection, SETTINGS_SECTIONS, type SettingsSectionId } from "@/domain/settings";
+import { useUiStore } from "@/stores/useUiStore";
 import { AboutPanel } from "./about";
 import { SettingsRowsPanel } from "./SettingsRowsPanel";
 import { SourcesPanel } from "./sources";
@@ -19,12 +21,16 @@ export function settingsSectionOf(pathname: string): SettingsSectionId {
  * nav beside the panel — Sources and About have their own panels, the other eight a row card.
  * Picking a section only swaps the panel, like the prototype's `setState({section})`: the route
  * changes (so a detail page can return to it) without the navigation skeleton or scroll reset.
+ * The section shown is remembered, so Settings from the sidebar reopens it (`resolveTarget`).
  */
 export function SettingsScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const section = settingsSectionOf(pathname);
+  const setSettingsSection = useUiStore((s) => s.setSettingsSection);
+
+  useEffect(() => setSettingsSection(section), [section, setSettingsSection]);
 
   const pick = (id: SettingsSectionId) => {
     if (id !== section) void navigate(pathOf({ to: "settings", section: id }), { replace: true });

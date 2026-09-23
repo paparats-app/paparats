@@ -11,6 +11,7 @@ import {
   initialPathFromHash,
   parsePath,
   pathOf,
+  resolveTarget,
   returnPath,
   sectionOfPath,
   useNav,
@@ -105,6 +106,21 @@ function Probe() {
     </>
   );
 }
+
+describe("resolveTarget", () => {
+  it("reopens the Settings section last shown when none is named (the prototype's `section`)", () => {
+    expect(resolveTarget({ to: "settings" })).toEqual({ to: "settings" });
+    useUiStore.getState().setSettingsSection("privacy");
+    expect(resolveTarget({ to: "settings" })).toEqual({ to: "settings", section: "privacy" });
+    expect(resolveTarget({ to: "settings", section: "about" })).toEqual({
+      to: "settings",
+      section: "about",
+    });
+    expect(resolveTarget({ to: "home" })).toEqual({ to: "home" });
+    useUiStore.getState().setSettingsSection("general");
+    expect(resolveTarget({ to: "settings" })).toEqual({ to: "settings" });
+  });
+});
 
 describe("useNav", () => {
   const where = () => screen.getByTestId("where").textContent;

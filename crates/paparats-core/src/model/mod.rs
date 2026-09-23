@@ -6,6 +6,7 @@ pub mod catalog;
 pub mod channel;
 pub mod idea;
 pub mod library;
+pub mod package;
 pub mod settings;
 pub mod text;
 
@@ -14,5 +15,6 @@ pub use catalog::*;
 pub use channel::*;
 pub use idea::*;
 pub use library::*;
+pub use package::*;
 pub use settings::*;
 pub use text::*;

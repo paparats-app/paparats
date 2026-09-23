@@ -1,6 +1,6 @@
 [package]
 name = "paparats-account"
-description = "Account sign-in (OAuth 2 PKCE) and credential storage."
+description = "Account and subscription state (local today; OAuth 2 PKCE + Credential Manager in M7)."
 version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
@@ -10,6 +10,8 @@ publish.workspace = true
 
 [dependencies]
 paparats-core.workspace = true
+paparats-storage.workspace = true
+thiserror.workspace = true
 
 [lints]
 workspace = true

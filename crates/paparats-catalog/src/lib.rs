@@ -1,11 +1,19 @@
-//! Catalog and channel manifests: loading, caching, signature checks, trust levels.
+//! Catalog and channel data: where it comes from ([`CatalogSource`]; today the embedded mock data
+//! set, later signed manifests from the CDN), the install-source rule, channel look-up and the
+//! manifest signature check.
 
-pub use paparats_core::PRODUCT_NAME;
+mod embedded;
+mod error;
+pub mod hex;
+mod manifest;
+pub mod rules;
 
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn links_core() {
-        assert_eq!(super::PRODUCT_NAME, "Paparats");
-    }
-}
+pub use embedded::{CatalogSource, EmbeddedCatalog, FixtureMeta, fixtures};
+pub use error::CatalogError;
+pub use manifest::{
+    ChannelManifest, Ed25519Verifier, ManifestVerifier, SignedManifest, verify_manifest,
+};
+pub use rules::{
+    alternatives, down_days, find_channel, is_active, is_stale, lookup, normalize_address,
+    resolve_source,
+};

@@ -75,7 +75,7 @@ export const settings = {
     dev: { title: "Developer mode", hint: "Install unsigned test builds." },
     viewAsDeveloper: {
       title: "View Ideas as a channel developer",
-      hint: "Act as Nilesoft: take open ideas and mark them released.",
+      hint: "Act as Kvetka: take open ideas and mark them released.",
     },
     simulateOffline: {
       title: "Simulate offline",

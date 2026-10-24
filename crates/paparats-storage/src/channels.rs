@@ -143,37 +143,34 @@ mod tests {
         let s = seeded();
         assert_eq!(
             ids(&s.subscriptions().unwrap()),
-            ["paparats", "nilesoft", "fossfriends"]
+            ["paparats", "kvetka", "fossfriends"]
         );
-        let subs = s.subscribe("winaero").unwrap();
-        assert_eq!(
-            ids(&subs),
-            ["paparats", "nilesoft", "fossfriends", "winaero"]
-        );
-        assert_eq!(s.subscribe("winaero").unwrap().len(), 4, "idempotent");
-        let subs = s.unsubscribe("nilesoft").unwrap();
-        assert_eq!(ids(&subs), ["paparats", "fossfriends", "winaero"]);
-        let subs = s.subscribe("nilesoft").unwrap();
-        assert_eq!(ids(&subs).last(), Some(&"nilesoft"), "re-follow goes last");
+        let subs = s.subscribe("vitrazh").unwrap();
+        assert_eq!(ids(&subs), ["paparats", "kvetka", "fossfriends", "vitrazh"]);
+        assert_eq!(s.subscribe("vitrazh").unwrap().len(), 4, "idempotent");
+        let subs = s.unsubscribe("kvetka").unwrap();
+        assert_eq!(ids(&subs), ["paparats", "fossfriends", "vitrazh"]);
+        let subs = s.subscribe("kvetka").unwrap();
+        assert_eq!(ids(&subs).last(), Some(&"kvetka"), "re-follow goes last");
     }
 
     #[test]
     fn flags_need_a_subscription_and_reset_on_unfollow() {
         let s = seeded();
-        let subs = s.set_subscription_paused("nilesoft", true).unwrap();
+        let subs = s.set_subscription_paused("kvetka", true).unwrap();
         assert!(subs[1].paused);
         let subs = s.acknowledge_stale("fossfriends").unwrap();
         assert!(subs[2].stale_acknowledged);
         assert!(matches!(
-            s.set_subscription_paused("winaero", true),
+            s.set_subscription_paused("vitrazh", true),
             Err(StorageError::NotFound(_))
         ));
         assert!(matches!(
-            s.acknowledge_stale("winaero"),
+            s.acknowledge_stale("vitrazh"),
             Err(StorageError::NotFound(_))
         ));
-        s.unsubscribe("nilesoft").unwrap();
-        let subs = s.subscribe("nilesoft").unwrap();
+        s.unsubscribe("kvetka").unwrap();
+        let subs = s.subscribe("kvetka").unwrap();
         assert!(!subs.last().unwrap().paused);
     }
 
@@ -181,14 +178,11 @@ mod tests {
     fn sync_dates() {
         let s = seeded();
         assert!(s.channel_sync_dates().unwrap().is_empty());
-        s.set_channel_synced("nilesoft", &"2026-09-15".into())
+        s.set_channel_synced("kvetka", &"2026-09-15".into())
             .unwrap();
-        s.set_channel_synced("nilesoft", &"2026-09-16".into())
+        s.set_channel_synced("kvetka", &"2026-09-16".into())
             .unwrap();
         let dates = s.channel_sync_dates().unwrap();
-        assert_eq!(
-            dates.get("nilesoft").map(String::as_str),
-            Some("2026-09-16")
-        );
+        assert_eq!(dates.get("kvetka").map(String::as_str), Some("2026-09-16"));
     }
 }

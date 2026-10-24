@@ -98,7 +98,7 @@ screen ─┬─ queries/* (TanStack Query) ─── services (contracts.ts) �
 | Other calls | resolve after ~40 ms (configurable; 0 in tests) |
 
 Mock "today" is `fixtures/meta.json › today` (2026-09-15); the developer view acts as channel
-`meta.developerChannel` (nilesoft); the idea thank-you runs until `meta.ideaBonusUntil`.
+`meta.developerChannel` (kvetka); the idea thank-you runs until `meta.ideaBonusUntil`.
 
 ## 4. Queries (`queries/`)
 
@@ -155,7 +155,7 @@ Hooks (names are the contract):
   paused)`, `keep` — each calls the channel service, toasts like the prototype, drops the channel
   from the Browse source filter where it applies, and resolves `false` on a refusal (no toast).
 - `useDeveloperChannel()` — `{ id, channel, apps }`: the channel the developer view acts as
-  (`DEVELOPER_CHANNEL_ID` = `nilesoft`, `fixtures/meta.json › developerChannel`, D46) and the apps
+  (`DEVELOPER_CHANNEL_ID` = `kvetka`, `fixtures/meta.json › developerChannel`, D46) and the apps
   it publishes (`domain/ideas › myApps`).
 - `useVisibleApps(): App[]` — apps whose channels are followed and enabled, plus installed ones.
 - `useAppIndex()` — `{ byId, get(id) }` over the full catalog.
@@ -174,7 +174,7 @@ Hooks (names are the contract):
 - `useFormat()` (from `i18n/format.ts`) — `size(mb)` "18.4 MB"/"18,4 МБ", `sizeGb(mb)`,
   `date(iso)` "15 September 2026", `month(iso)`, `relative(iso)` (days/weeks/months vs today),
   `number(n)`, `fixed(n, digits)` "4.6", `plus(n)` "10,000+", `price(amount, currency)`,
-  `percent(n)`, `list(items)` "Nilesoft and Winaero". The same functions without React:
+  `percent(n)`, `list(items)` "Kvetka and Vitrazh". The same functions without React:
   `@/i18n/createFormat › createFormat(locale, today)` (domain code, stores, tests).
   `useNumberFormat()` is the number part alone (`number`, `fixed`, `plus`, `percent`, no
   "today"), for presentational components (`RatingSummary`, `ReviewCard`, `IdeaCard`,
@@ -319,7 +319,7 @@ source-channel chips, chevron-down "Details", identity and chevron open the app 
 channel page with `channelChip={false}`); `useStoreAppView(app)` gives the same fields for rows.
 Channel copy: `components/TrustBadge › TRUST_KEY` (level names, next to `TRUST_ICON`) and
 `screens/shared › KIND_KEY`, `HOST_KEY`, `TRUST_LEVELS`, `channelIcon(channel)`,
-`useChannelMeta()` ("Developer · by Nilesoft · 12 apps"). Ideas: `screens/shared › useIdeaView()`
+`useChannelMeta()` ("Developer · by Kvetka · 12 apps"). Ideas: `screens/shared › useIdeaView()`
 (title, body, kind chip, developer line, author, released app — board, idea page and release
 dialog) and `useTakeIdea()` (Take + "Pinned to … · author notified"). The detail pages' "‹ Back" is
 `screens/shared › BackLink`.

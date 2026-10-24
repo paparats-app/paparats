@@ -129,10 +129,10 @@ mod tests {
             "the installer exited with code 1603"
         );
         let e = InstallError::SignerMismatch {
-            expected: "Nilesoft".into(),
+            expected: "Kvetka".into(),
             actual: "Someone Else".into(),
         };
         assert_eq!(e.code(), "signerMismatch");
-        assert!(e.to_string().contains("Nilesoft"));
+        assert!(e.to_string().contains("Kvetka"));
     }
 }

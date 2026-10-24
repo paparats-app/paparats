@@ -107,16 +107,16 @@ mod tests {
 
     fn manifest() -> ChannelManifest {
         ChannelManifest {
-            channel_id: "nilesoft".into(),
+            channel_id: "kvetka".into(),
             generated: "2026-09-15".into(),
             packages: vec![Package {
                 app_id: "shell".into(),
                 version: "1.9.15".into(),
-                url: Some("https://downloads.nilesoft.org/shell-1.9.15.msi".into()),
+                url: Some("https://downloads.kvetka.example/shell-1.9.15.msi".into()),
                 sha256: Some("ab".repeat(32)),
                 size_bytes: 3_355_443,
                 strategy: InstallStrategy::Msi,
-                signer: Some("Nilesoft".into()),
+                signer: Some("Kvetka".into()),
             }],
         }
     }

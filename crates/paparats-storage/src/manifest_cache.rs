@@ -213,28 +213,28 @@ mod tests {
         let s = Storage::open_in_memory().unwrap();
         assert!(s.channel_health().unwrap().is_empty());
 
-        let h = s.record_channel_failure("nilesoft", "2026-09-10").unwrap();
+        let h = s.record_channel_failure("kvetka", "2026-09-10").unwrap();
         assert_eq!((h.failures, h.first_failure.as_str()), (1, "2026-09-10"));
-        let h = s.record_channel_failure("nilesoft", "2026-09-12").unwrap();
+        let h = s.record_channel_failure("kvetka", "2026-09-12").unwrap();
         assert_eq!(h.failures, 2);
         assert_eq!(h.first_failure, "2026-09-10", "the streak keeps its start");
         assert_eq!(h.last_failure, "2026-09-12");
-        s.record_channel_failure("winaero", "2026-09-12").unwrap();
+        s.record_channel_failure("vitrazh", "2026-09-12").unwrap();
         assert_eq!(s.channel_health().unwrap().len(), 2);
 
-        s.record_channel_success("nilesoft", "2026-09-13").unwrap();
+        s.record_channel_success("kvetka", "2026-09-13").unwrap();
         let health = s.channel_health().unwrap();
-        assert!(!health.contains_key("nilesoft"));
-        assert!(health.contains_key("winaero"));
+        assert!(!health.contains_key("kvetka"));
+        assert!(health.contains_key("vitrazh"));
         assert_eq!(
             s.channel_sync_dates()
                 .unwrap()
-                .get("nilesoft")
+                .get("kvetka")
                 .map(String::as_str),
             Some("2026-09-13")
         );
 
-        let h = s.record_channel_failure("nilesoft", "2026-09-20").unwrap();
+        let h = s.record_channel_failure("kvetka", "2026-09-20").unwrap();
         assert_eq!((h.failures, h.first_failure.as_str()), (1, "2026-09-20"));
     }
 }

@@ -29,7 +29,7 @@ describe("useBrowseStore", () => {
   it("apply() resets every filter, then applies the preset", () => {
     browse().toggleCategory("media");
     browse().togglePro();
-    browse().toggleSource("nilesoft");
+    browse().toggleSource("kvetka");
     browse().setFilterQuery("med");
     browse().apply({ categories: ["productivity"] });
     expect(selectBrowseFilters(browse())).toEqual({ ...defaults, categories: ["productivity"] });
@@ -60,14 +60,14 @@ describe("useBrowseStore", () => {
     browse().toggleCategory("media");
     browse().toggleCategory("design");
     expect(browse().categories).toEqual(["media"]);
-    browse().toggleSource("nilesoft");
+    browse().toggleSource("kvetka");
     browse().toggleSource("fossfriends");
-    browse().dropSource("nilesoft");
+    browse().dropSource("kvetka");
     expect(browse().sources).toEqual(["fossfriends"]);
   });
 
   it("clearAll() restores the curated view", () => {
-    browse().apply({ pro: true, sort: "size", sources: ["nilesoft"] });
+    browse().apply({ pro: true, sort: "size", sources: ["kvetka"] });
     browse().setHeroIndex(2);
     browse().clearAll();
     expect(selectBrowseFilters(browse())).toEqual(defaults);
@@ -198,8 +198,8 @@ describe("useDialogStore", () => {
   it("opens one dialog at a time and closes it", () => {
     const dialogs = () => useDialogStore.getState();
     dialogs().open({ kind: "addChannel" });
-    dialogs().open({ kind: "trustConfirm", channelId: "winaero" });
-    expect(dialogs().dialog).toEqual({ kind: "trustConfirm", channelId: "winaero" });
+    dialogs().open({ kind: "trustConfirm", channelId: "vitrazh" });
+    expect(dialogs().dialog).toEqual({ kind: "trustConfirm", channelId: "vitrazh" });
     dialogs().close();
     expect(dialogs().dialog).toBeNull();
   });

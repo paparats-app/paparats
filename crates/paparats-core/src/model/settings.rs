@@ -56,7 +56,7 @@ pub struct Settings {
     // Advanced
     pub dev: bool,
     pub portable: bool,
-    /// Developer mode tool: act as the Nilesoft channel on the Ideas board.
+    /// Developer mode tool: act as the Kvetka channel on the Ideas board.
     pub view_as_developer: bool,
     /// Developer mode tool: pretend the network is down.
     pub simulate_offline: bool,

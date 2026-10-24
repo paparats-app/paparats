@@ -23,7 +23,7 @@ interface ChannelRowBase {
   /** Monogram tile (`mono` on the channel tint). */
   icon: AppIconSource;
   trust: TrustLevel;
-  /** "Developer · by Nilesoft · 12 apps". */
+  /** "Developer · by Kvetka · 12 apps". */
   meta: string;
   /** Opens the channel page. */
   onOpen: () => void;

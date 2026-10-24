@@ -172,27 +172,27 @@ describe("tauri adapters: commands", () => {
     ],
     [
       "channels.lookup",
-      (s) => s.channels.lookup("@winaero"),
+      (s) => s.channels.lookup("@vitrazh"),
       "channels_lookup",
-      { address: "@winaero" },
+      { address: "@vitrazh" },
     ],
     [
       "channels.subscribe",
-      (s) => s.channels.subscribe("winaero"),
+      (s) => s.channels.subscribe("vitrazh"),
       "channels_subscribe",
-      { channelId: "winaero" },
+      { channelId: "vitrazh" },
     ],
     [
       "channels.unsubscribe",
-      (s) => s.channels.unsubscribe("winaero"),
+      (s) => s.channels.unsubscribe("vitrazh"),
       "channels_unsubscribe",
-      { channelId: "winaero" },
+      { channelId: "vitrazh" },
     ],
     [
       "channels.setPaused",
-      (s) => s.channels.setPaused("nilesoft", true),
+      (s) => s.channels.setPaused("kvetka", true),
       "channels_set_paused",
-      { channelId: "nilesoft", paused: true },
+      { channelId: "kvetka", paused: true },
     ],
     [
       "channels.acknowledgeStale",
@@ -200,7 +200,7 @@ describe("tauri adapters: commands", () => {
       "channels_acknowledge_stale",
       { channelId: "fossfriends" },
     ],
-    ["channels.sync", (s) => s.channels.sync("winaero"), "channels_sync", { channelId: "winaero" }],
+    ["channels.sync", (s) => s.channels.sync("vitrazh"), "channels_sync", { channelId: "vitrazh" }],
     [
       "channels.report",
       (s) => s.channels.report(target, "Crashes on start"),
@@ -212,15 +212,15 @@ describe("tauri adapters: commands", () => {
     ["ideas.propose", (s) => s.ideas.propose(draft), "ideas_propose", { draft }],
     [
       "ideas.comment",
-      (s) => s.ideas.comment("clip", "On it", { kind: "developer", channelId: "nilesoft" }),
+      (s) => s.ideas.comment("clip", "On it", { kind: "developer", channelId: "kvetka" }),
       "ideas_comment",
-      { ideaId: "clip", text: "On it", actor: { kind: "developer", channelId: "nilesoft" } },
+      { ideaId: "clip", text: "On it", actor: { kind: "developer", channelId: "kvetka" } },
     ],
     [
       "ideas.take",
-      (s) => s.ideas.take("clip", "nilesoft"),
+      (s) => s.ideas.take("clip", "kvetka"),
       "ideas_take",
-      { ideaId: "clip", channelId: "nilesoft" },
+      { ideaId: "clip", channelId: "kvetka" },
     ],
     [
       "ideas.release",
@@ -401,8 +401,8 @@ describe("tauri adapters: system", () => {
 
   it("opens external links through the opener plugin", async () => {
     const services = core({ system_today: answer("2026-09-15") });
-    await services.system.openExternal("nilesoft.org/support");
-    expect(openUrl).toHaveBeenCalledWith("https://nilesoft.org/support");
+    await services.system.openExternal("kvetka.example/support");
+    expect(openUrl).toHaveBeenCalledWith("https://kvetka.example/support");
 
     await expect(services.system.openExternal("file:///C:/")).rejects.toMatchObject({
       kind: "invalid",

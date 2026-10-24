@@ -48,15 +48,15 @@ describe("SearchScreen", () => {
   });
 
   it("matches the source channel and shows its chip", async () => {
-    useUiStore.setState({ query: "nilesoft" });
+    useUiStore.setState({ query: "kvetka" });
     await renderWithProviders(<SearchScreen />);
     const shell = await waitFor(() => {
-      const found = card("Nilesoft Shell");
+      const found = card("Kvetka Shell");
       expect(found).not.toBeNull();
       return found as HTMLElement;
     });
     expect(within(shell).getByText("System")).toBeInTheDocument();
-    expect(within(shell).getByText("Nilesoft")).toBeInTheDocument();
+    expect(within(shell).getByText("Kvetka")).toBeInTheDocument();
   });
 
   it("offers featured apps when nothing is found; a chip searches for it", async () => {

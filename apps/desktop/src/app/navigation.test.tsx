@@ -73,7 +73,7 @@ describe("paths", () => {
 
   it("highlights the section a detail page was opened from", () => {
     expect(activeSection("/app/obsidian", { from: "/library" })).toBe("library");
-    expect(activeSection("/channel/nilesoft", { from: "/settings/sources" })).toBe("settings");
+    expect(activeSection("/channel/kvetka", { from: "/settings/sources" })).toBe("settings");
     expect(activeSection("/app/obsidian", null)).toBe("home");
     expect(activeSection("/app/obsidian", { from: "/bogus" })).toBe("home");
     expect(returnPath("/app/obsidian", { from: "/settings/sources" })).toBe("/settings/sources");
@@ -96,7 +96,7 @@ function Probe() {
       <Sidebar />
       <output data-testid="where">{`${pathname} ${section}`}</output>
       <button onClick={() => go({ to: "app", appId: "obsidian" })}>app</button>
-      <button onClick={() => go({ to: "channel", channelId: "nilesoft" })}>channel</button>
+      <button onClick={() => go({ to: "channel", channelId: "kvetka" })}>channel</button>
       <button onClick={() => go({ to: "browse" })}>browse</button>
       <button onClick={() => go({ to: "browse", filters: { categories: ["media"] } })}>
         browse media
@@ -135,7 +135,7 @@ describe("useNav", () => {
       "page",
     );
     await click("channel");
-    expect(where()).toBe("/channel/nilesoft library");
+    expect(where()).toBe("/channel/kvetka library");
     await click("back");
     expect(where()).toBe("/library library");
   });
@@ -143,18 +143,18 @@ describe("useNav", () => {
   it("returns to the settings section a channel was opened from", async () => {
     await renderWithProviders(<Probe />, { route: "/settings/sources" });
     await click("channel");
-    expect(where()).toBe("/channel/nilesoft settings");
+    expect(where()).toBe("/channel/kvetka settings");
     await click("back");
     expect(where()).toBe("/settings/sources settings");
   });
 
   it("presets Browse filters, or keeps them and drops the source filter", async () => {
     await renderWithProviders(<Probe />, { route: "/home" });
-    useBrowseStore.setState({ pro: true, sources: ["nilesoft"] });
+    useBrowseStore.setState({ pro: true, sources: ["kvetka"] });
     await click("browse media");
     expect(useBrowseStore.getState()).toMatchObject({ categories: ["media"], pro: false });
 
-    useBrowseStore.setState({ sources: ["nilesoft"] });
+    useBrowseStore.setState({ sources: ["kvetka"] });
     await click("browse");
     expect(useBrowseStore.getState()).toMatchObject({ categories: ["media"], sources: [] });
 

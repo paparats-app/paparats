@@ -16,7 +16,7 @@ const apps: AppIndex = {
   byId: { shell, localsend },
   get: (id) => (id === "shell" ? shell : id === "localsend" ? localsend : undefined),
 };
-const channels = { winaero: { id: "winaero", tint: "#c27a2f" } as ChannelInfo };
+const channels = { vitrazh: { id: "vitrazh", tint: "#c27a2f" } as ChannelInfo };
 
 describe("idea detail helpers", () => {
   it("reaches one timeline step per status", () => {
@@ -34,24 +34,24 @@ describe("idea detail helpers", () => {
 
   it("gives the developer view Take, Mark as released or the other developer", () => {
     const mine = [shell];
-    expect(developerAction(idea("clip"), "developer", "nilesoft", mine, "")).toEqual({
+    expect(developerAction(idea("clip"), "developer", "kvetka", mine, "")).toEqual({
       type: "take",
     });
-    expect(developerAction(idea("iconpacks"), "developer", "nilesoft", mine, "")).toEqual({
+    expect(developerAction(idea("iconpacks"), "developer", "kvetka", mine, "")).toEqual({
       type: "take",
     });
-    expect(developerAction(idea("scrollcap"), "developer", "nilesoft", mine, "")).toBeNull();
-    expect(developerAction(idea("battery"), "developer", "nilesoft", mine, "Winaero")).toEqual({
+    expect(developerAction(idea("scrollcap"), "developer", "kvetka", mine, "")).toBeNull();
+    expect(developerAction(idea("battery"), "developer", "kvetka", mine, "Vitrazh")).toEqual({
       type: "takenByOther",
-      developer: "Winaero",
+      developer: "Vitrazh",
     });
-    const ours = { ...idea("battery"), dev: "nilesoft" };
-    expect(developerAction(ours, "developer", "nilesoft", mine, "Nilesoft")).toEqual({
+    const ours = { ...idea("battery"), dev: "kvetka" };
+    expect(developerAction(ours, "developer", "kvetka", mine, "Kvetka")).toEqual({
       type: "release",
     });
-    expect(developerAction(idea("ctxmenu"), "developer", "nilesoft", mine, "Nilesoft")).toBeNull();
+    expect(developerAction(idea("ctxmenu"), "developer", "kvetka", mine, "Kvetka")).toBeNull();
     // The user view never acts.
-    expect(developerAction(idea("clip"), "user", "nilesoft", mine, "")).toBeNull();
-    expect(developerAction(ours, "user", "nilesoft", mine, "Nilesoft")).toBeNull();
+    expect(developerAction(idea("clip"), "user", "kvetka", mine, "")).toBeNull();
+    expect(developerAction(ours, "user", "kvetka", mine, "Kvetka")).toBeNull();
   });
 });

@@ -19,7 +19,7 @@ const ORDER = [
   "VLC media player",
   "Notepad++",
   "Visual Studio Code",
-  "Nilesoft Shell",
+  "Kvetka Shell",
 ];
 
 const list = () => screen.getByRole("list", { name: "Updates" });
@@ -92,7 +92,7 @@ describe("UpdatesScreen", () => {
     expect(vscode.getByText("1.92.2 → 1.93.0")).toBeInTheDocument();
     expect(vscode.getByText("87 MB")).toBeInTheDocument();
     expect(vscode.getByRole("button", { name: "Update" })).toBeEnabled();
-    expect(within(row("Nilesoft Shell")).getByText("Nilesoft")).toBeInTheDocument();
+    expect(within(row("Kvetka Shell")).getByText("Kvetka")).toBeInTheDocument();
     expect(labels()).toEqual(Array(6).fill("Update"));
     expect(screen.queryByRole("progressbar")).toBeNull();
 

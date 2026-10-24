@@ -28,10 +28,10 @@ const none = new Set<string>();
 
 describe("isActive / isFollowed", () => {
   it("is active while followed and switched on", () => {
-    expect(isActive(subscriptions, "nilesoft")).toBe(true);
-    expect(isActive(subscriptions, "winaero")).toBe(false);
-    expect(isActive([sub("nilesoft", { paused: true })], "nilesoft")).toBe(false);
-    expect(isFollowed([sub("nilesoft", { paused: true })], "nilesoft")).toBe(true);
+    expect(isActive(subscriptions, "kvetka")).toBe(true);
+    expect(isActive(subscriptions, "vitrazh")).toBe(false);
+    expect(isActive([sub("kvetka", { paused: true })], "kvetka")).toBe(false);
+    expect(isFollowed([sub("kvetka", { paused: true })], "kvetka")).toBe(true);
   });
 
   it("keeps the official catalog active while followed, even if flagged paused", () => {
@@ -48,11 +48,11 @@ describe("source rule", () => {
 
   it("lists the home channel first, then alsoIn", () => {
     expect(candidates(appById("obsidian"))).toEqual(["paparats"]);
-    expect(candidates(appById("winaerotweaker"))).toEqual(["winaero", "paparats"]);
+    expect(candidates(appById("vitrazhtweaker"))).toEqual(["vitrazh", "paparats"]);
   });
 
-  it("installs Nilesoft Shell from the Nilesoft channel", () => {
-    expect(sourceOf(appById("shell"), channelCtx())).toBe("nilesoft");
+  it("installs Kvetka Shell from the Kvetka channel", () => {
+    expect(sourceOf(appById("shell"), channelCtx())).toBe("kvetka");
   });
 
   it("installs Czkawka via FOSS Friends", () => {
@@ -60,19 +60,19 @@ describe("source rule", () => {
   });
 
   it("picks the most trusted active channel and lists the others as alternatives", () => {
-    const tweaker = appById("winaerotweaker");
-    const followingWinaero = channelCtx([...subscriptions, sub("winaero")]);
-    expect(sourceOf(tweaker, followingWinaero)).toBe("paparats");
-    expect(alternativesOf(tweaker, followingWinaero)).toEqual(["winaero"]);
+    const tweaker = appById("vitrazhtweaker");
+    const followingVitrazh = channelCtx([...subscriptions, sub("vitrazh")]);
+    expect(sourceOf(tweaker, followingVitrazh)).toBe("paparats");
+    expect(alternativesOf(tweaker, followingVitrazh)).toEqual(["vitrazh"]);
     expect(sourceOf(tweaker, channelCtx())).toBe("paparats");
     expect(alternativesOf(tweaker, channelCtx())).toEqual([]);
   });
 
   it("falls back to the home channel when no candidate is active", () => {
     expect(sourceOf(appById("mpv"), channelCtx())).toBe("mpvbuilds");
-    const pausedNilesoft = channelCtx([sub("paparats"), sub("nilesoft", { paused: true })]);
-    expect(sourceOf(appById("shell"), pausedNilesoft)).toBe("nilesoft");
-    expect(alternativesOf(appById("shell"), pausedNilesoft)).toEqual([]);
+    const pausedKvetka = channelCtx([sub("paparats"), sub("kvetka", { paused: true })]);
+    expect(sourceOf(appById("shell"), pausedKvetka)).toBe("kvetka");
+    expect(alternativesOf(appById("shell"), pausedKvetka)).toEqual([]);
   });
 });
 
@@ -81,7 +81,7 @@ describe("outages", () => {
 
   it("counts the days a channel has been down (FOSS Friends: 16 days on 2026-09-15)", () => {
     expect(downDays(foss, TODAY)).toBe(16);
-    expect(downDays(channelById("nilesoft"), TODAY)).toBe(0);
+    expect(downDays(channelById("kvetka"), TODAY)).toBe(0);
     expect(downDays(undefined, TODAY)).toBe(0);
     expect(downDays({ ...foss, outage: TODAY }, TODAY)).toBe(1);
   });
@@ -100,7 +100,7 @@ describe("visibleApps", () => {
     const ids = visibleApps(catalog.apps, channelCtx(), none).map((a) => a.id);
     expect(ids).toContain("shell");
     expect(ids).toContain("czkawka");
-    expect(ids).toContain("winaerotweaker");
+    expect(ids).toContain("vitrazhtweaker");
     expect(ids).not.toContain("mpv");
     expect(ids).not.toContain("slounik");
   });
@@ -119,35 +119,35 @@ describe("visibleApps", () => {
       "imageglass",
       "rufus",
     ]);
-    expect(channelApps(catalog.apps, "winaero").map((a) => a.id)).toEqual(["winaerotweaker"]);
+    expect(channelApps(catalog.apps, "vitrazh").map((a) => a.id)).toEqual(["vitrazhtweaker"]);
   });
 });
 
 describe("channel lookup", () => {
   it("normalises addresses", () => {
-    expect(normaliseAddress("  HTTPS://www.Nilesoft.org/paparats//  ")).toBe(
-      "nilesoft.org/paparats",
+    expect(normaliseAddress("  HTTPS://www.Kvetka.Example/paparats//  ")).toBe(
+      "kvetka.example/paparats",
     );
-    expect(normaliseAddress("http://mpv.io/paparats")).toBe("mpv.io/paparats");
+    expect(normaliseAddress("http://mpvbuilds.example/paparats")).toBe("mpvbuilds.example/paparats");
   });
 
   it("matches the address, host, @handle or handle", () => {
-    expect(findChannelByAddress(channels, "https://nilesoft.org/paparats/")?.id).toBe("nilesoft");
-    expect(findChannelByAddress(channels, "winaero.com")?.id).toBe("winaero");
-    expect(findChannelByAddress(channels, "@MPV")?.id).toBe("mpvbuilds");
+    expect(findChannelByAddress(channels, "https://kvetka.example/paparats/")?.id).toBe("kvetka");
+    expect(findChannelByAddress(channels, "vitrazh.example")?.id).toBe("vitrazh");
+    expect(findChannelByAddress(channels, "@MPVBUILDS")?.id).toBe("mpvbuilds");
     expect(findChannelByAddress(channels, "fossfriends")?.id).toBe("fossfriends");
     expect(findChannelByAddress(channels, "example.com")).toBeUndefined();
     expect(findChannelByAddress(channels, "   ")).toBeUndefined();
   });
 
   it("reports found / already subscribed / not found", () => {
-    expect(lookupChannel(channels, subscriptions, "@winaero")).toMatchObject({
+    expect(lookupChannel(channels, subscriptions, "@vitrazh")).toMatchObject({
       kind: "found",
-      channel: { id: "winaero" },
+      channel: { id: "vitrazh" },
     });
-    expect(lookupChannel(channels, subscriptions, "nilesoft.org")).toMatchObject({
+    expect(lookupChannel(channels, subscriptions, "kvetka.example")).toMatchObject({
       kind: "alreadySubscribed",
-      channel: { id: "nilesoft" },
+      channel: { id: "kvetka" },
     });
     expect(lookupChannel(channels, subscriptions, "nope")).toEqual({ kind: "notFound" });
   });

@@ -8,7 +8,7 @@ import type { App, ChannelId, ChannelInfo } from "@/services/types";
  * value the core's embedded catalog meta carries (paparats-catalog `developer_channel`). No
  * service exposes the meta yet, so the id lives here, in one place.
  */
-export const DEVELOPER_CHANNEL_ID: ChannelId = "nilesoft";
+export const DEVELOPER_CHANNEL_ID: ChannelId = "kvetka";
 
 export interface DeveloperChannel {
   id: ChannelId;

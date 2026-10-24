@@ -3,16 +3,16 @@ import { renderWithServices } from "./testing";
 import { DEVELOPER_CHANNEL_ID, useDeveloperChannel } from "./useDeveloperChannel";
 
 describe("useDeveloperChannel", () => {
-  it("acts as Nilesoft and lists the apps it publishes", async () => {
+  it("acts as Kvetka and lists the apps it publishes", async () => {
     const { result } = renderWithServices(() => useDeveloperChannel());
     expect(result.current.id).toBe(DEVELOPER_CHANNEL_ID);
-    expect(result.current.id).toBe("nilesoft");
+    expect(result.current.id).toBe("kvetka");
     // Nothing while the channels and the catalog load.
     expect(result.current.channel).toBeUndefined();
     expect(result.current.apps).toEqual([]);
 
-    await waitFor(() => expect(result.current.channel?.name).toBe("Nilesoft"));
+    await waitFor(() => expect(result.current.channel?.name).toBe("Kvetka"));
     await waitFor(() => expect(result.current.apps.map((a) => a.id)).toEqual(["shell"]));
-    expect(result.current.channel).toMatchObject({ mono: "Ni", tint: "#3b6fd1" });
+    expect(result.current.channel).toMatchObject({ mono: "Kv", tint: "#3b6fd1" });
   });
 });

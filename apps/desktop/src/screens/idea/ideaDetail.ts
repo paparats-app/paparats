@@ -71,7 +71,7 @@ export interface IdeaDetailView {
   reached: number;
   comments: CommentView[];
   action: IdeaDeveloperAction | null;
-  /** The developer view's channel name ("It will be pinned to Nilesoft…", the take toast). */
+  /** The developer view's channel name ("It will be pinned to Kvetka…", the take toast). */
   devChannelName: string;
   /** The composer's avatar: the channel's monogram and tint in the developer view. */
   composer: { initials: string; tint?: string };

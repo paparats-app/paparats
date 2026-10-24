@@ -37,7 +37,7 @@ describe("useChannelContext", () => {
   it("is empty until channels and subscriptions load", async () => {
     const { result } = renderWithServices(() => useChannelContext());
     expect(result.current).toMatchObject({ ready: false, channels: [], subscriptions: [] });
-    expect(result.current.sourceOf(appById("shell"))).toBe("nilesoft");
+    expect(result.current.sourceOf(appById("shell"))).toBe("kvetka");
     await flush();
     expect(result.current.ready).toBe(true);
   });
@@ -46,14 +46,14 @@ describe("useChannelContext", () => {
     const { result } = renderWithServices(() => useChannelContext());
     await flush();
     const ctx = result.current;
-    expect(ctx.sourceOf(appById("shell"))).toBe("nilesoft");
+    expect(ctx.sourceOf(appById("shell"))).toBe("kvetka");
     expect(ctx.sourceOf(appById("czkawka"))).toBe("fossfriends");
-    expect(ctx.alternativesOf(appById("winaerotweaker"))).toEqual([]);
-    expect(ctx.isActive("nilesoft")).toBe(true);
-    expect(ctx.isFollowed("winaero")).toBe(false);
+    expect(ctx.alternativesOf(appById("vitrazhtweaker"))).toEqual([]);
+    expect(ctx.isActive("kvetka")).toBe(true);
+    expect(ctx.isFollowed("vitrazh")).toBe(false);
     expect(ctx.downDays("fossfriends")).toBe(16);
     expect(ctx.isStale("fossfriends")).toBe(true);
-    expect(ctx.isStale("nilesoft")).toBe(false);
+    expect(ctx.isStale("kvetka")).toBe(false);
     expect(ctx.byId.mpvbuilds?.trust).toBe("community");
   });
 });

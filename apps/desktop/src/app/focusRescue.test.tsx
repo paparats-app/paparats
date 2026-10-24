@@ -64,7 +64,7 @@ describe("focus rescue", () => {
     await waitFor(() => expect(unsubscribe).not.toBeInTheDocument());
     // FOSS Friends was the last row: the focus goes to the row above it.
     await waitFor(() =>
-      expect(within(content()).getByRole("button", { name: "Nilesoft" })).toHaveFocus(),
+      expect(within(content()).getByRole("button", { name: "Kvetka" })).toHaveFocus(),
     );
   });
 

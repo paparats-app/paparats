@@ -23,7 +23,7 @@ pub mod fixtures {
 pub struct FixtureMeta {
     /// The day the mock data set was written against (2026-09-15).
     pub today: IsoDate,
-    /// Channel the developer view acts as (nilesoft).
+    /// Channel the developer view acts as (kvetka).
     pub developer_channel: ChannelId,
     /// End of the idea thank-you gift in the data set (today + 3 months).
     pub idea_bonus_until: IsoDate,
@@ -131,13 +131,13 @@ mod tests {
         assert_eq!(c.channels_ref().len(), 6);
         assert_eq!(c.platform_ref().plans.len(), 3);
         assert_eq!(c.meta().today, "2026-09-15");
-        assert_eq!(c.meta().developer_channel, "nilesoft");
+        assert_eq!(c.meta().developer_channel, "kvetka");
         assert_eq!(c.seed_subscriptions()[0].channel_id, OFFICIAL_CHANNEL);
         assert_eq!(
             c.channel(OFFICIAL_CHANNEL).map(|ch| ch.trust),
             Some(TrustLevel::Official)
         );
-        assert_eq!(c.app("shell").map(|a| a.home_channel()), Some("nilesoft"));
+        assert_eq!(c.app("shell").map(|a| a.home_channel()), Some("kvetka"));
         assert!(c.app("nope").is_none());
         // The trait returns owned copies of the same data.
         assert_eq!(&c.catalog().unwrap(), c.catalog_ref());

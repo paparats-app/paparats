@@ -76,8 +76,8 @@
       },
       "comments": [
         {
-          "author": "Nilesoft",
-          "dev": "nilesoft",
+          "author": "Kvetka",
+          "dev": "kvetka",
           "mine": false,
           "date": "2026-09-10",
           "text": {
@@ -118,8 +118,8 @@
       },
       "comments": [
         {
-          "author": "Sergey Tkachenko",
-          "dev": "winaero",
+          "author": "Andrei V.",
+          "dev": "vitrazh",
           "mine": false,
           "date": "2026-08-20",
           "text": {
@@ -140,7 +140,7 @@
           }
         }
       ],
-      "dev": "winaero",
+      "dev": "vitrazh",
       "devName": null,
       "takenAt": "2026-08-20",
       "releasedAt": null,
@@ -201,8 +201,8 @@
       },
       "comments": [
         {
-          "author": "Nilesoft",
-          "dev": "nilesoft",
+          "author": "Kvetka",
+          "dev": "kvetka",
           "mine": false,
           "date": "2026-09-13",
           "text": {
@@ -212,7 +212,7 @@
           }
         }
       ],
-      "dev": "nilesoft",
+      "dev": "kvetka",
       "devName": null,
       "takenAt": "2026-05-11",
       "releasedAt": "2026-09-13",

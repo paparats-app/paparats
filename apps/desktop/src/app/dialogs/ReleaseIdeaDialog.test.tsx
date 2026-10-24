@@ -42,7 +42,7 @@ describe("ReleaseIdeaDialog", () => {
       within(app)
         .getAllByRole("option")
         .map((o) => o.textContent),
-    ).toEqual(["Nilesoft Shell"]);
+    ).toEqual(["Kvetka Shell"]);
     expect(dialog.getByRole("textbox", { name: "Version" })).toHaveValue("1.9.16");
     expect(
       dialog.getByText(
@@ -54,7 +54,7 @@ describe("ReleaseIdeaDialog", () => {
   it("recomputes the version when another app is picked", async () => {
     const user = userEvent.setup();
     const { dialog, queryClient } = await openRelease("clip");
-    // A second Nilesoft app, so there is something to switch to.
+    // A second Kvetka app, so there is something to switch to.
     act(() =>
       queryClient.setQueryData<Catalog>(queryKeys.catalog, (catalog) => {
         if (!catalog) return catalog;
@@ -62,7 +62,7 @@ describe("ReleaseIdeaDialog", () => {
         const tweaker: App = {
           ...shell,
           id: "tweaker",
-          name: "Nilesoft Tweaker",
+          name: "Kvetka Tweaker",
           version: "3.2.9",
         };
         return { ...catalog, apps: [...catalog.apps, tweaker] };
@@ -92,7 +92,7 @@ describe("ReleaseIdeaDialog", () => {
     });
     const { dialog } = await openRelease(mine.id, services);
     expect(dialog.queryByRole("combobox")).toBeNull();
-    expect(dialog.getByText("Nilesoft Shell")).toBeInTheDocument();
+    expect(dialog.getByText("Kvetka Shell")).toBeInTheDocument();
     expect(dialog.getByText("Version 1.9.15")).toBeInTheDocument();
     expect(dialog.getByRole("textbox", { name: "Version" })).toHaveValue("1.9.16");
     // One vote (the author's own); the developer view names the signed-in user.

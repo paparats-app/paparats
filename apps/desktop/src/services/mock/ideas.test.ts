@@ -72,11 +72,11 @@ describe("mock ideas", () => {
     });
     const byDev = await ideas.comment("pomodoro", "On it", {
       kind: "developer",
-      channelId: "nilesoft",
+      channelId: "kvetka",
     });
     expect(byDev.comments.at(-1)).toEqual({
-      author: "Nilesoft",
-      dev: "nilesoft",
+      author: "Kvetka",
+      dev: "kvetka",
       mine: false,
       date: "2026-09-15",
       text: "On it",
@@ -88,18 +88,18 @@ describe("mock ideas", () => {
 
   it("take pins an open idea to the channel; only open ideas can be taken", async () => {
     const { ideas } = services;
-    expect(await ideas.take("pomodoro", "nilesoft")).toMatchObject({
+    expect(await ideas.take("pomodoro", "kvetka")).toMatchObject({
       status: "work",
-      dev: "nilesoft",
+      dev: "kvetka",
       devName: null,
       takenAt: "2026-09-15",
     });
-    await expect(ideas.take("battery", "nilesoft")).rejects.toMatchObject({ kind: "invalid" });
+    await expect(ideas.take("battery", "kvetka")).rejects.toMatchObject({ kind: "invalid" });
   });
 
   it("release marks the idea shipped in an app version", async () => {
     const { ideas } = services;
-    await ideas.take("pomodoro", "nilesoft");
+    await ideas.take("pomodoro", "kvetka");
     expect(await ideas.release("pomodoro", "shell", " 1.9.16 ")).toMatchObject({
       status: "released",
       releasedAt: "2026-09-15",

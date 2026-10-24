@@ -34,7 +34,7 @@ export function FilterPanelSection() {
   const shown = CATALOG.categories.filter((c) =>
     label(c.id).toLowerCase().includes(query.trim().toLowerCase()),
   );
-  const followed = CHANNELS.filter((c) => ["paparats", "nilesoft", "fossfriends"].includes(c.id));
+  const followed = CHANNELS.filter((c) => ["paparats", "kvetka", "fossfriends"].includes(c.id));
   return (
     <Specimen caption="FilterPanel › FilterGroup · FilterCheckOption (disabled, dot + count) · FilterRadioOptions">
       <DesignFrame width={220}>
@@ -114,7 +114,7 @@ const KIND_KEY = {
 export function ChannelRowsSection() {
   const { t } = useTranslation();
   const { format } = useSample();
-  const [paused, setPaused] = useState<Record<string, boolean>>({ winaero: true });
+  const [paused, setPaused] = useState<Record<string, boolean>>({ vitrazh: true });
   const [acknowledged, setAcknowledged] = useState(false);
   const meta = (c: ChannelInfo) =>
     [
@@ -125,7 +125,7 @@ export function ChannelRowsSection() {
       }),
     ].join(" · ");
   const list = CHANNELS.filter((c) =>
-    ["paparats", "nilesoft", "fossfriends", "winaero"].includes(c.id),
+    ["paparats", "kvetka", "fossfriends", "vitrazh"].includes(c.id),
   );
   const catalog = CHANNELS.filter((c) => ["mpvbuilds", "bysoft"].includes(c.id));
   return (

@@ -119,7 +119,7 @@ export function channelApps(apps: readonly App[], channelId: ChannelId): App[] {
   return apps.filter((app) => candidates(app).includes(channelId));
 }
 
-/** `https://www.Nilesoft.org/paparats/` → `nilesoft.org/paparats`. */
+/** `https://www.Kvetka.Example/paparats/` → `kvetka.example/paparats`. */
 export function normaliseAddress(address: string): string {
   return address
     .trim()

@@ -26,11 +26,11 @@ async function openReport(target: ReportTarget, services = createTestServices())
 describe("ReportDialog", () => {
   it("routes a channel report to its author with a copy to Paparats", async () => {
     const user = userEvent.setup();
-    await openReport({ appId: null, channelId: "winaero" });
-    const dialog = await screen.findByRole("dialog", { name: "Report a problem with Winaero" });
+    await openReport({ appId: null, channelId: "vitrazh" });
+    const dialog = await screen.findByRole("dialog", { name: "Report a problem with Vitrazh" });
     expect(
       await within(dialog).findByText(
-        "Your report goes to Sergey Tkachenko, the author of Winaero. Paparats receives a copy to spot channels that cause repeated problems.",
+        "Your report goes to Andrei V., the author of Vitrazh. Paparats receives a copy to spot channels that cause repeated problems.",
       ),
     ).toBeInTheDocument();
     const text = within(dialog).getByRole("textbox", { name: "What went wrong?" });
@@ -40,7 +40,7 @@ describe("ReportDialog", () => {
     await user.type(text, "Tweaks reset after reboot");
     await user.click(within(dialog).getByRole("button", { name: "Send" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-    expect(screen.getByRole("status")).toHaveTextContent("Sent to Winaero · copy to Paparats");
+    expect(screen.getByRole("status")).toHaveTextContent("Sent to Vitrazh · copy to Paparats");
     expect(useDialogStore.getState().dialog).toBeNull();
   });
 
@@ -69,15 +69,15 @@ describe("ReportDialog", () => {
     const user = userEvent.setup();
     const services = createTestServices();
     const report = vi.spyOn(services.channels, "report");
-    await openReport({ appId: "shell", channelId: "nilesoft" }, services);
+    await openReport({ appId: "shell", channelId: "kvetka" }, services);
     const dialog = await screen.findByRole("dialog", {
-      name: "Report a problem with Nilesoft Shell",
+      name: "Report a problem with Kvetka Shell",
     });
     await user.type(within(dialog).getByRole("textbox"), "   ");
     await user.click(within(dialog).getByRole("button", { name: "Send" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-    expect(report).toHaveBeenCalledWith({ appId: "shell", channelId: "nilesoft" }, "");
-    expect(useUiStore.getState().toast?.message).toBe("Sent to Nilesoft · copy to Paparats");
+    expect(report).toHaveBeenCalledWith({ appId: "shell", channelId: "kvetka" }, "");
+    expect(useUiStore.getState().toast?.message).toBe("Sent to Kvetka · copy to Paparats");
   });
 
   it("goes to the Paparats team for the official catalog", async () => {
@@ -96,9 +96,9 @@ describe("ReportDialog", () => {
     const user = userEvent.setup();
     const services = createTestServices();
     vi.spyOn(services.channels, "report").mockRejectedValue(new ServiceError("internal", "down"));
-    await openReport({ appId: "shell", channelId: "nilesoft" }, services);
+    await openReport({ appId: "shell", channelId: "kvetka" }, services);
     const dialog = await screen.findByRole("dialog", {
-      name: "Report a problem with Nilesoft Shell",
+      name: "Report a problem with Kvetka Shell",
     });
     await user.type(within(dialog).getByRole("textbox"), "Broken");
     await user.click(within(dialog).getByRole("button", { name: "Send" }));
@@ -114,7 +114,7 @@ describe("ReportDialog", () => {
     const user = userEvent.setup();
     const services = createTestServices();
     const report = vi.spyOn(services.channels, "report");
-    await openReport({ appId: "shell", channelId: "nilesoft" }, services);
+    await openReport({ appId: "shell", channelId: "kvetka" }, services);
     await screen.findByRole("dialog");
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).toBeNull();
@@ -122,9 +122,9 @@ describe("ReportDialog", () => {
   });
 
   it("speaks Belarusian", async () => {
-    await openReport({ appId: null, channelId: "nilesoft" });
+    await openReport({ appId: null, channelId: "kvetka" });
     await act(() => changeLocale("be"));
-    expect(await screen.findByRole("dialog", { name: "Праблема з Nilesoft" })).toBeInTheDocument();
+    expect(await screen.findByRole("dialog", { name: "Праблема з Kvetka" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Адправіць" })).toBeEnabled();
     expect(screen.getByRole("textbox", { name: "Што пайшло не так?" })).toBeInTheDocument();
   });

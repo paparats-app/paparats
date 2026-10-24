@@ -22,7 +22,7 @@ export type Format = {
   price(amount: number, currency: string): string;
   /** A 0–100 value, rounded: "45%" / "45 %". */
   percent(n: number): string;
-  /** "Nilesoft and Winaero" / "Nilesoft і Winaero". */
+  /** "Kvetka and Vitrazh" / "Kvetka і Vitrazh". */
   list(items: readonly string[]): string;
 };
 

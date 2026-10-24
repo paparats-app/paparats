@@ -219,12 +219,12 @@ mod tests {
         assert_eq!(c.text, Text::Plain("+1".into()));
         assert!(c.mine && c.author.is_none() && c.dev.is_none());
         let dev = IdeaActor::Developer {
-            channel_id: "nilesoft".into(),
+            channel_id: "kvetka".into(),
         };
         let i = s.comment_idea("clip", "On it", &dev).unwrap();
         let c = i.comments.last().unwrap();
-        assert_eq!(c.author.as_deref(), Some("Nilesoft"));
-        assert_eq!(c.dev.as_deref(), Some("nilesoft"));
+        assert_eq!(c.author.as_deref(), Some("Kvetka"));
+        assert_eq!(c.dev.as_deref(), Some("kvetka"));
         assert!(!c.mine);
         assert_eq!(c.date, TODAY);
         assert_eq!(i.comments.len(), before + 2);
@@ -249,12 +249,12 @@ mod tests {
     #[tokio::test]
     async fn take_release_and_dismiss() {
         let (s, _) = state();
-        let i = s.take_idea("clip", "nilesoft").unwrap();
+        let i = s.take_idea("clip", "kvetka").unwrap();
         assert_eq!(i.status, IdeaStatus::Work);
-        assert_eq!(i.dev.as_deref(), Some("nilesoft"));
+        assert_eq!(i.dev.as_deref(), Some("kvetka"));
         assert_eq!(i.taken_at.as_deref(), Some(TODAY));
         assert!(matches!(
-            s.take_idea("clip", "nilesoft"),
+            s.take_idea("clip", "kvetka"),
             Err(AppError::Invalid(_))
         ));
         assert!(matches!(

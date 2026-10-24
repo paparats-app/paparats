@@ -281,7 +281,7 @@ mod tests {
         KeyRing::new().with(id, key.verifying_key()).unwrap()
     }
 
-    const PAYLOAD: &[u8] = br#"{"channelId":"nilesoft","generated":"2026-09-15","packages":[]}"#;
+    const PAYLOAD: &[u8] = br#"{"channelId":"kvetka","generated":"2026-09-15","packages":[]}"#;
 
     #[test]
     fn opens_an_envelope_signed_by_a_pinned_key() {
@@ -376,7 +376,7 @@ mod tests {
         let channel_ring = KeyRing::new()
             .with("paparats-2026", channel.verifying_key())
             .unwrap()
-            .with("nilesoft-1", channel.verifying_key())
+            .with("kvetka-1", channel.verifying_key())
             .unwrap();
         let merged = ring.merged(&channel_ring);
         assert_eq!(merged.len(), 2);
@@ -387,7 +387,7 @@ mod tests {
         ));
         assert!(
             merged
-                .open(&sign_envelope(&channel, "nilesoft-1", PAYLOAD))
+                .open(&sign_envelope(&channel, "kvetka-1", PAYLOAD))
                 .is_ok()
         );
     }

@@ -8,7 +8,7 @@ use super::text::{IsoDate, Localized};
 
 /// Stable app identifier, e.g. `"obsidian"`.
 pub type AppId = String;
-/// Stable channel identifier, e.g. `"nilesoft"`. The official catalog is [`OFFICIAL_CHANNEL`].
+/// Stable channel identifier, e.g. `"kvetka"`. The official catalog is [`OFFICIAL_CHANNEL`].
 pub type ChannelId = String;
 
 /// Id of the official Paparats catalog channel — always subscribed, cannot be paused or removed.

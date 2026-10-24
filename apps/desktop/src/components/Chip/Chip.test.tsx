@@ -20,7 +20,7 @@ describe("Chip", () => {
   it("draws the channel dot in the given tint", () => {
     const { container } = render(
       <Chip tone="outline" dot="#3b6fd1">
-        Nilesoft
+        Kvetka
       </Chip>,
     );
     expect(container.querySelector("[aria-hidden='true']")).toHaveStyle({
@@ -32,10 +32,10 @@ describe("Chip", () => {
     const onClick = vi.fn();
     render(
       <Chip tone="outline" onClick={onClick}>
-        Winaero
+        Vitrazh
       </Chip>,
     );
-    await userEvent.click(screen.getByRole("button", { name: "Winaero" }));
+    await userEvent.click(screen.getByRole("button", { name: "Vitrazh" }));
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 });

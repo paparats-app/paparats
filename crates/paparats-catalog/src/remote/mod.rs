@@ -833,7 +833,7 @@ mod tests {
 
     fn manifest(url: Option<&str>, sha: Option<&str>) -> ChannelManifest {
         ChannelManifest {
-            channel_id: "nilesoft".into(),
+            channel_id: "kvetka".into(),
             generated: "2026-09-15".into(),
             packages: vec![Package {
                 app_id: "shell".into(),
@@ -850,14 +850,17 @@ mod tests {
     #[test]
     fn packages_need_safe_urls_and_hashes() {
         let hash = "ab".repeat(32);
-        let url = "https://downloads.nilesoft.org/shell.msi";
+        let url = "https://downloads.kvetka.example/shell.msi";
         assert!(validate_packages(&manifest(Some(url), Some(&hash))).is_ok());
         assert!(validate_packages(&manifest(None, None)).is_ok(), "no file");
         for bad in [
             manifest(Some(url), None),
             manifest(Some(url), Some("abc")),
             manifest(Some(url), Some(&"zz".repeat(32))),
-            manifest(Some("http://downloads.nilesoft.org/shell.msi"), Some(&hash)),
+            manifest(
+                Some("http://downloads.kvetka.example/shell.msi"),
+                Some(&hash),
+            ),
             manifest(Some("file:///C:/Windows/notepad.exe"), Some(&hash)),
         ] {
             assert!(matches!(
@@ -874,7 +877,7 @@ mod tests {
         assert!(releases.is_verified());
         assert_eq!(
             releases.download_hosts().into_iter().collect::<Vec<_>>(),
-            ["downloads.nilesoft.org"]
+            ["downloads.kvetka.example"]
         );
         assert!(releases.package("shell").is_some());
         assert!(releases.package("vlc").is_none());
@@ -907,7 +910,7 @@ mod tests {
         send_sync(&remote);
         // Futures are built, never polled: no network.
         send(&remote.refresh("2026-09-15"));
-        send(&remote.sync_channel("nilesoft", "2026-09-15"));
+        send(&remote.sync_channel("kvetka", "2026-09-15"));
         send(&remote.sync_channels(&[], "2026-09-15"));
     }
 }

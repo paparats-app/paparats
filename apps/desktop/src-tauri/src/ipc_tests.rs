@@ -96,11 +96,11 @@ fn commands_round_trip_through_ipc() {
     let found = invoke(
         &w,
         "channels_lookup",
-        json!({"address": "https://winaero.com/"}),
+        json!({"address": "https://vitrazh.example/"}),
     )
     .unwrap();
     assert_eq!(found, json!({"kind": "found", "channel": found["channel"]}));
-    assert_eq!(found["channel"]["id"], "winaero");
+    assert_eq!(found["channel"]["id"], "vitrazh");
 
     let draft = json!({"kind": "new", "appId": null, "category": "utilities",
                        "title": "Tray timer", "body": "Counts down."});
@@ -111,7 +111,7 @@ fn commands_round_trip_through_ipc() {
     let err = invoke(&w, "ideas_propose", json!({ "draft": short })).unwrap_err();
     assert_eq!(err["kind"], "invalid");
 
-    let actor = json!({"kind": "developer", "channelId": "nilesoft"});
+    let actor = json!({"kind": "developer", "channelId": "kvetka"});
     let idea = invoke(
         &w,
         "ideas_comment",
@@ -124,7 +124,7 @@ fn commands_round_trip_through_ipc() {
         .last()
         .cloned()
         .unwrap();
-    assert_eq!(last["dev"], "nilesoft");
+    assert_eq!(last["dev"], "kvetka");
 
     let account = invoke(&w, "account_purchase", json!({"plan": "monthly"})).unwrap();
     assert_eq!(account["subscription"]["renewsOn"], "2026-10-15");
@@ -180,7 +180,7 @@ fn official_channel_idea_and_account_rules_cross_ipc_as_typed_errors() {
     let err = invoke(
         &w,
         "channels_set_paused",
-        json!({"channelId": "winaero", "paused": true}),
+        json!({"channelId": "vitrazh", "paused": true}),
     )
     .unwrap_err();
     assert_eq!(err["kind"], "notFound", "not followed");
@@ -190,13 +190,13 @@ fn official_channel_idea_and_account_rules_cross_ipc_as_typed_errors() {
     invoke(
         &w,
         "ideas_take",
-        json!({"ideaId": "clip", "channelId": "nilesoft"}),
+        json!({"ideaId": "clip", "channelId": "kvetka"}),
     )
     .unwrap();
     let err = invoke(
         &w,
         "ideas_take",
-        json!({"ideaId": "clip", "channelId": "nilesoft"}),
+        json!({"ideaId": "clip", "channelId": "kvetka"}),
     )
     .unwrap_err();
     assert_eq!(err["kind"], "invalid", "only open ideas can be taken");
@@ -291,7 +291,7 @@ fn shell_commands_cross_ipc() {
     let recorder = Recorder::default();
     app.manage(Shell::new(recorder.clone(), &start(false)));
     let shell = app.state::<Shell>();
-    shell.open_url(&"paparats://channel/winaero".parse().unwrap());
+    shell.open_url(&"paparats://channel/vitrazh".parse().unwrap());
     shell.tray_item(TrayItem::Open);
     recorder.clear();
 
@@ -300,7 +300,7 @@ fn shell_commands_cross_ipc() {
     invoke(&w, "shell_window_ready", json!({})).unwrap();
     assert_eq!(
         invoke(&w, "shell_take_deep_links", json!({})).unwrap(),
-        json!([{"kind": "channel", "id": "winaero"}])
+        json!([{"kind": "channel", "id": "vitrazh"}])
     );
     assert!(!shell.minimize_to_tray());
     assert_eq!(

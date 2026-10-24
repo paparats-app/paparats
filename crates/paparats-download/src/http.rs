@@ -396,12 +396,12 @@ mod tests {
 
     #[test]
     fn urls_must_be_allowlisted_and_https() {
-        let l = list(&["downloads.nilesoft.org", "127.0.0.1"]);
+        let l = list(&["downloads.kvetka.example", "127.0.0.1"]);
         assert!(check_url(&l, &url("https://cdn.paparats.app/x.msi")).is_ok());
-        assert!(check_url(&l, &url("https://downloads.nilesoft.org/x.msi")).is_ok());
+        assert!(check_url(&l, &url("https://downloads.kvetka.example/x.msi")).is_ok());
         assert!(check_url(&l, &url("http://127.0.0.1:8080/x")).is_ok());
         assert!(matches!(
-            check_url(&l, &url("http://downloads.nilesoft.org/x.msi")),
+            check_url(&l, &url("http://downloads.kvetka.example/x.msi")),
             Err(DownloadError::InsecureUrl(_))
         ));
         assert!(matches!(

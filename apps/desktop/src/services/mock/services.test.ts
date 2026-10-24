@@ -102,19 +102,19 @@ describe("mock system", () => {
     const writeText = vi.fn(() => Promise.resolve());
     Object.defineProperty(navigator, "clipboard", { value: { writeText }, configurable: true });
     try {
-      await services.system.copyToClipboard("nilesoft.org/paparats");
-      expect(writeText).toHaveBeenCalledWith("nilesoft.org/paparats");
+      await services.system.copyToClipboard("kvetka.example/paparats");
+      expect(writeText).toHaveBeenCalledWith("kvetka.example/paparats");
     } finally {
       Reflect.deleteProperty(navigator, "clipboard");
     }
   });
 
   it("openExternal accepts https / mailto and bare addresses only", async () => {
-    await expect(services.system.openExternal("nilesoft.org/support")).resolves.toBeUndefined();
+    await expect(services.system.openExternal("kvetka.example/support")).resolves.toBeUndefined();
     await expect(services.system.openExternal("file:///C:/Windows")).rejects.toMatchObject({
       kind: "invalid",
     });
-    expect(externalUrl("nilesoft.org/support")).toBe("https://nilesoft.org/support");
+    expect(externalUrl("kvetka.example/support")).toBe("https://kvetka.example/support");
     expect(externalUrl("mailto:help@paparats.app")).toBe("mailto:help@paparats.app");
     expect(() => externalUrl("http://example.org")).toThrow();
     expect(() => externalUrl("javascript:alert(1)")).toThrow();

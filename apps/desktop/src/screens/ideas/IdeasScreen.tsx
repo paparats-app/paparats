@@ -58,7 +58,7 @@ export function IdeasScreen() {
   );
 }
 
-/** "Developer view · Nilesoft" with the channel's 22px tile (prototype line 1190). */
+/** "Developer view · Kvetka" with the channel's 22px tile (prototype line 1190). */
 function DeveloperPill({ board }: { board: IdeasBoard }) {
   const { t } = useTranslation();
   const channel = board.developer.channel;

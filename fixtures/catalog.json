@@ -967,8 +967,8 @@
     },
     {
       "id": "shell",
-      "name": "Nilesoft Shell",
-      "publisher": "Nilesoft",
+      "name": "Kvetka Shell",
+      "publisher": "Kvetka",
       "category": "system",
       "tint": "#3b6fd1",
       "mono": "Sh",
@@ -989,12 +989,12 @@
         "be": "Замяняе кантэкстнае меню Windows на тое, якое вы задаяце самі: укладзеныя пункты, схаваны лішак, свае каманды і тэмы. Усё — у адным тэкставым файле налад.",
         "ru": "Заменяет контекстное меню Windows на то, которое вы задаёте сами: вложенные пункты, скрытый мусор, свои команды и темы. Всё — в одном текстовом файле настроек."
       },
-      "channel": "nilesoft",
+      "channel": "kvetka",
       "alsoIn": [],
       "iconUrl": null,
       "detection": {
         "displayNames": [
-          "Nilesoft Shell"
+          "Kvetka Shell"
         ],
         "displayNameRegex": null,
         "publisher": null,
@@ -1114,12 +1114,12 @@
       }
     },
     {
-      "id": "winaerotweaker",
-      "name": "Winaero Tweaker",
-      "publisher": "Winaero",
+      "id": "vitrazhtweaker",
+      "name": "Vitrazh Tweaker",
+      "publisher": "Vitrazh",
       "category": "system",
       "tint": "#c27a2f",
-      "mono": "Wt",
+      "mono": "Vt",
       "version": "1.63",
       "sizeMb": 4.1,
       "updated": "2026-08-30",
@@ -1137,14 +1137,14 @@
         "be": "Адно акно для пераключальнікаў, якія Windows хавае: класічныя кантэкстныя меню, налады панэлі задач, колеры акцэнту, тэлеметрыя і іншае — кожны з тлумачэннем і адменай.",
         "ru": "Одно окно для переключателей, которые Windows скрывает: классические контекстные меню, настройки панели задач, цвета акцента, телеметрия и многое другое — каждый с пояснением и отменой."
       },
-      "channel": "winaero",
+      "channel": "vitrazh",
       "alsoIn": [
         "paparats"
       ],
       "iconUrl": null,
       "detection": {
         "displayNames": [
-          "Winaero Tweaker"
+          "Vitrazh Tweaker"
         ],
         "displayNameRegex": null,
         "publisher": null,

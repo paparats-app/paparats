@@ -57,9 +57,9 @@ afterEach(async () => {
 describe("deepLinkNavTarget", () => {
   it("maps the core's targets onto navigation targets", () => {
     expect(deepLinkNavTarget({ kind: "app", id: "obs" })).toEqual({ to: "app", appId: "obs" });
-    expect(deepLinkNavTarget({ kind: "channel", id: "winaero" })).toEqual({
+    expect(deepLinkNavTarget({ kind: "channel", id: "vitrazh" })).toEqual({
       to: "channel",
-      channelId: "winaero",
+      channelId: "vitrazh",
     });
   });
 });
@@ -74,8 +74,8 @@ describe("useDeepLinks", () => {
     expect(called("shell_take_deep_links")).toHaveLength(1);
 
     useDialogStore.getState().open({ kind: "addChannel" });
-    await act(() => emit("shell://deep-link", { kind: "channel", id: "nilesoft" }));
-    expect(router.state.location.pathname).toBe("/channel/nilesoft");
+    await act(() => emit("shell://deep-link", { kind: "channel", id: "kvetka" }));
+    expect(router.state.location.pathname).toBe("/channel/kvetka");
     expect(useDialogStore.getState().dialog).toBeNull();
   });
 

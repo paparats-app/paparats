@@ -490,7 +490,7 @@ toolbar (D5).
 
 | Row | What it does |
 | --- | --- |
-| View Ideas as a channel developer | The Ideas board and idea pages act as the Nilesoft channel: Take an open idea, Mark as released (app + version), post as the channel; the avatar shows the channel's monogram |
+| View Ideas as a channel developer | The Ideas board and idea pages act as the Kvetka channel: Take an open idea, Mark as released (app + version), post as the channel; the avatar shows the channel's monogram |
 | Simulate offline | Offline without touching the network: the banner with Retry, Get/Update inert, downloads frozen until you are back online |
 | Replay first launch | Plays the first-launch scene and onboarding again from the start; with reduced motion or Subtle animations off it opens on the language step |
 | Component gallery | Opens `/dev`: every shared component in all variants and states, dark and light side by side (also `http://localhost:1420/#/dev` in a browser) |

@@ -4,7 +4,7 @@ export const sources = {
   channel: "Channel",
   addChannel: "Add channel",
   channelAddr: "Channel address",
-  channelAddrHint: "Paste a link from the author or a short code like @winaero.",
+  channelAddrHint: "Paste a link from the author or a short code like @vitrazh.",
   channelAddrPlaceholder: "https://… or @name",
   add: "Add",
   catalog: "Channel catalog",

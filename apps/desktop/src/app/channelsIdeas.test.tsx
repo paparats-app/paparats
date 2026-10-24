@@ -23,7 +23,7 @@ const pageHeader = () => {
   return within(el);
 };
 const SOURCE_RULE =
-  "Also offered by Winaero. Paparats installs and updates from the most trusted channel that offers an app.";
+  "Also offered by Vitrazh. Paparats installs and updates from the most trusted channel that offers an app.";
 
 /** Long flows through the whole shell: generous under a loaded full-suite run. */
 const LONG = { timeout: 20_000 };
@@ -78,7 +78,7 @@ describe("M5 channels in the shell", () => {
       const user = userEvent.setup();
       const services = createTestServices();
       // Only the official catalog is followed.
-      await services.channels.unsubscribe("nilesoft");
+      await services.channels.unsubscribe("kvetka");
       await services.channels.unsubscribe("fossfriends");
       await start("/browse", services);
       await screen.findByRole("heading", { level: 1, name: /Browse/ });
@@ -89,53 +89,53 @@ describe("M5 channels in the shell", () => {
       expect(sourcesPanel().queryByRole("switch")).toBeNull();
       await user.click(screen.getByRole("button", { name: "Add channel" }));
       let dialog = within(screen.getByRole("dialog", { name: "Add channel" }));
-      await user.type(dialog.getByRole("textbox"), "https://nilesoft.org/paparats/{Enter}");
+      await user.type(dialog.getByRole("textbox"), "https://kvetka.example/paparats/{Enter}");
       await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-      expect(toast()).toBe("Subscribed to Nilesoft");
-      expect(await sourcesPanel().findByRole("switch", { name: "Nilesoft" })).toBeChecked();
+      expect(toast()).toBe("Subscribed to Kvetka");
+      expect(await sourcesPanel().findByRole("switch", { name: "Kvetka" })).toBeChecked();
 
       // Two active channels: Browse gains the Source group with per-channel counts.
       await openBrowse(user);
       const group = within(screen.getByRole("group", { name: "Source" }));
       expect(group.getByRole("checkbox", { name: /Paparats/ })).toBeInTheDocument();
-      expect(group.getByRole("checkbox", { name: /Nilesoft/ })).toBeInTheDocument();
+      expect(group.getByRole("checkbox", { name: /Kvetka/ })).toBeInTheDocument();
 
       // By handle: a community channel asks for the trust confirmation first.
       await openSources(user);
       await user.click(screen.getByRole("button", { name: "Add channel" }));
       dialog = within(screen.getByRole("dialog", { name: "Add channel" }));
-      await user.type(dialog.getByRole("textbox"), "@winaero{Enter}");
-      const confirm = within(await screen.findByRole("dialog", { name: "Add Winaero?" }));
+      await user.type(dialog.getByRole("textbox"), "@vitrazh{Enter}");
+      const confirm = within(await screen.findByRole("dialog", { name: "Add Vitrazh?" }));
       expect(screen.queryByRole("dialog", { name: "Add channel" })).toBeNull();
       expect(confirm.getByText(/community channel/i)).toBeInTheDocument();
       await user.click(confirm.getByRole("button", { name: "Add channel" }));
       await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-      expect(toast()).toBe("Subscribed to Winaero");
-      expect(await sourcesPanel().findByRole("switch", { name: "Winaero" })).toBeChecked();
+      expect(toast()).toBe("Subscribed to Vitrazh");
+      expect(await sourcesPanel().findByRole("switch", { name: "Vitrazh" })).toBeChecked();
 
-      // The install-source rule: Winaero Tweaker comes from the official catalog, Winaero is named.
-      await user.click(sourcesPanel().getByRole("button", { name: "Winaero" }));
-      await screen.findByRole("heading", { level: 1, name: "Winaero" });
+      // The install-source rule: Vitrazh Tweaker comes from the official catalog, Vitrazh is named.
+      await user.click(sourcesPanel().getByRole("button", { name: "Vitrazh" }));
+      await screen.findByRole("heading", { level: 1, name: "Vitrazh" });
       const apps = within(screen.getByRole("list", { name: "Apps in this channel" }));
       await user.click(apps.getByRole("button", { name: "Details" }));
-      await screen.findByRole("heading", { level: 1, name: "Winaero Tweaker" });
+      await screen.findByRole("heading", { level: 1, name: "Vitrazh Tweaker" });
       expect(screen.getByText(SOURCE_RULE)).toBeInTheDocument();
       // A detail opened from a detail keeps the original origin: Back returns to Sources.
       await user.click(screen.getByRole("button", { name: "Back" }));
-      await sourcesPanel().findByRole("switch", { name: "Winaero" });
+      await sourcesPanel().findByRole("switch", { name: "Vitrazh" });
 
-      // Pausing Winaero takes it out of the rule and toasts.
-      await user.click(sourcesPanel().getByRole("switch", { name: "Winaero" }));
-      await waitFor(() => expect(toast()).toBe("Winaero paused"));
-      expect(sourcesPanel().getByRole("switch", { name: "Winaero" })).not.toBeChecked();
-      await user.click(sourcesPanel().getByRole("button", { name: "Winaero" }));
-      await screen.findByRole("heading", { level: 1, name: "Winaero" });
+      // Pausing Vitrazh takes it out of the rule and toasts.
+      await user.click(sourcesPanel().getByRole("switch", { name: "Vitrazh" }));
+      await waitFor(() => expect(toast()).toBe("Vitrazh paused"));
+      expect(sourcesPanel().getByRole("switch", { name: "Vitrazh" })).not.toBeChecked();
+      await user.click(sourcesPanel().getByRole("button", { name: "Vitrazh" }));
+      await screen.findByRole("heading", { level: 1, name: "Vitrazh" });
       await user.click(
         within(screen.getByRole("list", { name: "Apps in this channel" })).getByRole("button", {
           name: "Details",
         }),
       );
-      await screen.findByRole("heading", { level: 1, name: "Winaero Tweaker" });
+      await screen.findByRole("heading", { level: 1, name: "Vitrazh Tweaker" });
       expect(screen.queryByText(SOURCE_RULE)).toBeNull();
       await openSources(user);
 
@@ -164,7 +164,7 @@ describe("M5 channels in the shell", () => {
       const user = userEvent.setup();
       const { services } = await start("/settings/sources");
       const copy = vi.spyOn(services.system, "copyToClipboard");
-      await sourcesPanel().findByRole("switch", { name: "Nilesoft" });
+      await sourcesPanel().findByRole("switch", { name: "Kvetka" });
 
       await user.click(sourcesPanel().getByRole("button", { name: "FOSS Friends" }));
       await screen.findByRole("heading", { level: 1, name: "FOSS Friends" });
@@ -195,18 +195,18 @@ describe("M5 channels in the shell", () => {
       expect(sourcesPanel().queryByText(/hasn’t answered/)).toBeNull();
       expect(sourcesPanel().getByText("Unreachable for 16 days")).toBeInTheDocument();
 
-      // Pause and unsubscribe from the Nilesoft page.
-      await user.click(sourcesPanel().getByRole("button", { name: "Nilesoft" }));
-      await screen.findByRole("heading", { level: 1, name: "Nilesoft" });
+      // Pause and unsubscribe from the Kvetka page.
+      await user.click(sourcesPanel().getByRole("button", { name: "Kvetka" }));
+      await screen.findByRole("heading", { level: 1, name: "Kvetka" });
       await user.click(pageHeader().getByRole("switch", { name: "Enabled" }));
-      await waitFor(() => expect(toast()).toBe("Nilesoft paused"));
+      await waitFor(() => expect(toast()).toBe("Kvetka paused"));
       expect(pageHeader().getByRole("switch", { name: "Paused" })).not.toBeChecked();
       await user.click(pageHeader().getByRole("button", { name: "Unsubscribe" }));
-      await waitFor(() => expect(toast()).toBe("Unsubscribed from Nilesoft"));
+      await waitFor(() => expect(toast()).toBe("Unsubscribed from Kvetka"));
       expect(pageHeader().getByRole("button", { name: "Subscribe" })).toBeInTheDocument();
       await user.click(screen.getByRole("button", { name: "Back" }));
       await sourcesPanel().findByRole("switch", { name: "FOSS Friends" });
-      expect(sourcesPanel().queryByRole("switch", { name: "Nilesoft" })).toBeNull();
+      expect(sourcesPanel().queryByRole("switch", { name: "Kvetka" })).toBeNull();
     },
   );
 });
@@ -253,9 +253,9 @@ describe("M5 ideas in the shell", () => {
 
       // The developer view: the avatar is the channel's monogram; take, then release.
       await setView("developer");
-      expect(avatar()).toHaveTextContent("Ni");
+      expect(avatar()).toHaveTextContent("Kv");
       await user.click(pageHeader().getByRole("button", { name: "Take this idea" }));
-      await waitFor(() => expect(toast()).toBe("Pinned to Nilesoft · author notified"));
+      await waitFor(() => expect(toast()).toBe("Pinned to Kvetka · author notified"));
       await user.click(await pageHeader().findByRole("button", { name: "Mark as released" }));
       const release = within(await screen.findByRole("dialog", { name: "Release the idea" }));
       const version = release.getByRole("textbox", { name: "Version" });
@@ -264,7 +264,7 @@ describe("M5 ideas in the shell", () => {
       await user.click(release.getByRole("button", { name: "Release" }));
       await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
       expect(toast()).toMatch(/^Released · \d+ (person|people) notified$/);
-      expect(pageHeader().getByText(/^Shipped as Nilesoft Shell 2\.0\.0 on /)).toBeInTheDocument();
+      expect(pageHeader().getByText(/^Shipped as Kvetka Shell 2\.0\.0 on /)).toBeInTheDocument();
 
       // The author (user view) sees the note and activates the gift: Pro everywhere.
       await setView("user");
@@ -272,7 +272,7 @@ describe("M5 ideas in the shell", () => {
       expect(navItem(/^Ideas/)).toHaveTextContent(/^Ideas2$/);
       await user.click(navItem(/^Ideas/));
       const note = await screen.findByRole("region", { name: "Your idea became an app" });
-      expect(note).toHaveTextContent("Nilesoft Shell");
+      expect(note).toHaveTextContent("Kvetka Shell");
       await user.click(within(note).getByRole("button", { name: "Activate 3 months of Pro" }));
       await waitFor(() => expect(toast()).toBe("Paparats Pro is active until 15 December 2026"));
       expect(screen.queryByRole("region", { name: "Your idea became an app" })).toBeNull();

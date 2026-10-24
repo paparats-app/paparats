@@ -292,9 +292,9 @@ export type ChannelInfo = {
   kind: ChannelKind;
   trust: TrustLevel;
   author: string;
-  /**  Address without scheme, e.g. `nilesoft.org/paparats`. */
+  /**  Address without scheme, e.g. `kvetka.example/paparats`. */
   addr: string;
-  /**  Short code including the `@`, e.g. `@nilesoft`. */
+  /**  Short code including the `@`, e.g. `@kvetka`. */
   handle: string;
   tint: string;
   mono: string;
@@ -680,7 +680,7 @@ export type Settings = {
   crash: boolean;
   dev: boolean;
   portable: boolean;
-  /**  Developer mode tool: act as the Nilesoft channel on the Ideas board. */
+  /**  Developer mode tool: act as the Kvetka channel on the Ideas board. */
   viewAsDeveloper: boolean;
   /**  Developer mode tool: pretend the network is down. */
   simulateOffline: boolean;

@@ -125,15 +125,15 @@ mod tests {
         assert_eq!(s.get_channels().await.unwrap().len(), 6);
         assert_eq!(
             ids(&s.get_subscriptions().unwrap()),
-            ["paparats", "nilesoft", "fossfriends"]
+            ["paparats", "kvetka", "fossfriends"]
         );
-        let subs = s.subscribe_channel("winaero").unwrap();
-        assert_eq!(ids(&subs).last(), Some(&"winaero"));
+        let subs = s.subscribe_channel("vitrazh").unwrap();
+        assert_eq!(ids(&subs).last(), Some(&"vitrazh"));
         assert!(matches!(
             s.subscribe_channel("ghost"),
             Err(AppError::NotFound(_))
         ));
-        let subs = s.unsubscribe_channel("winaero").unwrap();
+        let subs = s.unsubscribe_channel("vitrazh").unwrap();
         assert_eq!(subs.len(), 3);
         assert!(matches!(
             s.unsubscribe_channel(OFFICIAL_CHANNEL),
@@ -143,16 +143,16 @@ mod tests {
             s.set_channel_paused(OFFICIAL_CHANNEL, true),
             Err(AppError::Invalid(_))
         ));
-        let subs = s.set_channel_paused("nilesoft", true).unwrap();
+        let subs = s.set_channel_paused("kvetka", true).unwrap();
         assert!(subs[1].paused);
         assert!(matches!(
-            s.set_channel_paused("winaero", true),
+            s.set_channel_paused("vitrazh", true),
             Err(AppError::NotFound(_))
         ));
         let subs = s.acknowledge_stale("fossfriends").unwrap();
         assert!(subs[2].stale_acknowledged);
         assert!(matches!(
-            s.acknowledge_stale("winaero"),
+            s.acknowledge_stale("vitrazh"),
             Err(AppError::NotFound(_))
         ));
     }
@@ -161,12 +161,12 @@ mod tests {
     async fn lookup_follows_the_prototype() {
         let (s, _) = state();
         assert!(matches!(
-            s.lookup_channel("https://www.Winaero.com/paparats/").unwrap(),
-            ChannelLookup::Found { channel } if channel.id == "winaero"
+            s.lookup_channel("https://www.Vitrazh.Example/paparats/").unwrap(),
+            ChannelLookup::Found { channel } if channel.id == "vitrazh"
         ));
         assert!(matches!(
-            s.lookup_channel("@nilesoft").unwrap(),
-            ChannelLookup::AlreadySubscribed { channel } if channel.id == "nilesoft"
+            s.lookup_channel("@kvetka").unwrap(),
+            ChannelLookup::AlreadySubscribed { channel } if channel.id == "kvetka"
         ));
         assert_eq!(
             s.lookup_channel("nothing.here").unwrap(),
@@ -184,20 +184,20 @@ mod tests {
             SyncOutcome::Unreachable { days: 16 }
         );
         assert_eq!(
-            s.sync_channel("winaero").await.unwrap(),
+            s.sync_channel("vitrazh").await.unwrap(),
             SyncOutcome::Synced {
                 at: "2026-09-15".into()
             }
         );
-        let winaero = s
+        let vitrazh = s
             .get_channels()
             .await
             .unwrap()
             .into_iter()
-            .find(|c| c.id == "winaero")
+            .find(|c| c.id == "vitrazh")
             .unwrap();
         assert_eq!(
-            winaero.synced.as_deref(),
+            vitrazh.synced.as_deref(),
             Some("2026-09-15"),
             "was never synced"
         );
@@ -218,15 +218,15 @@ mod tests {
             s.report_problem(&official, "crashes").unwrap(),
             ReportReceipt::Paparats
         );
-        let nilesoft = ReportTarget {
+        let kvetka = ReportTarget {
             app_id: None,
-            channel_id: "nilesoft".into(),
+            channel_id: "kvetka".into(),
         };
         assert_eq!(
-            s.report_problem(&nilesoft, "text").unwrap(),
+            s.report_problem(&kvetka, "text").unwrap(),
             ReportReceipt::Author {
-                channel_name: "Nilesoft".into(),
-                author: "Nilesoft".into()
+                channel_name: "Kvetka".into(),
+                author: "Kvetka".into()
             }
         );
         let ghost = ReportTarget {

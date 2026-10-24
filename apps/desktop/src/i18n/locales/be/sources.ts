@@ -7,7 +7,7 @@ export const sources: LocaleCatalog<typeof En> = {
   channel: "Канал",
   addChannel: "Дадаць канал",
   channelAddr: "Адрас канала",
-  channelAddrHint: "Устаўце спасылку ад аўтара або кароткі код, напрыклад @winaero.",
+  channelAddrHint: "Устаўце спасылку ад аўтара або кароткі код, напрыклад @vitrazh.",
   channelAddrPlaceholder: "https://… або @назва",
   add: "Дадаць",
   catalog: "Каталог каналаў",

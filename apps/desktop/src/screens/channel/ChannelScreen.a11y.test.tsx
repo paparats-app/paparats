@@ -23,7 +23,7 @@ async function openChannel(channelId: string, services = createTestServices()) {
 
 describe("Channel a11y", () => {
   it("tabs from Back through the action row into the apps", async () => {
-    const { user } = await openChannel("nilesoft");
+    const { user } = await openChannel("kvetka");
     focusBeforeScreen();
     const apps = screen.getByRole("region", { name: "Apps in this channel" });
     await expectTabOrder(user, [
@@ -33,7 +33,7 @@ describe("Channel a11y", () => {
       button("Copy address"),
       button("Report a problem"),
       button("Sync now"),
-      within(apps).getByRole("button", { name: /^Nilesoft Shell/ }),
+      within(apps).getByRole("button", { name: /^Kvetka Shell/ }),
     ]);
     expect(within(content()).getByRole("switch", { name: "Enabled" })).toHaveAttribute(
       "aria-checked",
@@ -43,7 +43,7 @@ describe("Channel a11y", () => {
   });
 
   it("keeps the focus on the buttons that replace Unsubscribe and Subscribe", async () => {
-    const { user } = await openChannel("nilesoft");
+    const { user } = await openChannel("kvetka");
     button("Unsubscribe").focus();
     await user.keyboard("{Enter}");
     await waitFor(() => expect(button("Subscribe")).toHaveFocus());
@@ -58,11 +58,11 @@ describe("Channel a11y", () => {
   });
 
   it("hands the focus from Subscribe through the trust confirmation to the switch", async () => {
-    const { user } = await openChannel("winaero");
+    const { user } = await openChannel("vitrazh");
     button("Subscribe").focus();
     await user.keyboard("{Enter}");
     // A community channel asks first; the dialog takes the focus (Cancel, as in every confirm).
-    const dialog = await screen.findByRole("dialog", { name: "Add Winaero?" });
+    const dialog = await screen.findByRole("dialog", { name: "Add Vitrazh?" });
     expect(within(dialog).getByRole("button", { name: "Cancel" })).toHaveFocus();
     await user.tab();
     expect(within(dialog).getByRole("button", { name: "Add channel" })).toHaveFocus();
@@ -76,10 +76,10 @@ describe("Channel a11y", () => {
   });
 
   it("gives the focus back to Subscribe when the trust confirmation is cancelled", async () => {
-    const { user } = await openChannel("winaero");
+    const { user } = await openChannel("vitrazh");
     button("Subscribe").focus();
     await user.keyboard("{Enter}");
-    await screen.findByRole("dialog", { name: "Add Winaero?" });
+    await screen.findByRole("dialog", { name: "Add Vitrazh?" });
     await user.keyboard("{Escape}");
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
     expect(button("Subscribe")).toHaveFocus();
@@ -90,7 +90,7 @@ describe("Channel a11y", () => {
     const sync = vi
       .spyOn(services.channels, "sync")
       .mockImplementation(() => new Promise(() => {}));
-    const { user } = await openChannel("nilesoft", services);
+    const { user } = await openChannel("kvetka", services);
     button("Sync now").focus();
     await user.keyboard("{Enter}");
     expect(button("Sync now")).toHaveAttribute("aria-busy", "true");

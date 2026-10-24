@@ -60,9 +60,9 @@ pub struct ChannelInfo {
     pub kind: ChannelKind,
     pub trust: TrustLevel,
     pub author: String,
-    /// Address without scheme, e.g. `nilesoft.org/paparats`.
+    /// Address without scheme, e.g. `kvetka.example/paparats`.
     pub addr: String,
-    /// Short code including the `@`, e.g. `@nilesoft`.
+    /// Short code including the `@`, e.g. `@kvetka`.
     pub handle: String,
     pub tint: String,
     pub mono: String,

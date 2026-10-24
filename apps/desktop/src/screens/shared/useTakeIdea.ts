@@ -7,7 +7,7 @@ import { useUiStore } from "@/stores/useUiStore";
 
 /**
  * "Take" in the developer view (the board's cards and the idea page's "Take this idea"): pins the
- * idea to the channel the view acts as and toasts "Pinned to Nilesoft · author notified"
+ * idea to the channel the view acts as and toasts "Pinned to Kvetka · author notified"
  * (prototype `takeIdea`). Resolves `false` when it was not taken (someone else took it first, or
  * the call failed); the screens then show the idea as it is (no failure copy).
  */

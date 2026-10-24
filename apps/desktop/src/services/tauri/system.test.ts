@@ -170,9 +170,9 @@ describe("tauriShell", () => {
     const stop = tauriShell.subscribeDeepLinks((target) => received.push(target));
     await vi.waitFor(() => expect(received).toEqual([{ kind: "app", id: "vlc" }, ...pending]));
 
-    await emit("shell://deep-link", { kind: "channel", id: "nilesoft" });
+    await emit("shell://deep-link", { kind: "channel", id: "kvetka" });
     expect(received).toHaveLength(3);
-    expect(received.at(-1)).toEqual({ kind: "channel", id: "nilesoft" });
+    expect(received.at(-1)).toEqual({ kind: "channel", id: "kvetka" });
 
     stop();
     stop(); // idempotent

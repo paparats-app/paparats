@@ -60,7 +60,7 @@ describe("Belarusian formatting without ICU data", () => {
     for (const n of [1, 2, 5, 11, 12, 21, 22, 25]) {
       expect(belarusian.ago(n, "month")).toBe(intl.relative.format(-n, "month"));
     }
-    for (const items of [["A"], ["A", "B"], ["Nilesoft", "Winaero", "FOSS Friends"]]) {
+    for (const items of [["A"], ["A", "B"], ["Kvetka", "Vitrazh", "FOSS Friends"]]) {
       expect(belarusian.list(items)).toBe(intl.list.format(items));
     }
   });
@@ -91,7 +91,7 @@ describe("Belarusian formatting without ICU data", () => {
     expect(fallback.price(49, "USD")).toBe(native.price(49, "USD"));
     expect(fallback.price(4.99, "EUR")).toBe(native.price(4.99, "EUR"));
     expect(fallback.percent(43.4)).toBe(native.percent(43.4));
-    expect(fallback.list(["Nilesoft", "Winaero"])).toBe(native.list(["Nilesoft", "Winaero"]));
+    expect(fallback.list(["Kvetka", "Vitrazh"])).toBe(native.list(["Kvetka", "Vitrazh"]));
     expect(fallback.fixed(4.6, 1)).toBe(native.fixed(4.6, 1));
   });
 

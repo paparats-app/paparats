@@ -1,5 +1,5 @@
 // What the screens say about a channel: the kind, trust and file-host labels, the monogram tile
-// and the "Developer · by Nilesoft · 12 apps" meta line (the prototype's `chView()`,
+// and the "Developer · by Kvetka · 12 apps" meta line (the prototype's `chView()`,
 // `trustMeta()` and `kindLabel()`, lines 2004–2012). Used by Settings › Sources, the channel page
 // and the add-channel / trust dialogs. The trust level names are `components/TrustBadge › TRUST_KEY`.
 import { useCallback } from "react";
@@ -36,7 +36,7 @@ export function channelIcon(channel: ChannelInfo): AppIconSource {
 }
 
 /**
- * "Developer · by Nilesoft · 12 apps": the kind, the author and every catalog app the channel
+ * "Developer · by Kvetka · 12 apps": the kind, the author and every catalog app the channel
  * offers (as home channel or through `alsoIn`, followed or not — the prototype's `chApps`).
  * `ready` is false until the catalog has loaded (the count would read 0 until then).
  */

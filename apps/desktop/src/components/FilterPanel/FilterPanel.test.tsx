@@ -20,7 +20,7 @@ describe("FilterPanel", () => {
         </FilterGroup>
         <FilterGroup label="Source">
           <FilterCheckOption
-            label="Nilesoft"
+            label="Kvetka"
             checked={false}
             onChange={onCheck}
             dot="#3b6fd1"
@@ -51,7 +51,7 @@ describe("FilterPanel", () => {
     await userEvent.click(within(category).getByRole("checkbox", { name: "Productivity" }));
     expect(onCheck).toHaveBeenCalledWith(true);
     expect(screen.getByRole("checkbox", { name: "Free" })).toBeDisabled();
-    expect(screen.getByRole("group", { name: "Source" })).toHaveTextContent("Nilesoft2");
+    expect(screen.getByRole("group", { name: "Source" })).toHaveTextContent("Kvetka2");
 
     const sort = screen.getByRole("radiogroup", { name: "Sort by" });
     await userEvent.click(within(sort).getByRole("radio", { name: "A–Z" }));

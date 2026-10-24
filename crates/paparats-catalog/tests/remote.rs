@@ -193,7 +193,7 @@ fn official() -> SigningKey {
 /// Each verified channel signs with its own key, pinned in the directory as `<id>-1`.
 fn channel_key(id: &str) -> SigningKey {
     match id {
-        "nilesoft" => key(2),
+        "kvetka" => key(2),
         "fossfriends" => key(3),
         _ => key(4),
     }
@@ -259,8 +259,8 @@ fn directory(server: &Server) -> ChannelDirectory {
 
 fn releases(channel_id: &str, generated: &str) -> ChannelManifest {
     let (app, host) = match channel_id {
-        "nilesoft" => ("shell", "downloads.nilesoft.org"),
-        "winaero" => ("winaerotweaker", "winaero.com"),
+        "kvetka" => ("shell", "downloads.kvetka.example"),
+        "vitrazh" => ("vitrazhtweaker", "vitrazh.example"),
         "fossfriends" => ("rufus", "files.fossfriends.org"),
         _ => ("obsidian", "cdn.paparats.app"),
     };
@@ -544,7 +544,7 @@ async fn unknown_keys_and_unsigned_official_files_are_rejected() {
     server.set(
         "/v1/catalog.json",
         Reply::ok(
-            signed(&channel_key("nilesoft"), "nilesoft-1", &manifest),
+            signed(&channel_key("kvetka"), "kvetka-1", &manifest),
             "\"z\"",
         ),
     );
@@ -627,7 +627,7 @@ async fn hosts_outside_the_allowlist_are_refused() {
     let remote = ready(&server, &storage).await;
     let target = format!("http://localhost:{}/elsewhere.json", server.addr.port());
     server.set(
-        &channel_path("nilesoft"),
+        &channel_path("kvetka"),
         Reply {
             status: 302,
             location: Some(target),
@@ -638,16 +638,16 @@ async fn hosts_outside_the_allowlist_are_refused() {
         "/elsewhere.json",
         Reply::ok(
             signed(
-                &channel_key("nilesoft"),
-                "nilesoft-1",
-                &releases("nilesoft", TODAY),
+                &channel_key("kvetka"),
+                "kvetka-1",
+                &releases("kvetka", TODAY),
             ),
             "\"e\"",
         ),
     );
     server.clear_hits();
     assert_eq!(
-        remote.sync_channel("nilesoft", TODAY).await.unwrap(),
+        remote.sync_channel("kvetka", TODAY).await.unwrap(),
         SyncOutcome::Unreachable { days: 1 }
     );
     assert!(
@@ -660,11 +660,11 @@ async fn hosts_outside_the_allowlist_are_refused() {
     let allowlist = remote.allowlist();
     publish(&server);
     assert!(matches!(
-        remote.sync_channel("nilesoft", TODAY).await.unwrap(),
+        remote.sync_channel("kvetka", TODAY).await.unwrap(),
         SyncOutcome::Synced { .. }
     ));
     let list = allowlist.read().unwrap();
-    assert!(list.is_allowed("downloads.nilesoft.org"));
+    assert!(list.is_allowed("downloads.kvetka.example"));
     assert!(!list.is_allowed("evil.example"));
     assert!(!list.is_allowed("localhost"));
 }
@@ -681,19 +681,19 @@ async fn verified_channels_need_their_pinned_key() {
 
     // Signed with its own pinned key.
     assert_eq!(
-        remote.sync_channel("nilesoft", TODAY).await.unwrap(),
+        remote.sync_channel("kvetka", TODAY).await.unwrap(),
         SyncOutcome::Synced { at: TODAY.into() }
     );
-    let releases_now = remote.channel_releases("nilesoft").unwrap();
+    let releases_now = remote.channel_releases("kvetka").unwrap();
     assert!(releases_now.is_verified());
     assert_eq!(releases_now.trust, TrustLevel::Verified);
-    let package = remote.package("nilesoft", "shell").unwrap();
+    let package = remote.package("kvetka", "shell").unwrap();
     assert!(package.warnings.is_empty());
     assert_eq!(
         package.package.sha256.as_deref(),
         Some("ab".repeat(32).as_str())
     );
-    assert!(remote.package("nilesoft", "vlc").is_none());
+    assert!(remote.package("kvetka", "vlc").is_none());
 
     // The official catalog's own manifest, with the official key.
     assert!(matches!(
@@ -705,23 +705,23 @@ async fn verified_channels_need_their_pinned_key() {
     let foreign = signed(
         &channel_key("fossfriends"),
         "fossfriends-1",
-        &releases("nilesoft", "2026-09-16"),
+        &releases("kvetka", "2026-09-16"),
     );
-    server.set(&channel_path("nilesoft"), Reply::ok(foreign, "\"m2\""));
+    server.set(&channel_path("kvetka"), Reply::ok(foreign, "\"m2\""));
     assert_eq!(
-        remote.sync_channel("nilesoft", "2026-09-16").await.unwrap(),
+        remote.sync_channel("kvetka", "2026-09-16").await.unwrap(),
         SyncOutcome::Unreachable { days: 1 }
     );
     // The cached, verified copy stays in use.
-    assert!(remote.package("nilesoft", "shell").is_some());
+    assert!(remote.package("kvetka", "shell").is_some());
 
     // A verified channel's key cannot sign the official catalog's manifest.
     server.set(
         &channel_path("paparats"),
         Reply::ok(
             signed(
-                &channel_key("nilesoft"),
-                "nilesoft-1",
+                &channel_key("kvetka"),
+                "kvetka-1",
                 &releases("paparats", TODAY),
             ),
             "\"m3\"",
@@ -735,7 +735,7 @@ async fn verified_channels_need_their_pinned_key() {
     // A correctly signed manifest of another channel, served at this channel's address.
     server.set(
         &channel_path("fossfriends"),
-        Reply::ok(official_signed(&releases("nilesoft", TODAY)), "\"m4\""),
+        Reply::ok(official_signed(&releases("kvetka", TODAY)), "\"m4\""),
     );
     assert!(matches!(
         remote.sync_channel("fossfriends", TODAY).await.unwrap(),
@@ -758,18 +758,18 @@ async fn community_channels_stay_unverified_with_warnings() {
 
     // Unsigned: accepted on the community path, hosts not allowlisted.
     assert!(matches!(
-        remote.sync_channel("winaero", TODAY).await.unwrap(),
+        remote.sync_channel("vitrazh", TODAY).await.unwrap(),
         SyncOutcome::Synced { .. }
     ));
-    let package = remote.package("winaero", "winaerotweaker").unwrap();
+    let package = remote.package("vitrazh", "vitrazhtweaker").unwrap();
     assert_eq!(package.trust, TrustLevel::Community);
     assert_eq!(package.warnings, [TrustWarning::Unsigned]);
-    assert!(!allowlist.read().unwrap().is_allowed("winaero.com"));
+    assert!(!allowlist.read().unwrap().is_allowed("vitrazh.example"));
     assert_eq!(
-        remote.trust_community_downloads("winaero").unwrap(),
-        ["winaero.com"]
+        remote.trust_community_downloads("vitrazh").unwrap(),
+        ["vitrazh.example"]
     );
-    assert!(allowlist.read().unwrap().is_allowed("winaero.com"));
+    assert!(allowlist.read().unwrap().is_allowed("vitrazh.example"));
     assert!(matches!(
         remote.trust_community_downloads("bysoft"),
         Err(CatalogError::UnknownChannel(_))
@@ -778,51 +778,51 @@ async fn community_channels_stay_unverified_with_warnings() {
     // Self-signed: intact, identity unproven. The key the directory lists for a community
     // channel is not pinned, so signing with it alone is not enough.
     let author = key(4);
-    let payload = serde_json::to_vec(&releases("winaero", "2026-09-16")).unwrap();
-    let pinned_only = sign_envelope(&author, "winaero-1", &payload);
+    let payload = serde_json::to_vec(&releases("vitrazh", "2026-09-16")).unwrap();
+    let pinned_only = sign_envelope(&author, "vitrazh-1", &payload);
     server.set(
-        &channel_path("winaero"),
+        &channel_path("vitrazh"),
         Reply::ok(serde_json::to_vec(&pinned_only).unwrap(), "\"s0\""),
     );
     assert!(matches!(
-        remote.sync_channel("winaero", "2026-09-16").await.unwrap(),
+        remote.sync_channel("vitrazh", "2026-09-16").await.unwrap(),
         SyncOutcome::Unreachable { .. }
     ));
     let mut self_signed = pinned_only.clone();
     self_signed.public_key = Some(BASE64.encode(author.verifying_key().as_bytes()));
     server.set(
-        &channel_path("winaero"),
+        &channel_path("vitrazh"),
         Reply::ok(serde_json::to_vec(&self_signed).unwrap(), "\"s1\""),
     );
     assert!(matches!(
-        remote.sync_channel("winaero", "2026-09-16").await.unwrap(),
+        remote.sync_channel("vitrazh", "2026-09-16").await.unwrap(),
         SyncOutcome::Synced { .. }
     ));
     assert_eq!(
-        remote.channel_releases("winaero").unwrap().warnings,
+        remote.channel_releases("vitrazh").unwrap().warnings,
         [TrustWarning::SelfSigned {
-            key_id: "winaero-1".into()
+            key_id: "vitrazh-1".into()
         }]
     );
 
     // A self-signed manifest altered on the way is rejected, not downgraded to "unsigned".
     let mut tampered = self_signed.clone();
     tampered.payload = BASE64.encode(
-        serde_json::to_vec(&releases("winaero", "2026-09-17"))
+        serde_json::to_vec(&releases("vitrazh", "2026-09-17"))
             .unwrap()
             .as_slice(),
     );
     server.set(
-        &channel_path("winaero"),
+        &channel_path("vitrazh"),
         Reply::ok(serde_json::to_vec(&tampered).unwrap(), "\"s2\""),
     );
     assert!(matches!(
-        remote.sync_channel("winaero", "2026-09-17").await.unwrap(),
+        remote.sync_channel("vitrazh", "2026-09-17").await.unwrap(),
         SyncOutcome::Unreachable { .. }
     ));
     assert_eq!(
         remote
-            .channel_releases("winaero")
+            .channel_releases("vitrazh")
             .unwrap()
             .manifest
             .generated,
@@ -835,37 +835,37 @@ async fn a_server_that_is_down_keeps_the_cache_and_starts_an_outage() {
     let server = Server::start().await;
     let storage = memory();
     let remote = ready(&server, &storage).await;
-    let nilesoft = |remote: &RemoteCatalog| {
+    let kvetka = |remote: &RemoteCatalog| {
         remote
             .channels()
             .unwrap()
             .into_iter()
-            .find(|c| c.id == "nilesoft")
+            .find(|c| c.id == "kvetka")
             .unwrap()
     };
 
     assert_eq!(
-        remote.sync_channel("nilesoft", "2026-09-10").await.unwrap(),
+        remote.sync_channel("kvetka", "2026-09-10").await.unwrap(),
         SyncOutcome::Synced {
             at: "2026-09-10".into()
         }
     );
-    assert_eq!(nilesoft(&remote).synced.as_deref(), Some("2026-09-10"));
-    assert_eq!(nilesoft(&remote).outage, None);
+    assert_eq!(kvetka(&remote).synced.as_deref(), Some("2026-09-10"));
+    assert_eq!(kvetka(&remote).outage, None);
 
     server.set_down(true);
     // One failure: unreachable, but not an outage yet.
     assert_eq!(
-        remote.sync_channel("nilesoft", "2026-09-12").await.unwrap(),
+        remote.sync_channel("kvetka", "2026-09-12").await.unwrap(),
         SyncOutcome::Unreachable { days: 1 }
     );
-    assert_eq!(nilesoft(&remote).outage, None);
+    assert_eq!(kvetka(&remote).outage, None);
     // Repeated failures: an outage since the first failure.
     assert_eq!(
-        remote.sync_channel("nilesoft", "2026-09-15").await.unwrap(),
+        remote.sync_channel("kvetka", "2026-09-15").await.unwrap(),
         SyncOutcome::Unreachable { days: 3 }
     );
-    let down = nilesoft(&remote);
+    let down = kvetka(&remote);
     assert_eq!(down.outage.as_deref(), Some("2026-09-12"));
     assert_eq!(down.synced.as_deref(), Some("2026-09-10"));
     assert_eq!(
@@ -874,22 +874,22 @@ async fn a_server_that_is_down_keeps_the_cache_and_starts_an_outage() {
         "the same count the UI shows"
     );
     let health = storage.channel_health().unwrap();
-    assert_eq!(health.get("nilesoft").map(|h| h.failures), Some(2));
+    assert_eq!(health.get("kvetka").map(|h| h.failures), Some(2));
 
     // The cached copies keep serving.
-    assert!(remote.package("nilesoft", "shell").is_some());
+    assert!(remote.package("kvetka", "shell").is_some());
     assert!(!remote.refresh("2026-09-15").await.is_ok());
     assert_eq!(remote.catalog().unwrap().apps.len(), 32);
 
     // Back up: synced today, the outage is over.
     server.set_down(false);
     assert_eq!(
-        remote.sync_channel("nilesoft", "2026-09-16").await.unwrap(),
+        remote.sync_channel("kvetka", "2026-09-16").await.unwrap(),
         SyncOutcome::Synced {
             at: "2026-09-16".into()
         }
     );
-    let up = nilesoft(&remote);
+    let up = kvetka(&remote);
     assert_eq!(up.outage, None);
     assert_eq!(up.synced.as_deref(), Some("2026-09-16"));
     assert!(storage.channel_health().unwrap().is_empty());
@@ -905,7 +905,7 @@ async fn a_server_that_is_down_keeps_the_cache_and_starts_an_outage() {
 
     // Sync of several channels at once (start-up).
     let results = remote
-        .sync_channels(&["paparats".into(), "winaero".into()], "2026-09-16")
+        .sync_channels(&["paparats".into(), "vitrazh".into()], "2026-09-16")
         .await;
     assert!(
         results
@@ -920,18 +920,18 @@ async fn a_new_directory_rechecks_cached_channel_manifests() {
     let storage = memory();
     let remote = ready(&server, &storage).await;
     assert!(matches!(
-        remote.sync_channel("nilesoft", TODAY).await.unwrap(),
+        remote.sync_channel("kvetka", TODAY).await.unwrap(),
         SyncOutcome::Synced { .. }
     ));
-    assert!(remote.channel_releases("nilesoft").is_some());
+    assert!(remote.channel_releases("kvetka").is_some());
 
-    // Paparats rotates nilesoft's pinned key: the cached manifest (old key) no longer verifies.
+    // Paparats rotates kvetka's pinned key: the cached manifest (old key) no longer verifies.
     let mut next = directory(&server);
     next.generated = "2026-09-16".into();
     for entry in &mut next.channels {
-        if entry.info.id == "nilesoft" {
+        if entry.info.id == "kvetka" {
             entry.keys = vec![PublishedKey {
-                id: "nilesoft-2".into(),
+                id: "kvetka-2".into(),
                 public_key: BASE64.encode(key(8).verifying_key().as_bytes()),
             }];
         }
@@ -944,10 +944,10 @@ async fn a_new_directory_rechecks_cached_channel_manifests() {
         remote.refresh("2026-09-16").await.directory,
         Ok(Freshness::Updated)
     ));
-    assert!(remote.channel_releases("nilesoft").is_none());
+    assert!(remote.channel_releases("kvetka").is_none());
     assert!(
         storage
-            .cached_manifest(&server.url(&channel_path("nilesoft")))
+            .cached_manifest(&server.url(&channel_path("kvetka")))
             .unwrap()
             .is_none(),
         "the copy that no longer verifies is dropped"

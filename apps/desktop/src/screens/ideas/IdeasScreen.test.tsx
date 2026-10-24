@@ -99,7 +99,7 @@ describe("IdeasScreen", () => {
     const battery = card("Battery health monitor for laptops");
     expect(within(battery).getByText("New app · System")).toBeInTheDocument();
     expect(within(battery).getByText("In work")).toBeInTheDocument();
-    expect(within(battery).getByText("Winaero is on it")).toBeInTheDocument();
+    expect(within(battery).getByText("Vitrazh is on it")).toBeInTheDocument();
     expect(within(battery).getByText("by You")).toBeInTheDocument();
     expect(within(battery).getByText("last month")).toBeInTheDocument();
     expect(within(battery).getByRole("button", { name: "341 votes" })).toHaveAttribute(
@@ -127,7 +127,7 @@ describe("IdeasScreen", () => {
     expect(
       within(mine).queryByRole("button", { name: "Activate 3 months of Pro" }),
     ).not.toBeInTheDocument();
-    expect(screen.queryByRole("region", { name: "Nilesoft" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: "Kvetka" })).not.toBeInTheDocument();
   });
 
   it("filters by tab and keeps the counts over every status", async () => {
@@ -275,8 +275,8 @@ describe("IdeasScreen", () => {
       await openIdeas({ developer: true });
 
       const banner = screen.getByRole("banner");
-      expect(within(banner).getByText("Developer view · Nilesoft")).toBeInTheDocument();
-      expect(within(banner).getByText("Ni")).toBeInTheDocument();
+      expect(within(banner).getByText("Developer view · Kvetka")).toBeInTheDocument();
+      expect(within(banner).getByText("Kv")).toBeInTheDocument();
 
       expect(screen.getAllByRole("tab").map((t) => t.textContent)).toEqual([
         "All9",
@@ -290,7 +290,7 @@ describe("IdeasScreen", () => {
         within(card("Battery health monitor for laptops")).getByText("by Serj Kaje"),
       ).toBeInTheDocument();
 
-      const panel = screen.getByRole("region", { name: "Nilesoft" });
+      const panel = screen.getByRole("region", { name: "Kvetka" });
       expect(within(panel).getByText("Developer")).toBeInTheDocument();
       expect(
         within(panel).getByText(
@@ -318,13 +318,13 @@ describe("IdeasScreen", () => {
       const clip = () => card("Clipboard history with pinned snippets");
 
       await user.click(within(clip()).getByRole("button", { name: "Take" }));
-      expect(take).toHaveBeenCalledWith("clip", "nilesoft");
-      expect(await within(clip()).findByText("Nilesoft is on it")).toBeInTheDocument();
+      expect(take).toHaveBeenCalledWith("clip", "kvetka");
+      expect(await within(clip()).findByText("Kvetka is on it")).toBeInTheDocument();
       expect(within(clip()).getByText("In work")).toBeInTheDocument();
       expect(within(clip()).queryByRole("button", { name: "Take" })).not.toBeInTheDocument();
-      expect(toast()).toBe("Pinned to Nilesoft · author notified");
+      expect(toast()).toBe("Pinned to Kvetka · author notified");
       expect(tab(/^My work/)).toHaveTextContent("My work2");
-      expect(screen.getByRole("region", { name: "Nilesoft" })).toHaveTextContent(
+      expect(screen.getByRole("region", { name: "Kvetka" })).toHaveTextContent(
         "1In work1Released1For your apps",
       );
 

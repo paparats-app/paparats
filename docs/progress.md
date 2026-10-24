@@ -323,7 +323,7 @@ Known gaps (by milestone):
 What exists now (decisions D42–D47 in `docs/decisions.md`):
 
 - **Settings › Sources** (`screens/settings/sources`). The header with Add channel; one card with
-  the followed channels in catalog order (monogram, trust badge, "Developer · by Nilesoft · 1 app",
+  the followed channels in catalog order (monogram, trust badge, "Developer · by Kvetka · 1 app",
   "Synced today" / "Not synced yet" / "Unreachable for 16 days" in `--warn`, "Always on" for the
   official catalog, the pause switch — paused rows at .55 — and the chevron to the channel page);
   the stale callout (unreachable ≥ 14 days, not kept) with Keep / Unsubscribe; the three "Trust
@@ -343,7 +343,7 @@ What exists now (decisions D42–D47 in `docs/decisions.md`):
   notes; the Details card (Trust, Type, Author, Address, Files, Review, Support, Last sync, the
   community warning); "Apps in this channel" as store cards, or the empty card; "Channel not
   found" for unknown ids. Back returns to where the page was opened from (Settings › Sources too).
-- **Ideas** (`screens/ideas`). Banner with Suggest an idea (and the "Developer view · Nilesoft"
+- **Ideas** (`screens/ideas`). Banner with Suggest an idea (and the "Developer view · Kvetka"
   pill); the "Your idea became an app" note (Open <App>, Activate 3 months of Pro, ×); boxed
   tabs with counts per view, the Open / In work / Released chips, Top/Newest; the "Filters: For
   <App> ×" chip from an app page; idea cards (vote/unvote, open, Take in the developer view);
@@ -385,13 +385,13 @@ What exists now (decisions D42–D47 in `docs/decisions.md`):
 - **Checks.** typecheck, lint, test, format:check, cargo fmt, clippy (`-D warnings`) and cargo
   test are green.
   - Chrome on `pnpm dev` (mock services, driven by script): Add channel — not found, already
-    followed, `@winaero` → confirmation → Cancel (address kept) → Add channel, `mpv.io/paparats`
-    → confirmation; Browse's Source group with per-channel counts; Winaero Tweaker's "Also offered
-    by Winaero" and its disappearance after pausing Winaero; FOSS Friends: the stale callout, Sync
+    followed, `@vitrazh` → confirmation → Cancel (address kept) → Add channel, `mpvbuilds.example/paparats`
+    → confirmation; Browse's Source group with per-channel counts; Vitrazh Tweaker's "Also offered
+    by Vitrazh" and its disappearance after pausing Vitrazh; FOSS Friends: the stale callout, Sync
     now, Copy address (clipboard stubbed: the background tab has no focus), the report, Keep;
-    Nilesoft: pause/resume, unsubscribe, subscribe; Suggest an idea (short title refused, publish
+    Kvetka: pause/resume, unsubscribe, subscribe; Suggest an idea (short title refused, publish
     → page and toast), unvote/vote, a comment; Settings › Advanced → Developer mode → View Ideas as
-    a channel developer (avatar "Ni" on the channel tint, the pill, the developer tabs), Take on
+    a channel developer (avatar "Kv" on the channel tint, the pill, the developer tabs), Take on
     the board, Mark as released with 1.10.0; developer mode off → the note → Activate → toast, Pro
     pill, Ideas badge cleared, "Paparats Pro · gift" on Subscription and Profile. No console
     errors.
@@ -485,7 +485,7 @@ What exists now (decisions D48–D51 in `docs/decisions.md`):
     in the notification-area overflow); the × hid the window with the process still running; a
     second launch of the executable exited and brought the first window back, visible and in the
     foreground; `Start-Process paparats://app/obsidian` opened the Obsidian page;
-    `paparats://channel/nilesoft` sent during a replayed scene opened the channel page as the
+    `paparats://channel/kvetka` sent during a replayed scene opened the channel page as the
     exit began. The app log has no warnings. The dev data set in `%APPDATA%/com.paparats.desktop`
     was backed up before and restored after; the WebView2 `localStorage` was emptied again.
   - `pnpm tauri build`: `target/release/bundle/nsis/Paparats_0.1.0_x64-setup.exe`, 3 070 474 bytes

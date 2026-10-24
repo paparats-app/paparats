@@ -20,7 +20,7 @@ export type IdeaKindView =
 export interface IdeaDeveloperView {
   /** Per-item data colour (channel or app tint). */
   tint: string;
-  /** "Nilesoft is on it" / "Released as Shell 1.9.19" (preformatted). */
+  /** "Kvetka is on it" / "Released as Shell 1.9.19" (preformatted). */
   label: string;
 }
 

@@ -13,7 +13,7 @@ export const SELF_UPDATE_CHECK_MS = 1200;
 
 /**
  * The URL `openExternal` may open: `https:` and `mailto:` only; a bare address such as
- * `nilesoft.org/support` gets `https://`. Anything else rejects `invalid`.
+ * `kvetka.example/support` gets `https://`. Anything else rejects `invalid`.
  */
 export function externalUrl(url: string): string {
   const trimmed = url.trim();

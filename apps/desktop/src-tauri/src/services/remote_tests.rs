@@ -220,7 +220,7 @@ async fn the_remote_catalog_runs_the_app() {
     assert_eq!(reading.await.unwrap().unwrap().apps.len(), 32);
     assert_eq!(s.get_platform().await.unwrap().plans.len(), 3);
 
-    // Startup synced the followed channels (paparats, nilesoft, fossfriends) with the CDN.
+    // Startup synced the followed channels (paparats, kvetka, fossfriends) with the CDN.
     let channels = s.get_channels().await.unwrap();
     assert_eq!(channels.len(), 6);
     let synced = |id: &str| {
@@ -230,7 +230,7 @@ async fn the_remote_catalog_runs_the_app() {
             .and_then(|c| c.synced.clone())
     };
     assert_eq!(synced("paparats").as_deref(), Some(TODAY));
-    assert_eq!(synced("nilesoft").as_deref(), Some(TODAY));
+    assert_eq!(synced("kvetka").as_deref(), Some(TODAY));
 
     // "Sync now" asks the CDN: a manifest that is gone is unreachable, an unknown channel is
     // not found.
@@ -238,9 +238,9 @@ async fn the_remote_catalog_runs_the_app() {
         s.sync_channel("paparats").await.unwrap(),
         SyncOutcome::Synced { .. }
     ));
-    cdn.remove("/channels/winaero.json");
+    cdn.remove("/channels/vitrazh.json");
     assert_eq!(
-        s.sync_channel("winaero").await.unwrap(),
+        s.sync_channel("vitrazh").await.unwrap(),
         SyncOutcome::Unreachable { days: 1 }
     );
     assert!(matches!(

@@ -17,21 +17,21 @@ import {
 import { pickText } from "./text";
 import { catalog, channelById, ideaById, ideas } from "./testFixtures";
 
-const nilesoftApps = myApps(catalog.apps, channelById("nilesoft"));
+const kvetkaApps = myApps(catalog.apps, channelById("kvetka"));
 const ids = (list: readonly Idea[]) => list.map((i) => i.id);
-const tabCtx = { myApps: nilesoftApps, devChannel: "nilesoft" };
+const tabCtx = { myApps: kvetkaApps, devChannel: "kvetka" };
 
 describe("myApps / canTake", () => {
   it("finds the apps the developer channel publishes", () => {
-    expect(nilesoftApps.map((a) => a.id)).toEqual(["shell"]);
+    expect(kvetkaApps.map((a) => a.id)).toEqual(["shell"]);
   });
 
   it("lets the developer view take open ideas for new apps or its own apps", () => {
-    expect(canTake(ideaById("clip"), "developer", nilesoftApps)).toBe(true);
-    expect(canTake(ideaById("iconpacks"), "developer", nilesoftApps)).toBe(true);
-    expect(canTake(ideaById("scrollcap"), "developer", nilesoftApps)).toBe(false);
-    expect(canTake(ideaById("battery"), "developer", nilesoftApps)).toBe(false);
-    expect(canTake(ideaById("clip"), "user", nilesoftApps)).toBe(false);
+    expect(canTake(ideaById("clip"), "developer", kvetkaApps)).toBe(true);
+    expect(canTake(ideaById("iconpacks"), "developer", kvetkaApps)).toBe(true);
+    expect(canTake(ideaById("scrollcap"), "developer", kvetkaApps)).toBe(false);
+    expect(canTake(ideaById("battery"), "developer", kvetkaApps)).toBe(false);
+    expect(canTake(ideaById("clip"), "user", kvetkaApps)).toBe(false);
   });
 });
 

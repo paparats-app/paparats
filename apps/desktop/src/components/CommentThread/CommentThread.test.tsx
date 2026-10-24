@@ -14,11 +14,11 @@ const comments: CommentView[] = [
   },
   {
     id: "2",
-    author: "Nilesoft",
-    initials: "Ni",
+    author: "Kvetka",
+    initials: "Kv",
     date: "8 September 2026",
     text: "We're on it.",
-    badge: { type: "developer", channel: "Nilesoft" },
+    badge: { type: "developer", channel: "Kvetka" },
     avatarTint: "#3b6fd1",
   },
   {
@@ -45,7 +45,7 @@ describe("CommentThread", () => {
   it("renders comments with Developer and Author badges", () => {
     render(<CommentThread comments={comments} />);
     expect(screen.getAllByRole("listitem")).toHaveLength(3);
-    expect(screen.getByText("Developer · Nilesoft")).toBeInTheDocument();
+    expect(screen.getByText("Developer · Kvetka")).toBeInTheDocument();
     expect(screen.getByText("Author")).toBeInTheDocument();
   });
 

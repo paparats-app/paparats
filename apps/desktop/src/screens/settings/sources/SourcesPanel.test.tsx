@@ -33,7 +33,7 @@ async function openSources(services = createTestServices()) {
     </>,
     { route: "/settings/sources", services },
   );
-  await screen.findByRole("switch", { name: "Nilesoft" });
+  await screen.findByRole("switch", { name: "Kvetka" });
   return rendered;
 }
 
@@ -61,14 +61,14 @@ describe("SourcesPanel", () => {
     expect(screen.getByRole("button", { name: "Add channel" })).toBeInTheDocument();
 
     // Catalog order; chevrons are named after their channel.
-    expect(rowNames()).toEqual(["Paparats", "Nilesoft", "FOSS Friends"]);
+    expect(rowNames()).toEqual(["Paparats", "Kvetka", "FOSS Friends"]);
     const identity = (name: string) =>
       within(panel()).getByRole("button", { name: new RegExp(`^${name}.`) });
     expect(identity("Paparats")).toHaveTextContent(
       "PpPaparatsOfficialCatalog · by Paparats · 26 apps",
     );
-    expect(identity("Nilesoft")).toHaveTextContent(
-      "NiNilesoftVerifiedDeveloper · by Nilesoft · 1 app",
+    expect(identity("Kvetka")).toHaveTextContent(
+      "KvKvetkaVerifiedDeveloper · by Kvetka · 1 app",
     );
     expect(identity("FOSS Friends")).toHaveTextContent(
       "FFFOSS FriendsVerifiedCurated · by Kasia L. · 3 apps",
@@ -80,7 +80,7 @@ describe("SourcesPanel", () => {
     expect(screen.getByText("Unreachable for 16 days")).toBeInTheDocument();
     expect(screen.getByText("Always on")).toBeInTheDocument();
     expect(screen.queryByRole("switch", { name: "Paparats" })).toBeNull();
-    expect(screen.getByRole("switch", { name: "Nilesoft" })).toBeChecked();
+    expect(screen.getByRole("switch", { name: "Kvetka" })).toBeChecked();
     expect(screen.getByRole("switch", { name: "FOSS Friends" })).toBeChecked();
 
     const levels = screen.getByRole("list", { name: "Trust levels" });
@@ -98,7 +98,7 @@ describe("SourcesPanel", () => {
   it("pauses and resumes a channel: toast, dimmed row, hidden apps, Browse source filter", async () => {
     const user = userEvent.setup();
     const { services } = await openSources();
-    useBrowseStore.setState({ sources: ["fossfriends", "nilesoft"] });
+    useBrowseStore.setState({ sources: ["fossfriends", "kvetka"] });
     expect(visible()).toContain("imageglass");
 
     const toggle = screen.getByRole("switch", { name: "FOSS Friends" });
@@ -108,7 +108,7 @@ describe("SourcesPanel", () => {
     await waitFor(() => expect(toast()).toBe("FOSS Friends paused"));
     expect(toggle).toHaveAttribute("title", "Paused");
     expect(row("FOSS Friends")).toHaveAttribute("data-paused", "true");
-    expect(useBrowseStore.getState().sources).toEqual(["nilesoft"]);
+    expect(useBrowseStore.getState().sources).toEqual(["kvetka"]);
     expect(visible()).not.toContain("imageglass");
     expect(visible()).toContain("czkawka"); // installed apps stay
     expect(await services.channels.getSubscriptions()).toContainEqual(
@@ -129,7 +129,7 @@ describe("SourcesPanel", () => {
       new ServiceError("internal", "down"),
     );
     await openSources(services);
-    const toggle = screen.getByRole("switch", { name: "Nilesoft" });
+    const toggle = screen.getByRole("switch", { name: "Kvetka" });
     await user.click(toggle);
     await waitFor(() => expect(toggle).toBeChecked());
     expect(toast()).toBeUndefined();
@@ -162,13 +162,13 @@ describe("SourcesPanel", () => {
     useBrowseStore.setState({ sources: ["fossfriends"] });
     await user.click(screen.getByRole("button", { name: "Unsubscribe" }));
     await waitFor(() => expect(toast()).toBe("Unsubscribed from FOSS Friends"));
-    expect(rowNames()).toEqual(["Paparats", "Nilesoft"]);
+    expect(rowNames()).toEqual(["Paparats", "Kvetka"]);
     expect(useBrowseStore.getState().sources).toEqual([]);
     expect(visible()).not.toContain("imageglass");
     expect(visible()).toContain("czkawka");
     expect((await services.channels.getSubscriptions()).map((s) => s.channelId)).toEqual([
       "paparats",
-      "nilesoft",
+      "kvetka",
     ]);
   });
 
@@ -184,8 +184,8 @@ describe("SourcesPanel", () => {
   it("opens the channel page from the row and the chevron, returning to Sources", async () => {
     const user = userEvent.setup();
     const { router } = await openSources();
-    await user.click(within(panel()).getByRole("button", { name: "Nilesoft" }));
-    expect(router.state.location.pathname).toBe("/channel/nilesoft");
+    await user.click(within(panel()).getByRole("button", { name: "Kvetka" }));
+    expect(router.state.location.pathname).toBe("/channel/kvetka");
     expect(router.state.location.state).toEqual({ from: "/settings/sources" });
     act(() => void router.navigate("/settings/sources"));
     await user.click(within(panel()).getByRole("button", { name: /^FOSS Friends./ }));
@@ -200,7 +200,7 @@ describe("SourcesPanel", () => {
     const dialog = screen.getByRole("dialog", { name: "Add channel" });
     await user.type(
       within(dialog).getByRole("textbox", { name: "Channel address" }),
-      "@mpv{Enter}",
+      "@mpvbuilds{Enter}",
     );
     await user.click(
       within(await screen.findByRole("dialog", { name: "Add mpv builds?" })).getByRole("button", {
@@ -208,7 +208,7 @@ describe("SourcesPanel", () => {
       }),
     );
     await waitFor(() => expect(toast()).toBe("Subscribed to mpv builds"));
-    expect(rowNames()).toEqual(["Paparats", "Nilesoft", "FOSS Friends", "mpv builds"]);
+    expect(rowNames()).toEqual(["Paparats", "Kvetka", "FOSS Friends", "mpv builds"]);
     // Never synced: no sync text, as in the prototype (the channel page says "Not synced yet").
     expect(row("mpv builds")).not.toHaveTextContent(/Synced|Not synced yet|Unreachable/);
     expect(visible()).toContain("mpv");
@@ -219,8 +219,8 @@ describe("SourcesPanel", () => {
     await act(() => changeLocale("ru"));
     expect(screen.getByText("Недоступен 16 дней")).toBeInTheDocument();
     expect(screen.getByText("FOSS Friends не отвечает 16 дней.")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /^Nilesoft./ })).toHaveTextContent(
-      "Разработчик · от Nilesoft · 1 приложение",
+    expect(screen.getByRole("button", { name: /^Kvetka./ })).toHaveTextContent(
+      "Разработчик · от Kvetka · 1 приложение",
     );
     await act(() => changeLocale("be"));
     expect(screen.getByText("Недаступны 16 дзён")).toBeInTheDocument();
@@ -232,24 +232,24 @@ describe("Sources in the shell", () => {
   it("Browse gains the Source group when a second channel becomes active", async () => {
     const user = userEvent.setup();
     const services = createTestServices();
-    await services.channels.unsubscribe("nilesoft");
+    await services.channels.unsubscribe("kvetka");
     await services.channels.unsubscribe("fossfriends");
     await renderApp({ route: "/settings/sources", services });
 
     await user.click(await screen.findByRole("button", { name: "Add channel" }));
     const dialog = screen.getByRole("dialog", { name: "Add channel" });
-    await user.type(within(dialog).getByRole("textbox"), "nilesoft.org{Enter}");
+    await user.type(within(dialog).getByRole("textbox"), "kvetka.example{Enter}");
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-    expect(screen.getByRole("status")).toHaveTextContent("Subscribed to Nilesoft");
-    expect(await screen.findByRole("switch", { name: "Nilesoft" })).toBeChecked();
+    expect(screen.getByRole("status")).toHaveTextContent("Subscribed to Kvetka");
+    expect(await screen.findByRole("switch", { name: "Kvetka" })).toBeChecked();
 
     await user.click(screen.getByRole("button", { name: /^Browse/ }));
     expect(await screen.findByText("Source")).toBeInTheDocument();
 
     await user.click(screen.getByRole("button", { name: /^Settings/ }));
     await user.click(await screen.findByRole("button", { name: "Sources" }));
-    await user.click(await screen.findByRole("switch", { name: "Nilesoft" }));
-    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Nilesoft paused"));
+    await user.click(await screen.findByRole("switch", { name: "Kvetka" }));
+    await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent("Kvetka paused"));
     await user.click(screen.getByRole("button", { name: /^Browse/ }));
     await screen.findByRole("heading", { name: /Browse/ });
     expect(screen.queryByText("Source")).toBeNull();

@@ -293,7 +293,7 @@ price, renewal date, Manage/Upgrade button); **Usage stats** — 3 tiles on `--b
 ### 10. Ideas
 Sidebar item after Library. Page banner (H1 + subtitle, fern photo) with the primary action
 **Suggest an idea** (height 42px, radius 10px, `#5fd39a`/`#06231a`, leading lightbulb icon) and,
-in developer view, a pill showing the channel you act as (22px tile + "Developer view · Nilesoft").
+in developer view, a pill showing the channel you act as (22px tile + "Developer view · Kvetka").
 
 Optional **released-idea note** under the banner (when one of the user's ideas shipped and has
 not been dismissed): gradient card `linear-gradient(160deg, --mint-soft 0%, --card 70%)`,
@@ -356,7 +356,7 @@ toast "Released · N people notified".
 Panel header: H2 "Sources" + subtitle "Channels Paparats installs apps and updates from." and
 **Add channel** (36px mint button with plus icon). One bordered card lists subscribed channels
 (rows separated by 1px `--line`, padding 14px 20px): 44px monogram tile (radius 11px, channel
-tint) → name 15px/600 + **trust badge** → meta 13px `--text2` ("Developer · by Nilesoft · 12 apps")
+tint) → name 15px/600 + **trust badge** → meta 13px `--text2` ("Developer · by Kvetka · 12 apps")
 → sync text 12.5px ("Synced 2 days ago" / "Not synced yet" / "Unreachable for 16 days" in `--warn`)
 → "Always on" (official) or a 44×24 pause toggle → 32px chevron button opening the channel page.
 Paused rows render at reduced opacity.
@@ -374,7 +374,7 @@ Below: overline "TRUST LEVELS" and three cards (26px tinted icon circle + label 
 Official / Verified / Community.
 
 **Add channel dialog** (560px): "Channel address" input (placeholder `https://… or @name`, hint
-"Paste a link from the author or a short code like @winaero."), **Add** (Enter submits). Lookup
+"Paste a link from the author or a short code like @vitrazh."), **Add** (Enter submits). Lookup
 matches address, host or @handle; errors inline: "No channel at this address. Check the link or ask
 the author for a short code." / "You already follow this channel." Below the field, the **Channel
 catalog**: channels not yet followed (same row anatomy + **Subscribe**), or "You follow every
@@ -542,8 +542,8 @@ profile and device list, activity history.
 `--knob-off #c2ccc9` · `--frame rgba(0,0,0,.12)` · `--warn #8a6414` · `--warn-soft rgba(184,134,43,.14)`
 
 `--warn` is the third semantic color: community trust, "In work" status, unreachable channels.
-Channel tints (monogram tiles): Paparats `#1f6f52`, Nilesoft `#3b6fd1`, FOSS Friends `#7a52c9`,
-Winaero `#c27a2f`, mpv builds `#5a3f9a`, Софт па-беларуску `#b8432f`.
+Channel tints (monogram tiles): Paparats `#1f6f52`, Kvetka `#3b6fd1`, FOSS Friends `#7a52c9`,
+Vitrazh `#c27a2f`, mpv builds `#5a3f9a`, Софт па-беларуску `#b8432f`.
 
 ### Brand
 Deep forest `#0F3D2E` · warm accent `#E05B3C` (the fern flower / star only) ·
@@ -669,7 +669,7 @@ one makes the FOSS Friends channel unreachable since 2026-08-30 to show the stal
   to Paparats (official catalog: Paparats only).
 - **Ideas board** — propose (new app or improvement to an installed/catalog app), vote/unvote,
   filter by tab, status and app, sort Top/Newest, discuss. Status flow open → in work → released.
-- **Developer view** (`viewAs = developer`, acting as the Nilesoft channel) — Take open ideas (pinned
+- **Developer view** (`viewAs = developer`, acting as the Kvetka channel) — Take open ideas (pinned
   to the channel, author notified), post comments with the Developer badge, Mark as released with
   app + version (voters notified).
 - **Thank-you** — the author of a released idea gets 3 months of Paparats Pro: released note on the

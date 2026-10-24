@@ -76,6 +76,7 @@ in place, marked with the entry that replaced it.
 | [D62](#d62--visual-acceptance-method-fixes-differences-kept) | Visual acceptance: method, fixes, differences kept | M8 | |
 | [D63](#d63--one-native-resize-listener-for-the-window-controls-m9) | One native resize listener for the window controls | M9 | |
 | [D64](#d64--divergences-from-stackmd-found-at-release) | Divergences from `STACK.md` found at release | Release | |
+| [D65](#d65--fictional-developers-in-the-demo-world) | Fictional developers in the demo world | Publication | |
 
 ## D1 — Toolchain versions (M0)
 Tauri 2.11, React 19.1, TypeScript 6.0, Vite 8, ESLint 10, Vitest 5, react-router 8, i18next 26,
@@ -176,7 +177,7 @@ custom protocol handler can be reached. The Rust commands must keep these rules.
   `staleTitle`.
 - Every number inside a string is `{{x, number}}` (grouping per language); dates, sizes, prices
   (`narrowSymbol`, so be/ru show "$") and lists come preformatted from `useFormat()`.
-- "Also in" lists channels with `Intl.ListFormat` ("Nilesoft and Winaero") where the prototype
+- "Also in" lists channels with `Intl.ListFormat` ("Kvetka and Vitrazh") where the prototype
   joined them with ", ".
 - `sources.staleTitle` ends with a period in the catalog (the prototype appended it in markup).
 - Labels may be joined with " · " (e.g. `NN% · Pause`, `version · date`); sentences never are.
@@ -546,7 +547,7 @@ D31 — the prototype kept it; **superseded by D58**: `text` keeps it). The Libr
 - The trust confirmation's button reads "Add channel" (`sources.addChannel`, prototype line 1512),
   not "Confirm" as the README wrote.
 - A followed channel that never synced shows "Not synced yet" (`sources.neverSynced`, README); the
-  prototype left the sync text empty (e.g. Winaero right after subscribing). **Superseded by D58**
+  prototype left the sync text empty (e.g. Vitrazh right after subscribing). **Superseded by D58**
   (empty, as in the prototype).
 - The trust confirmation opened from Add channel is rendered inside `AddChannelDialog`, which hides
   its own modal meanwhile and keeps its state (the prototype's `hasChannelDialog = chDialog &&
@@ -586,7 +587,7 @@ D31 — the prototype kept it; **superseded by D58**: `text` keeps it). The Libr
 ### D43 — Channel page
 - An unknown channel id shows "Channel not found" with Back (`EmptyState`, rss icon; like D30);
   the prototype fell back to the first channel.
-- Copy address copies `channel.addr` exactly as the Address row shows it (`nilesoft.org/paparats`,
+- Copy address copies `channel.addr` exactly as the Address row shows it (`kvetka.example/paparats`,
   no scheme), which the add-channel lookup accepts. "Address copied" is toasted after the
   clipboard write resolves; a failed write shows nothing. The browser Clipboard API needs the
   window focused (a click gives it focus).
@@ -610,7 +611,7 @@ D31 — the prototype kept it; **superseded by D58**: `text` keeps it). The Libr
 - Tabs follow the view (user: All / New apps / Existing apps / My ideas; developer: All / New
   apps / For my apps / My work); a stored tab the view lacks falls back to All.
 - Take (developer view, only on ideas `canTake` allows) pins the idea to the developer channel and
-  toasts "Pinned to Nilesoft · author notified" (`screens/shared › useTakeIdea`, shared with the
+  toasts "Pinned to Kvetka · author notified" (`screens/shared › useTakeIdea`, shared with the
   idea page); a refusal (someone took it first) changes nothing.
 - Activate 3 months of Pro claims the thank-you, then dismisses every release note on screen (the
   prototype marked them seen, D16) and toasts "Paparats Pro is active until <date>" with the
@@ -660,7 +661,7 @@ D31 — the prototype kept it; **superseded by D58**: `text` keeps it). The Libr
 
 ### D46 — The developer channel and the developer-view avatar
 - No service exposes the catalog meta yet, so the channel the developer view acts as is
-  `hooks/useDeveloperChannel › DEVELOPER_CHANNEL_ID` (`nilesoft`), in one place; it mirrors
+  `hooks/useDeveloperChannel › DEVELOPER_CHANNEL_ID` (`kvetka`), in one place; it mirrors
   `fixtures/meta.json › developerChannel` and paparats-catalog's embedded `developer_channel`.
   Its apps are `domain/ideas › myApps` once the channel is loaded (until then only the apps
   published on the channel itself).
@@ -1266,7 +1267,7 @@ stroke it is used at (1× and 2×, share of differing ink).
   (glyph, size, stroke width, caps/joins, fill) of every rendered icon is identical on Home,
   Browse, Categories, Updates, Library (list, grid, collections, row menu), Ideas, Subscription,
   Profile (all five tabs), the ten Settings sections, app pages (obsidian, shell, mpv), channel
-  pages (paparats, nilesoft, winaero), idea pages, the Add channel, Report and Suggest an idea
+  pages (paparats, kvetka, vitrazh), idea pages, the Add channel, Report and Suggest an idea
   dialogs and first launch (an early phase and the language step). D43's note on lucide `info` /
   `rotate-ccw` is superseded.
 
@@ -1478,3 +1479,27 @@ records what no earlier entry had.
   runtime font requests. It renders Russian ≈ 2–3 % narrower than the prototype's Google Fonts
   build ('Образование' 87.7 vs 89.6 px, M8). English and Belarusian match, and row and card
   heights are unaffected. Kept.
+
+## Publication
+
+### D65 — Fictional developers in the demo world
+The prototype's demo world gave three developer channels to real projects and people, and so does
+the code that copies it:
+- Nilesoft: a verified channel, the demo user's own developer channel and two idea comments;
+- Winaero and its author by name: a channel and a comment that takes an idea;
+- mpv builds under the handle of their real maintainer.
+
+Their channel addresses sat on the real domains. Before the repository went public, these became
+fictional, so no real person or company appears to run a channel or to have said something on the
+ideas board:
+- Nilesoft → **Kvetka** (app «Kvetka Shell», channel `kvetka`, `kvetka.example`, monogram `Kv`);
+- Winaero → **Vitrazh** (app «Vitrazh Tweaker», channel `vitrazh`, `vitrazh.example`, monogram
+  `Vi`, app monogram `Vt`), its author → «Andrei V.»;
+- the author of mpv builds → «Yuras L.», with the address `mpvbuilds.example/paparats`, the handle
+  `@mpvbuilds` and the support link `mpvbuilds.example/issues`.
+
+The rename covers the handoff's `paparats-proto-data.js` and prototype HTML, the fixtures, the
+code, the tests and the docs, so `scripts/port-fixtures.mjs` still reproduces the fixtures. Apps in
+the demo catalog, including mpv, stay real: the catalog lists them under their real publishers.
+`.example` is the domain that RFC 2606 reserves for documentation, so the demo addresses can never
+point at someone's site.

@@ -24,7 +24,7 @@ import type {
 export interface FixtureMeta {
   /** Mock "today" (2026-09-15). */
   today: IsoDate;
-  /** Channel the developer view acts as (nilesoft). */
+  /** Channel the developer view acts as (kvetka). */
   developerChannel: ChannelId;
   /** End of the 3-month Pro thank-you for a released idea. */
   ideaBonusUntil: IsoDate;

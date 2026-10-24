@@ -56,7 +56,7 @@ describe("HomeScreen", () => {
     expect(collections).toHaveLength(4);
 
     const notable = section("New and notable");
-    for (const name of ["Nilesoft Shell", "LocalSend", "Czkawka", "RustDesk"]) {
+    for (const name of ["Kvetka Shell", "LocalSend", "Czkawka", "RustDesk"]) {
       expect(within(notable).getByRole("button", { name: new RegExp(`^${name}`) })).toBeVisible();
     }
 
@@ -66,7 +66,7 @@ describe("HomeScreen", () => {
       .getAllByRole("button", { name: /Updated/ })
       .map((button) => button.textContent);
     expect(names).toHaveLength(6);
-    expect(names[0]).toMatch(/Nilesoft Shell1\.9\.15 · Updated 2 days ago$/);
+    expect(names[0]).toMatch(/Kvetka Shell1\.9\.15 · Updated 2 days ago$/);
     expect(names.join()).not.toMatch(/mpv|Slounik/);
   });
 

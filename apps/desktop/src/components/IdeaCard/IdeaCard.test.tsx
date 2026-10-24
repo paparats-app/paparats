@@ -37,12 +37,12 @@ describe("IdeaCard", () => {
     const props = renderCard({
       kind: { type: "app", appName: "Shell", icon: { mono: "Sh", tint: "#3b6fd1" } },
       status: "work",
-      developer: { tint: "#3b6fd1", label: "Nilesoft is on it" },
+      developer: { tint: "#3b6fd1", label: "Kvetka is on it" },
       onTake,
     });
     expect(screen.getByText("For Shell")).toBeInTheDocument();
     expect(screen.getByText("In work")).toBeInTheDocument();
-    expect(screen.getByText("Nilesoft is on it")).toBeInTheDocument();
+    expect(screen.getByText("Kvetka is on it")).toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Take" }));
     expect(onTake).toHaveBeenCalledTimes(1);
     expect(props.onOpen).not.toHaveBeenCalled();

@@ -115,9 +115,9 @@ mod tests {
 
         p.strategy = InstallStrategy::Msi;
         p.sha256 = Some("ab".repeat(32));
-        p.signer = Some("Nilesoft Ltd".into());
+        p.signer = Some("Kvetka Ltd".into());
         let json = serde_json::to_value(&p).unwrap();
-        assert_eq!(json["signer"], "Nilesoft Ltd");
+        assert_eq!(json["signer"], "Kvetka Ltd");
         assert_eq!(json["strategy"], serde_json::json!({"kind": "msi"}));
         assert_eq!(serde_json::from_value::<Package>(json).unwrap(), p);
     }

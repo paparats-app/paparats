@@ -88,7 +88,7 @@ describe("ChannelScreen", () => {
   });
 
   it("renders a verified developer channel with the review date and its one app", async () => {
-    await openChannel("nilesoft");
+    await openChannel("kvetka");
     const top = within(header());
     expect(header().querySelector('[data-level="verified"]')).toHaveTextContent("Verified");
     expect(top.getByText("Developer", { selector: "span" })).toBeInTheDocument();
@@ -104,17 +104,17 @@ describe("ChannelScreen", () => {
 
     expect(detail("Files")).toBe("Author + Paparats mirror");
     expect(detail("Review")).toBe("Paparats team, 12 March 2026");
-    expect(detail("Support")).toBe("nilesoft.org/support");
+    expect(detail("Support")).toBe("kvetka.example/support");
     expect(detail("Last sync")).toBe("yesterday");
 
     expect(screen.getByText("1 app")).toBeInTheDocument();
     const [card] = within(appsGrid()).getAllByRole("listitem");
     if (!card) throw new Error("no card");
     const item = within(card);
-    expect(item.getByText("Nilesoft Shell")).toBeInTheDocument();
+    expect(item.getByText("Kvetka Shell")).toBeInTheDocument();
     expect(item.getByText("System")).toBeInTheDocument();
     // Channel page cards carry the category chip only (no source channel chip).
-    expect(item.queryByText("Nilesoft")).toBeNull();
+    expect(item.queryByText("Kvetka")).toBeNull();
     expect(item.getByRole("button", { name: "Details" })).toBeInTheDocument();
   });
 
@@ -156,7 +156,7 @@ describe("ChannelScreen", () => {
 
   it("renders a community channel and asks for the trust confirmation on Subscribe", async () => {
     const user = userEvent.setup();
-    const { services } = await openChannel("winaero");
+    const { services } = await openChannel("vitrazh");
     const top = within(header());
     expect(header().querySelector('[data-level="community"]')).toHaveTextContent("Community");
     expect(top.getByText("960 subscribers")).toBeInTheDocument();
@@ -174,26 +174,26 @@ describe("ChannelScreen", () => {
     await user.click(top.getByRole("button", { name: "Subscribe" }));
     expect(useDialogStore.getState().dialog).toEqual({
       kind: "trustConfirm",
-      channelId: "winaero",
+      channelId: "vitrazh",
     });
-    expect(services.world.subscriptions.some((s) => s.channelId === "winaero")).toBe(false);
+    expect(services.world.subscriptions.some((s) => s.channelId === "vitrazh")).toBe(false);
     expect(toast()).toBeUndefined();
   });
 
   it("unsubscribes and subscribes again (verified: no confirmation)", async () => {
     const user = userEvent.setup();
-    useBrowseStore.setState({ sources: ["nilesoft", "fossfriends"] });
-    await openChannel("nilesoft");
+    useBrowseStore.setState({ sources: ["kvetka", "fossfriends"] });
+    await openChannel("kvetka");
     const top = within(header());
 
     await user.click(top.getByRole("button", { name: "Unsubscribe" }));
-    await waitFor(() => expect(toast()).toBe("Unsubscribed from Nilesoft"));
+    await waitFor(() => expect(toast()).toBe("Unsubscribed from Kvetka"));
     expect(useBrowseStore.getState().sources).toEqual(["fossfriends"]);
     expect(top.queryByText("Subscribed")).toBeNull();
     expect(top.queryByRole("switch")).toBeNull();
 
     await user.click(top.getByRole("button", { name: "Subscribe" }));
-    await waitFor(() => expect(toast()).toBe("Subscribed to Nilesoft"));
+    await waitFor(() => expect(toast()).toBe("Subscribed to Kvetka"));
     expect(useDialogStore.getState().dialog).toBeNull();
     expect(top.getByText("Subscribed")).toBeInTheDocument();
     expect(top.getByRole("switch", { name: "Enabled" })).toBeInTheDocument();
@@ -201,22 +201,22 @@ describe("ChannelScreen", () => {
 
   it("pauses and resumes the channel with the mini switch", async () => {
     const user = userEvent.setup();
-    useBrowseStore.setState({ sources: ["nilesoft"] });
-    const { services } = await openChannel("nilesoft");
+    useBrowseStore.setState({ sources: ["kvetka"] });
+    const { services } = await openChannel("kvetka");
     const top = within(header());
 
     await user.click(top.getByRole("switch", { name: "Enabled" }));
-    await waitFor(() => expect(toast()).toBe("Nilesoft paused"));
+    await waitFor(() => expect(toast()).toBe("Kvetka paused"));
     expect(top.getByRole("switch", { name: "Paused" })).toHaveAttribute("aria-checked", "false");
     expect(useBrowseStore.getState().sources).toEqual([]);
-    expect(services.world.subscriptions.find((s) => s.channelId === "nilesoft")).toMatchObject({
+    expect(services.world.subscriptions.find((s) => s.channelId === "kvetka")).toMatchObject({
       paused: true,
     });
     // Paused is still followed.
     expect(top.getByText("Subscribed")).toBeInTheDocument();
 
     await user.click(top.getByRole("switch", { name: "Paused" }));
-    await waitFor(() => expect(toast()).toBe("Nilesoft resumed"));
+    await waitFor(() => expect(toast()).toBe("Kvetka resumed"));
     expect(top.getByRole("switch", { name: "Enabled" })).toHaveAttribute("aria-checked", "true");
   });
 
@@ -227,7 +227,7 @@ describe("ChannelScreen", () => {
     vi.spyOn(services.channels, "setPaused").mockImplementation(
       () => new Promise((_, reject) => (fail = reject)),
     );
-    await openChannel("nilesoft", services);
+    await openChannel("kvetka", services);
     const top = within(header());
 
     await user.click(top.getByRole("switch", { name: "Enabled" }));
@@ -243,14 +243,14 @@ describe("ChannelScreen", () => {
     const services = createTestServices();
     const copy = vi.spyOn(services.system, "copyToClipboard");
     services.world.channels = services.world.channels.map((c) =>
-      c.id === "nilesoft" ? { ...c, synced: "2026-09-01" } : c,
+      c.id === "kvetka" ? { ...c, synced: "2026-09-01" } : c,
     );
-    await openChannel("nilesoft", services);
+    await openChannel("kvetka", services);
     const top = within(header());
     expect(detail("Last sync")).toBe("2 weeks ago");
 
     await user.click(top.getByRole("button", { name: "Copy address" }));
-    expect(copy).toHaveBeenCalledWith("nilesoft.org/paparats");
+    expect(copy).toHaveBeenCalledWith("kvetka.example/paparats");
     await waitFor(() => expect(toast()).toBe("Address copied"));
 
     await user.click(top.getByRole("button", { name: "Sync now" }));
@@ -260,11 +260,11 @@ describe("ChannelScreen", () => {
 
   it("opens the report dialog for the channel", async () => {
     const user = userEvent.setup();
-    await openChannel("nilesoft");
+    await openChannel("kvetka");
     await user.click(within(header()).getByRole("button", { name: "Report a problem" }));
     expect(useDialogStore.getState().dialog).toEqual({
       kind: "report",
-      target: { appId: null, channelId: "nilesoft" },
+      target: { appId: null, channelId: "kvetka" },
     });
   });
 
@@ -301,7 +301,7 @@ describe("ChannelScreen", () => {
   });
 
   it("renders in Russian and Belarusian with localised plurals and dates", async () => {
-    await openChannel("nilesoft");
+    await openChannel("kvetka");
     await act(() => changeLocale("ru"));
     const top = within(header());
     expect(top.getByText(/^1\s840 подписчиков$/)).toBeInTheDocument();
@@ -318,18 +318,18 @@ describe("ChannelScreen", () => {
 describe("ChannelScreen in the shell", () => {
   it("routes a report to the channel author and toasts the receipt", async () => {
     const user = userEvent.setup();
-    await renderApp({ route: "/channel/nilesoft" });
-    await screen.findByRole("heading", { level: 1, name: "Nilesoft" });
+    await renderApp({ route: "/channel/kvetka" });
+    await screen.findByRole("heading", { level: 1, name: "Kvetka" });
     await user.click(within(header()).getByRole("button", { name: "Report a problem" }));
-    const dialog = screen.getByRole("dialog", { name: "Report a problem with Nilesoft" });
+    const dialog = screen.getByRole("dialog", { name: "Report a problem with Kvetka" });
     expect(
       within(dialog).getByText(
-        "Your report goes to Nilesoft, the author of Nilesoft. Paparats receives a copy to spot channels that cause repeated problems.",
+        "Your report goes to Kvetka, the author of Kvetka. Paparats receives a copy to spot channels that cause repeated problems.",
       ),
     ).toBeInTheDocument();
     await user.type(within(dialog).getByRole("textbox"), "Menu entries vanish");
     await user.click(within(dialog).getByRole("button", { name: "Send" }));
-    await waitFor(() => expect(toast()).toBe("Sent to Nilesoft · copy to Paparats"));
+    await waitFor(() => expect(toast()).toBe("Sent to Kvetka · copy to Paparats"));
     expect(screen.queryByRole("dialog")).toBeNull();
   });
 
@@ -361,7 +361,7 @@ function Harness() {
       <Route
         path="*"
         element={
-          <button type="button" onClick={() => go({ to: "channel", channelId: "nilesoft" })}>
+          <button type="button" onClick={() => go({ to: "channel", channelId: "kvetka" })}>
             open
           </button>
         }
@@ -375,8 +375,8 @@ describe("ChannelScreen navigation", () => {
     const user = userEvent.setup();
     const { router } = await renderWithProviders(<Harness />, { route: "/settings/sources" });
     await user.click(screen.getByRole("button", { name: "open" }));
-    expect(await screen.findByRole("heading", { level: 1, name: "Nilesoft" })).toBeInTheDocument();
-    expect(router.state.location.pathname).toBe("/channel/nilesoft");
+    expect(await screen.findByRole("heading", { level: 1, name: "Kvetka" })).toBeInTheDocument();
+    expect(router.state.location.pathname).toBe("/channel/kvetka");
     expect(screen.getByRole("status", { name: "section" })).toHaveTextContent("settings");
 
     await user.click(screen.getByRole("button", { name: "Back" }));
@@ -387,7 +387,7 @@ describe("ChannelScreen navigation", () => {
     const user = userEvent.setup();
     const { router } = await renderWithProviders(<Harness />, { route: "/browse" });
     await user.click(screen.getByRole("button", { name: "open" }));
-    await screen.findByRole("heading", { level: 1, name: "Nilesoft" });
+    await screen.findByRole("heading", { level: 1, name: "Kvetka" });
     await user.click(within(appsGrid()).getByRole("button", { name: "Details" }));
     expect(router.state.location.pathname).toBe("/app/shell");
   });

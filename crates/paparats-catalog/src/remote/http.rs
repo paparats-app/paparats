@@ -155,10 +155,10 @@ mod tests {
 
     #[test]
     fn urls_must_be_allowlisted_and_https() {
-        let allow = list(&["127.0.0.1", "downloads.nilesoft.org"]);
+        let allow = list(&["127.0.0.1", "downloads.kvetka.example"]);
         let ok = |u: &str| check_url(&allow, &Url::parse(u).unwrap());
         assert!(ok("https://cdn.paparats.app/v1/catalog.json").is_ok());
-        assert!(ok("https://downloads.nilesoft.org/m.json").is_ok());
+        assert!(ok("https://downloads.kvetka.example/m.json").is_ok());
         assert!(ok("http://127.0.0.1:8080/catalog.json").is_ok());
         assert!(matches!(
             ok("https://evil.example/catalog.json"),
@@ -186,7 +186,7 @@ mod tests {
             Err(CatalogError::InvalidUrl(_))
         ));
         assert!(matches!(
-            parse_url("http://nilesoft.org/m.json"),
+            parse_url("http://kvetka.example/m.json"),
             Err(CatalogError::InsecureUrl(_))
         ));
     }

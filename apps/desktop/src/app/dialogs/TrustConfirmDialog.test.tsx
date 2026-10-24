@@ -32,11 +32,11 @@ const subscriptionIds = async (services: ReturnType<typeof createTestServices>) 
 describe("TrustConfirmDialog", () => {
   it("names the community channel and warns before adding it", async () => {
     const user = userEvent.setup();
-    const { services } = await openConfirm("winaero");
-    const dialog = await screen.findByRole("dialog", { name: "Add Winaero?" });
-    expect(within(dialog).getByText("Winaero")).toBeInTheDocument();
+    const { services } = await openConfirm("vitrazh");
+    const dialog = await screen.findByRole("dialog", { name: "Add Vitrazh?" });
+    expect(within(dialog).getByText("Vitrazh")).toBeInTheDocument();
     expect(within(dialog).getByText("Community")).toBeInTheDocument();
-    expect(within(dialog).getByText("Developer · by Sergey Tkachenko · 1 app")).toBeInTheDocument();
+    expect(within(dialog).getByText("Developer · by Andrei V. · 1 app")).toBeInTheDocument();
     expect(
       within(dialog).getByText(
         "This is a community channel. Paparats has not reviewed its apps — they come straight from the author’s server and are not covered by Paparats Pro. Add only channels whose author you trust.",
@@ -46,8 +46,8 @@ describe("TrustConfirmDialog", () => {
 
     await user.click(within(dialog).getByRole("button", { name: "Add channel" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-    expect(toast()).toBe("Subscribed to Winaero");
-    expect(await subscriptionIds(services)).toContain("winaero");
+    expect(toast()).toBe("Subscribed to Vitrazh");
+    expect(await subscriptionIds(services)).toContain("vitrazh");
   });
 
   it("Cancel and Escape close it without following the channel", async () => {
@@ -91,12 +91,12 @@ describe("TrustConfirmDialog", () => {
   });
 
   it("is translated", async () => {
-    await openConfirm("winaero");
-    await screen.findByRole("dialog", { name: "Add Winaero?" });
+    await openConfirm("vitrazh");
+    await screen.findByRole("dialog", { name: "Add Vitrazh?" });
     await act(() => changeLocale("ru"));
-    const dialog = screen.getByRole("dialog", { name: "Добавить Winaero?" });
+    const dialog = screen.getByRole("dialog", { name: "Добавить Vitrazh?" });
     expect(
-      within(dialog).getByText("Разработчик · от Sergey Tkachenko · 1 приложение"),
+      within(dialog).getByText("Разработчик · от Andrei V. · 1 приложение"),
     ).toBeInTheDocument();
     expect(within(dialog).getByRole("button", { name: "Добавить канал" })).toBeInTheDocument();
   });
@@ -109,8 +109,8 @@ describe("TrustConfirmDialog busy state", () => {
     const subscribe = vi
       .spyOn(services.channels, "subscribe")
       .mockImplementation(() => new Promise(() => {}));
-    await openConfirm("winaero", services);
-    const dialog = await screen.findByRole("dialog", { name: "Add Winaero?" });
+    await openConfirm("vitrazh", services);
+    const dialog = await screen.findByRole("dialog", { name: "Add Vitrazh?" });
     const add = within(dialog).getByRole("button", { name: "Add channel" });
     await user.click(add);
     expect(add).toHaveAttribute("aria-busy", "true");

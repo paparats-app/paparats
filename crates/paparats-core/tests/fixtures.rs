@@ -94,6 +94,6 @@ fn other_fixtures_match_model() {
     let library: Library = load("library.json");
     assert_eq!(library.installed.len(), 14);
     let meta: MetaFile = load("meta.json");
-    assert_eq!(meta.developer_channel, "nilesoft");
+    assert_eq!(meta.developer_channel, "kvetka");
     assert!(meta.today < meta.idea_bonus_until);
 }

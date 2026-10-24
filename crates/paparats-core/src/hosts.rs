@@ -84,10 +84,10 @@ mod tests {
 
     #[test]
     fn runtime_allowlist() {
-        let list = Allowlist::new().with("Downloads.Nilesoft.org.");
-        assert!(list.is_allowed("downloads.nilesoft.org"));
+        let list = Allowlist::new().with("Downloads.Kvetka.Example.");
+        assert!(list.is_allowed("downloads.kvetka.example"));
         assert!(list.is_allowed("cdn.paparats.app"));
-        assert!(!list.is_allowed("nilesoft.org"));
+        assert!(!list.is_allowed("kvetka.example"));
         assert!(!list.is_allowed("evil.example"));
     }
 

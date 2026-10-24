@@ -398,11 +398,11 @@ mod tests {
     fn links_wait_for_the_ui_then_go_out_as_events() {
         let (s, rec) = shell(false);
         s.open_url(&url("paparats://app/obs"));
-        s.open_url(&url("paparats://channel/nilesoft"));
+        s.open_url(&url("paparats://channel/kvetka"));
         assert_eq!(rec.calls(), [Call::Reveal, Call::Reveal]);
         assert_eq!(
             s.take_deep_links(),
-            [app("obs"), DeepLinkTarget::Channel("nilesoft".into())]
+            [app("obs"), DeepLinkTarget::Channel("kvetka".into())]
         );
         assert!(s.take_deep_links().is_empty());
 

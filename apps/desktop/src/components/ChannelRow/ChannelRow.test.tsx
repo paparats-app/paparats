@@ -82,10 +82,10 @@ describe("ChannelRow", () => {
     render(
       <ChannelRow
         variant="catalog"
-        name="Winaero"
+        name="Vitrazh"
         icon={{ mono: "Wi", tint: "#c27a2f" }}
         trust="verified"
-        meta="Developer · by Sergey Tkachenko"
+        meta="Developer · by Andrei V."
         onOpen={onOpen}
         onSubscribe={onSubscribe}
       />,
@@ -104,10 +104,10 @@ describe("ChannelRow catalog keyboard and busy state", () => {
     render(
       <ChannelRow
         variant="catalog"
-        name="Winaero"
+        name="Vitrazh"
         icon={{ mono: "Wi", tint: "#c27a2f" }}
         trust="community"
-        meta="Developer · by Sergey Tkachenko"
+        meta="Developer · by Andrei V."
         onOpen={() => {}}
         onSubscribe={() => {}}
         subscribing
@@ -115,9 +115,9 @@ describe("ChannelRow catalog keyboard and busy state", () => {
       />,
     );
     const subscribe = screen.getByRole("button", { name: "Subscribe" });
-    expect(subscribe).toHaveAccessibleDescription("Winaero");
+    expect(subscribe).toHaveAccessibleDescription("Vitrazh");
     expect(screen.getByRole("button", { name: "Learn more" })).toHaveAccessibleDescription(
-      "Winaero",
+      "Vitrazh",
     );
     expect(subscribe).toHaveAttribute("aria-busy", "true");
     expect(ref.current).toBe(subscribe);

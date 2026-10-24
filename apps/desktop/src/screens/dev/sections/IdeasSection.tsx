@@ -110,7 +110,7 @@ export function TimelineSection() {
     { label: t("ideas.tlProposed"), detail: `Alena K. · ${format.date("2026-09-04")}` },
     {
       label: t("ideas.tlWork"),
-      detail: reached >= 1 ? `Nilesoft · ${format.date("2026-09-08")}` : pending,
+      detail: reached >= 1 ? `Kvetka · ${format.date("2026-09-08")}` : pending,
     },
     {
       label: t("ideas.tlReleased"),

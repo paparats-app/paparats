@@ -23,23 +23,23 @@
       "outage": null
     },
     {
-      "id": "nilesoft",
-      "name": "Nilesoft",
+      "id": "kvetka",
+      "name": "Kvetka",
       "kind": "developer",
       "trust": "verified",
-      "author": "Nilesoft",
-      "addr": "nilesoft.org/paparats",
-      "handle": "@nilesoft",
+      "author": "Kvetka",
+      "addr": "kvetka.example/paparats",
+      "handle": "@kvetka",
       "tint": "#3b6fd1",
-      "mono": "Ni",
+      "mono": "Kv",
       "subscribers": 1840,
       "synced": "2026-09-14",
       "files": "mirrored",
-      "support": "nilesoft.org/support",
+      "support": "kvetka.example/support",
       "desc": {
-        "en": "Official builds from the Nilesoft team — Shell, the context-menu customiser, and its companion tools. Updates arrive the day they ship.",
-        "be": "Афіцыйныя зборкі ад каманды Nilesoft — Shell, наладжвальнік кантэкстнага меню, і суправаджальныя інструменты. Абнаўленні прыходзяць у дзень выпуску.",
-        "ru": "Официальные сборки от команды Nilesoft — Shell, настройщик контекстного меню, и сопутствующие инструменты. Обновления приходят в день выпуска."
+        "en": "Official builds from the Kvetka team — Shell, the context-menu customiser, and its companion tools. Updates arrive the day they ship.",
+        "be": "Афіцыйныя зборкі ад каманды Kvetka — Shell, наладжвальнік кантэкстнага меню, і суправаджальныя інструменты. Абнаўленні прыходзяць у дзень выпуску.",
+        "ru": "Официальные сборки от команды Kvetka — Shell, настройщик контекстного меню, и сопутствующие инструменты. Обновления приходят в день выпуска."
       },
       "reviewed": "2026-03-12",
       "outage": null
@@ -67,23 +67,23 @@
       "outage": "2026-08-30"
     },
     {
-      "id": "winaero",
-      "name": "Winaero",
+      "id": "vitrazh",
+      "name": "Vitrazh",
       "kind": "developer",
       "trust": "community",
-      "author": "Sergey Tkachenko",
-      "addr": "winaero.com/paparats",
-      "handle": "@winaero",
+      "author": "Andrei V.",
+      "addr": "vitrazh.example/paparats",
+      "handle": "@vitrazh",
       "tint": "#c27a2f",
-      "mono": "Wa",
+      "mono": "Vi",
       "subscribers": 960,
       "synced": null,
       "files": "author",
-      "support": "winaero.com/contact",
+      "support": "vitrazh.example/contact",
       "desc": {
-        "en": "Winaero Tweaker and friends — hundreds of hidden Windows settings in one place, straight from the author.",
-        "be": "Winaero Tweaker і сябры — сотні схаваных налад Windows у адным месцы, напрамую ад аўтара.",
-        "ru": "Winaero Tweaker и друзья — сотни скрытых настроек Windows в одном месте, напрямую от автора."
+        "en": "Vitrazh Tweaker and friends — hundreds of hidden Windows settings in one place, straight from the author.",
+        "be": "Vitrazh Tweaker і сябры — сотні схаваных налад Windows у адным месцы, напрамую ад аўтара.",
+        "ru": "Vitrazh Tweaker и друзья — сотни скрытых настроек Windows в одном месте, напрямую от автора."
       },
       "reviewed": null,
       "outage": null
@@ -93,15 +93,15 @@
       "name": "mpv builds",
       "kind": "developer",
       "trust": "community",
-      "author": "shinchiro",
-      "addr": "mpv.io/paparats",
-      "handle": "@mpv",
+      "author": "Yuras L.",
+      "addr": "mpvbuilds.example/paparats",
+      "handle": "@mpvbuilds",
       "tint": "#5a3f9a",
       "mono": "mp",
       "subscribers": 2210,
       "synced": null,
       "files": "author",
-      "support": "github.com/shinchiro/mpv-winbuild-cmake/issues",
+      "support": "mpvbuilds.example/issues",
       "desc": {
         "en": "Stable and nightly Windows builds of mpv, the minimalist media player. Updated several times a week.",
         "be": "Стабільныя і нічныя зборкі mpv для Windows — мінімалістычнага медыяплэера. Абнаўляюцца некалькі разоў на тыдзень.",
@@ -140,7 +140,7 @@
       "staleAcknowledged": false
     },
     {
-      "channelId": "nilesoft",
+      "channelId": "kvetka",
       "paused": false,
       "staleAcknowledged": false
     },

@@ -9,7 +9,7 @@ describe("Timeline", () => {
         reached={1}
         steps={[
           { label: "Proposed", detail: "Alena K. · 4 September 2026" },
-          { label: "In work", detail: "Nilesoft · 8 September 2026" },
+          { label: "In work", detail: "Kvetka · 8 September 2026" },
           { label: "Released", detail: "Not yet" },
         ]}
       />,

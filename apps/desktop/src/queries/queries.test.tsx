@@ -128,18 +128,18 @@ describe("useChannelActions", () => {
     const list = () => cached<ChannelSubscription[]>(queryKeys.subscriptions) ?? [];
     const ids = () => list().map((s) => s.channelId);
 
-    await act(() => actions.subscribe("winaero"));
-    expect(ids()).toEqual(["paparats", "nilesoft", "fossfriends", "winaero"]);
+    await act(() => actions.subscribe("vitrazh"));
+    expect(ids()).toEqual(["paparats", "kvetka", "fossfriends", "vitrazh"]);
     await waitFor(() => expect(view.result.current.data).toHaveLength(4));
 
-    await act(() => actions.setPaused("winaero", true));
+    await act(() => actions.setPaused("vitrazh", true));
     expect(list().at(-1)?.paused).toBe(true);
 
     await act(() => actions.acknowledgeStale("fossfriends"));
     expect(list()[2]?.staleAcknowledged).toBe(true);
 
-    await act(() => actions.unsubscribe("winaero"));
-    expect(ids()).toEqual(["paparats", "nilesoft", "fossfriends"]);
+    await act(() => actions.unsubscribe("vitrazh"));
+    expect(ids()).toEqual(["paparats", "kvetka", "fossfriends"]);
   });
 
   it("propagates rejections and leaves the cache untouched", async () => {
@@ -157,15 +157,15 @@ describe("useChannelActions", () => {
     const synced = (id: string) =>
       cached<ChannelInfo[]>(queryKeys.channels)?.find((c) => c.id === id)?.synced;
 
-    expect(synced("nilesoft")).toBe("2026-09-14");
-    await act(() => actions.sync("nilesoft"));
-    expect(synced("nilesoft")).toBe("2026-09-15");
+    expect(synced("kvetka")).toBe("2026-09-14");
+    await act(() => actions.sync("kvetka"));
+    expect(synced("kvetka")).toBe("2026-09-15");
 
     const outage = await actions.sync("fossfriends");
     expect(outage).toEqual({ kind: "unreachable", days: 16 });
     expect(synced("fossfriends")).toBe("2026-09-15");
 
-    expect(await actions.lookup("@mpv")).toMatchObject({ kind: "found" });
+    expect(await actions.lookup("@mpvbuilds")).toMatchObject({ kind: "found" });
     expect(await actions.report({ appId: null, channelId: "paparats" }, "Hi")).toEqual({
       kind: "paparats",
     });
@@ -198,13 +198,13 @@ describe("useIdeaActions", () => {
     expect(list()[0]).toMatchObject({ id: "u1", mine: true });
     expect(list()).toHaveLength(before.length + 1);
 
-    await act(() => actions.take("u1", "nilesoft"));
+    await act(() => actions.take("u1", "kvetka"));
     await act(() => actions.comment("u1", "Soon", { kind: "user" }));
     await act(() => actions.release("u1", "shell", "1.9.16"));
     await act(() => actions.dismissReleaseNote("u1"));
     expect(list()[0]).toMatchObject({
       status: "released",
-      dev: "nilesoft",
+      dev: "kvetka",
       releasedVersion: "1.9.16",
       releaseNoteDismissed: true,
       comments: [{ text: "Soon", mine: true }],

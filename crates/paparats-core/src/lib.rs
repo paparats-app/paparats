@@ -25,16 +25,16 @@ mod tests {
     #[test]
     fn source_rule_candidates_start_with_home_channel() {
         let app: App = serde_json::from_value(serde_json::json!({
-            "id": "shell", "name": "Shell", "publisher": "Nilesoft", "category": "system",
+            "id": "shell", "name": "Shell", "publisher": "Kvetka", "category": "system",
             "tint": "#123456", "mono": "Sh", "version": "1.9.15", "sizeMb": 3.1,
             "updated": "2026-09-01", "license": "MIT", "portable": true, "pro": false,
             "tagline": { "en": "a", "be": "b", "ru": "c" },
             "long": { "en": "a", "be": "b", "ru": "c" },
-            "channel": "nilesoft", "alsoIn": ["fossfriends"]
+            "channel": "kvetka", "alsoIn": ["fossfriends"]
         }))
         .unwrap_or_else(|e| panic!("valid app json: {e}"));
         let c: Vec<&str> = app.candidate_channels().collect();
-        assert_eq!(c, ["nilesoft", "fossfriends"]);
+        assert_eq!(c, ["kvetka", "fossfriends"]);
     }
 
     #[test]

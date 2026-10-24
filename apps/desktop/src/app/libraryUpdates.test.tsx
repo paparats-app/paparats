@@ -18,7 +18,7 @@ const UPDATES = [
   "VLC media player",
   "Notepad++",
   "Visual Studio Code",
-  "Nilesoft Shell",
+  "Kvetka Shell",
 ];
 
 const sidebar = () => screen.getByRole("navigation", { name: "Main" });

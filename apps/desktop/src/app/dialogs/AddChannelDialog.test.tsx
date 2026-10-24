@@ -49,8 +49,8 @@ const catalogRows = (dialog: HTMLElement) =>
   within(within(dialog).getByRole("group", { name: "Channel catalog" }))
     .queryAllByRole("button", { name: "Learn more" })
     .map((b) => b.parentElement?.firstElementChild?.textContent);
-const WINAERO = "WaWinaeroCommunityDeveloper · by Sergey Tkachenko · 1 app";
-const MPV = "mpmpv buildsCommunityDeveloper · by shinchiro · 1 app";
+const VITRAZH = "ViVitrazhCommunityDeveloper · by Andrei V. · 1 app";
+const MPV = "mpmpv buildsCommunityDeveloper · by Yuras L. · 1 app";
 const BYSOFT = "БыСофт па-беларускуCommunityCurated · by Алесь М. · 1 app";
 
 describe("AddChannelDialog", () => {
@@ -59,21 +59,21 @@ describe("AddChannelDialog", () => {
     expect(input).toHaveFocus();
     expect(input).toHaveAttribute("placeholder", "https://… or @name");
     expect(
-      within(dialog).getByText("Paste a link from the author or a short code like @winaero."),
+      within(dialog).getByText("Paste a link from the author or a short code like @vitrazh."),
     ).toBeInTheDocument();
     expect(within(dialog).getByText("Channel catalog")).toBeInTheDocument();
     expect(within(dialog).getByText("3 channels")).toBeInTheDocument();
-    expect(catalogRows(dialog)).toEqual([WINAERO, MPV, BYSOFT]);
+    expect(catalogRows(dialog)).toEqual([VITRAZH, MPV, BYSOFT]);
     expect(within(dialog).getAllByRole("button", { name: "Subscribe" })).toHaveLength(3);
   });
 
   it("adds a verified channel by its full address (scheme, www., case and / ignored)", async () => {
     const user = userEvent.setup();
-    const { input, services } = await openDialog(["nilesoft"]);
-    await user.type(input, "https://www.Nilesoft.org/paparats/{Enter}");
+    const { input, services } = await openDialog(["kvetka"]);
+    await user.type(input, "https://www.Kvetka.Example/paparats/{Enter}");
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-    expect(toast()).toBe("Subscribed to Nilesoft");
-    expect(await subscriptionIds(services)).toContain("nilesoft");
+    expect(toast()).toBe("Subscribed to Kvetka");
+    expect(await subscriptionIds(services)).toContain("kvetka");
     expect(useDialogStore.getState().dialog).toBeNull();
   });
 
@@ -107,12 +107,12 @@ describe("AddChannelDialog", () => {
   it("finds a channel by its handle without @; Cancel returns to the dialog with the address", async () => {
     const user = userEvent.setup();
     const { input, services } = await openDialog();
-    await user.type(input, "mpv{Enter}");
+    await user.type(input, "mpvbuilds{Enter}");
     const confirm = await screen.findByRole("dialog", { name: "Add mpv builds?" });
     await user.click(within(confirm).getByRole("button", { name: "Cancel" }));
     const dialog = await screen.findByRole("dialog", { name: "Add channel" });
     const again = within(dialog).getByRole("textbox", { name: "Channel address" });
-    expect(again).toHaveValue("mpv");
+    expect(again).toHaveValue("mpvbuilds");
     expect(again).toHaveFocus();
     expect(await subscriptionIds(services)).not.toContain("mpvbuilds");
     expect(toast()).toBeUndefined();
@@ -135,12 +135,12 @@ describe("AddChannelDialog", () => {
     ).toBeInTheDocument();
     expect(input).toHaveAttribute("aria-invalid", "true");
     expect(
-      within(dialog).queryByText("Paste a link from the author or a short code like @winaero."),
+      within(dialog).queryByText("Paste a link from the author or a short code like @vitrazh."),
     ).toBeNull();
     await user.type(input, "x");
     expect(input).not.toHaveAttribute("aria-invalid");
     expect(
-      within(dialog).getByText("Paste a link from the author or a short code like @winaero."),
+      within(dialog).getByText("Paste a link from the author or a short code like @vitrazh."),
     ).toBeInTheDocument();
     expect(screen.getByRole("dialog", { name: "Add channel" })).toBeInTheDocument();
   });
@@ -149,7 +149,7 @@ describe("AddChannelDialog", () => {
     const user = userEvent.setup();
     const { dialog, input, services } = await openDialog();
     const subscribe = vi.spyOn(services.channels, "subscribe");
-    await user.type(input, "@nilesoft{Enter}");
+    await user.type(input, "@kvetka{Enter}");
     expect(await within(dialog).findByText("You already follow this channel.")).toBeInTheDocument();
     expect(subscribe).not.toHaveBeenCalled();
     expect(toast()).toBeUndefined();
@@ -169,40 +169,40 @@ describe("AddChannelDialog", () => {
 
   it("subscribes from the catalog: verified at once, community after the confirmation", async () => {
     const user = userEvent.setup();
-    const { dialog, services } = await openDialog(["nilesoft"]);
+    const { dialog, services } = await openDialog(["kvetka"]);
     expect(catalogRows(dialog)).toEqual([
-      "NiNilesoftVerifiedDeveloper · by Nilesoft · 1 app",
-      WINAERO,
+      "KvKvetkaVerifiedDeveloper · by Kvetka · 1 app",
+      VITRAZH,
       MPV,
       BYSOFT,
     ]);
     const subscribeButtons = () => within(dialog).getAllByRole("button", { name: "Subscribe" });
     await user.click(subscribeButtons()[0] as HTMLElement);
-    await waitFor(() => expect(toast()).toBe("Subscribed to Nilesoft"));
+    await waitFor(() => expect(toast()).toBe("Subscribed to Kvetka"));
     expect(screen.queryByRole("dialog")).toBeNull();
 
     act(() => useDialogStore.getState().open({ kind: "addChannel" }));
     const next = await screen.findByRole("dialog", { name: "Add channel" });
     expect(within(next).getByText("3 channels")).toBeInTheDocument();
     await user.click(within(next).getAllByRole("button", { name: "Subscribe" })[0] as HTMLElement);
-    const confirm = await screen.findByRole("dialog", { name: "Add Winaero?" });
+    const confirm = await screen.findByRole("dialog", { name: "Add Vitrazh?" });
     expect(
       within(confirm).getByText(/^This is a community channel\. Paparats has not reviewed/),
     ).toBeInTheDocument();
     await user.click(within(confirm).getByRole("button", { name: "Add channel" }));
-    await waitFor(() => expect(toast()).toBe("Subscribed to Winaero"));
+    await waitFor(() => expect(toast()).toBe("Subscribed to Vitrazh"));
     expect(screen.queryByRole("dialog")).toBeNull();
     expect(await subscriptionIds(services)).toEqual([
       "paparats",
       "fossfriends",
-      "nilesoft",
-      "winaero",
+      "kvetka",
+      "vitrazh",
     ]);
   });
 
   it("says so when every catalog channel is followed", async () => {
     const services = createTestServices();
-    for (const id of ["winaero", "mpvbuilds", "bysoft"]) await services.channels.subscribe(id);
+    for (const id of ["vitrazh", "mpvbuilds", "bysoft"]) await services.channels.subscribe(id);
     const { dialog } = await openDialog([], services);
     expect(
       within(dialog).getByText("You follow every channel in the catalog."),
@@ -231,18 +231,18 @@ describe("AddChannelDialog", () => {
     await screen.findByRole("dialog", { name: "Add channel" });
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog")).toBeNull();
-    expect(await subscriptionIds(services)).toEqual(["paparats", "nilesoft", "fossfriends"]);
+    expect(await subscriptionIds(services)).toEqual(["paparats", "kvetka", "fossfriends"]);
   });
 
   it("keeps the dialog open without a toast when subscribing fails", async () => {
     const user = userEvent.setup();
     const services = createTestServices();
-    await services.channels.unsubscribe("nilesoft");
+    await services.channels.unsubscribe("kvetka");
     vi.spyOn(services.channels, "subscribe").mockRejectedValue(
       new ServiceError("internal", "down"),
     );
     const { input } = await openDialog([], services);
-    await user.type(input, "@nilesoft{Enter}");
+    await user.type(input, "@kvetka{Enter}");
     await waitFor(() => expect(services.channels.subscribe).toHaveBeenCalled());
     expect(screen.getByRole("dialog", { name: "Add channel" })).toBeInTheDocument();
     expect(toast()).toBeUndefined();

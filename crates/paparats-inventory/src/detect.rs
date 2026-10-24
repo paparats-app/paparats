@@ -355,7 +355,7 @@ mod tests {
                 Some("krita"),
             ),
             ("Steam App 1127400", "Mindustry", None, Some("mindustry")),
-            ("n", "Nilesoft Shell", Some("Nilesoft"), Some("shell")),
+            ("n", "Kvetka Shell", Some("Kvetka"), Some("shell")),
             ("s", "Слоўнік", None, Some("slounik")),
             ("f", "Files", None, None),
             ("g", "Git", Some("The Git Development Community"), None),

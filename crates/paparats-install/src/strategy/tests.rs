@@ -251,7 +251,7 @@ async fn exe_silent_enforces_the_signature_policy() {
     // Signed, but not by the manifest's signer.
     let strict = installer(root.path());
     let mut p = package("where", "1.0", args.clone(), Some(&setup));
-    p.signer = Some("Nilesoft".into());
+    p.signer = Some("Kvetka".into());
     assert!(matches!(
         install(&strict, &p, Some(&setup), &target).await,
         Err(InstallError::SignerMismatch { .. })

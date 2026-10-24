@@ -136,8 +136,8 @@ mod tests {
             Some(DeepLinkTarget::App("obs".into()))
         );
         assert_eq!(
-            open("paparats://channel/nilesoft"),
-            Some(DeepLinkTarget::Channel("nilesoft".into()))
+            open("paparats://channel/kvetka"),
+            Some(DeepLinkTarget::Channel("kvetka".into()))
         );
         // Trailing slash, query and fragment do not matter; case is normalised.
         assert_eq!(
@@ -233,10 +233,10 @@ mod tests {
 
     #[test]
     fn wire_shape() {
-        let json = serde_json::to_value(DeepLinkTarget::Channel("winaero".into())).unwrap();
+        let json = serde_json::to_value(DeepLinkTarget::Channel("vitrazh".into())).unwrap();
         assert_eq!(
             json,
-            serde_json::json!({"kind": "channel", "id": "winaero"})
+            serde_json::json!({"kind": "channel", "id": "vitrazh"})
         );
     }
 }

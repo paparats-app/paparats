@@ -16,7 +16,7 @@ describe("AppCard", () => {
         icon={icon}
         tagline="Your knowledge, your way."
         category="Productivity"
-        channel={{ name: "Nilesoft", tint: "#3b6fd1" }}
+        channel={{ name: "Kvetka", tint: "#3b6fd1" }}
         action={{ label: "Get", tone: "neutral", onClick }}
         onOpen={onOpen}
       />,
@@ -28,7 +28,7 @@ describe("AppCard", () => {
     // The category wraps like the prototype's inline-block chip; the channel chip keeps its
     // ellipsis.
     expect(screen.getByText("Productivity").parentElement).toHaveClass("wrap");
-    expect(screen.getByText("Nilesoft").parentElement).not.toHaveClass("wrap");
+    expect(screen.getByText("Kvetka").parentElement).not.toHaveClass("wrap");
   });
 
   it("renders the split variant with a secondary part", async () => {

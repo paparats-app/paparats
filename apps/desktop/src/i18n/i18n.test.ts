@@ -319,6 +319,6 @@ describe("createFormat", () => {
     expect(norm(ru.plus(10000))).toBe("10 000+");
     expect(en.percent(45.6)).toBe("46%");
     expect(norm(ru.percent(18))).toBe("18 %");
-    expect(en.list(["Nilesoft", "Winaero"])).toBe("Nilesoft and Winaero");
+    expect(en.list(["Kvetka", "Vitrazh"])).toBe("Kvetka and Vitrazh");
   });
 });

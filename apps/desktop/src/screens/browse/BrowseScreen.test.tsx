@@ -7,7 +7,7 @@ import { useDownloadsStore } from "@/stores/useDownloadsStore";
 import { createTestServices, renderWithProviders } from "@/test/render";
 import { BrowseScreen } from "./BrowseScreen";
 
-// The fixture world follows Paparats, Nilesoft and FOSS Friends: 30 visible apps.
+// The fixture world follows Paparats, Kvetka and FOSS Friends: 30 visible apps.
 const VISIBLE = 30;
 
 async function renderBrowse(services?: MockServices, ui = <BrowseScreen />) {
@@ -54,10 +54,10 @@ describe("BrowseScreen", () => {
     expect(within(featured).getByText("Notepad++")).toBeInTheDocument();
     expect(within(featured).queryByText("Everything")).toBeNull();
 
-    // New and notable: 4 rows; Shell comes from Nilesoft (channel chip).
+    // New and notable: 4 rows; Shell comes from Kvetka (channel chip).
     const notable = screen.getByRole("list", { name: "New and notable" });
     expect(within(notable).getAllByRole("listitem")).toHaveLength(4);
-    expect(within(notable).getByText("Nilesoft")).toBeInTheDocument();
+    expect(within(notable).getByText("Kvetka")).toBeInTheDocument();
 
     // Top categories: the first six, with the catalog counts.
     const top = screen.getByRole("list", { name: "Top categories" });
@@ -102,7 +102,7 @@ describe("BrowseScreen", () => {
     await user.click(screen.getByRole("checkbox", { name: "Portable build" }));
     await user.click(screen.getByRole("checkbox", { name: /FOSS Friends/ }));
     expect(resultIds()).toEqual(["czkawka", "imageglass", "rufus"]);
-    await user.click(screen.getByRole("checkbox", { name: /Nilesoft/ }));
+    await user.click(screen.getByRole("checkbox", { name: /Kvetka/ }));
     expect(resultIds()).toEqual(["shell", "czkawka", "imageglass", "rufus"]);
   });
 
@@ -219,7 +219,7 @@ describe("BrowseScreen", () => {
     const options = within(group).getAllByRole("checkbox");
     expect(options.map((o) => o.closest("label")?.textContent)).toEqual([
       "Paparats26",
-      "Nilesoft1",
+      "Kvetka1",
       "FOSS Friends3",
     ]);
   });

@@ -103,22 +103,14 @@ mod tests {
 
     #[test]
     fn signed_installers_run_and_the_named_signer_must_match() {
-        let ok = authorize(Ok(signer("Nilesoft")), None, PackageTrust::STRICT).unwrap();
-        assert_eq!(ok.map(|s| s.common_name), Some("Nilesoft".into()));
-        assert!(
-            authorize(
-                Ok(signer("Nilesoft")),
-                Some("nilesoft"),
-                PackageTrust::STRICT
-            )
-            .is_ok()
-        );
-        let err =
-            authorize(Ok(signer("Mallory")), Some("Nilesoft"), COMMUNITY_ACCEPTED).unwrap_err();
+        let ok = authorize(Ok(signer("Kvetka")), None, PackageTrust::STRICT).unwrap();
+        assert_eq!(ok.map(|s| s.common_name), Some("Kvetka".into()));
+        assert!(authorize(Ok(signer("Kvetka")), Some("kvetka"), PackageTrust::STRICT).is_ok());
+        let err = authorize(Ok(signer("Mallory")), Some("Kvetka"), COMMUNITY_ACCEPTED).unwrap_err();
         assert!(matches!(
             err,
             InstallError::SignerMismatch { ref expected, ref actual }
-                if expected == "Nilesoft" && actual == "Mallory"
+                if expected == "Kvetka" && actual == "Mallory"
         ));
     }
 
@@ -147,7 +139,7 @@ mod tests {
         }
         // The manifest promised a signer: no waiver.
         assert!(matches!(
-            authorize(unsigned(), Some("Nilesoft"), COMMUNITY_ACCEPTED),
+            authorize(unsigned(), Some("Kvetka"), COMMUNITY_ACCEPTED),
             Err(InstallError::Unsigned)
         ));
     }

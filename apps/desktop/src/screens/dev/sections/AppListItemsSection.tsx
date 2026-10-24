@@ -131,7 +131,7 @@ export function AppListItemsSection() {
                   icon={iconOf(a)}
                   channel={
                     i === 1
-                      ? { name: channel("nilesoft").name, tint: channel("nilesoft").tint }
+                      ? { name: channel("kvetka").name, tint: channel("kvetka").tint }
                       : undefined
                   }
                   versionLine={

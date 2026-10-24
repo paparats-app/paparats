@@ -150,15 +150,15 @@ mod tests {
     fn active_means_followed_and_not_paused() {
         let subs = [
             sub("paparats", true),
-            sub("nilesoft", false),
-            sub("winaero", true),
+            sub("kvetka", false),
+            sub("vitrazh", true),
         ];
         assert!(
             is_active(&subs, "paparats"),
             "official ignores the paused flag"
         );
-        assert!(is_active(&subs, "nilesoft"));
-        assert!(!is_active(&subs, "winaero"));
+        assert!(is_active(&subs, "kvetka"));
+        assert!(!is_active(&subs, "vitrazh"));
         assert!(!is_active(&subs, "fossfriends"));
     }
 
@@ -166,22 +166,22 @@ mod tests {
     fn source_rule_prefers_the_most_trusted_active_channel() {
         let w = world();
         let ch = w.channels_ref();
-        // Winaero Tweaker: home channel winaero (community), also in the official catalog.
-        let app = w.app("winaerotweaker").unwrap();
-        let both = [sub("paparats", false), sub("winaero", false)];
+        // Vitrazh Tweaker: home channel vitrazh (community), also in the official catalog.
+        let app = w.app("vitrazhtweaker").unwrap();
+        let both = [sub("paparats", false), sub("vitrazh", false)];
         assert_eq!(resolve_source(app, &both, ch), "paparats");
-        assert_eq!(alternatives(app, &both, ch), ["winaero"]);
+        assert_eq!(alternatives(app, &both, ch), ["vitrazh"]);
 
-        let community_only = [sub("winaero", false)];
-        assert_eq!(resolve_source(app, &community_only, ch), "winaero");
+        let community_only = [sub("vitrazh", false)];
+        assert_eq!(resolve_source(app, &community_only, ch), "vitrazh");
         assert!(alternatives(app, &community_only, ch).is_empty());
 
         // Nothing active → the home channel, no alternatives.
-        assert_eq!(resolve_source(app, &[], ch), "winaero");
+        assert_eq!(resolve_source(app, &[], ch), "vitrazh");
         assert!(alternatives(app, &[], ch).is_empty());
 
         // A paused channel is not a source.
-        let paused = [sub("paparats", false), sub("winaero", true)];
+        let paused = [sub("paparats", false), sub("vitrazh", true)];
         assert_eq!(resolve_source(app, &paused, ch), "paparats");
         assert!(alternatives(app, &paused, ch).is_empty());
 
@@ -197,14 +197,14 @@ mod tests {
     fn source_rule_ranks_unknown_channels_last_and_keeps_ties_stable() {
         let w = world();
         let mut app = w.app("shell").unwrap().clone();
-        // nilesoft (verified, home) + fossfriends (verified) + an unknown channel.
+        // kvetka (verified, home) + fossfriends (verified) + an unknown channel.
         app.also_in = vec!["ghost".into(), "fossfriends".into()];
         let subs = [
             sub("ghost", false),
             sub("fossfriends", false),
-            sub("nilesoft", false),
+            sub("kvetka", false),
         ];
-        assert_eq!(resolve_source(&app, &subs, w.channels_ref()), "nilesoft");
+        assert_eq!(resolve_source(&app, &subs, w.channels_ref()), "kvetka");
         assert_eq!(
             alternatives(&app, &subs, w.channels_ref()),
             ["ghost", "fossfriends"]
@@ -223,7 +223,7 @@ mod tests {
         assert_eq!(down_days(foss, "2026-09-15"), 16);
         assert_eq!(down_days(foss, "2026-08-30"), 1, "at least one day");
         assert_eq!(down_days(foss, "2026-08-01"), 1, "outage in the future");
-        assert_eq!(down_days(w.channel("nilesoft").unwrap(), "2026-09-15"), 0);
+        assert_eq!(down_days(w.channel("kvetka").unwrap(), "2026-09-15"), 0);
 
         let mut s = sub("fossfriends", false);
         assert!(is_stale(foss, Some(&s), "2026-09-15"));
@@ -243,11 +243,14 @@ mod tests {
     #[test]
     fn address_normalisation_matches_the_prototype() {
         assert_eq!(
-            normalize_address("  HTTPS://www.Nilesoft.org/paparats//  "),
-            "nilesoft.org/paparats"
+            normalize_address("  HTTPS://www.Kvetka.Example/paparats//  "),
+            "kvetka.example/paparats"
         );
-        assert_eq!(normalize_address("http://mpv.io"), "mpv.io");
-        assert_eq!(normalize_address("@Nilesoft"), "@nilesoft");
+        assert_eq!(
+            normalize_address("http://mpvbuilds.example"),
+            "mpvbuilds.example"
+        );
+        assert_eq!(normalize_address("@Kvetka"), "@kvetka");
         // Only one scheme and one `www.` are stripped, like the regexes.
         assert_eq!(normalize_address("www.www.x.org"), "www.x.org");
         assert_eq!(normalize_address("   "), "");
@@ -258,25 +261,25 @@ mod tests {
         let w = world();
         let ch = w.channels_ref();
         let id = |q: &str| find_channel(ch, q).map(|c| c.id.as_str());
-        assert_eq!(id("https://www.nilesoft.org/paparats/"), Some("nilesoft"));
-        assert_eq!(id("NILESOFT.ORG"), Some("nilesoft"), "host part of addr");
-        assert_eq!(id("@winaero"), Some("winaero"));
-        assert_eq!(id("winaero"), Some("winaero"), "handle without @");
-        assert_eq!(id("mpv"), Some("mpvbuilds"), "handle @mpv");
-        assert_eq!(id("mpv.io/paparats"), Some("mpvbuilds"));
+        assert_eq!(id("https://www.kvetka.example/paparats/"), Some("kvetka"));
+        assert_eq!(id("KVETKA.EXAMPLE"), Some("kvetka"), "host part of addr");
+        assert_eq!(id("@vitrazh"), Some("vitrazh"));
+        assert_eq!(id("vitrazh"), Some("vitrazh"), "handle without @");
+        assert_eq!(id("mpvbuilds"), Some("mpvbuilds"), "handle without @");
+        assert_eq!(id("mpvbuilds.example/paparats"), Some("mpvbuilds"));
         assert_eq!(id("bysoft.by/kanal"), Some("bysoft"));
-        assert_eq!(id("nilesoft.org/other"), None);
+        assert_eq!(id("kvetka.example/other"), None);
         assert_eq!(id(""), None);
         assert_eq!(id("https://"), None);
 
         let subs = w.seed_subscriptions();
         assert!(matches!(
-            lookup(ch, subs, "@winaero"),
-            ChannelLookup::Found { channel } if channel.id == "winaero"
+            lookup(ch, subs, "@vitrazh"),
+            ChannelLookup::Found { channel } if channel.id == "vitrazh"
         ));
         assert!(matches!(
-            lookup(ch, subs, "nilesoft.org/paparats"),
-            ChannelLookup::AlreadySubscribed { channel } if channel.id == "nilesoft"
+            lookup(ch, subs, "kvetka.example/paparats"),
+            ChannelLookup::AlreadySubscribed { channel } if channel.id == "kvetka"
         ));
         assert_eq!(lookup(ch, subs, "example.com"), ChannelLookup::NotFound);
     }

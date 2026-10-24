@@ -124,8 +124,8 @@ describe("updates", () => {
     };
     expect(ids(pendingUpdates(catalog.apps, withOldCzkawka, fossBack, TODAY))).toContain("czkawka");
 
-    const pausedNilesoft = channelCtx([sub("paparats"), sub("nilesoft", { paused: true })]);
-    expect(ids(pendingUpdates(catalog.apps, installed, pausedNilesoft, TODAY))).not.toContain(
+    const pausedKvetka = channelCtx([sub("paparats"), sub("kvetka", { paused: true })]);
+    expect(ids(pendingUpdates(catalog.apps, installed, pausedKvetka, TODAY))).not.toContain(
       "shell",
     );
   });
@@ -184,7 +184,7 @@ describe("Browse", () => {
     const filters = defaultBrowseFilters();
     expect(browseFiltersActive(filters)).toBe(false);
     expect(browseFiltersActive({ ...filters, sort: "name" })).toBe(true);
-    expect(browseFiltersActive({ ...filters, sources: ["nilesoft"] })).toBe(true);
+    expect(browseFiltersActive({ ...filters, sources: ["kvetka"] })).toBe(true);
     expect(defaultBrowseFilters().categories).not.toBe(filters.categories);
   });
 
@@ -203,8 +203,8 @@ describe("Browse", () => {
     ]);
     expect(
       ids(browseFilter(visible, { ...f, categories: ["system"], portable: true }, ctx)),
-    ).toEqual(["shell", "rufus", "winaerotweaker"]);
-    expect(ids(browseFilter(visible, { ...f, sources: ["nilesoft", "fossfriends"] }, ctx))).toEqual(
+    ).toEqual(["shell", "rufus", "vitrazhtweaker"]);
+    expect(ids(browseFilter(visible, { ...f, sources: ["kvetka", "fossfriends"] }, ctx))).toEqual(
       ["shell", "czkawka", "imageglass", "rufus"],
     );
   });

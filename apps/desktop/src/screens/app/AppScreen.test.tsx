@@ -70,13 +70,13 @@ describe("AppScreen", () => {
     }
   });
 
-  it("explains a verified source and links the app's open ideas (Nilesoft Shell)", async () => {
+  it("explains a verified source and links the app's open ideas (Kvetka Shell)", async () => {
     const user = userEvent.setup();
     await openApp("shell");
-    expect(within(header()).getByRole("button", { name: "Nilesoft" })).toBeInTheDocument();
+    expect(within(header()).getByRole("button", { name: "Kvetka" })).toBeInTheDocument();
     expect(
       screen.getByText(
-        "From Nilesoft, a verified channel. Paparats reviewed the author and mirrors the files; the app itself is the author’s.",
+        "From Kvetka, a verified channel. Paparats reviewed the author and mirrors the files; the app itself is the author’s.",
       ),
     ).toBeInTheDocument();
     expect(screen.getByText("A context menu editor without registry hacks")).toBeInTheDocument();
@@ -101,11 +101,11 @@ describe("AppScreen", () => {
 
   it("lists the other active channels that offer the app", async () => {
     const services = createTestServices();
-    await services.channels.subscribe("winaero");
-    await openApp("winaerotweaker", services);
+    await services.channels.subscribe("vitrazh");
+    await openApp("vitrazhtweaker", services);
     expect(
       screen.getByText(
-        "Also offered by Winaero. Paparats installs and updates from the most trusted channel that offers an app.",
+        "Also offered by Vitrazh. Paparats installs and updates from the most trusted channel that offers an app.",
       ),
     ).toBeInTheDocument();
     expect(screen.queryByText(/a community channel/)).toBeNull();
@@ -229,10 +229,10 @@ describe("AppScreen", () => {
     const user = userEvent.setup();
     await openApp("shell");
     await user.click(screen.getByRole("button", { name: "Report a problem" }));
-    const dialog = screen.getByRole("dialog", { name: "Report a problem with Nilesoft Shell" });
+    const dialog = screen.getByRole("dialog", { name: "Report a problem with Kvetka Shell" });
     expect(
       within(dialog).getByText(
-        "Your report goes to Nilesoft, the author of Nilesoft. Paparats receives a copy to spot channels that cause repeated problems.",
+        "Your report goes to Kvetka, the author of Kvetka. Paparats receives a copy to spot channels that cause repeated problems.",
       ),
     ).toBeInTheDocument();
     const send = within(dialog).getByRole("button", { name: "Send" });
@@ -241,7 +241,7 @@ describe("AppScreen", () => {
     await user.type(within(dialog).getByRole("textbox"), "The menu disappears after an update");
     await user.click(send);
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
-    expect(toast()).toBe("Sent to Nilesoft · copy to Paparats");
+    expect(toast()).toBe("Sent to Kvetka · copy to Paparats");
   });
 
   it("reports an official-catalog app to the Paparats team", async () => {

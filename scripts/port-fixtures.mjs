@@ -83,11 +83,11 @@ const DETECTION = {
   joplin: { displayNames: ["Joplin"] },
   ditto: { displayNames: ["Ditto"] },
   supertuxkart: { displayNames: ["SuperTuxKart"] },
-  shell: { displayNames: ["Nilesoft Shell"] },
+  shell: { displayNames: ["Kvetka Shell"] },
   czkawka: { displayNames: ["Czkawka"] },
   imageglass: { displayNames: ["ImageGlass"] },
   rufus: { displayNames: ["Rufus"] },
-  winaerotweaker: { displayNames: ["Winaero Tweaker"] },
+  vitrazhtweaker: { displayNames: ["Vitrazh Tweaker"] },
   mpv: { displayNames: ["mpv"] },
   slounik: { displayNames: ["Слоўнік", "Slounik"] },
 };
@@ -307,8 +307,8 @@ const library = {
 };
 
 // Constants of the mock world: the prototype is anchored at TODAY; the developer view acts as
-// the Nilesoft channel; a released idea's author gets Pro until TODAY + 3 months.
-const meta = { today: D.TODAY, developerChannel: "nilesoft", ideaBonusUntil: "2026-12-15" };
+// the Kvetka channel; a released idea's author gets Pro until TODAY + 3 months.
+const meta = { today: D.TODAY, developerChannel: "kvetka", ideaBonusUntil: "2026-12-15" };
 
 const out = join(root, "fixtures");
 mkdirSync(out, { recursive: true });

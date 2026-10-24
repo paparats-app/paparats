@@ -18,7 +18,7 @@ const RECENT = [
   "Obsidian",
   "Everything",
   "Notepad++",
-  "Nilesoft Shell",
+  "Kvetka Shell",
   "ShareX",
   "LocalSend",
   "VLC media player",
@@ -91,7 +91,7 @@ describe("LibraryScreen", () => {
     expect(flow).toHaveTextContent("1.20.0Updated today");
     expect(within(flow).getByRole("button", { name: "Open" })).toBeInTheDocument();
     // Source channel chip, license tag, favourite star.
-    expect(row("Nilesoft Shell")).toHaveTextContent("SystemPortableNilesoft");
+    expect(row("Kvetka Shell")).toHaveTextContent("SystemPortableKvetka");
     expect(row("PowerToys")).toHaveTextContent("SystemMIT");
     expect(within(row("Obsidian")).getByRole("img", { name: "Favorites" })).toBeInTheDocument();
     expect(within(row("Flow Launcher")).queryByRole("img", { name: "Favorites" })).toBeNull();
@@ -229,7 +229,7 @@ describe("LibraryScreen", () => {
       "Visual Studio Code",
       "Obsidian",
       "Notepad++",
-      "Nilesoft Shell",
+      "Kvetka Shell",
       "ShareX",
       "VLC media player",
     ]);

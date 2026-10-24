@@ -507,7 +507,7 @@ Release entry. The reasons are in `docs/decisions.md`. The main ones:
   - No release catalog signing key is pinned, so real installs only come from a development CDN.
   - The updater public key is a placeholder, and nothing downloads or installs an update.
   - Local builds are unsigned without credentials.
-  - The CI workflow has not run on GitHub yet: this repository has no remote.
+  - No release is published yet: CI builds the installer but does not create a GitHub Release.
 - **No server APIs.** Profile edits, devices, two-factor, purchases, the idea gift, problem
   reports and the ideas board are local only.
 - **Failures are quiet.** The handoff has no copy for a failed download, purchase, subscribe or
@@ -522,3 +522,8 @@ Release entry. The reasons are in `docs/decisions.md`. The main ones:
   `@fontsource/onest` versus the prototype's Google Fonts build).
 - **Developer build quirk.** Tray › Quit under `pnpm tauri dev` ends the CLI with
   `ELIFECYCLE … exit code -1`.
+
+## License
+
+MIT, see [LICENSE](LICENSE). Names and logos of third-party apps in the catalog and in the demo
+data belong to their owners.

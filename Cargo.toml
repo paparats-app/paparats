@@ -7,7 +7,7 @@ version = "0.1.0"
 edition = "2024"
 # 1.88: let chains (edition 2024) and keyring 4 (M7).
 rust-version = "1.88"
-license = "Proprietary"
+license = "MIT"
 authors = ["Paparats"]
 publish = false
 

@@ -1,0 +1,41 @@
+name: Feature request
+description: Suggest an improvement to the Paparats desktop client.
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This tracker is for the desktop client. Ideas for a specific app in the catalog belong on
+        the in-app Ideas board.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do, and what gets in the way today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: What should the app do? Name the screen or setting it touches, if you know.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: textarea
+    id: design
+    attributes:
+      label: Design and context
+      description: |
+        Does it differ from the design handoff (`design_handoff_paparats_store/`)? Mockups,
+        screenshots or links help.
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Contribution
+      options:
+        - label: I would like to implement this myself (see CONTRIBUTING.md)

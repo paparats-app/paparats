@@ -58,12 +58,7 @@ describe("mock channels", () => {
   it("subscribe appends once; unknown channels reject notFound", async () => {
     const { channels } = services;
     const after = await channels.subscribe("vitrazh");
-    expect(after.map((s) => s.channelId)).toEqual([
-      "paparats",
-      "kvetka",
-      "fossfriends",
-      "vitrazh",
-    ]);
+    expect(after.map((s) => s.channelId)).toEqual(["paparats", "kvetka", "fossfriends", "vitrazh"]);
     expect(after.at(-1)).toEqual({ channelId: "vitrazh", paused: false, staleAcknowledged: false });
     expect(await channels.subscribe("vitrazh")).toHaveLength(4);
     await expect(channels.subscribe("nope")).rejects.toMatchObject({ kind: "notFound" });

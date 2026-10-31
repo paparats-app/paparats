@@ -67,9 +67,7 @@ describe("SourcesPanel", () => {
     expect(identity("Paparats")).toHaveTextContent(
       "PpPaparatsOfficialCatalog · by Paparats · 26 apps",
     );
-    expect(identity("Kvetka")).toHaveTextContent(
-      "KvKvetkaVerifiedDeveloper · by Kvetka · 1 app",
-    );
+    expect(identity("Kvetka")).toHaveTextContent("KvKvetkaVerifiedDeveloper · by Kvetka · 1 app");
     expect(identity("FOSS Friends")).toHaveTextContent(
       "FFFOSS FriendsVerifiedCurated · by Kasia L. · 3 apps",
     );

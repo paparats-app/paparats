@@ -204,9 +204,12 @@ describe("Browse", () => {
     expect(
       ids(browseFilter(visible, { ...f, categories: ["system"], portable: true }, ctx)),
     ).toEqual(["shell", "rufus", "vitrazhtweaker"]);
-    expect(ids(browseFilter(visible, { ...f, sources: ["kvetka", "fossfriends"] }, ctx))).toEqual(
-      ["shell", "czkawka", "imageglass", "rufus"],
-    );
+    expect(ids(browseFilter(visible, { ...f, sources: ["kvetka", "fossfriends"] }, ctx))).toEqual([
+      "shell",
+      "czkawka",
+      "imageglass",
+      "rufus",
+    ]);
   });
 
   it("lists an open collection in collection order, visible apps only", () => {

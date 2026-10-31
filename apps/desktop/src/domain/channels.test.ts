@@ -128,7 +128,9 @@ describe("channel lookup", () => {
     expect(normaliseAddress("  HTTPS://www.Kvetka.Example/paparats//  ")).toBe(
       "kvetka.example/paparats",
     );
-    expect(normaliseAddress("http://mpvbuilds.example/paparats")).toBe("mpvbuilds.example/paparats");
+    expect(normaliseAddress("http://mpvbuilds.example/paparats")).toBe(
+      "mpvbuilds.example/paparats",
+    );
   });
 
   it("matches the address, host, @handle or handle", () => {

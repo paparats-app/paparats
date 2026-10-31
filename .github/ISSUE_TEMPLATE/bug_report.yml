@@ -1,0 +1,75 @@
+name: Bug report
+description: Something in the Paparats desktop client does not work as it should.
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Please search the open issues first, and do not report security
+        vulnerabilities here: contact the maintainers privately instead.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected to see instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open Library
+        2. Click Update on …
+        3. …
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: How was the app running?
+      options:
+        - Installed build (NSIS installer)
+        - pnpm tauri dev (simulated world)
+        - PAPARATS_MOCK=1 pnpm tauri dev (mock services in the shell)
+        - PAPARATS_REAL=… pnpm tauri dev (real strategies)
+        - pnpm dev in a browser (mock services)
+    validations:
+      required: true
+  - type: input
+    id: real
+    attributes:
+      label: PAPARATS_REAL value
+      description: Only if you used real strategies, e.g. `inventory,install` or `all`.
+  - type: input
+    id: version
+    attributes:
+      label: Paparats version or commit
+      placeholder: 0.1.0 / f2eb91f
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 24H2 x64
+  - type: dropdown
+    id: theme-locale
+    attributes:
+      label: Theme and language (for visual bugs)
+      multiple: true
+      options:
+        - Dark
+        - Light
+        - English
+        - Беларуская
+        - Русский
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log lines and screenshots
+      description: |
+        Relevant lines from `%LOCALAPPDATA%\com.paparats.desktop\logs\paparats.<date>.log`.
+        Check that they hold no personal data before posting.
+      render: text

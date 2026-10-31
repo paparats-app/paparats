@@ -13,6 +13,7 @@ covers 13 screens, the shell, first launch and every dialog, in dark and light t
 English, Belarusian and Russian. It runs on a simulated world by default, and real
 implementations sit behind an environment variable.
 
+- [Quick start](#quick-start) · [Using the app](#using-the-app)
 - [Requirements](#requirements) · [Setup](#setup) · [Scripts](#scripts)
 - [Architecture map](#architecture-map) · [Mock and real services](#mock-and-real-services) ·
   [Real strategies](#real-strategies)
@@ -20,11 +21,59 @@ implementations sit behind an environment variable.
   [Testing](#testing)
 - [Building the installer](#building-the-installer) · [Code signing](#code-signing) ·
   [Updater keys](#updater-keys)
-- [Developer-mode tools](#developer-mode-tools) · [Known limitations](#known-limitations)
+- [Developer-mode tools](#developer-mode-tools) · [Known limitations](#known-limitations) ·
+  [Contributing](#contributing) · [License](#license)
 
-Rules for contributors (human or agent) are in `CLAUDE.md`. Where things live and what they are
+How to set up, test and send a change is in `CONTRIBUTING.md`. Rules for contributors (human or
+agent) are in `CLAUDE.md`. Where things live and what they are
 called is in `docs/architecture.md`. Judgement calls and every divergence from the design are
 recorded in `docs/decisions.md` (with an index at the top).
+
+## Quick start
+
+The fastest way to see the client is the UI alone in a browser, on the mock services. It needs
+only Node.js ≥ 22 and pnpm 12, and works on Windows, Linux and macOS:
+
+```bash
+corepack enable          # or: npm install -g pnpm@12
+pnpm install
+pnpm dev                 # then open http://localhost:1420
+```
+
+The full desktop app (`pnpm tauri dev`, the Rust core, the installer) needs Windows and the
+toolchain under [Requirements](#requirements); see [Setup](#setup).
+
+## Using the app
+
+The mock and simulated worlds hold the prototype's data set, so every flow works without an
+account or a network. A few things to try:
+
+- **Discover and install.** Home and Browse list the catalog; open an app, press Get and watch the
+  download and the "Installing…" step in the queue. With `pnpm tauri dev` the transfer and the
+  install are simulated by the Rust core; nothing touches the PC.
+- **Updates and Library.** Updates shows the apps with a newer catalog version (six in the demo
+  world); Update all runs them as one batch. Library lists installed apps, favorites and
+  collections.
+- **Channels and ideas.** Settings › Sources › Add channel follows an extra distribution
+  channel; the Ideas board lets you propose, vote on and discuss ideas.
+- **Themes and languages.** Settings switches dark/light and English/Беларуская/Русский.
+- **Developer mode.** Settings › Advanced › Developer mode adds offline simulation, a replay of the
+  first launch and the component gallery (`http://localhost:1420/#/dev` in a browser), described
+  in [Developer-mode tools](#developer-mode-tools).
+- **Deep links.** With the desktop app running, `start paparats://app/<id>` or
+  `start paparats://channel/<id>` in PowerShell opens that page (`deep_link.rs` in
+  `apps/desktop/src-tauri/src/`).
+
+## Platform support
+
+| | Windows | Linux / macOS |
+| --- | --- | --- |
+| `pnpm dev`, `pnpm build`, `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm format:check` | yes | yes |
+| `cargo fmt --all --check` | yes | yes |
+| `pnpm tauri dev` / `pnpm tauri build`, `cargo clippy` / `cargo test --workspace`, `pnpm specta` | yes | no: `paparats-desktop` needs Tauri's Linux system libraries (GTK/WebKitGTK), Clippy flags the Windows-only code of `paparats-install` as dead code, and four `paparats-inventory` tests assume Windows paths |
+
+The client is a Windows product; the Linux column only tells you what a contributor without
+Windows can run.
 
 ## Requirements
 
@@ -522,6 +571,12 @@ Release entry. The reasons are in `docs/decisions.md`. The main ones:
   `@fontsource/onest` versus the prototype's Google Fonts build).
 - **Developer build quirk.** Tray › Quit under `pnpm tauri dev` ends the CLI with
   `ELIFECYCLE … exit code -1`.
+
+## Contributing
+
+Issues and pull requests are welcome. `CONTRIBUTING.md` covers local setup, the checks (`pnpm
+check` is the gate CI runs), code style and commit conventions; the issue and pull request
+templates live in `.github/`.
 
 ## License
 

@@ -21,6 +21,6 @@
     "check": "pnpm typecheck && pnpm lint && pnpm test && pnpm format:check && cargo fmt --all --check && cargo clippy --workspace --all-targets -- -D warnings && cargo test --workspace && pnpm specta:check"
   },
   "devDependencies": {
-    "prettier": "^3.9.8"
+    "prettier": "^3.9.10"
   }
 }

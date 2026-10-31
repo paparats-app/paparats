@@ -150,6 +150,9 @@ fn publish(cdn: &Cdn) {
                 size_bytes: OBS_FILE.len() as u64,
                 strategy: InstallStrategy::PortableZip,
                 signer: None,
+                unsigned: false,
+                machine_wide: false,
+                launch: None,
             }]
         } else {
             Vec::new()

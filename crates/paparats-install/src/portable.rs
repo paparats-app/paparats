@@ -1,9 +1,10 @@
-//! Portable ZIP apps: verified archive → `<apps>\<app-id>\<version>\` (staged, then renamed into
-//! place, so a failed or cancelled extraction leaves nothing) → a Start-menu shortcut to the main
-//! program. Uninstall removes both. Blocking; run on the blocking pool.
+//! Portable apps: a verified ZIP archive (extracted) or a single verified `.exe` (copied) →
+//! `<apps>\<app-id>\<version>\` (staged, then renamed into place, so a failed or cancelled
+//! install leaves nothing) → a Start-menu shortcut to the main program. Uninstall removes both.
+//! Blocking; run on the blocking pool.
 
-use std::fs;
-use std::io;
+use std::fs::{self, File};
+use std::io::{self, Seek};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::AtomicBool;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -35,13 +36,15 @@ fn staging_dir(app_dir: &Path, version: &str) -> PathBuf {
     app_dir.join(format!(".{version}.partial-{}-{nanos}", std::process::id()))
 }
 
-/// Verifies `package` against `sha256`, extracts it and creates the shortcut.
+/// Verifies `package` against `sha256`, extracts it and creates the shortcut. `launch` names the
+/// main program inside the archive (a relative path); without it the program is found by name.
 pub fn install(
     config: &InstallerConfig,
     app_id: &str,
     version: &str,
     package: &Path,
     sha256: Option<&str>,
+    launch: Option<&str>,
     cancel: &AtomicBool,
 ) -> Result<PortableInstall, InstallError> {
     check_component(app_id, "app id")?;
@@ -66,7 +69,15 @@ pub fn install(
         return Err(e);
     }
 
-    let shortcut = match archive::find_main_exe(&dest, app_id)? {
+    let named = launch
+        .map(|rel| launch_path(&dest, rel))
+        .transpose()?
+        .filter(|exe| exe.is_file());
+    let main = match named {
+        Some(exe) => Some(exe),
+        None => archive::find_main_exe(&dest, app_id)?,
+    };
+    let shortcut = match main {
         Some(exe) => {
             let link = shortcut_path(config, &exe)?;
             let dir = exe.parent().unwrap_or(&dest);
@@ -87,6 +98,88 @@ pub fn install(
     Ok(PortableInstall {
         dir: dest,
         shortcut,
+    })
+}
+
+/// `dest` joined with a manifest's relative `launch` path, refusing anything that could leave
+/// `dest` (absolute paths, `..`, drive or stream syntax).
+fn launch_path(dest: &Path, rel: &str) -> Result<PathBuf, InstallError> {
+    let mut path = dest.to_path_buf();
+    for part in rel.split(['/', '\\']).filter(|p| !p.is_empty()) {
+        if !archive::is_plain_component(part) {
+            return Err(InstallError::invalid(
+                "the package's program path is not a plain path",
+            ));
+        }
+        path.push(part);
+    }
+    if path == dest {
+        return Err(InstallError::invalid("the package names no program"));
+    }
+    Ok(path)
+}
+
+/// Copies a verified single-file program (`file`, still locked, hashed and signature-checked by
+/// the caller) to `<apps>\<app-id>\<version>\<name>` and links it from the Start menu. `name` is
+/// the manifest's `launch` file name, or `<app-id>.exe`.
+pub fn install_exe(
+    config: &InstallerConfig,
+    app_id: &str,
+    version: &str,
+    file: &mut File,
+    launch: Option<&str>,
+) -> Result<PortableInstall, InstallError> {
+    check_component(app_id, "app id")?;
+    check_component(version, "version")?;
+    let name = match launch {
+        Some(name) => name.to_owned(),
+        None => format!("{app_id}.exe"),
+    };
+    let is_exe = Path::new(&name)
+        .extension()
+        .and_then(|e| e.to_str())
+        .is_some_and(|e| e.eq_ignore_ascii_case("exe"));
+    if !archive::is_plain_component(&name) || !is_exe {
+        return Err(InstallError::invalid(
+            "a portable program must be a plain .exe file name",
+        ));
+    }
+
+    let app_dir = config.apps_dir.join(app_id);
+    fs::create_dir_all(&app_dir)?;
+    let staging = staging_dir(&app_dir, version);
+    fs::create_dir(&staging)?;
+    let copied = file
+        .rewind()
+        .and_then(|()| {
+            let mut out = File::create(staging.join(&name))?;
+            io::copy(file, &mut out)?;
+            out.sync_all()
+        })
+        .map_err(InstallError::from);
+    if let Err(e) = copied {
+        let _ = fs::remove_dir_all(&staging);
+        return Err(e);
+    }
+
+    let dest = app_dir.join(version);
+    let placed = remove_dir_if_exists(&dest).and_then(|()| Ok(fs::rename(&staging, &dest)?));
+    if let Err(e) = placed {
+        let _ = fs::remove_dir_all(&staging);
+        return Err(e);
+    }
+    let exe = dest.join(&name);
+    let link = shortcut_path(config, &exe)?;
+    let created = fs::create_dir_all(&config.shortcuts_dir)
+        .map_err(InstallError::from)
+        .and_then(|()| sys::create_shortcut(&link, &exe, &dest));
+    if let Err(e) = created {
+        let _ = fs::remove_dir_all(&dest);
+        return Err(e);
+    }
+    Ok(PortableInstall {
+        dir: dest,
+        shortcut: Some(link),
     })
 }
 
@@ -180,6 +273,7 @@ mod tests {
             "1.0",
             &zip,
             Some(&sha),
+            None,
             &AtomicBool::new(false),
         )
         .unwrap();
@@ -229,6 +323,7 @@ mod tests {
             "1.0",
             &zip,
             Some(&sha),
+            None,
             &AtomicBool::new(false),
         )
         .unwrap_err();
@@ -245,6 +340,7 @@ mod tests {
             "1.0",
             &zip,
             Some(&"0".repeat(64)),
+            None,
             &AtomicBool::new(false),
         )
         .unwrap_err();
@@ -257,6 +353,7 @@ mod tests {
             "1.0",
             &zip,
             Some(&sha),
+            None,
             &AtomicBool::new(true),
         )
         .unwrap_err();
@@ -274,6 +371,7 @@ mod tests {
                     version,
                     &zip,
                     Some(&sha),
+                    None,
                     &AtomicBool::new(false)
                 ),
                 Err(InstallError::InvalidPackage(_))

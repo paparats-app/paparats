@@ -36,6 +36,12 @@ pub enum Receipt {
         dir: PathBuf,
         shortcut: Option<PathBuf>,
     },
+    /// A single-file program copied into `dir`.
+    PortableExe {
+        version: String,
+        dir: PathBuf,
+        shortcut: Option<PathBuf>,
+    },
 }
 
 impl Receipt {
@@ -45,6 +51,7 @@ impl Receipt {
             Self::ExeSilent { .. } => "exeSilent",
             Self::Msix { .. } => "msix",
             Self::PortableZip { .. } => "portableZip",
+            Self::PortableExe { .. } => "portableExe",
         }
     }
 }

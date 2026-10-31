@@ -275,6 +275,9 @@ fn releases(channel_id: &str, generated: &str) -> ChannelManifest {
             size_bytes: 1_048_576,
             strategy: InstallStrategy::Msi,
             signer: None,
+            unsigned: false,
+            machine_wide: false,
+            launch: None,
         }],
     }
 }

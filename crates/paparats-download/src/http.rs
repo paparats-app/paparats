@@ -96,7 +96,7 @@ fn file_extension(strategy: &InstallStrategy, url: &Url) -> Option<String> {
         .filter(|e| !e.is_empty());
     let fixed = match strategy {
         InstallStrategy::Msi => "msi",
-        InstallStrategy::ExeSilent { .. } => "exe",
+        InstallStrategy::ExeSilent { .. } | InstallStrategy::PortableExe => "exe",
         InstallStrategy::PortableZip => "zip",
         InstallStrategy::Msix => {
             return Some(

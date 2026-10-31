@@ -843,6 +843,9 @@ mod tests {
                 size_bytes: 1,
                 strategy: paparats_core::InstallStrategy::Msi,
                 signer: None,
+                unsigned: false,
+                machine_wide: false,
+                launch: None,
             }],
         }
     }

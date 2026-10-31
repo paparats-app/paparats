@@ -117,6 +117,9 @@ mod tests {
                 size_bytes: 3_355_443,
                 strategy: InstallStrategy::Msi,
                 signer: Some("Kvetka".into()),
+                unsigned: false,
+                machine_wide: false,
+                launch: None,
             }],
         }
     }

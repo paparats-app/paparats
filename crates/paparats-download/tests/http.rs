@@ -259,6 +259,9 @@ fn job(url: String, body: &[u8], sha: Option<String>) -> Job {
             size_bytes: body.len() as u64,
             strategy: InstallStrategy::Msi,
             signer: None,
+            unsigned: false,
+            machine_wide: false,
+            launch: None,
         },
     }
 }

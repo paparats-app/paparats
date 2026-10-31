@@ -77,6 +77,38 @@ pub struct App {
     /// How the inventory recognises this app on the PC; absent = only the portable copies Paparats
     /// extracted itself are found.
     pub detection: Option<AppDetection>,
+    /// Where the app comes from and what that means for the user. The real catalog fills it from
+    /// the app's GitHub repository; the demo world has none.
+    #[serde(default)]
+    pub source: Option<AppSource>,
+}
+
+/// An app's GitHub repository and the facts the catalog bot read from it and from the release
+/// it picked.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub struct AppSource {
+    /// `owner/name` on GitHub; the release files come from its Releases.
+    pub repo: String,
+    /// GitHub stars when the catalog was built (shown instead of ratings).
+    pub stars: u32,
+    /// When the repository was created: the project's age on the "Rising" shelf.
+    pub since: IsoDate,
+    /// The project's website, when it names one.
+    pub homepage: Option<String>,
+    /// "Support the author" links from the repository's `FUNDING.yml`.
+    #[serde(default)]
+    pub funding: Vec<String>,
+    /// The version is a 0.x release (the project calls it early).
+    #[serde(default)]
+    pub early: bool,
+    /// The author does not sign the installer; Paparats checks it against the catalog's
+    /// SHA-256 only.
+    #[serde(default)]
+    pub unsigned: bool,
+    /// Installing asks for administrator rights.
+    #[serde(default)]
+    pub needs_admin: bool,
 }
 
 impl App {
@@ -110,6 +142,8 @@ pub enum HeroTarget {
     Library,
     Categories,
     Subscription,
+    /// The "Rising" collection (young projects), opened in Browse.
+    Rising,
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Type)]

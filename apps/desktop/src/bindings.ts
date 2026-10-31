@@ -182,6 +182,11 @@ export type App = {
    *  extracted itself are found.
    */
   detection: AppDetection | null;
+  /**
+   *  Where the app comes from and what that means for the user. The real catalog fills it from
+   *  the app's GitHub repository; the demo world has none.
+   */
+  source?: AppSource | null;
 };
 
 /**
@@ -233,6 +238,32 @@ export type AppError =
 export type AppInfo = {
   name: string;
   version: string;
+};
+
+/**
+ *  An app's GitHub repository and the facts the catalog bot read from it and from the release
+ *  it picked.
+ */
+export type AppSource = {
+  /**  `owner/name` on GitHub; the release files come from its Releases. */
+  repo: string;
+  /**  GitHub stars when the catalog was built (shown instead of ratings). */
+  stars: number;
+  /**  When the repository was created: the project's age on the "Rising" shelf. */
+  since: string;
+  /**  The project's website, when it names one. */
+  homepage: string | null;
+  /**  "Support the author" links from the repository's `FUNDING.yml`. */
+  funding?: string[];
+  /**  The version is a 0.x release (the project calls it early). */
+  early?: boolean;
+  /**
+   *  The author does not sign the installer; Paparats checks it against the catalog's
+   *  SHA-256 only.
+   */
+  unsigned?: boolean;
+  /**  Installing asks for administrator rights. */
+  needsAdmin?: boolean;
 };
 
 /**  Featured-app slide on Browse. */
@@ -427,6 +458,24 @@ export type DownloadStateChange = {
  */
 export type DownloadStateEvent = DownloadStateChange;
 
+/**
+ *  Storefront surfaces that need a server Paparats does not run yet. The demo world shows them
+ *  all; the real catalog turns off the ones with nothing behind them, so the client never shows
+ *  made-up numbers or buttons that cannot work.
+ */
+export type Features = {
+  /**  Paparats Pro: plans, the subscription screen, Pro badges and notes. */
+  pro: boolean;
+  /**  Signing in, the profile, devices and activity. */
+  account: boolean;
+  /**  The ideas board and idea pages. */
+  ideas: boolean;
+  /**  Channels besides the official catalog: adding and following them, channel pages. */
+  channels: boolean;
+  /**  User ratings and reviews (the real catalog shows GitHub stars instead). */
+  reviews: boolean;
+};
+
 /**  Where a channel's binaries are served from. */
 export type FileHost =
   /**  Paparats CDN. */
@@ -447,7 +496,13 @@ export type HeroSlide = {
 };
 
 /**  Where a Home hero slide's call to action leads. */
-export type HeroTarget = "browse" | "library" | "categories" | "subscription";
+export type HeroTarget =
+  | "browse"
+  | "library"
+  | "categories"
+  | "subscription"
+  /**  The "Rising" collection (young projects), opened in Browse. */
+  | "rising";
 
 export type Idea = {
   id: string;
@@ -522,6 +577,11 @@ export type InstallStrategy =
   | { kind: "msix" }
   /**  Extract to the per-user apps directory and create a shortcut. */
   | { kind: "portableZip" }
+  /**
+   *  A program that is a single `.exe`: copied to the per-user apps directory, with a
+   *  Start-menu shortcut. Signature-checked like an installer.
+   */
+  | { kind: "portableExe" }
   /**  No file-system side effects: holds in "installing" for a few ticks, then succeeds. */
   | { kind: "simulated" };
 
@@ -574,6 +634,22 @@ export type Package = {
    *  signature.
    */
   signer: string | null;
+  /**
+   *  The author does not sign this file. An EXE/MSI from the official catalog may still run:
+   *  the signed catalog pins its SHA-256, and the UI says the installer is unsigned. Absent =
+   *  `false`.
+   */
+  unsigned?: boolean;
+  /**
+   *  The installer writes for all users (Program Files, HKLM): it runs elevated and Windows asks
+   *  for administrator rights. Absent = `false` (per-user).
+   */
+  machineWide?: boolean;
+  /**
+   *  The program to start, relative to where the package lands: the file a portable package
+   *  copies or links from the Start menu, and the first guess for "Open". `None` = found by name.
+   */
+  launch?: string | null;
 };
 
 /**
@@ -603,6 +679,8 @@ export type PlatformInfo = {
   platformStats: PlatformStats;
   plans: Plan[];
   about: AboutInfo;
+  /**  Which storefront surfaces the catalog turns on. Absent = all of them (the demo world). */
+  features?: Features;
 };
 
 /**  Ecosystem numbers (Subscription › right column). Shown as "50+", "10,000+". */

@@ -144,4 +144,37 @@ pub struct PlatformInfo {
     pub platform_stats: PlatformStats,
     pub plans: Vec<Plan>,
     pub about: super::settings::AboutInfo,
+    /// Which storefront surfaces the catalog turns on. Absent = all of them (the demo world).
+    #[serde(default)]
+    pub features: Features,
+}
+
+/// Storefront surfaces that need a server Paparats does not run yet. The demo world shows them
+/// all; the real catalog turns off the ones with nothing behind them, so the client never shows
+/// made-up numbers or buttons that cannot work.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Type)]
+#[serde(rename_all = "camelCase")]
+pub struct Features {
+    /// Paparats Pro: plans, the subscription screen, Pro badges and notes.
+    pub pro: bool,
+    /// Signing in, the profile, devices and activity.
+    pub account: bool,
+    /// The ideas board and idea pages.
+    pub ideas: bool,
+    /// Channels besides the official catalog: adding and following them, channel pages.
+    pub channels: bool,
+    /// User ratings and reviews (the real catalog shows GitHub stars instead).
+    pub reviews: bool,
+}
+
+impl Default for Features {
+    fn default() -> Self {
+        Self {
+            pro: true,
+            account: true,
+            ideas: true,
+            channels: true,
+            reviews: true,
+        }
+    }
 }

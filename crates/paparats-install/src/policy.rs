@@ -1,6 +1,7 @@
 //! The signature policy for EXE/MSI installers: they run only with an Authenticode signature
-//! Windows trusts (and, when the manifest names one, by that signer). The single exception is a
-//! package from a community channel whose unsigned-binary warning the user accepted.
+//! Windows trusts (and, when the manifest names one, by that signer). Two exceptions: a package
+//! from a community channel whose unsigned-binary warning the user accepted, and a package the
+//! official catalog declares unsigned (its author signs nothing) while pinning its SHA-256.
 
 use paparats_core::{Package, TrustLevel};
 
@@ -14,6 +15,9 @@ pub struct PackageTrust {
     pub channel: TrustLevel,
     /// The user accepted the "unsigned binary" warning for this package.
     pub unsigned_accepted: bool,
+    /// The manifest declares the file unsigned and pins its hash (`Package::unsigned` with a
+    /// SHA-256). Honoured for the official catalog only.
+    pub pinned_unsigned: bool,
 }
 
 impl PackageTrust {
@@ -21,11 +25,22 @@ impl PackageTrust {
     pub const STRICT: Self = Self {
         channel: TrustLevel::Official,
         unsigned_accepted: false,
+        pinned_unsigned: false,
     };
 
     /// Whether an unsigned EXE/MSI may run.
     pub fn allows_unsigned(self) -> bool {
-        self.channel == TrustLevel::Community && self.unsigned_accepted
+        (self.channel == TrustLevel::Community && self.unsigned_accepted)
+            || (self.channel == TrustLevel::Official && self.pinned_unsigned)
+    }
+
+    /// This trust with what `package` itself declares: an unsigned file whose hash the
+    /// manifest pins.
+    pub fn for_package(self, package: &Package) -> Self {
+        Self {
+            pinned_unsigned: package.unsigned && package.sha256.is_some(),
+            ..self
+        }
     }
 }
 
@@ -99,6 +114,7 @@ mod tests {
     const COMMUNITY_ACCEPTED: PackageTrust = PackageTrust {
         channel: TrustLevel::Community,
         unsigned_accepted: true,
+        pinned_unsigned: false,
     };
 
     #[test]
@@ -126,10 +142,18 @@ mod tests {
             PackageTrust {
                 channel: TrustLevel::Verified,
                 unsigned_accepted: true,
+                pinned_unsigned: false,
             },
             PackageTrust {
                 channel: TrustLevel::Community,
                 unsigned_accepted: false,
+                pinned_unsigned: false,
+            },
+            // A pinned hash vouches for an unsigned file only in the official catalog.
+            PackageTrust {
+                channel: TrustLevel::Community,
+                unsigned_accepted: false,
+                pinned_unsigned: true,
             },
         ] {
             assert!(matches!(
@@ -142,6 +166,37 @@ mod tests {
             authorize(unsigned(), Some("Kvetka"), COMMUNITY_ACCEPTED),
             Err(InstallError::Unsigned)
         ));
+    }
+
+    #[test]
+    fn the_official_catalog_may_vouch_for_an_unsigned_file_by_its_hash() {
+        let unsigned = || Err(AuthenticodeError::Unsigned);
+        let mut package = Package::simulated("flow", "2.0", 10.0);
+        // Declared unsigned, but no hash: still refused.
+        package.unsigned = true;
+        let trust = PackageTrust::STRICT.for_package(&package);
+        assert!(!trust.allows_unsigned());
+        assert!(matches!(
+            authorize(unsigned(), None, trust),
+            Err(InstallError::Unsigned)
+        ));
+        // Declared unsigned with a pinned hash: allowed.
+        package.sha256 = Some("ab".repeat(32));
+        let trust = PackageTrust::STRICT.for_package(&package);
+        assert!(trust.allows_unsigned());
+        assert!(matches!(authorize(unsigned(), None, trust), Ok(None)));
+        // A broken signature is never waived, declared or not.
+        assert!(matches!(
+            authorize(
+                Err(AuthenticodeError::Untrusted(TrustFailure::Tampered)),
+                None,
+                trust
+            ),
+            Err(InstallError::BadSignature(TrustFailure::Tampered))
+        ));
+        // Not declared: the usual strict rule.
+        package.unsigned = false;
+        assert!(!PackageTrust::STRICT.for_package(&package).allows_unsigned());
     }
 
     #[test]
@@ -168,6 +223,7 @@ mod tests {
                 TrustLevel::Official
             },
             unsigned_accepted: true,
+            pinned_unsigned: false,
         };
         let shell = Package::simulated("shell", "1", 1.0);
         let vlc = Package::simulated("vlc", "1", 1.0);

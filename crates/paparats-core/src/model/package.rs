@@ -24,6 +24,9 @@ pub enum InstallStrategy {
     Msix,
     /// Extract to the per-user apps directory and create a shortcut.
     PortableZip,
+    /// A program that is a single `.exe`: copied to the per-user apps directory, with a
+    /// Start-menu shortcut. Signature-checked like an installer.
+    PortableExe,
     /// No file-system side effects: holds in "installing" for a few ticks, then succeeds.
     Simulated,
 }
@@ -47,6 +50,19 @@ pub struct Package {
     /// (`CN=…, O=…, C=…`), compared case-insensitively. `None` (null or absent) = any valid
     /// signature.
     pub signer: Option<String>,
+    /// The author does not sign this file. An EXE/MSI from the official catalog may still run:
+    /// the signed catalog pins its SHA-256, and the UI says the installer is unsigned. Absent =
+    /// `false`.
+    #[serde(default)]
+    pub unsigned: bool,
+    /// The installer writes for all users (Program Files, HKLM): it runs elevated and Windows asks
+    /// for administrator rights. Absent = `false` (per-user).
+    #[serde(default)]
+    pub machine_wide: bool,
+    /// The program to start, relative to where the package lands: the file a portable package
+    /// copies or links from the Start menu, and the first guess for "Open". `None` = found by name.
+    #[serde(default)]
+    pub launch: Option<String>,
 }
 
 impl Package {
@@ -60,6 +76,9 @@ impl Package {
             size_bytes: mb_to_bytes(size_mb),
             strategy: InstallStrategy::Simulated,
             signer: None,
+            unsigned: false,
+            machine_wide: false,
+            launch: None,
         }
     }
 }

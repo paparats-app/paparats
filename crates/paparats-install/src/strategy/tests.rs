@@ -32,6 +32,9 @@ fn package(app_id: &str, version: &str, strategy: InstallStrategy, file: Option<
         size_bytes: file.map_or(0, |f| fs::metadata(f).unwrap().len()),
         strategy,
         signer: None,
+        unsigned: false,
+        machine_wide: false,
+        launch: None,
     }
 }
 
@@ -276,6 +279,7 @@ async fn exe_silent_enforces_the_signature_policy() {
         Arc::new(|_: &Package| PackageTrust {
             channel: TrustLevel::Community,
             unsigned_accepted: true,
+            pinned_unsigned: false,
         }),
     );
     install(&community, &p, Some(&unsigned), &target)
@@ -392,4 +396,100 @@ async fn real_machine_wide_msi_install() {
     };
     let installed = install(&installer, &p, Some(&msi), &target).await.unwrap();
     installer.uninstall(&installed).await.unwrap();
+}
+
+#[cfg(windows)]
+#[tokio::test]
+async fn a_single_exe_program_is_copied_linked_updated_and_removed() {
+    let root = tempfile::tempdir().unwrap();
+    let installer = installer(root.path());
+    let config = installer.config().clone();
+    let target = InstallTarget::default();
+
+    // An unsigned program: the strict policy refuses it unless the catalog declares it
+    // unsigned and pins its hash.
+    let v1 = root.path().join("download-1.exe");
+    fs::write(&v1, b"MZ painter 1").unwrap();
+    let mut p1 = package("painter", "1.0", InstallStrategy::PortableExe, Some(&v1));
+    p1.launch = Some("Painter.exe".into());
+    let err = install(&installer, &p1, Some(&v1), &target)
+        .await
+        .unwrap_err();
+    assert!(matches!(err, InstallError::Unsigned), "{err:?}");
+    assert!(!config.apps_dir.join("painter").join("1.0").exists());
+
+    p1.unsigned = true;
+    install(&installer, &p1, Some(&v1), &target).await.unwrap();
+    assert_eq!(
+        fs::read(config.apps_dir.join("painter/1.0/Painter.exe")).unwrap(),
+        b"MZ painter 1"
+    );
+    let link = config.shortcuts_dir.join("Painter.lnk");
+    assert!(link.is_file());
+
+    // A wrong hash is refused before anything is copied.
+    let mut tampered = p1.clone();
+    tampered.version = "1.1".into();
+    tampered.sha256 = Some("0".repeat(64));
+    let err = install(&installer, &tampered, Some(&v1), &target)
+        .await
+        .unwrap_err();
+    assert!(matches!(err, InstallError::HashMismatch), "{err:?}");
+    assert!(!config.apps_dir.join("painter/1.1").exists());
+
+    // An update replaces it; the shortcut keeps its name.
+    let v2 = root.path().join("download-2.exe");
+    fs::write(&v2, b"MZ painter 2").unwrap();
+    let mut p2 = package("painter", "2.0", InstallStrategy::PortableExe, Some(&v2));
+    p2.launch = Some("Painter.exe".into());
+    p2.unsigned = true;
+    install(&installer, &p2, Some(&v2), &target).await.unwrap();
+    assert!(!config.apps_dir.join("painter/1.0").exists());
+    assert_eq!(
+        fs::read(config.apps_dir.join("painter/2.0/Painter.exe")).unwrap(),
+        b"MZ painter 2"
+    );
+    assert!(link.is_file());
+
+    installer.uninstall(&app("painter", "2.0")).await.unwrap();
+    assert!(!config.apps_dir.join("painter").exists());
+    assert!(!link.exists());
+
+    // A launch name that is not a plain .exe file name is refused.
+    for bad in [r"..\evil.exe", "tool.bat", "dir/Tool.exe"] {
+        let mut p = package("painter", "3.0", InstallStrategy::PortableExe, Some(&v2));
+        p.unsigned = true;
+        p.launch = Some(bad.into());
+        let err = install(&installer, &p, Some(&v2), &target)
+            .await
+            .unwrap_err();
+        assert!(
+            matches!(err, InstallError::InvalidPackage(_)),
+            "{bad}: {err:?}"
+        );
+    }
+}
+
+#[cfg(windows)]
+#[tokio::test]
+async fn a_zip_names_its_program_with_launch() {
+    let root = tempfile::tempdir().unwrap();
+    let installer = installer(root.path());
+    let config = installer.config().clone();
+    let zip = root.path().join("suite.zip");
+    // Two programs; by name alone the bigger helper could win, `launch` picks the app.
+    crate::archive::tests::write_zip(
+        &zip,
+        &[
+            ("Suite/Helper.exe", b"MZ a much larger helper program"),
+            ("Suite/bin/Suite.exe", b"MZ app"),
+        ],
+    );
+    let mut p = package("suite", "1.0", InstallStrategy::PortableZip, Some(&zip));
+    p.launch = Some("Suite/bin/Suite.exe".into());
+    install(&installer, &p, Some(&zip), &InstallTarget::default())
+        .await
+        .unwrap();
+    assert!(config.shortcuts_dir.join("Suite.lnk").is_file());
+    assert!(!config.shortcuts_dir.join("Helper.lnk").exists());
 }

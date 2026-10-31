@@ -20,12 +20,16 @@ import styles from "./HomeScreen.module.css";
 /** Number of apps under "Recently updated" (two rows of three). */
 const RECENT_COUNT = 6;
 
+/** Collection id of the "Rising" shelf (young projects) in the real catalog's editorial data. */
+const RISING_COLLECTION = "rising";
+
 /** Where each hero slide's call to action leads; Browse opens unfiltered, like the sidebar. */
 const HERO_TARGETS: Readonly<Record<HeroTarget, NavTarget>> = {
   browse: { to: "browse", filters: {} },
   library: { to: "library" },
   categories: { to: "categories" },
   subscription: { to: "subscription" },
+  rising: { to: "browse", filters: { collection: RISING_COLLECTION } },
 };
 
 /** "See all" under Home opens Browse with every filter reset (the prototype's sidebar item). */

@@ -24,7 +24,7 @@ use crate::{
     authenticode, msix, portable, sys, verify,
 };
 
-/// MSI, EXE silent, MSIX and portable ZIP behind the [`Installer`] trait.
+/// MSI, EXE silent, MSIX, portable ZIP and portable EXE behind the [`Installer`] trait.
 pub struct StrategyInstaller {
     config: Arc<InstallerConfig>,
     trust: Arc<dyn TrustSource>,
@@ -101,12 +101,20 @@ fn verify_signed(
 ) -> Result<File, InstallError> {
     let file = verify::open_verified(path, package.sha256.as_deref())?;
     let verdict = authenticode::verify_file(&file, path);
-    match policy::authorize(verdict, package.signer.as_deref(), trust)? {
+    match policy::authorize(
+        verdict,
+        package.signer.as_deref(),
+        trust.for_package(package),
+    )? {
         Some(signer) => tracing::info!(
             app = %package.app_id,
             signer = %signer.common_name,
             source = ?signer.source,
             "installer signature verified"
+        ),
+        None if package.unsigned => tracing::info!(
+            app = %package.app_id,
+            "running an unsigned file the official catalog pins by SHA-256"
         ),
         None => tracing::warn!(
             app = %package.app_id,
@@ -174,7 +182,9 @@ impl StrategyInstaller {
         })
         .await?;
         ensure_open(gate)?;
-        let scope = match (request.target.per_user, info.per_user_capable) {
+        // A package that only installs for all users elevates whatever the setting says.
+        let per_user = request.target.per_user && !request.package.machine_wide;
+        let scope = match (per_user, info.per_user_capable) {
             (true, true) => MsiScope::PerUser,
             (true, false) => return Err(InstallError::NeedsMachineWide),
             (false, _) => MsiScope::MachineWide,
@@ -227,7 +237,7 @@ impl StrategyInstaller {
         let checked = path.clone();
         let file = blocking(gate, move |_| verify_signed(&checked, &package, trust)).await?;
         ensure_open(gate)?;
-        let machine_wide = !request.target.per_user;
+        let machine_wide = !request.target.per_user || request.package.machine_wide;
         tracing::info!(app = %request.package.app_id, machine_wide, "running the installer");
         let code = process::run(Run {
             dir: process::parent_dir(&path),
@@ -294,13 +304,22 @@ impl StrategyInstaller {
         let app_id = request.package.app_id.clone();
         let previous = self.receipts.load(&app_id)?;
         let config = Arc::clone(&self.config);
-        let (id, version, sha256) = (
+        let (id, version, sha256, launch) = (
             app_id.clone(),
             request.package.version.clone(),
             request.package.sha256.clone(),
+            request.package.launch.clone(),
         );
         let placed = blocking(gate, move |cancel| {
-            portable::install(&config, &id, &version, &path, sha256.as_deref(), cancel)
+            portable::install(
+                &config,
+                &id,
+                &version,
+                &path,
+                sha256.as_deref(),
+                launch.as_deref(),
+                cancel,
+            )
         })
         .await?;
         self.receipts.save(
@@ -313,7 +332,9 @@ impl StrategyInstaller {
         )?;
         // An update replaces the previous version: remove what it left that the new one does
         // not reuse (best effort — the new version is installed either way).
-        if let Some(Receipt::PortableZip { dir, shortcut, .. }) = previous
+        if let Some(
+            Receipt::PortableZip { dir, shortcut, .. } | Receipt::PortableExe { dir, shortcut, .. },
+        ) = previous
             && dir != placed.dir
         {
             let config = Arc::clone(&self.config);
@@ -328,6 +349,58 @@ impl StrategyInstaller {
             }
         }
         tracing::info!(app = %app_id, strategy = "portableZip", "installed");
+        Ok(Self::installed(&request))
+    }
+
+    async fn install_portable_exe(
+        &self,
+        request: InstallRequest<'_>,
+        gate: &mut Gate,
+    ) -> Result<InstalledApp, InstallError> {
+        let path = request.file.ok_or(InstallError::MissingFile)?.to_path_buf();
+        ensure_open(gate)?;
+        let app_id = request.package.app_id.clone();
+        let previous = self.receipts.load(&app_id)?;
+        let package = request.package.clone();
+        let trust = self.trust.trust(request.package);
+        let config = Arc::clone(&self.config);
+        // Hash and signature first, then the copy from the same locked handle.
+        let placed = blocking(gate, move |_| {
+            let mut file = verify_signed(&path, &package, trust)?;
+            portable::install_exe(
+                &config,
+                &package.app_id,
+                &package.version,
+                &mut file,
+                package.launch.as_deref(),
+            )
+        })
+        .await?;
+        self.receipts.save(
+            &app_id,
+            &Receipt::PortableExe {
+                version: request.package.version.clone(),
+                dir: placed.dir.clone(),
+                shortcut: placed.shortcut.clone(),
+            },
+        )?;
+        if let Some(
+            Receipt::PortableZip { dir, shortcut, .. } | Receipt::PortableExe { dir, shortcut, .. },
+        ) = previous
+            && dir != placed.dir
+        {
+            let config = Arc::clone(&self.config);
+            let old_link = shortcut.filter(|l| Some(l) != placed.shortcut.as_ref());
+            let id = app_id.clone();
+            let cleaned = tokio::task::spawn_blocking(move || {
+                portable::remove(&config, &id, &dir, old_link.as_deref())
+            })
+            .await;
+            if !matches!(cleaned, Ok(Ok(()))) {
+                tracing::warn!(app = %app_id, "could not remove the previous portable version");
+            }
+        }
+        tracing::info!(app = %app_id, strategy = "portableExe", "installed");
         Ok(Self::installed(&request))
     }
 
@@ -361,7 +434,8 @@ impl StrategyInstaller {
                 let _turn = self.exclusive.lock().await;
                 tokio::task::spawn_blocking(move || sys::msix_remove(&name, &publisher)).await??;
             }
-            Receipt::PortableZip { dir, shortcut, .. } => {
+            Receipt::PortableZip { dir, shortcut, .. }
+            | Receipt::PortableExe { dir, shortcut, .. } => {
                 let config = Arc::clone(&self.config);
                 let id = app_id.to_owned();
                 tokio::task::spawn_blocking(move || {
@@ -389,6 +463,7 @@ impl Installer for StrategyInstaller {
                 InstallStrategy::ExeSilent { args } => self.install_exe(request, args, gate).await,
                 InstallStrategy::Msix => self.install_msix(request, gate).await,
                 InstallStrategy::PortableZip => self.install_portable(request, gate).await,
+                InstallStrategy::PortableExe => self.install_portable_exe(request, gate).await,
             }
         })
     }

@@ -6,6 +6,8 @@ import type { SelfUpdateCheck } from "@/services/types";
 export interface SystemActions {
   /** Settings › About › Check for updates (the Paparats client itself). */
   checkForAppUpdate(): Promise<SelfUpdateCheck>;
+  /** Settings › About › Install version … (after a check found one). */
+  installAppUpdate(): Promise<void>;
   /** Opens an `https:` / `mailto:` address in the default browser. */
   openExternal(url: string): Promise<void>;
   copyToClipboard(text: string): Promise<void>;
@@ -18,6 +20,7 @@ export function useSystemActions(): SystemActions {
   return useMemo(
     () => ({
       checkForAppUpdate: () => system.checkForAppUpdate(),
+      installAppUpdate: () => system.installAppUpdate(),
       openExternal: (url) => system.openExternal(url),
       copyToClipboard: (text) => system.copyToClipboard(text),
       setAutostart: (enabled) => system.setAutostart(enabled),

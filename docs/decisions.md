@@ -77,6 +77,7 @@ in place, marked with the entry that replaced it.
 | [D63](#d63--one-native-resize-listener-for-the-window-controls-m9) | One native resize listener for the window controls | M9 | |
 | [D64](#d64--divergences-from-stackmd-found-at-release) | Divergences from `STACK.md` found at release | Release | |
 | [D65](#d65--fictional-developers-in-the-demo-world) | Fictional developers in the demo world | Publication | |
+| [D66](#d66--releases-from-tags-and-the-clients-own-update) | Releases from tags and the client's own update | Publication | |
 
 ## D1 — Toolchain versions (M0)
 Tauri 2.11, React 19.1, TypeScript 6.0, Vite 8, ESLint 10, Vitest 5, react-router 8, i18next 26,
@@ -1503,3 +1504,26 @@ code, the tests and the docs, so `scripts/port-fixtures.mjs` still reproduces th
 the demo catalog, including mpv, stay real: the catalog lists them under their real publishers.
 `.example` is the domain that RFC 2606 reserves for documentation, so the demo addresses can never
 point at someone's site.
+
+### D66 — Releases from tags and the client's own update
+- **Releases.** A tag `vX.Y.Z` runs `.github/workflows/release.yml`. The job checks that the tag
+  matches the version in `Cargo.toml`, `apps/desktop/package.json` and `tauri.conf.json`
+  (`scripts/version.mjs`) and that `docs/releases/vX.Y.Z.md` exists. It runs the whole gate and
+  builds the NSIS installer with its minisign signature. `scripts/release-manifest.mjs` writes
+  `latest.json` and `SHA256SUMS`, and the job drafts a GitHub Release with them. A person
+  publishes the draft: a published release reaches every installed client.
+- **Keys.** The updater key lives in the `release` environment, whose deployment policy admits
+  `v*` tags only. The owner keeps an offline copy. The public key is in
+  `plugins.updater.pubkey`, and the endpoint is
+  `https://github.com/paparats-app/paparats/releases/latest/download/latest.json`.
+  `releases/latest` skips pre-releases, so betas ship as ordinary 0.x releases.
+- **Hosts.** `paparats-app.github.io`, `github.com` and the two hosts GitHub redirects release
+  downloads to are first-party (`paparats-core::hosts`). The `paparats.app` hosts stay until the
+  real catalog replaces them.
+- **Installing an update** (not in the prototype). Once "Check for updates" has found a newer
+  version, the same button reads "Install version …". It calls `downloadAndInstall()`: the
+  plugin verifies the download against the pinned key, and the NSIS installer then closes the app
+  and starts the new version. A failure shows "Couldn't install the update. Try again later." and
+  the button can be pressed again. The tray's "Check for updates" still only reports.
+- **Versions.** The first public build is 0.0.1, the demo world, so 0.1.0 with real installs
+  is an update for it.

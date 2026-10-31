@@ -21,6 +21,8 @@ export function createMockSystemService(ctx: MockContext): SystemService {
       await delay(SELF_UPDATE_CHECK_MS);
       return { kind: "upToDate" };
     },
+    // The demo world is always up to date, so there is never anything to install.
+    installAppUpdate: () => ctx.respond(() => undefined),
     openExternal: (url) => ctx.respond(() => void externalUrl(url)),
     copyToClipboard: browserCopyToClipboard,
     setAutostart: () => ctx.respond(() => undefined),

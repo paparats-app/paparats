@@ -102,6 +102,31 @@ describe("AboutPanel", () => {
     expect(screen.queryByText("You’re up to date!")).toBeNull();
   });
 
+  it("installs the version a check found; a failed install is reported and can be retried", async () => {
+    const services = createTestServices();
+    vi.spyOn(services.system, "checkForAppUpdate").mockResolvedValue({
+      kind: "available",
+      version: "1.3.0",
+    });
+    let fail!: (e: Error) => void;
+    const install = vi
+      .spyOn(services.system, "installAppUpdate")
+      .mockImplementationOnce(() => new Promise<void>((_, reject) => (fail = reject)));
+    const user = userEvent.setup();
+    await openAbout(services);
+    await user.click(screen.getByRole("button", { name: "Check for updates" }));
+    const button = await screen.findByRole("button", { name: "Install version 1.3.0" });
+    await user.click(button);
+    expect(install).toHaveBeenCalledTimes(1);
+    expect(button).toHaveTextContent("Installing…");
+    // Presses while it installs do nothing.
+    await user.click(button);
+    expect(install).toHaveBeenCalledTimes(1);
+    fail(new Error("bad signature"));
+    expect(await screen.findByRole("button", { name: "Install version 1.3.0" })).toBeEnabled();
+    expect(toast()).toBe("Couldn’t install the update. Try again later.");
+  });
+
   it("returns quietly when the check fails", async () => {
     const services = createTestServices();
     vi.spyOn(services.system, "checkForAppUpdate").mockRejectedValue(new Error("offline"));

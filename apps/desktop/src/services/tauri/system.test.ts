@@ -1,5 +1,5 @@
 // SystemService's plugin-backed parts and the native shell against @tauri-apps/api/mocks: the
-// update check (tauri-plugin-updater), start on login (tauri-plugin-autostart), and the shell's
+// update check and install (tauri-plugin-updater), start on login (tauri-plugin-autostart), and the shell's
 // commands and events (`tauriShell`).
 import { emit } from "@tauri-apps/api/event";
 import { clearMocks, mockIPC } from "@tauri-apps/api/mocks";
@@ -10,6 +10,7 @@ import {
   UPDATE_CHECK_TIMEOUT_MS,
   checkForClientUpdate,
   createTauriSystemService,
+  installClientUpdate,
   tauriShell,
 } from "./system";
 
@@ -93,6 +94,47 @@ describe("checkForAppUpdate (tauri-plugin-updater)", () => {
     expect(settled).toBeNull();
     await vi.advanceTimersByTimeAsync(1);
     expect(settled).toEqual({ kind: "upToDate" });
+  });
+});
+
+describe("installAppUpdate (tauri-plugin-updater)", () => {
+  const metadata = {
+    rid: 9,
+    currentVersion: "0.1.0",
+    version: "0.2.0",
+    date: "2026-09-20T10:00:00Z",
+    body: "Notes",
+    rawJson: {},
+  };
+
+  it("checks again, then downloads and installs the update it found", async () => {
+    core({
+      "plugin:updater|check": () => metadata,
+      "plugin:updater|download_and_install": () => null,
+    });
+    await expect(installClientUpdate()).resolves.toBeUndefined();
+    expect(commandsCalled()).toEqual([
+      "plugin:updater|check",
+      "plugin:updater|download_and_install",
+    ]);
+    const install = calls.find((c) => c.cmd === "plugin:updater|download_and_install");
+    expect(install?.args).toMatchObject({ rid: 9 });
+  });
+
+  it("does nothing when nothing newer is published", async () => {
+    core({ "plugin:updater|check": () => null });
+    await expect(installClientUpdate()).resolves.toBeUndefined();
+    expect(commandsCalled()).toEqual(["plugin:updater|check"]);
+  });
+
+  it("rejects with a service error when the download or its signature fails", async () => {
+    core({
+      "plugin:updater|check": () => metadata,
+      "plugin:updater|download_and_install": () => {
+        throw "the signature of the update does not match";
+      },
+    });
+    await expect(installClientUpdate()).rejects.toBeInstanceOf(ServiceError);
   });
 });
 

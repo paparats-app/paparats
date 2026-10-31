@@ -191,6 +191,12 @@ export interface SystemService {
   onConnectivityChange(listener: (online: boolean) => void): Unsubscribe;
   /** Settings › About › Check for updates (the Paparats client itself). */
   checkForAppUpdate(): Promise<SelfUpdateCheck>;
+  /**
+   * Downloads and installs the newer client version the last check found. On Windows the
+   * installer takes over: the app exits and starts again on the new version. Resolves without
+   * doing anything when there is no update.
+   */
+  installAppUpdate(): Promise<void>;
   /** Opens an https URL in the default browser (links in About, support addresses). */
   openExternal(url: string): Promise<void>;
   copyToClipboard(text: string): Promise<void>;

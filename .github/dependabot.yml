@@ -1,0 +1,31 @@
+# Weekly dependency updates, one grouped pull request per ecosystem. tauri-specta, specta and
+# specta-typescript are pinned on purpose (docs/decisions.md D1) and are updated by hand.
+version: 2
+updates:
+  - package-ecosystem: cargo
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      cargo:
+        patterns: ["*"]
+    ignore:
+      - dependency-name: tauri-specta
+      - dependency-name: specta
+      - dependency-name: specta-typescript
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      npm:
+        patterns: ["*"]
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ["*"]

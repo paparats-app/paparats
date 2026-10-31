@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Paparats",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "identifier": "com.paparats.desktop",
   "build": {
     "beforeDevCommand": "pnpm dev",
@@ -45,8 +45,10 @@
       }
     },
     "updater": {
-      "endpoints": ["https://updates.paparats.app/latest.json"],
-      "pubkey": "PLACEHOLDER-NOT-A-KEY: replace with the minisign public key printed by `pnpm tauri signer generate` (docs/decisions.md › Windows integration). Update checks work without it; installing an update fails signature verification until it is set."
+      "endpoints": [
+        "https://github.com/paparats-app/paparats/releases/latest/download/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDExNENCRUE3RkU2QkUxOTkKUldTWjRXditwNzVNRVVGNVZJcU9XcklUNm1ZYmh0K0s5MEdmNWYzeXRFV3FGWGFBM0hNL0ErNlkK"
     }
   },
   "bundle": {

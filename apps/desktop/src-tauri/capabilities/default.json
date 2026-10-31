@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "The main window, and only what its UI calls: the app's own commands (app_commands.rs, one allow-<command> each), typed events, the frameless window chrome, links in the default browser, the settings store, start on login and the update check. Rust-only plugins (window-state, single-instance, deep-link) need nothing here.",
+  "description": "The main window, and only what its UI calls: the app's own commands (app_commands.rs, one allow-<command> each), typed events, the frameless window chrome, links in the default browser, the settings store, start on login and the client's own update (check, download and install). Rust-only plugins (window-state, single-instance, deep-link) need nothing here.",
   "windows": ["main"],
   "permissions": [
     "core:event:allow-listen",
@@ -24,6 +24,7 @@
     "autostart:allow-disable",
     "autostart:allow-is-enabled",
     "updater:allow-check",
+    "updater:allow-download-and-install",
     "allow-app-info",
     "allow-catalog-get-catalog",
     "allow-catalog-get-platform",

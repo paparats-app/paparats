@@ -14,14 +14,16 @@ import styles from "./AboutPanel.module.css";
  * Settings › About (prototype lines 797–822; logic `versionLine`, `checkUpdates`): the dark top
  * block with the fern, logo, version, "Check for updates" (≈1.2 s "Checking…", then a toast) and
  * "What's new" (→ Updates); the statement, the four principles, the external links and the footer.
+ * Once a check has found a newer version, the button installs it (not in the prototype: D66).
  */
 export function AboutPanel() {
   const { t, i18n } = useTranslation();
   const { go } = useNav();
   const about = usePlatform().data?.about;
-  const { checkForAppUpdate, openExternal } = useSystemActions();
+  const { checkForAppUpdate, installAppUpdate, openExternal } = useSystemActions();
   const notify = useUiStore((s) => s.notify);
   const [checking, setChecking] = useState(false);
+  const [installing, setInstalling] = useState(false);
   /** A newer client version found by the last check (none: up to date). */
   const [available, setAvailable] = useState<string | null>(null);
   const running = useRef(false);
@@ -46,6 +48,20 @@ export function AboutPanel() {
       .finally(() => {
         running.current = false;
         setChecking(false);
+      });
+  };
+
+  // On Windows the installer closes the app when it starts, so success is never seen here; a
+  // failure (a bad signature, a broken download) is reported and the button can be pressed again.
+  const install = () => {
+    if (running.current) return;
+    running.current = true;
+    setInstalling(true);
+    installAppUpdate()
+      .catch(() => notify(i18n.t("about.updateFailed")))
+      .finally(() => {
+        running.current = false;
+        setInstalling(false);
       });
   };
 
@@ -91,10 +107,16 @@ export function AboutPanel() {
               variant="primaryOnImage"
               size="lg"
               className={styles.check}
-              aria-busy={checking || undefined}
-              onClick={check}
+              aria-busy={checking || installing || undefined}
+              onClick={available === null ? check : install}
             >
-              {checking ? t("about.checking") : t("about.checkUpdates")}
+              {checking
+                ? t("about.checking")
+                : installing
+                  ? t("about.installing")
+                  : available === null
+                    ? t("about.checkUpdates")
+                    : t("about.installUpdate", { version: available })}
             </Button>
             <Button
               variant="onImage"

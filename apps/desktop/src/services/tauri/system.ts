@@ -1,5 +1,6 @@
 // SystemService over the Rust core, the Tauri plugins and the WebView: "today" comes from the
-// core; the client's own update check is tauri-plugin-updater's `check()`; start on login is
+// core; the client's own update check and install are tauri-plugin-updater's `check()` and
+// `downloadAndInstall()`; start on login is
 // tauri-plugin-autostart; links open in the default browser through tauri-plugin-opener;
 // connectivity and the clipboard are WebView2's own.
 //
@@ -64,6 +65,23 @@ export async function checkForClientUpdate(): Promise<SelfUpdateCheck> {
   return result;
 }
 
+/**
+ * Settings › About › Install version …: checks again, then downloads the update and runs its
+ * installer. The download is verified against the minisign key in tauri.conf.json before
+ * anything runs. On Windows the NSIS installer then closes the app and starts the new version;
+ * the promise rejects if any step fails, and resolves without doing anything when the endpoint has
+ * nothing newer.
+ */
+export async function installClientUpdate(): Promise<void> {
+  try {
+    const update = await check({ timeout: UPDATE_CHECK_TIMEOUT_MS });
+    if (!update) return;
+    await update.downloadAndInstall();
+  } catch (e) {
+    throw toServiceError(e);
+  }
+}
+
 /** Start on Windows login: registers or removes the login entry only when it differs. */
 async function setAutostart(enabled: boolean): Promise<void> {
   try {
@@ -108,6 +126,7 @@ export function createTauriSystemService(): SystemService {
     isOnline: browserIsOnline,
     onConnectivityChange: browserOnConnectivityChange,
     checkForAppUpdate: checkForClientUpdate,
+    installAppUpdate: installClientUpdate,
     async openExternal(url) {
       const href = externalUrl(url);
       try {

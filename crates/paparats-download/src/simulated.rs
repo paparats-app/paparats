@@ -72,9 +72,14 @@ fn xorshift() -> Random {
             x ^= x << 17;
             x
         };
-        let prev = state
-            .fetch_update(Ordering::Relaxed, Ordering::Relaxed, |x| Some(step(x)))
-            .unwrap_or(seed);
+        // A compare-exchange loop rather than `fetch_update`, which newer toolchains deprecate
+        // (renamed `try_update`, not yet in the minimum supported Rust).
+        let mut prev = state.load(Ordering::Relaxed);
+        while let Err(current) =
+            state.compare_exchange_weak(prev, step(prev), Ordering::Relaxed, Ordering::Relaxed)
+        {
+            prev = current;
+        }
         (step(prev) >> 11) as f64 / (1_u64 << 53) as f64
     })
 }

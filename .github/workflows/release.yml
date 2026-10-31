@@ -1,0 +1,112 @@
+name: Release
+
+# A tag vX.Y.Z builds the signed installer, its updater signature, latest.json and SHA256SUMS and
+# drafts a GitHub Release with them. Publishing the draft is a deliberate, manual step: the
+# updater reads releases/latest/download/latest.json, so a published release reaches every
+# installed client. Release notes come from docs/releases/vX.Y.Z.md.
+
+on:
+  push:
+    tags: ["v*"]
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  release:
+    name: Build and draft the release
+    runs-on: windows-latest
+    # The environment holds the updater key; its deployment policy admits v* tags only.
+    environment: release
+    env:
+      TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+      TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+      # Code signing, when its secrets exist (see ci.yml and scripts/sign-windows.mjs).
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      TRUSTED_SIGNING_ENDPOINT: ${{ secrets.TRUSTED_SIGNING_ENDPOINT }}
+      TRUSTED_SIGNING_ACCOUNT: ${{ secrets.TRUSTED_SIGNING_ACCOUNT }}
+      TRUSTED_SIGNING_PROFILE: ${{ secrets.TRUSTED_SIGNING_PROFILE }}
+      WINDOWS_CERTIFICATE_PFX_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_PFX_BASE64 }}
+      WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: The tag matches the version in the code
+        shell: bash
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          node scripts/version.mjs check "$VERSION"
+          test -f "docs/releases/v$VERSION.md" || { echo "docs/releases/v$VERSION.md is missing"; exit 1; }
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+
+      - name: The updater key is present
+        shell: bash
+        run: |
+          if [ -z "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            echo "TAURI_SIGNING_PRIVATE_KEY is missing from the release environment"; exit 1
+          fi
+
+      - name: Gate
+        run: pnpm check
+
+      - name: Install trusted-signing-cli
+        if: ${{ env.AZURE_CLIENT_ID != '' }}
+        run: cargo install trusted-signing-cli --locked
+
+      - name: Decode the signing certificate
+        if: ${{ env.WINDOWS_CERTIFICATE_PFX_BASE64 != '' }}
+        shell: pwsh
+        run: |
+          $path = Join-Path $env:RUNNER_TEMP "paparats-signing.pfx"
+          [IO.File]::WriteAllBytes($path, [Convert]::FromBase64String($env:WINDOWS_CERTIFICATE_PFX_BASE64))
+          "WINDOWS_CERTIFICATE_PFX=$path" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Build the installer with updater artifacts
+        run: pnpm tauri build --config src-tauri/tauri.updater.conf.json
+
+      - name: Installer size budget (< 15 MB)
+        shell: pwsh
+        run: |
+          $installer = Get-ChildItem target/release/bundle/nsis/*-setup.exe | Select-Object -First 1
+          $mb = [math]::Round($installer.Length / 1MB, 2)
+          "$($installer.Name): $mb MB"
+          if ($installer.Length -ge 15MB) { throw "The installer is $mb MB; the budget is 15 MB." }
+
+      - name: latest.json and SHA256SUMS
+        shell: bash
+        run: node scripts/release-manifest.mjs --version "$VERSION" --repo "$GITHUB_REPOSITORY" --notes "docs/releases/v$VERSION.md" --out release
+
+      - name: Draft the GitHub release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "v$VERSION" release/* \
+            --draft --verify-tag \
+            --title "Paparats $VERSION" \
+            --notes-file "docs/releases/v$VERSION.md"

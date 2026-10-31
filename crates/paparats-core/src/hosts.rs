@@ -6,8 +6,14 @@
 
 use std::collections::BTreeSet;
 
-/// First-party hosts the client talks to.
+/// First-party hosts the client talks to: the catalog on GitHub Pages, GitHub itself (the
+/// updater's `latest.json` and the release downloads of Paparats and of the catalog's apps) and
+/// the hosts GitHub redirects release downloads to.
 pub const FIRST_PARTY: &[&str] = &[
+    "paparats-app.github.io",
+    "github.com",
+    "objects.githubusercontent.com",
+    "release-assets.githubusercontent.com",
     "paparats.app",
     "cdn.paparats.app",
     "api.paparats.app",
@@ -80,6 +86,11 @@ mod tests {
         assert!(is_first_party("mirror.eu.paparats.app"));
         assert!(!is_first_party("paparats.app.evil.com"));
         assert!(!is_first_party("notpaparats.app"));
+        assert!(is_first_party("paparats-app.github.io"));
+        assert!(is_first_party("GitHub.com"));
+        assert!(is_first_party("release-assets.githubusercontent.com"));
+        assert!(!is_first_party("evil-app.github.io"));
+        assert!(!is_first_party("api.github.com"));
     }
 
     #[test]

@@ -1599,5 +1599,12 @@ point at someone's site.
   the release workflow runs before building). They seed an empty cache (`RemoteConfig::seed`), are
   verified with the pinned keys like anything fetched, and the first refresh replaces them. A
   development catalog (`PAPARATS_CATALOG_URL`/`_KEYS`) is never seeded.
-- **Deferred.** Uninstalling apps installed outside Paparats; Windows notifications; automatic
-  updates of other apps.
+- **Uninstall through Windows' entry.** What a receipt cannot remove — an EXE installer's
+  app, or any catalog app installed outside Paparats — is uninstalled with the entry Windows
+  keeps for it ("Installed apps"): MSI products with `msiexec /x … /qn`, a
+  `QuietUninstallString` as written, otherwise the `UninstallString` parsed into an argument
+  vector (never a shell; shells and script hosts refused) with the silent switches of its kind
+  (Inno Setup, Squirrel, WiX Burn, NSIS). HKLM entries run elevated. The client then waits up
+  to 90 s for the entry to go, since NSIS uninstallers finish in the background
+  (`paparats-install/src/registered.rs`). The catalog's smoke install runs the same path.
+- **Deferred.** Windows notifications; automatic updates of other apps.

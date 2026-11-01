@@ -2,8 +2,11 @@
 //! app or its folder.
 
 use std::path::{Path, PathBuf};
+use std::time::Duration;
 
 use paparats_core::Library;
+use paparats_install::{InstallError, RegisteredUninstall};
+use paparats_inventory::{Detected, Origin, RegRoot};
 
 use super::AppState;
 use crate::error::{AppError, AppResult};
@@ -33,34 +36,76 @@ impl AppState {
 
     /// Removes the app from this PC and from the inventory. Favorites survive (the prototype
     /// only hides the app). Not installed → the library unchanged. With the real inventory, an
-    /// app that is still found afterwards (installed outside Paparats, or "installed" by the
-    /// simulated installer) is `invalid` and nothing is forgotten.
+    /// app the receipt did not remove — an EXE installer's, or one installed outside Paparats —
+    /// is uninstalled through the entry Windows keeps for it; an app that is still found after
+    /// that (or has no such entry) is `invalid` and nothing is forgotten.
     pub async fn uninstall(&self, app_id: &str) -> AppResult<Library> {
         let id = app_id.to_owned();
-        if let Some(app) = self.read_inventory(move |i| i.find(&id)).await? {
-            self.installer.uninstall(&app).await?;
-            if self.flags.inventory {
-                let id = app_id.to_owned();
-                let still_there = self
-                    .read_inventory(move |i| {
-                        i.refresh();
-                        i.find(&id)
-                    })
-                    .await?
-                    .is_some();
-                if still_there {
-                    tracing::info!(app = %app_id, "not uninstalled: not installed by Paparats");
-                    return Err(AppError::invalid(format!(
-                        "{app_id} was not installed by Paparats; remove it in Windows Settings"
-                    )));
-                }
+        let Some(app) = self.read_inventory(move |i| i.find(&id)).await? else {
+            return self.get_library().await;
+        };
+        let by_receipt = self.installer.uninstall(&app).await;
+        if self.flags.inventory {
+            match by_receipt {
+                // An EXE install's receipt: its own uninstaller runs below.
+                Ok(()) | Err(InstallError::Unsupported(_)) => {}
+                Err(e) => return Err(e.into()),
             }
-            // The real inventory rescans after forgetting: off the async workers too.
-            let id = app_id.to_owned();
-            self.read_inventory(move |i| i.remove(&id)).await?;
-            tracing::info!(app = %app_id, "uninstalled");
+            if self.still_installed(app_id, Duration::ZERO).await? {
+                self.uninstall_registered(app_id).await?;
+            }
+        } else {
+            by_receipt?;
         }
+        // The real inventory rescans after forgetting: off the async workers too.
+        let id = app_id.to_owned();
+        self.read_inventory(move |i| i.remove(&id)).await?;
+        tracing::info!(app = %app_id, "uninstalled");
         self.get_library().await
+    }
+
+    /// Runs the uninstaller Windows lists for the app and waits for its entry to go: NSIS
+    /// uninstallers return at once and finish in the background.
+    async fn uninstall_registered(&self, app_id: &str) -> AppResult<()> {
+        let id = app_id.to_owned();
+        let entry = self
+            .read_inventory(move |i| i.locate(&id))
+            .await?
+            .into_iter()
+            .find_map(|d| registered_entry(&d));
+        let Some(entry) = entry else {
+            tracing::info!(app = %app_id, "not uninstalled: Windows lists no uninstaller for it");
+            return Err(AppError::invalid(format!(
+                "{app_id} has no uninstaller Paparats can run; remove it in Windows Settings"
+            )));
+        };
+        self.installer.uninstall_registered(app_id, &entry).await?;
+        if self.still_installed(app_id, UNINSTALL_WAIT).await? {
+            tracing::info!(app = %app_id, "still installed after its uninstaller ran");
+            return Err(AppError::invalid(format!(
+                "{app_id} is still installed; finish removing it in Windows Settings"
+            )));
+        }
+        Ok(())
+    }
+
+    /// Whether the inventory still finds the app, looking again for up to `wait`.
+    async fn still_installed(&self, app_id: &str, wait: Duration) -> AppResult<bool> {
+        let deadline = tokio::time::Instant::now() + wait;
+        loop {
+            let id = app_id.to_owned();
+            let found = self
+                .read_inventory(move |i| {
+                    i.refresh();
+                    i.find(&id)
+                })
+                .await?
+                .is_some();
+            if !found || tokio::time::Instant::now() >= deadline {
+                return Ok(found);
+            }
+            tokio::time::sleep(UNINSTALL_POLL).await;
+        }
     }
 
     /// Starts an installed app: the Start-menu shortcut of a portable app Paparats installed,
@@ -104,6 +149,31 @@ impl AppState {
     }
 }
 
+/// How long an uninstaller may take to remove the app's entry after it returned.
+const UNINSTALL_WAIT: Duration = Duration::from_secs(90);
+const UNINSTALL_POLL: Duration = Duration::from_millis(750);
+
+/// The uninstall commands of an Uninstall entry the inventory found.
+fn registered_entry(found: &Detected) -> Option<RegisteredUninstall> {
+    let Origin::Uninstall {
+        root,
+        key,
+        windows_installer,
+        uninstall_string,
+        quiet_uninstall_string,
+    } = &found.origin
+    else {
+        return None;
+    };
+    Some(RegisteredUninstall {
+        key: key.clone(),
+        windows_installer: *windows_installer,
+        uninstall_string: uninstall_string.clone(),
+        quiet_uninstall_string: quiet_uninstall_string.clone(),
+        machine_wide: *root != RegRoot::CurrentUser,
+    })
+}
+
 /// Hands a file or folder to Explorer, which starts a program or shortcut and shows a folder,
 /// without elevation and without a shell command line (one argument, never parsed).
 fn shell_open(target: &Path) -> AppResult<()> {
@@ -123,7 +193,7 @@ mod tests {
 
     use paparats_core::{ActivityKind, App, InstalledApp, IsoDate};
     use paparats_download::SimulatedTransfer;
-    use paparats_install::SimulatedInstaller;
+    use paparats_install::{Installer, SimulatedInstaller};
     use paparats_inventory::{Inventory, InventoryError};
     use paparats_storage::Storage;
 
@@ -183,6 +253,126 @@ mod tests {
         }
 
         fn set_catalog(&self, _apps: &[App]) {}
+    }
+
+    /// A PC with one app an EXE installer put there: the inventory lists its Uninstall entry, and
+    /// the app is gone once its registered uninstaller ran.
+    struct ExeInstalled {
+        apps: Arc<Mutex<Vec<InstalledApp>>>,
+    }
+
+    impl Inventory for ExeInstalled {
+        fn installed(&self) -> Result<Vec<InstalledApp>, InventoryError> {
+            Ok(self.apps.lock().unwrap().clone())
+        }
+
+        fn find(&self, app_id: &str) -> Result<Option<InstalledApp>, InventoryError> {
+            Ok(self.installed()?.into_iter().find(|a| a.app_id == app_id))
+        }
+
+        fn record(
+            &self,
+            _app: &InstalledApp,
+            _kind: ActivityKind,
+            _date: &IsoDate,
+        ) -> Result<(), InventoryError> {
+            Ok(())
+        }
+
+        fn remove(&self, _app_id: &str) -> Result<bool, InventoryError> {
+            Ok(false)
+        }
+
+        fn locate(&self, app_id: &str) -> Result<Vec<Detected>, InventoryError> {
+            Ok(vec![Detected {
+                app_id: app_id.to_owned(),
+                origin: Origin::Uninstall {
+                    root: RegRoot::CurrentUser,
+                    key: "Obsidian".into(),
+                    windows_installer: false,
+                    uninstall_string: Some(r#""C:\Apps\Obsidian\Uninstall Obsidian.exe""#.into()),
+                    quiet_uninstall_string: None,
+                },
+                kind: paparats_inventory::MatchKind::DisplayName,
+                version: Some("1.14.5".into()),
+                install_dir: None,
+                program: None,
+            }])
+        }
+    }
+
+    /// An installer whose registered uninstall removes the app from [`ExeInstalled`].
+    struct RunsUninstallers {
+        apps: Arc<Mutex<Vec<InstalledApp>>>,
+        ran: Mutex<Vec<RegisteredUninstall>>,
+    }
+
+    impl Installer for RunsUninstallers {
+        fn install<'a>(
+            &'a self,
+            _request: paparats_install::InstallRequest<'a>,
+            _gate: &'a mut paparats_install::Gate,
+        ) -> paparats_install::BoxFuture<'a, Result<InstalledApp, InstallError>> {
+            Box::pin(async { Err(InstallError::Unsupported("test")) })
+        }
+
+        fn uninstall<'a>(
+            &'a self,
+            _app: &'a InstalledApp,
+        ) -> paparats_install::BoxFuture<'a, Result<(), InstallError>> {
+            // An EXE install's receipt: the client has no uninstaller of its own for it.
+            Box::pin(async { Err(InstallError::Unsupported("EXE uninstall")) })
+        }
+
+        fn uninstall_registered<'a>(
+            &'a self,
+            app_id: &'a str,
+            entry: &'a RegisteredUninstall,
+        ) -> paparats_install::BoxFuture<'a, Result<(), InstallError>> {
+            Box::pin(async move {
+                self.ran.lock().unwrap().push(entry.clone());
+                self.apps.lock().unwrap().retain(|a| a.app_id != app_id);
+                Ok(())
+            })
+        }
+    }
+
+    #[tokio::test]
+    async fn an_exe_install_is_removed_by_its_registered_uninstaller() {
+        let storage = Arc::new(Storage::open_in_memory().unwrap());
+        let obsidian = InstalledApp {
+            app_id: "obsidian".into(),
+            version: "1.14.5".into(),
+            last_used: "2026-11-01".into(),
+        };
+        let apps = Arc::new(Mutex::new(vec![obsidian]));
+        let installer = Arc::new(RunsUninstallers {
+            apps: Arc::clone(&apps),
+            ran: Mutex::new(Vec::new()),
+        });
+        let mut strategies = Strategies::simulated(
+            &storage,
+            Arc::new(SimulatedTransfer::new()),
+            Arc::clone(&installer) as Arc<dyn Installer>,
+        )
+        .unwrap();
+        strategies.inventory = Arc::new(ExeInstalled { apps });
+        strategies.flags = RealFlags {
+            inventory: true,
+            install: true,
+            ..RealFlags::default()
+        };
+        let (s, _) = state_with(storage, strategies);
+
+        let lib = s.uninstall("obsidian").await.unwrap();
+        assert!(lib.installed.is_empty());
+        let ran = installer.ran.lock().unwrap().clone();
+        assert_eq!(ran.len(), 1);
+        assert_eq!(ran[0].key, "Obsidian");
+        assert!(
+            !ran[0].machine_wide,
+            "a per-user entry runs without elevation"
+        );
     }
 
     #[tokio::test]

@@ -13,8 +13,13 @@ use std::path::Path;
 use std::sync::Arc;
 
 use paparats_core::{App, InstalledApp, Package};
-use paparats_install::{GateState, InstallRequest, InstallTarget, Installer, StrictTrust, gate};
-use paparats_inventory::{Inventory, RegistryInventory, StoredInventory};
+use paparats_install::{
+    GateState, InstallError, InstallRequest, InstallTarget, Installer, RegisteredUninstall,
+    StrictTrust, gate,
+};
+use paparats_inventory::{
+    Detected, Inventory, Origin, RegRoot, RegistryInventory, StoredInventory,
+};
 use paparats_storage::Storage;
 
 use crate::build;
@@ -36,6 +41,8 @@ pub struct Outcome {
     pub uninstall: Result<(), String>,
     /// The inventory still finds the app after uninstalling.
     pub left_behind: bool,
+    /// Already on the runner before the install (its image ships it): not tested, untouched.
+    pub preinstalled: bool,
 }
 
 impl Default for Outcome {
@@ -48,16 +55,18 @@ impl Default for Outcome {
             new_entries: Vec::new(),
             uninstall: Ok(()),
             left_behind: false,
+            preinstalled: false,
         }
     }
 }
 
 impl Outcome {
     pub fn passed(&self) -> bool {
-        self.install.is_ok()
-            && self.detected.is_some()
-            && self.uninstall.is_ok()
-            && !self.left_behind
+        self.preinstalled
+            || (self.install.is_ok()
+                && self.detected.is_some()
+                && self.uninstall.is_ok()
+                && !self.left_behind)
     }
 }
 
@@ -73,6 +82,13 @@ pub fn markdown(outcomes: &[Outcome]) -> String {
             Ok(()) => "ok".to_owned(),
             Err(e) => format!("**failed**: {}", e.replace('|', "/")),
         };
+        if o.preinstalled {
+            out.push_str(&format!(
+                "| {} | {} | skipped: already on the runner | | | |\n",
+                o.id, o.strategy
+            ));
+            continue;
+        }
         let found = o
             .detected
             .clone()
@@ -117,6 +133,40 @@ fn entries(inventory: &RegistryInventory) -> Vec<(String, String)> {
         .unwrap_or_default()
 }
 
+/// The uninstall commands of an Uninstall entry (the client's `registered_entry`).
+fn registered_entry(found: &Detected) -> Option<RegisteredUninstall> {
+    let Origin::Uninstall {
+        root,
+        key,
+        windows_installer,
+        uninstall_string,
+        quiet_uninstall_string,
+    } = &found.origin
+    else {
+        return None;
+    };
+    Some(RegisteredUninstall {
+        key: key.clone(),
+        windows_installer: *windows_installer,
+        uninstall_string: uninstall_string.clone(),
+        quiet_uninstall_string: quiet_uninstall_string.clone(),
+        machine_wide: *root != RegRoot::CurrentUser,
+    })
+}
+
+/// Whether the inventory still finds the app after 90 s at most (NSIS uninstallers return at
+/// once and finish in the background), as the client waits.
+async fn still_found(inventory: &RegistryInventory, app_id: &str) -> bool {
+    for _ in 0..120 {
+        inventory.refresh();
+        if inventory.find(app_id).ok().flatten().is_none() {
+            return false;
+        }
+        tokio::time::sleep(std::time::Duration::from_millis(750)).await;
+    }
+    true
+}
+
 async fn smoke_one(
     github: &GitHub,
     installer: &dyn Installer,
@@ -156,6 +206,12 @@ async fn smoke_one(
         }
     }
 
+    inventory.refresh();
+    if inventory.find(&app.id).ok().flatten().is_some() {
+        outcome.preinstalled = true;
+        let _ = std::fs::remove_file(&file);
+        return outcome;
+    }
     let before: BTreeSet<String> = entries(inventory).into_iter().map(|(k, _)| k).collect();
     let (_control, mut open) = gate(GateState::OPEN);
     let target = InstallTarget {
@@ -189,11 +245,28 @@ async fn smoke_one(
     let Some(installed) = installed else {
         return outcome;
     };
-    if let Err(e) = installer.uninstall(&installed).await {
-        outcome.uninstall = Err(e.to_string());
+    // As the client does: the receipt first, then the uninstaller Windows lists for the app.
+    match installer.uninstall(&installed).await {
+        Ok(()) | Err(InstallError::Unsupported(_)) => {}
+        Err(e) => outcome.uninstall = Err(e.to_string()),
     }
     inventory.refresh();
-    outcome.left_behind = inventory.find(&app.id).ok().flatten().is_some();
+    if outcome.uninstall.is_ok() && inventory.find(&app.id).ok().flatten().is_some() {
+        let entry = inventory
+            .locate(&app.id)
+            .unwrap_or_default()
+            .into_iter()
+            .find_map(|d| registered_entry(&d));
+        match entry {
+            Some(entry) => {
+                if let Err(e) = installer.uninstall_registered(&app.id, &entry).await {
+                    outcome.uninstall = Err(e.to_string());
+                }
+            }
+            None => outcome.uninstall = Err("no registered uninstaller".into()),
+        }
+    }
+    outcome.left_behind = still_found(inventory, &app.id).await;
     outcome
 }
 

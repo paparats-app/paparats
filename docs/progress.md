@@ -846,5 +846,8 @@ simulated world), and the known gaps listed per milestone above.
 
 The installer carries a signed snapshot of the catalog, so an offline first start shows it.
 
-Known gaps: uninstalling apps installed outside Paparats is refused; no Windows notifications; automatic
-updates of other apps do not run; the installer of Paparats itself is not code-signed.
+Uninstall also runs an app's own uninstaller from its Windows entry (EXE installers, apps
+installed outside Paparats), silently where its kind is known.
+
+Known gaps: no Windows notifications; automatic updates of other apps do not run; the installer
+of Paparats itself is not code-signed.

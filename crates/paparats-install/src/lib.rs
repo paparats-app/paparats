@@ -29,6 +29,7 @@ pub mod policy;
 mod portable;
 mod process;
 mod receipt;
+mod registered;
 mod simulated;
 mod strategy;
 // The Windows API layer: the crate's only unsafe code, one SAFETY comment per block.
@@ -50,6 +51,7 @@ pub use config::{DEFAULT_PROCESS_TIMEOUT, InstallerConfig};
 pub use error::InstallError;
 pub use gate::{Cancelled, Gate, GateController, GateState, gate};
 pub use policy::{PackageTrust, StrictTrust, TrustSource};
+pub use registered::{RegisteredUninstall, UninstallPlan, split_command_line};
 pub use simulated::{HOLD_TICKS, SimulatedInstaller, TICK};
 pub use strategy::{StrategyInstaller, from_flags};
 
@@ -99,6 +101,17 @@ pub trait Installer: Send + Sync + 'static {
 
     /// Removes an installed app from this PC.
     fn uninstall<'a>(&'a self, app: &'a InstalledApp) -> BoxFuture<'a, Result<(), InstallError>>;
+
+    /// Uninstalls an app through the entry Windows keeps for it (an EXE installer's own
+    /// uninstaller, or an app installed outside Paparats), silently where the uninstaller's kind
+    /// is known; then forgets any receipt of `app_id`. The simulated installer cannot.
+    fn uninstall_registered<'a>(
+        &'a self,
+        _app_id: &'a str,
+        _entry: &'a RegisteredUninstall,
+    ) -> BoxFuture<'a, Result<(), InstallError>> {
+        Box::pin(async { Err(InstallError::Unsupported("registered uninstall")) })
+    }
 
     /// What starts an app Paparats installed itself: the Start-menu shortcut of a portable app.
     /// `None` when there is nothing of its own to start (an installer's app: the inventory knows

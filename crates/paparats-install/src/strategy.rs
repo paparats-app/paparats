@@ -482,6 +482,34 @@ impl Installer for StrategyInstaller {
         })
     }
 
+    fn uninstall_registered<'a>(
+        &'a self,
+        app_id: &'a str,
+        entry: &'a crate::RegisteredUninstall,
+    ) -> BoxFuture<'a, Result<(), InstallError>> {
+        Box::pin(async move {
+            let plan = entry.plan(&self.config.msiexec)?;
+            tracing::info!(app = %app_id, kind = plan.kind, "uninstalling through Windows' entry");
+            let msi = plan.kind == "msi";
+            let _turn = self.exclusive.lock().await;
+            let code = process::run(Run {
+                program: plan.program,
+                args: plan.args,
+                dir: None,
+                timeout: self.config.process_timeout,
+                elevate: plan.elevate,
+            })
+            .await?;
+            if msi {
+                exit::msi_uninstall(code).into_result()?;
+            } else {
+                exit::exe(code).into_result()?;
+            }
+            self.receipts.remove(app_id)?;
+            Ok(())
+        })
+    }
+
     fn shortcut(&self, app_id: &str) -> Option<std::path::PathBuf> {
         match self.receipts.load(app_id).ok().flatten()? {
             Receipt::PortableZip { shortcut, .. } | Receipt::PortableExe { shortcut, .. } => {

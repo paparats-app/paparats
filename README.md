@@ -354,7 +354,9 @@ cargo test -p paparats-account -- --ignored credential_manager_round_trip    # t
   starts it empty (`library.db`), the demo world seeds its own (`paparats.db`).
 - Profile edits, devices, two-factor, plans and purchases, the idea gift and the ideas board have
   no server API: the real catalog hides them (D68).
-- Apps installed outside Paparats cannot be uninstalled from it yet.
+- Uninstalling runs the app's own uninstaller from its Windows entry when Paparats has no
+  receipt for it (EXE installers, apps installed outside Paparats); an unknown uninstaller may
+  show its own window.
 - Installs are per user unless the catalog marks a package machine-wide (its installer elevates).
 - An unsigned EXE/MSI runs only when the official catalog declares it unsigned and pins its
   SHA-256 (the app page says so), or from a community channel after the user's confirmation.
@@ -563,8 +565,7 @@ Release entry. The reasons are in `docs/decisions.md`. The main ones:
   (`--demo`); the real catalog turns them off (D68). Problem reports go to the app's GitHub
   issues.
 - **Failures are quiet.** The handoff has no copy for a failed download or similar action, so
-  these return without a message (D8, D36, D38–D45). Uninstalling an app Paparats did not
-  install is refused: remove it in Windows Settings.
+  these return without a message (D8, D36, D38–D45).
 - **Settings that do nothing yet** (D64) are listed only in Developer mode: automatic updates,
   metered networks, notifications, install location, shortcuts and the rest. "Check for updates"
   works: it is how often the catalog refreshes in the background.

@@ -18,7 +18,8 @@ use paparats_install::{
     StrictTrust, gate,
 };
 use paparats_inventory::{
-    Detected, Inventory, LaunchTarget, Origin, RegRoot, RegistryInventory, StoredInventory,
+    Detected, Inventory, KnownFolders, LaunchTarget, Origin, RegRoot, RegistryInventory,
+    StoredInventory, launch,
 };
 use paparats_storage::Storage;
 
@@ -275,19 +276,24 @@ async fn install(
 fn open_target(
     installer: &dyn Installer,
     inventory: &RegistryInventory,
-    app_id: &str,
+    app: &App,
 ) -> Option<String> {
-    if let Some(shortcut) = installer.shortcut(app_id) {
+    if let Some(shortcut) = installer.shortcut(&app.id) {
         return Some(shortcut.display().to_string());
     }
-    inventory
-        .locate(app_id)
-        .unwrap_or_default()
-        .into_iter()
-        .find_map(|d| d.launch_target())
+    let found = inventory.locate(&app.id).unwrap_or_default();
+    found
+        .iter()
+        .find_map(Detected::launch_target)
         .map(|target| match target {
             LaunchTarget::Program(program) => program.display().to_string(),
             LaunchTarget::PackagedApp(app) => app,
+        })
+        .or_else(|| {
+            let dirs: Vec<std::path::PathBuf> =
+                found.iter().filter_map(|d| d.install_dir.clone()).collect();
+            launch::find_program(&[&app.name, &app.id], &dirs, &KnownFolders::from_env())
+                .map(|p| p.display().to_string())
         })
 }
 
@@ -384,7 +390,7 @@ async fn smoke_one(
             ))
         });
     }
-    outcome.open = open_target(installer, inventory, &app.id);
+    outcome.open = open_target(installer, inventory, app);
 
     let Some(installed) = installed else {
         return outcome;

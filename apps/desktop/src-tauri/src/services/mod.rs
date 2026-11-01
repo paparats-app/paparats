@@ -65,6 +65,7 @@ pub struct AppState {
     installer: Arc<dyn Installer>,
     engine: DownloadEngine,
     clock: Clock,
+    folders: paparats_inventory::KnownFolders,
 }
 
 impl std::fmt::Debug for AppState {
@@ -114,6 +115,7 @@ impl AppState {
             transfer,
             auth,
             browser,
+            folders,
         } = strategies;
         let bridge = EngineBridge {
             inventory: Arc::clone(&inventory),
@@ -152,6 +154,7 @@ impl AppState {
             installer,
             engine,
             clock,
+            folders,
         })
     }
 

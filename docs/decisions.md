@@ -1619,7 +1619,11 @@ point at someone's site.
   client's inventory, has something for "Open" to start, and uninstalls through the client's
   path. It runs on Windows Server 2022 (the Windows 10 generation) and 2025 (Windows 11).
 - **Open for MSIX packages** starts `shell:AppsFolder\<family>!<application id>`, the id read
-  from the package's `AppxManifest.xml` (`Detected::launch_target`). Inno Setup uninstalls get
+  from the package's `AppxManifest.xml` (`Detected::launch_target`). When Windows' entry names no
+  program (MSI products with an `.ico` as `DisplayIcon`, Squirrel and Burn installs, portable
+  apps with several programs), "Open" takes the Start-menu shortcut named like the app, else the
+  program named like it in its install folder (`paparats-inventory/src/launch.rs`); the first
+  matrix run found 8 such apps. Inno Setup uninstalls get
   `/LOG`, and the smoke summary shows the log's tail when an uninstall fails.
 - **Self-update** is verified by a workflow that installs the previous release, takes
   `latest.json` from the updater endpoint, checks the update's minisign signature with the key

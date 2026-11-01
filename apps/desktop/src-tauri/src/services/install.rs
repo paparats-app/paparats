@@ -4,9 +4,10 @@
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
+use paparats_catalog::CatalogSource;
 use paparats_core::Library;
 use paparats_install::{InstallError, RegisteredUninstall};
-use paparats_inventory::{Detected, LaunchTarget, Origin, RegRoot};
+use paparats_inventory::{Detected, LaunchTarget, Origin, RegRoot, launch};
 
 use super::AppState;
 use crate::error::{AppError, AppResult};
@@ -109,21 +110,34 @@ impl AppState {
     }
 
     /// Starts an installed app: the Start-menu shortcut of a portable app Paparats installed,
-    /// else the program Windows lists for it (`DisplayIcon`), else an MSIX package's app. The demo world has nothing to start
+    /// else the program Windows lists for it (`DisplayIcon`), else an MSIX package's app, else a
+    /// Start-menu shortcut or program named like the app. The demo world has nothing to start
     /// (D24); an app whose program is unknown is `not_found` (the UI says so).
     pub async fn open_app(&self, app_id: &str) -> AppResult<()> {
         if !self.flags.inventory {
             tracing::debug!(app = %app_id, "open: nothing to start in the demo world");
             return Ok(());
         }
+        let name = self
+            .catalog
+            .catalog()
+            .ok()
+            .and_then(|c| c.apps.into_iter().find(|a| a.id == app_id))
+            .map(|a| a.name)
+            .unwrap_or_default();
         let target = match self.installer.shortcut(app_id) {
             Some(shortcut) => Some(LaunchTarget::Program(shortcut)),
             None => {
                 let id = app_id.to_owned();
-                self.read_inventory(move |i| i.locate(&id))
-                    .await?
-                    .into_iter()
-                    .find_map(|d| d.launch_target())
+                let found = self.read_inventory(move |i| i.locate(&id)).await?;
+                found.iter().find_map(Detected::launch_target).or_else(|| {
+                    // No program in Windows' entry: the Start-menu shortcut or the program
+                    // named like the app, as a person would look for it.
+                    let dirs: Vec<PathBuf> =
+                        found.iter().filter_map(|d| d.install_dir.clone()).collect();
+                    launch::find_program(&[&name, app_id], &dirs, &self.folders)
+                        .map(LaunchTarget::Program)
+                })
             }
         };
         match target {

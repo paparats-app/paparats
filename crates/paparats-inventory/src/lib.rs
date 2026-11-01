@@ -8,6 +8,7 @@
 //! Plus [`version`]: comparison of the dotted versions publishers use.
 
 pub mod detect;
+pub mod launch;
 mod registry;
 pub mod source;
 pub mod uninstall;

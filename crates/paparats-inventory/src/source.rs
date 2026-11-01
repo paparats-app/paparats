@@ -303,6 +303,8 @@ pub struct KnownFolders {
     pub program_files: Option<PathBuf>,
     /// `%ProgramFiles(x86)%`.
     pub program_files_x86: Option<PathBuf>,
+    /// `%ProgramData%` (the Start menu of all users).
+    pub program_data: Option<PathBuf>,
 }
 
 impl KnownFolders {
@@ -317,6 +319,7 @@ impl KnownFolders {
             profile: path(var("USERPROFILE")),
             program_files: path(var("ProgramW6432").or_else(|| var("ProgramFiles"))),
             program_files_x86: path(var("ProgramFiles(x86)")),
+            program_data: path(var("ProgramData")),
         }
     }
 

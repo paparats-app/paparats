@@ -16,7 +16,7 @@ use paparats_download::{
     TransferOutput,
 };
 use paparats_install::{BoxFuture, Gate, Installer, SimulatedInstaller, StrictTrust};
-use paparats_inventory::Inventory;
+use paparats_inventory::{Inventory, KnownFolders};
 use paparats_storage::Storage;
 
 use crate::error::AppResult;
@@ -49,6 +49,9 @@ pub struct Strategies {
     pub transfer: Arc<dyn Transfer>,
     pub auth: Auth,
     pub browser: Arc<dyn Browser>,
+    /// Where "Open" looks for an app's Start-menu shortcut: this user's folders with the real
+    /// inventory, none in the demo world and in tests.
+    pub folders: KnownFolders,
 }
 
 impl std::fmt::Debug for Strategies {
@@ -85,6 +88,7 @@ impl Strategies {
             transfer,
             auth: Auth::Simulated,
             browser: Arc::new(NoBrowser),
+            folders: KnownFolders::default(),
         })
     }
 
@@ -169,6 +173,11 @@ impl Strategies {
             transfer,
             auth,
             browser,
+            folders: if flags.inventory {
+                KnownFolders::from_env()
+            } else {
+                KnownFolders::default()
+            },
         })
     }
 }

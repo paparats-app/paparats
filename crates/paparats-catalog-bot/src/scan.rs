@@ -50,19 +50,74 @@ pub async fn antivirus(path: &Path) -> String {
         .output()
         .await;
     match output {
-        Ok(out) => match out.status.code() {
-            Some(0) => "clean".to_owned(),
-            Some(2) => {
-                let text = String::from_utf8_lossy(&out.stdout);
-                let found = text
-                    .lines()
-                    .filter(|l| l.contains("Threat") || l.contains("threat"))
-                    .collect::<Vec<_>>()
-                    .join("; ");
-                format!("threat: {}", found.trim())
-            }
-            code => format!("error {code:?}"),
-        },
+        Ok(out) => verdict(
+            out.status.code(),
+            &String::from_utf8_lossy(&out.stdout),
+            &String::from_utf8_lossy(&out.stderr),
+        ),
         Err(e) => format!("error {e}"),
+    }
+}
+
+/// `clean`, `threat: <names>` or `error …` from MpCmdRun's exit code and output. Exit code 2
+/// means a threat only when the output lists one: MpCmdRun also exits with 2 when it could not
+/// finish (seen on GitHub's runners with large archives), and that must not read as malware.
+fn verdict(code: Option<i32>, stdout: &str, stderr: &str) -> String {
+    let threats: Vec<&str> = stdout
+        .lines()
+        .map(str::trim)
+        .filter(|l| l.starts_with("Threat ") && l.contains(':'))
+        .filter_map(|l| l.split_once(':').map(|(_, name)| name.trim()))
+        .filter(|name| !name.is_empty())
+        .collect();
+    match code {
+        Some(0) => "clean".to_owned(),
+        Some(2) if !threats.is_empty() => format!("threat: {}", threats.join("; ")),
+        code => {
+            let detail = stdout
+                .lines()
+                .chain(stderr.lines())
+                .map(str::trim)
+                .filter(|l| {
+                    !l.is_empty()
+                        && !l.starts_with("Scan starting")
+                        && !l.starts_with("Scan finished")
+                })
+                .take(2)
+                .collect::<Vec<_>>()
+                .join(" ");
+            format!(
+                "error {}: {detail}",
+                code.map_or("?".to_owned(), |c| c.to_string())
+            )
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::verdict;
+
+    #[test]
+    fn exit_code_two_is_a_threat_only_with_a_name() {
+        let clean = "Scan starting...\nScan finished.\nScanning C:\\x.zip found no threats.\n";
+        assert_eq!(verdict(Some(0), clean, ""), "clean");
+        let found = concat!(
+            "Scanning C:\\x.exe found 1 threats.\n",
+            "<=================LIST OF DETECTED THREATS=================>\n",
+            "------------------- Threat information --------------------\n",
+            "Threat                  : Trojan:Win32/Example!ml\n",
+            "Resources               : 1 total\n",
+        );
+        assert_eq!(
+            verdict(Some(2), found, ""),
+            "threat: Trojan:Win32/Example!ml"
+        );
+        let unfinished = "Scan starting...\nScan finished.\n";
+        assert_eq!(
+            verdict(Some(2), unfinished, "CmdTool: Failed with hr = 0x80508023."),
+            "error 2: CmdTool: Failed with hr = 0x80508023."
+        );
+        assert!(verdict(None, "", "").starts_with("error ?"));
     }
 }

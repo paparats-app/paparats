@@ -126,6 +126,7 @@ async fn check_file(
     previous: Option<&LockedApp>,
     asset: &Asset,
     work: &Path,
+    warnings: &mut Vec<String>,
 ) -> Result<Result<ReleaseFile, String>, BotError> {
     let path = work.join(&asset.name);
     let (size, sha256) = github.download(&asset.browser_download_url, &path).await?;
@@ -184,6 +185,13 @@ async fn check_file(
     let scan = scan::antivirus(&path).await;
     if scan.starts_with("threat") {
         return Ok(Err(format!("Defender: {scan}")));
+    }
+    if scan.starts_with("error") {
+        // Not a verdict: the file goes on (hash, signer and quarantine still hold), a person looks.
+        warnings.push(format!(
+            "{}: Defender could not scan {}: {scan}",
+            app.id, asset.name
+        ));
     }
     let _ = tokio::fs::remove_file(&path).await;
     Ok(Ok(ReleaseFile {
@@ -271,7 +279,7 @@ async fn resolve_app(
 
     let Some(mut prev) = lock.apps.get(&app.id).cloned() else {
         // New to the catalog: a person has just reviewed it, so it ships without quarantine.
-        return match check_file(cx.github, app, None, asset, cx.work).await? {
+        return match check_file(cx.github, app, None, asset, cx.work, warnings).await? {
             Ok(file) => {
                 let version = release.version.clone();
                 lock.apps.insert(
@@ -330,7 +338,7 @@ async fn resolve_app(
         return Ok(outcome);
     }
 
-    let outcome = match check_file(cx.github, app, Some(&prev), asset, cx.work).await? {
+    let outcome = match check_file(cx.github, app, Some(&prev), asset, cx.work, warnings).await? {
         Ok(file) if cx.quarantine_hours <= 0 => {
             let from = prev.release.version.clone();
             prev.release = release;

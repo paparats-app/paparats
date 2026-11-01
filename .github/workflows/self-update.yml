@@ -56,7 +56,7 @@ jobs:
           Invoke-WebRequest $platform.url -OutFile update-setup.exe
           "TO=$($latest.version)" | Add-Content $env:GITHUB_ENV
           "PUBKEY=$($conf.plugins.updater.pubkey)" | Add-Content $env:GITHUB_ENV
-          Set-Content -NoNewline update.sig $platform.signature
+          Set-Content -Path update.sig -Value $platform.signature -NoNewline
           "Offered $($latest.version) from $endpoint"
 
       - name: Verify the update with the older release's key

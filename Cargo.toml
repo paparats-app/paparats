@@ -47,11 +47,11 @@ tracing-appender = "0.2"
 toml = "1"
 
 # Encoding, URLs, patterns, randomness (manifest envelopes, OAuth, detection rules, PKCE)
-base64 = "0.22"
+base64 = "0.23"
 url = "2"
 regex = "1"
 # The OS CSPRNG (PKCE verifier and state, `sign-manifest --generate-key`).
-getrandom = "0.3"
+getrandom = "0.4"
 
 # Tests
 tempfile = "3"
@@ -76,7 +76,7 @@ tauri-plugin-single-instance = { version = "2.4", features = ["deep-link"] }
 # Schannel through native-tls like the download engine (D23); NSIS updates need no zip support.
 tauri-plugin-updater = { version = "2.12", default-features = false, features = ["native-tls"] }
 # Reads the login entry (HKCU Run) that tauri-plugin-autostart writes; already in the tree.
-windows-registry = "0.5"
+windows-registry = "0.6"
 
 # Real strategies (M7, PAPARATS_REAL). Windows-only crates are declared per crate under
 # `[target.'cfg(windows)'.dependencies]`; features are chosen by each crate.
@@ -87,7 +87,7 @@ windows = "0.62"
 # `IIterable<Uri>` for `AddPackageAsync` (the version `windows` 0.62 itself uses).
 windows-collections = "0.3"
 # Portable ZIP packages (features per crate). 7.x keeps the deflate64 support the installer needs.
-zip = { version = "7.2", default-features = false }
+zip = { version = "9.1", default-features = false }
 # OAuth tokens in the Windows Credential Manager.
 keyring = "4"
 keyring-core = "1"

@@ -340,5 +340,10 @@ mod tests {
         assert!(s.flags.catalog, "the pinned keys start the remote catalog");
         assert!(s.catalog.is_remote());
         assert!(!s.auth.is_real());
+        // No network here: the built-in snapshot, verified with the pinned keys, is the catalog.
+        let catalog = s.catalog.catalog().unwrap();
+        assert!(catalog.apps.len() >= 50, "{} apps", catalog.apps.len());
+        assert!(catalog.apps.iter().all(|app| app.source.is_some()));
+        assert!(!s.catalog.platform().unwrap().features.pro);
     }
 }

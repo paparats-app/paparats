@@ -107,7 +107,15 @@ pub struct RemoteConfig {
     pub request_timeout: Duration,
     pub max_manifest_bytes: u64,
     pub outage_after_failures: u32,
+    /// Signed manifests built into the client, by file name relative to `base_url`. They seed
+    /// the cache where it has no copy yet, so a first start without a network still shows a
+    /// verified catalog; they are verified like anything fetched, and any newer copy replaces
+    /// them.
+    pub seed: Vec<(String, Vec<u8>)>,
 }
+
+/// `fetched` of a seeded cache entry: no server has confirmed it.
+const SEED_FETCHED: &str = "1970-01-01";
 
 impl RemoteConfig {
     /// `base_url` and `official_keys` with the default limits: 10 s to connect, 30 s per
@@ -122,7 +130,18 @@ impl RemoteConfig {
             request_timeout: Duration::from_secs(30),
             max_manifest_bytes: DEFAULT_MAX_MANIFEST_BYTES,
             outage_after_failures: OUTAGE_AFTER_FAILURES,
+            seed: Vec::new(),
         }
+    }
+
+    /// Built-in signed manifests for an empty cache ([`RemoteConfig::seed`]).
+    pub fn with_seed(mut self, files: &[(&str, &[u8])]) -> Self {
+        self.seed = files
+            .iter()
+            .filter(|(_, body)| !body.is_empty())
+            .map(|(name, body)| ((*name).to_owned(), body.to_vec()))
+            .collect();
+        self
     }
 
     /// The production CDN and the keys in [`OFFICIAL_KEYS`].
@@ -367,6 +386,7 @@ impl RemoteCatalog {
             base_text.push('/');
         }
         let base = parse_url(&base_text)?;
+        let seed = config.seed;
         let fetcher = Fetcher::new(FetcherConfig {
             allowlist: Arc::clone(&config.allowlist),
             use_env_proxy: config.use_env_proxy,
@@ -383,8 +403,28 @@ impl RemoteCatalog {
             outage_after_failures: config.outage_after_failures.max(1),
             snapshot: RwLock::new(Snapshot::default()),
         };
+        catalog.seed_cache(&seed)?;
         catalog.load_cache()?;
         Ok(catalog)
+    }
+
+    /// Puts the built-in manifests where the cache has nothing yet.
+    fn seed_cache(&self, seed: &[(String, Vec<u8>)]) -> Result<(), CatalogError> {
+        for (name, body) in seed {
+            let url = self
+                .base
+                .join(name)
+                .map_err(|e| CatalogError::InvalidUrl(e.to_string()))?;
+            if self.storage.cached_manifest(url.as_str())?.is_none() {
+                self.storage.put_cached_manifest(&CachedManifest {
+                    url: url.to_string(),
+                    etag: None,
+                    body: body.clone(),
+                    fetched: SEED_FETCHED.to_owned(),
+                })?;
+            }
+        }
+        Ok(())
     }
 
     /// The allowlist this catalog extends; hand it to the download engine.

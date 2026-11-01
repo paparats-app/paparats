@@ -406,6 +406,60 @@ async fn a_valid_signed_catalog_is_served_cached_and_used_offline() {
 }
 
 #[tokio::test]
+async fn a_built_in_snapshot_serves_the_first_start_without_a_network() {
+    let server = Server::start().await;
+    publish(&server);
+    server.set_down(true);
+    let world = EmbeddedCatalog::load().unwrap();
+    let catalog = official_signed(&catalog_manifest("2026-09-01"));
+    let platform = official_signed(&platform_manifest());
+    let channels = official_signed(&directory(&server));
+    let tampered = {
+        let mut body = official_signed(&platform_manifest());
+        body.reverse();
+        body
+    };
+    let seed: [(&str, &[u8]); 3] = [
+        ("catalog.json", &catalog),
+        ("platform.json", &platform),
+        ("channels.json", &channels),
+    ];
+
+    let storage = memory();
+    let offline =
+        RemoteCatalog::new(config(&server).with_seed(&seed), Arc::clone(&storage)).unwrap();
+    assert!(offline.has_catalog(), "no network, no cache: the snapshot");
+    assert_eq!(&offline.catalog().unwrap(), world.catalog_ref());
+    assert_eq!(offline.channels().unwrap().len(), 6);
+
+    // A snapshot never hides a newer cached copy, and a bad one is dropped like any other.
+    server.set_down(false);
+    let fresh = ready(&server, &storage).await;
+    drop(fresh);
+    let stale: [(&str, &[u8]); 1] = [("platform.json", &tampered)];
+    let again =
+        RemoteCatalog::new(config(&server).with_seed(&stale), Arc::clone(&storage)).unwrap();
+    assert_eq!(&again.platform().unwrap(), world.platform_ref());
+    let cached = storage
+        .cached_manifest(&server.url("/v1/catalog.json"))
+        .unwrap()
+        .unwrap();
+    assert_eq!(cached.fetched, TODAY, "the fetched copy stays");
+
+    let bad = memory();
+    let refused = RemoteCatalog::new(config(&server).with_seed(&stale), Arc::clone(&bad)).unwrap();
+    assert!(
+        refused.platform().is_err(),
+        "a snapshot that does not verify is not used"
+    );
+    assert!(
+        bad.cached_manifest(&server.url("/v1/platform.json"))
+            .unwrap()
+            .is_none()
+    );
+}
+
+#[tokio::test]
 async fn not_modified_reuses_the_cache_and_new_versions_replace_it() {
     let server = Server::start().await;
     let storage = memory();

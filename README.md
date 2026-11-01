@@ -350,14 +350,14 @@ cargo test -p paparats-account -- --ignored credential_manager_round_trip    # t
 
 **Still simulated or local, whatever the flags:**
 
-- The local database keeps favorites, collections, subscriptions, ideas, activity and the account
-  snapshot, and the mock world is still seeded on first run.
-- Profile edits, devices, two-factor, plans and purchases, the idea gift, problem reports and the
-  ideas board have no server API yet.
-- Open and Open folder in the Library do nothing yet.
-- Apps installed by an EXE installer cannot be uninstalled from Paparats yet.
-- Installs are always per user; the Settings choice is not used yet.
-- No UI accepts unsigned installers yet, so an unsigned EXE/MSI is always refused.
+- The local database keeps favorites, collections, subscriptions and activity; the real app
+  starts it empty (`library.db`), the demo world seeds its own (`paparats.db`).
+- Profile edits, devices, two-factor, plans and purchases, the idea gift and the ideas board have
+  no server API: the real catalog hides them (D68).
+- Apps installed outside Paparats cannot be uninstalled from it yet.
+- Installs are per user unless the catalog marks a package machine-wide (its installer elevates).
+- An unsigned EXE/MSI runs only when the official catalog declares it unsigned and pins its
+  SHA-256 (the app page says so), or from a community channel after the user's confirmation.
 
 The details are in `docs/decisions.md` D52–D57.
 
@@ -559,9 +559,6 @@ Release entry. The reasons are in `docs/decisions.md`. The main ones:
 
 - **Installers are author-signed or nothing.** Local builds of Paparats itself are not
   code-signed, so Windows SmartScreen warns about the installer.
-- **First run needs the network.** The catalog is fetched from GitHub Pages and cached; no
-  signed snapshot is built in yet, so the very first start without a connection shows an empty
-  store.
 - **No server APIs.** Pro, the account, Ideas, channels and reviews exist only in the demo world
   (`--demo`); the real catalog turns them off (D68). Problem reports go to the app's GitHub
   issues.

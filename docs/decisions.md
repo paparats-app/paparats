@@ -1594,6 +1594,10 @@ point at someone's site.
   shortcut (from its receipt) or the program Windows lists in `DisplayIcon`, Folder shows the
   install folder; both hand one path to Explorer. When neither is known a toast says so. The
   demo world still does nothing here.
-- **Deferred.** A signed catalog snapshot built into the installer for an offline first run;
-  uninstalling apps installed outside Paparats; Windows notifications; automatic updates of
-  other apps.
+- **Offline first start.** The client builds in the catalog's signed manifests
+  (`apps/desktop/src-tauri/catalog-snapshot/`, refreshed by `scripts/catalog-snapshot.mjs`, which
+  the release workflow runs before building). They seed an empty cache (`RemoteConfig::seed`), are
+  verified with the pinned keys like anything fetched, and the first refresh replaces them. A
+  development catalog (`PAPARATS_CATALOG_URL`/`_KEYS`) is never seeded.
+- **Deferred.** Uninstalling apps installed outside Paparats; Windows notifications; automatic
+  updates of other apps.

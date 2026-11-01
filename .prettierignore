@@ -5,6 +5,7 @@ pnpm-lock.yaml
 design_handoff_paparats_store
 apps/desktop/src-tauri/gen
 apps/desktop/src-tauri/icons
+apps/desktop/src-tauri/catalog-snapshot
 fixtures
 *.md
 .claude

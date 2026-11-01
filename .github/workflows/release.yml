@@ -71,6 +71,10 @@ jobs:
             echo "TAURI_SIGNING_PRIVATE_KEY is missing from the release environment"; exit 1
           fi
 
+      # The installer carries the catalog as it is today: an offline first start shows it (D68).
+      - name: The latest catalog snapshot
+        run: node scripts/catalog-snapshot.mjs
+
       - name: Gate
         run: pnpm check
 

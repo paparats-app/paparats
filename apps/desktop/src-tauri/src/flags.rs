@@ -130,6 +130,29 @@ impl RealFlags {
     }
 }
 
+/// The official catalog as GitHub Pages served it when this build was made
+/// (`scripts/catalog-snapshot.mjs`, run by the release workflow). It seeds an empty cache, so a
+/// first start without a network shows a verified catalog; the client checks its signatures like
+/// anything it fetches, and the first refresh replaces it.
+const CATALOG_SNAPSHOT: &[(&str, &[u8])] = &[
+    (
+        "channels.json",
+        include_bytes!("../catalog-snapshot/channels.json"),
+    ),
+    (
+        "catalog.json",
+        include_bytes!("../catalog-snapshot/catalog.json"),
+    ),
+    (
+        "platform.json",
+        include_bytes!("../catalog-snapshot/platform.json"),
+    ),
+    (
+        "official.json",
+        include_bytes!("../catalog-snapshot/official.json"),
+    ),
+];
+
 /// The remote catalog's development overrides (`PAPARATS_CATALOG_URL`, `PAPARATS_CATALOG_KEYS`).
 #[derive(Debug, Clone, Default, PartialEq, Eq)]
 pub struct CatalogEnv {
@@ -164,6 +187,9 @@ impl CatalogEnv {
     /// loopback hosts); a loopback one is reached without the environment's proxy.
     pub fn remote_config(&self) -> Result<RemoteConfig, CatalogError> {
         let mut config = RemoteConfig::production()?;
+        if self.keys.is_none() && self.base_url.is_none() {
+            config = config.with_seed(CATALOG_SNAPSHOT);
+        }
         if let Some(keys) = &self.keys {
             config = config.with_official_keys(KeyRing::from_spec(keys)?);
         }
@@ -267,6 +293,9 @@ mod tests {
         assert!(config.allowlist.read().unwrap().is_allowed("127.0.0.1"));
         assert!(!config.use_env_proxy, "a local CDN needs no proxy");
         assert!(CatalogEnv::default().remote_config().unwrap().use_env_proxy);
+        // The built-in snapshot seeds production only, never a development catalog.
+        assert_eq!(CatalogEnv::default().remote_config().unwrap().seed.len(), 4);
+        assert!(config.seed.is_empty());
 
         let bad = CatalogEnv {
             base_url: Some("not a url".into()),

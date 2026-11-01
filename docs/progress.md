@@ -844,6 +844,7 @@ simulated world), and the known gaps listed per milestone above.
   made-up ratings and versions; no mirrors; Open and Folder work; the catalog refreshes on the
   "Check for updates" schedule; not-yet-working settings are listed only in Developer mode.
 
-Known gaps: no signed catalog snapshot in the installer (the first start needs the network);
-uninstalling apps installed outside Paparats is refused; no Windows notifications; automatic
+The installer carries a signed snapshot of the catalog, so an offline first start shows it.
+
+Known gaps: uninstalling apps installed outside Paparats is refused; no Windows notifications; automatic
 updates of other apps do not run; the installer of Paparats itself is not code-signed.

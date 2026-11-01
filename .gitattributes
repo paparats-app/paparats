@@ -3,3 +3,5 @@
 *.ico binary
 *.icns binary
 *.woff2 binary
+# The built-in catalog snapshot is kept byte for byte (signed envelopes).
+apps/desktop/src-tauri/catalog-snapshot/*.json -text

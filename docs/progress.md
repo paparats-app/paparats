@@ -825,3 +825,25 @@ credentials). CI (`.github/workflows/ci.yml`) mirrors the gate and builds the in
 Open for production (not blockers for the client): real signing credentials and updater keys,
 production CDN/account endpoints, the Ideas/account backend (the client keeps them locally in the
 simulated world), and the known gaps listed per milestone above.
+
+## 0.1.0 — The real catalog (2026-11-01)
+
+- **Releases.** Tags build, sign and draft releases (D66); 0.0.1 (the demo world) is published,
+  and its "Check for updates" installs the next version from `latest.json`.
+- **The official catalog** lives in `paparats-app/catalog` (D67): 53 apps (30 from the starter
+  list, 23 on the Rising shelf), texts in en/be/ru, editorial data and icons. The bot
+  (`crates/paparats-catalog-bot`) resolves releases daily on a Windows runner — SHA-256 against
+  GitHub's digest, Authenticode with pinned signers, Defender — keeps newer releases 48 hours in
+  quarantine, commits `lock.json` and publishes the signed manifests to GitHub Pages. A weekly
+  smoke job installs, finds and uninstalls every app with the client's own code.
+- **The client is real by default** (D68): catalog from Pages with two pinned keys, the PC's
+  inventory, real installs (MSI, silent EXE, MSIX, portable ZIP and single EXE; machine-wide
+  installers elevate; unsigned files only when the catalog pins their hash); `--demo` keeps the
+  design's demo world in its own database. Surfaces without a server (Pro, account, Ideas,
+  channels, reviews) are hidden by the catalog's features; app pages show GitHub facts instead of
+  made-up ratings and versions; no mirrors; Open and Folder work; the catalog refreshes on the
+  "Check for updates" schedule; not-yet-working settings are listed only in Developer mode.
+
+Known gaps: no signed catalog snapshot in the installer (the first start needs the network);
+uninstalling apps installed outside Paparats is refused; no Windows notifications; automatic
+updates of other apps do not run; the installer of Paparats itself is not code-signed.

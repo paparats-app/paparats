@@ -3,7 +3,7 @@ resolver = "3"
 members = ["apps/desktop/src-tauri", "crates/*"]
 
 [workspace.package]
-version = "0.0.1"
+version = "0.1.0"
 edition = "2024"
 # 1.88: let chains (edition 2024) and keyring 4 (M7).
 rust-version = "1.88"

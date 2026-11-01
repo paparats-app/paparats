@@ -47,8 +47,11 @@ jobs:
           git show "v$($env:FROM):apps/desktop/src-tauri/tauri.conf.json" | Set-Content -Encoding utf8 old-conf.json
           $conf = Get-Content old-conf.json -Raw | ConvertFrom-Json
           $endpoint = $conf.plugins.updater.endpoints[0]
-          $latest = Invoke-RestMethod $endpoint
+          # GitHub serves release files as application/octet-stream: fetch, then parse.
+          Invoke-WebRequest $endpoint -OutFile latest.json
+          $latest = Get-Content latest.json -Raw | ConvertFrom-Json
           $platform = $latest.platforms.'windows-x86_64'
+          if (-not $latest.version -or -not $platform.url -or -not $platform.signature) { throw "latest.json is incomplete" }
           if ([version]$latest.version -le [version]$env:FROM) { throw "no newer version: $($latest.version)" }
           Invoke-WebRequest $platform.url -OutFile update-setup.exe
           "TO=$($latest.version)" | Add-Content $env:GITHUB_ENV

@@ -477,7 +477,7 @@ spacing, radius, shadow, layout and motion tokens.
   the inventory, "Open", uninstall (D69). `self-update.yml` checks the update from any published
   release to the latest. On a clean desktop Windows, `pwsh scripts/sandbox-check.ps1` does the
   same in Windows Sandbox: it installs the latest release and runs the smoke install for a few
-  apps (`-Only`), reporting to `%TEMP%\paparats-sandboxesults\sandbox.md`. Windows Sandbox must
+  apps (`-Only`), reporting to `%TEMP%\paparats-sandbox\results\sandbox.md`. Windows Sandbox must
   be enabled once (elevated: `Enable-WindowsOptionalFeature -Online -FeatureName
   Containers-DisposableClientVM -All`, then reboot).
 

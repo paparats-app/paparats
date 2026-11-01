@@ -472,6 +472,14 @@ spacing, radius, shadow, layout and motion tokens.
   and the app on a local CDN. IPC tests run on Tauri's mock runtime.
 - **Everything**: `pnpm check` runs the whole gate. CI runs the same steps, then builds the
   installer.
+- **Real Windows**: the catalog's Smoke install workflow installs every app with the client's
+  own code on Windows Server 2022 and 2025 — install, update from the previous release, found by
+  the inventory, "Open", uninstall (D69). `self-update.yml` checks the update from any published
+  release to the latest. On a clean desktop Windows, `pwsh scripts/sandbox-check.ps1` does the
+  same in Windows Sandbox: it installs the latest release and runs the smoke install for a few
+  apps (`-Only`), reporting to `%TEMP%\paparats-sandboxesults\sandbox.md`. Windows Sandbox must
+  be enabled once (elevated: `Enable-WindowsOptionalFeature -Online -FeatureName
+  Containers-DisposableClientVM -All`, then reboot).
 
 ## Building the installer
 

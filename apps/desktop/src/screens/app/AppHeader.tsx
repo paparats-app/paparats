@@ -8,7 +8,7 @@ import { ProPill } from "@/components/ProPill";
 import { SplitButton } from "@/components/SplitButton";
 import { isBusy } from "@/domain/apps";
 import { pickText } from "@/domain/text";
-import { useAppAction, useChannelContext, useLocale } from "@/hooks";
+import { useAppAction, useChannelContext, useFeatures, useLocale } from "@/hooks";
 import { useFormat, type Format } from "@/i18n/format";
 import { useLibrary, useLibraryActions } from "@/queries";
 import { useDownloadStatus } from "@/screens/shared";
@@ -19,17 +19,24 @@ const ignore = () => undefined;
 
 /**
  * 96px icon | name, publisher, chips, tagline, source notes | the primary action with its
- * progress (prototype lines 969–998).
+ * progress (prototype lines 969–998). An app from the real catalog also says when its version is
+ * early, when it comes from the author of Paparats, when its author signs nothing and when its
+ * installer asks for administrator rights (D68).
  */
 export function AppHeader({ app }: { app: App }) {
   const { t } = useTranslation();
   const format = useFormat();
   const locale = useLocale();
   const { go } = useNav();
+  const features = useFeatures();
   const channels = useChannelContext();
   const sourceId = channels.sourceOf(app);
-  const source = channels.byId[sourceId];
-  const alternatives = channels.alternativesOf(app).flatMap((id) => channels.byId[id]?.name ?? []);
+  // Without channels every app comes from the official catalog: nothing to name or compare.
+  const source = features.channels ? channels.byId[sourceId] : undefined;
+  const alternatives = features.channels
+    ? channels.alternativesOf(app).flatMap((id) => channels.byId[id]?.name ?? [])
+    : [];
+  const project = app.source;
 
   let sourceNote: string | null = null;
   if (source?.trust === "verified") sourceNote = t("app.srcVerifiedNote", { channel: source.name });
@@ -65,13 +72,31 @@ export function AppHeader({ app }: { app: App }) {
           <Chip tone="mint" className={styles.chip}>
             {t("common.free")}
           </Chip>
-          {app.pro && <ProPill label={t("common.pro")} className={styles.pro} />}
+          {features.pro && app.pro && <ProPill label={t("common.pro")} className={styles.pro} />}
+          {project?.early && <Chip className={styles.chip}>{t("app.early")}</Chip>}
+          {project?.byPaparatsAuthor && (
+            <Chip tone="outline" className={styles.chip}>
+              {t("app.byPaparatsAuthor")}
+            </Chip>
+          )}
         </div>
         <p className={styles.tagline}>{pickText(app.tagline, locale)}</p>
         {sourceNote !== null && (
           <div className={`${styles.note} ${styles.sourceNote}`}>
             <Icon name="info-serif" size={15} strokeWidth={2} className={styles.noteIcon} />
             <span>{sourceNote}</span>
+          </div>
+        )}
+        {project?.unsigned && (
+          <div className={`${styles.note} ${styles.sourceNote}`}>
+            <Icon name="shield" size={15} strokeWidth={2} className={styles.noteIcon} />
+            <span>{t("app.unsignedNote")}</span>
+          </div>
+        )}
+        {project?.needsAdmin && (
+          <div className={`${styles.note} ${styles.sourceNote}`}>
+            <Icon name="key-round" size={15} strokeWidth={2} className={styles.noteIcon} />
+            <span>{t("app.needsAdminNote")}</span>
           </div>
         )}
         {alternatives.length > 0 && (

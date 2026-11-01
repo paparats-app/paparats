@@ -32,8 +32,6 @@ export interface AppAction {
   cancel(): void;
 }
 
-const ignore = () => undefined;
-
 /** The primary card/button action — the prototype's `card()` label, colour and `act`. */
 export function useAppAction(app: App): AppAction {
   const { t } = useTranslation();
@@ -105,7 +103,7 @@ export function useAppAction(app: App): AppAction {
         return;
       case "installed":
         notify(t("common.opening", { app: app.name }));
-        install.open(app.id).catch(ignore);
+        install.open(app.id).catch(() => notify(t("common.openFailed", { app: app.name })));
         return;
       case "queued":
       case "installing":

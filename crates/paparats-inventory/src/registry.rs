@@ -156,6 +156,8 @@ pub struct Detected {
     /// The version this source reports (before choosing the highest one).
     pub version: Option<String>,
     pub install_dir: Option<PathBuf>,
+    /// The program "Open" starts: the `.exe` the Uninstall entry's `DisplayIcon` names.
+    pub program: Option<PathBuf>,
 }
 
 /// Everything one scan saw — for diagnostics and the machine test. Holds paths and names of the
@@ -331,6 +333,7 @@ impl RegistryInventory {
                 kind: hit.kind,
                 version: entry.version.clone(),
                 install_dir: dir,
+                program: entry.program(&self.sources.folders),
             });
         }
         for package in &report.packages {
@@ -354,6 +357,7 @@ impl RegistryInventory {
                 kind: hit.kind,
                 version: Some(package.version.clone()),
                 install_dir: package.install_location.clone(),
+                program: None,
             });
         }
         if let Some(root) = &self.sources.portable_root {
@@ -383,6 +387,7 @@ impl RegistryInventory {
                         kind: hit.kind,
                         version: Some(version),
                         install_dir: Some(dir),
+                        program: None,
                     });
                 }
             }

@@ -14,7 +14,9 @@ const COLLAPSED = 2;
 
 /**
  * Four generated versions, newest first, two shown until expanded; the catalog version is
- * "Current", an older installed one "Installed" (prototype lines 1085–1096).
+ * "Current", an older installed one "Installed" (prototype lines 1085–1096). An app from the real
+ * catalog shows only its current release with the notes from GitHub, in the author's words:
+ * the bot keeps no history, and made-up versions would be fiction (D68).
  */
 export function VersionHistory({ app, catalog }: { app: App; catalog: Catalog }) {
   const { t } = useTranslation();
@@ -23,12 +25,14 @@ export function VersionHistory({ app, catalog }: { app: App; catalog: Catalog })
   const listId = useId();
   const { installedVersion } = useInstallState(app.id);
   const [expanded, setExpanded] = useState(false);
-  const versions = versionHistory(
+  const generated = versionHistory(
     app,
     manifestOf(catalog.updates, app.id),
     catalog.genericNotes,
     installedVersion,
   );
+  const real = app.source !== undefined && app.source !== null;
+  const versions = real ? generated.slice(0, 1) : generated;
   const shown = expanded ? versions : versions.slice(0, COLLAPSED);
 
   return (
@@ -65,15 +69,19 @@ export function VersionHistory({ app, catalog }: { app: App; catalog: Catalog })
             </div>
           ))}
         </div>
-        <button
-          type="button"
-          className={styles.toggle}
-          aria-expanded={expanded}
-          aria-controls={listId}
-          onClick={() => setExpanded((open) => !open)}
-        >
-          {expanded ? t("app.showLess") : t("app.showAll")}
-        </button>
+        {real ? (
+          <div className={styles.source}>{t("app.notesFromGitHub")}</div>
+        ) : (
+          <button
+            type="button"
+            className={styles.toggle}
+            aria-expanded={expanded}
+            aria-controls={listId}
+            onClick={() => setExpanded((open) => !open)}
+          >
+            {expanded ? t("app.showLess") : t("app.showAll")}
+          </button>
+        )}
       </div>
     </>
   );

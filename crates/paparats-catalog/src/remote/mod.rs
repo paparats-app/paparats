@@ -46,12 +46,22 @@ use crate::envelope::{KeyRing, ManifestEnvelope, TrustWarning, open_community, p
 use crate::{CatalogError, CatalogSource, ChannelManifest, hex};
 
 /// Where the official manifests live.
-pub const PRODUCTION_BASE_URL: &str = "https://cdn.paparats.app/v1/";
+pub const PRODUCTION_BASE_URL: &str = "https://paparats-app.github.io/catalog/v1/";
 
-/// Official manifest signing keys as `(key id, public key)`. Empty until the release signing key
-/// exists: production builds must pin it here; development builds pass keys through
+/// Official manifest signing keys as `(key id, public key)`: the primary key, which signs the
+/// catalog on GitHub Pages, and an offline backup that can take over without a client release if
+/// the primary is lost or compromised. Development builds can replace them through
 /// [`RemoteConfig::with_official_keys`].
-pub const OFFICIAL_KEYS: &[(&str, &str)] = &[];
+pub const OFFICIAL_KEYS: &[(&str, &str)] = &[
+    (
+        "bcf96ab55a435d41",
+        "OXtVTzf3xMOe9JdKUcIF/Zxb7AlQtiGijWxLOr+m4mc=",
+    ),
+    (
+        "ab4411fc923bfada",
+        "I8xGkSBBXScfuWVs2fJ2+I2F564q/ioNwYHTyArximE=",
+    ),
+];
 
 /// Failed syncs in a row after which a channel counts as down (`outage` = first failure).
 pub const OUTAGE_AFTER_FAILURES: u32 = 2;
@@ -884,6 +894,15 @@ mod tests {
         );
         assert!(releases.package("shell").is_some());
         assert!(releases.package("vlc").is_none());
+    }
+
+    #[test]
+    fn official_key_ids_are_their_fingerprints() {
+        assert!(OFFICIAL_KEYS.len() >= 2, "a primary and a backup");
+        for (id, key) in OFFICIAL_KEYS {
+            let key = parse_public_key(key).unwrap();
+            assert_eq!(*id, crate::envelope::key_fingerprint(&key));
+        }
     }
 
     #[test]

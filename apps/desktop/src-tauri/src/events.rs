@@ -37,6 +37,12 @@ pub struct DeepLinkEvent(pub DeepLinkTarget);
 #[tauri_specta(event_name = "shell://tray-action")]
 pub struct TrayActionEvent(pub TrayAction);
 
+/// `catalog://changed` — a background refresh brought a newer catalog: the UI reloads the
+/// catalog, the platform file and the library (the update badge follows).
+#[derive(Debug, Clone, Serialize, Deserialize, specta::Type, tauri_specta::Event)]
+#[tauri_specta(event_name = "catalog://changed")]
+pub struct CatalogChangedEvent;
+
 /// Where download events go (the webview in the app, a recorder in tests).
 pub trait UiEvents: Send + Sync + 'static {
     fn progress(&self, progress: DownloadProgress);

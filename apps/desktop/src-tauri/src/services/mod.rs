@@ -2,8 +2,8 @@
 //! service contracts (`apps/desktop/src/services/contracts.ts`), with the same semantics as the
 //! in-memory mocks (`services/mock/*`). Plain Rust — no Tauri types — so it is unit-tested here.
 //!
-//! Each service runs on the strategy [`wiring::Strategies`] picked at startup: the simulated mock
-//! world by default, real ones per `PAPARATS_REAL` flag (M7, [`crate::flags`]).
+//! Each service runs on the strategy [`wiring::Strategies`] picked at startup: the real ones by
+//! default, the simulated demo world with `--demo` ([`crate::flags`]).
 
 mod account;
 mod catalog;
@@ -90,8 +90,8 @@ impl AppState {
         Self::new(storage, ui, runtime, clock, strategies)
     }
 
-    /// Wires the state over an open database, seeding the mock world on first run (also under
-    /// real strategies: subscriptions, ideas and the account snapshot stay local).
+    /// Wires the state over an open database. On first run the demo world seeds the mock data
+    /// set; with any real strategy the database starts empty, following the official catalog.
     pub fn new(
         storage: Arc<Storage>,
         ui: Arc<dyn UiEvents>,
@@ -99,8 +99,12 @@ impl AppState {
         clock: Clock,
         strategies: Strategies,
     ) -> AppResult<Self> {
-        if storage.seed_from_fixtures()? {
-            tracing::info!("seeded the local database from the mock data set");
+        if strategies.flags.is_simulated() {
+            if storage.seed_from_fixtures()? {
+                tracing::info!("seeded the local database from the mock data set");
+            }
+        } else if storage.seed_local(&clock())? {
+            tracing::info!("started an empty local database");
         }
         let Strategies {
             flags,
@@ -127,7 +131,7 @@ impl AppState {
         let (catalog_ready, _) = watch::channel(ready);
         let (sign_ins, _) = broadcast::channel(4);
         if !flags.is_simulated() {
-            tracing::info!(real = ?flags.names(), "real strategies (PAPARATS_REAL)");
+            tracing::info!(real = ?flags.names(), "real strategies");
         }
         // Real sign-in: the seeded (or stale) snapshot must not claim a session without tokens.
         if let Some(oauth) = auth.real()
@@ -227,10 +231,34 @@ impl AppState {
         allow_community_downloads(&self.catalog, &self.storage, channel_id);
     }
 
+    /// A background refresh of the remote catalog (the schedule in `lib.rs`): the official
+    /// manifests, then the inventory's rules and the active channels, as at startup. `false`
+    /// without the remote catalog (nothing to refresh).
+    pub fn refresh(&self) -> impl Future<Output = bool> + Send + 'static {
+        let remote = self.catalog.remote().cloned();
+        let catalog = self.catalog.clone();
+        let inventory = Arc::clone(&self.inventory);
+        let storage = Arc::clone(&self.storage);
+        let today = self.today();
+        async move {
+            let Some(remote) = remote else { return false };
+            refresh_remote(
+                &remote,
+                &catalog,
+                inventory.as_ref(),
+                &storage,
+                &today,
+                None,
+            )
+            .await;
+            true
+        }
+    }
+
     /// Work that starts with the app and runs in the background: the remote catalog's refresh
     /// (then the inventory learns its apps and the active channels sync), warming the real
-    /// inventory's scan, and the signed-in profile from the account API. Nothing in the default
-    /// run.
+    /// inventory's scan, and the signed-in profile from the account API. Nothing in the demo
+    /// world.
     pub fn startup(&self) -> impl Future<Output = ()> + Send + 'static {
         let remote = self.catalog.remote().cloned();
         let catalog = self.catalog.clone();
@@ -243,30 +271,15 @@ impl AppState {
         async move {
             let catalog_work = async {
                 let Some(remote) = remote else { return };
-                let report = remote.refresh(&today).await;
-                if !report.is_ok() {
-                    tracing::warn!(
-                        "the remote catalog was not fully refreshed; using what is cached"
-                    );
-                }
-                if let Ok(c) = catalog.catalog() {
-                    inventory.set_catalog(&c.apps);
-                }
-                ready.send_replace(true);
-                let active: Vec<String> = storage
-                    .subscriptions()
-                    .unwrap_or_default()
-                    .into_iter()
-                    .filter(|s| !s.paused)
-                    .map(|s| s.channel_id)
-                    .filter(|id| remote.directory_entry(id).is_some())
-                    .collect();
-                for (id, outcome) in remote.sync_channels(&active, &today).await {
-                    match outcome {
-                        Ok(_) => allow_community_downloads(&catalog, &storage, &id),
-                        Err(e) => tracing::warn!(channel = %id, error = %e, "channel sync failed"),
-                    }
-                }
+                refresh_remote(
+                    &remote,
+                    &catalog,
+                    inventory.as_ref(),
+                    &storage,
+                    &today,
+                    Some(&ready),
+                )
+                .await;
             };
             let inventory_work = async {
                 if warm_inventory {
@@ -283,6 +296,42 @@ impl AppState {
                 }
             };
             tokio::join!(catalog_work, inventory_work, account_work);
+        }
+    }
+}
+
+/// Refreshes the official manifests, teaches the inventory the catalog's apps, marks the catalog
+/// `ready` (startup) and syncs the active channels.
+async fn refresh_remote(
+    remote: &paparats_catalog::RemoteCatalog,
+    catalog: &CatalogBackend,
+    inventory: &dyn Inventory,
+    storage: &Storage,
+    today: &str,
+    ready: Option<&watch::Sender<bool>>,
+) {
+    let report = remote.refresh(today).await;
+    if !report.is_ok() {
+        tracing::warn!("the remote catalog was not fully refreshed; using what is cached");
+    }
+    if let Ok(c) = catalog.catalog() {
+        inventory.set_catalog(&c.apps);
+    }
+    if let Some(ready) = ready {
+        ready.send_replace(true);
+    }
+    let active: Vec<String> = storage
+        .subscriptions()
+        .unwrap_or_default()
+        .into_iter()
+        .filter(|s| !s.paused)
+        .map(|s| s.channel_id)
+        .filter(|id| remote.directory_entry(id).is_some())
+        .collect();
+    for (id, outcome) in remote.sync_channels(&active, today).await {
+        match outcome {
+            Ok(_) => allow_community_downloads(catalog, storage, &id),
+            Err(e) => tracing::warn!(channel = %id, error = %e, "channel sync failed"),
         }
     }
 }

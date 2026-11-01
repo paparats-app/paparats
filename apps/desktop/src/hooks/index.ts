@@ -5,6 +5,7 @@ export * from "./useChannelContext";
 export * from "./useChannelFollow";
 export * from "./useConnectivity";
 export * from "./useDeveloperChannel";
+export * from "./useFeatures";
 export * from "./useInstalledIndex";
 export * from "./useInstallState";
 export * from "./useLocale";

@@ -101,7 +101,9 @@ export function useLibraryItem(app: App): LibraryItemView {
     },
     openFolder() {
       closeMenu();
-      actions.openInstallFolder(app.id).catch(ignore);
+      actions
+        .openInstallFolder(app.id)
+        .catch(() => notify(t("library.folderNotFound", { app: app.name })));
     },
     uninstall() {
       closeMenu();

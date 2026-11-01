@@ -102,7 +102,8 @@ describe("UpdatesScreen", () => {
     expect(within(row("Obsidian")).getByText("New editor improvements")).toBeInTheDocument();
     expect(within(row("ShareX")).queryByText("What’s new")).toBeNull();
 
-    expect(screen.getByRole("switch", { name: "Automatic updates" })).toBeChecked();
+    // Automatic updates do nothing yet: the switch is a Developer mode row (D68).
+    expect(screen.queryByRole("switch", { name: "Automatic updates" })).toBeNull();
     expect(screen.getByRole("button", { name: /^Update settings/ })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /^Update history/ })).toHaveAttribute(
       "aria-expanded",
@@ -141,6 +142,7 @@ describe("UpdatesScreen", () => {
   it("toggles automatic updates, opens Settings › Updates and the update history", async () => {
     const user = userEvent.setup();
     const { router } = await openUpdates();
+    await setSettings({ dev: true });
     await user.click(screen.getByRole("switch", { name: "Automatic updates" }));
     expect(useSettingsStore.getState().settings.auto).toBe(false);
     expect(screen.getByRole("switch", { name: "Automatic updates" })).not.toBeChecked();

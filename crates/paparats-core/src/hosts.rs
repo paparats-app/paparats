@@ -8,30 +8,27 @@ use std::collections::BTreeSet;
 
 /// First-party hosts the client talks to: the catalog on GitHub Pages, GitHub itself (the
 /// updater's `latest.json` and the release downloads of Paparats and of the catalog's apps) and
-/// the hosts GitHub redirects release downloads to.
+/// the hosts GitHub redirects release downloads to. Only our own Pages host, never all of
+/// `*.github.io`.
 pub const FIRST_PARTY: &[&str] = &[
     "paparats-app.github.io",
     "github.com",
     "objects.githubusercontent.com",
     "release-assets.githubusercontent.com",
-    "paparats.app",
-    "cdn.paparats.app",
-    "api.paparats.app",
-    "updates.paparats.app",
 ];
 
-/// The account API: OAuth 2 authorization server (`/oauth/*`) and `/v1/me`. One of
-/// [`FIRST_PARTY`].
+/// The account API: OAuth 2 authorization server (`/oauth/*`) and `/v1/me`. Not first-party:
+/// there is no account service yet (D68), so only the development-only real sign-in
+/// (`PAPARATS_REAL=account`) allows it, explicitly.
 pub const ACCOUNT_API: &str = "api.paparats.app";
 
 fn normalize(host: &str) -> String {
     host.trim_end_matches('.').to_ascii_lowercase()
 }
 
-/// Whether `host` is a first-party Paparats host (exact match or subdomain of `paparats.app`).
+/// Whether `host` is a first-party host (exact match only).
 pub fn is_first_party(host: &str) -> bool {
-    let host = normalize(host);
-    FIRST_PARTY.contains(&host.as_str()) || host.ends_with(".paparats.app")
+    FIRST_PARTY.contains(&normalize(host).as_str())
 }
 
 /// Whether `host` is this machine. Plain `http://` is only ever accepted for loopback hosts
@@ -81,11 +78,10 @@ mod tests {
 
     #[test]
     fn first_party_hosts() {
-        assert!(is_first_party("paparats.app"));
-        assert!(is_first_party("CDN.Paparats.App."));
-        assert!(is_first_party("mirror.eu.paparats.app"));
-        assert!(!is_first_party("paparats.app.evil.com"));
-        assert!(!is_first_party("notpaparats.app"));
+        assert!(is_first_party("Paparats-App.GitHub.io."));
+        assert!(!is_first_party("paparats.app"), "a domain we do not own");
+        assert!(!is_first_party("cdn.paparats.app"));
+        assert!(!is_first_party("paparats-app.github.io.evil.com"));
         assert!(is_first_party("paparats-app.github.io"));
         assert!(is_first_party("GitHub.com"));
         assert!(is_first_party("release-assets.githubusercontent.com"));
@@ -97,7 +93,7 @@ mod tests {
     fn runtime_allowlist() {
         let list = Allowlist::new().with("Downloads.Kvetka.Example.");
         assert!(list.is_allowed("downloads.kvetka.example"));
-        assert!(list.is_allowed("cdn.paparats.app"));
+        assert!(list.is_allowed("paparats-app.github.io"));
         assert!(!list.is_allowed("kvetka.example"));
         assert!(!list.is_allowed("evil.example"));
     }
@@ -111,7 +107,8 @@ mod tests {
     }
 
     #[test]
-    fn account_api_is_first_party() {
-        assert!(FIRST_PARTY.contains(&ACCOUNT_API));
+    fn the_account_api_is_not_first_party() {
+        // No account service exists (D68): only the development-only real sign-in allows it.
+        assert!(!is_first_party(ACCOUNT_API));
     }
 }

@@ -52,15 +52,14 @@ describe("AboutPanel", () => {
     ]);
     const links = screen.getAllByRole("link").map((a) => [a.textContent, a.getAttribute("href")]);
     expect(links).toEqual([
-      ["Website", "https://paparats.app/"],
-      ["Documentation", "https://paparats.app/docs"],
-      ["Get support", "https://paparats.app/support"],
-      ["Report an issue", "https://paparats.app/issues"],
-      ["Terms of Service", "https://paparats.app/terms"],
-      ["Privacy Policy", "https://paparats.app/privacy"],
-      ["Licenses", "https://paparats.app/licenses"],
+      ["Source code", "https://github.com/paparats-app/paparats"],
+      ["Documentation", "https://github.com/paparats-app/paparats#readme"],
+      ["Get support", "https://github.com/paparats-app/paparats/discussions"],
+      ["Report an issue", "https://github.com/paparats-app/paparats/issues"],
+      ["Privacy Policy", "https://github.com/paparats-app/paparats/blob/main/PRIVACY.md"],
+      ["Licenses", "https://github.com/paparats-app/paparats/blob/main/LICENSE"],
     ]);
-    expect(screen.getByText("© 2026 Paparats. All rights reserved.")).toBeInTheDocument();
+    expect(screen.getByText("© 2026 Paparats contributors. MIT License.")).toBeInTheDocument();
   });
 
   it("Check for updates: “Checking…” for 1.2 s, then the “You’re up to date!” toast", async () => {
@@ -155,9 +154,9 @@ describe("AboutPanel", () => {
     await user.click(screen.getByRole("link", { name: "Report an issue" }));
     await user.click(screen.getByRole("link", { name: "Licenses" }));
     expect(open.mock.calls).toEqual([
-      ["https://paparats.app/docs"],
-      ["https://paparats.app/issues"],
-      ["https://paparats.app/licenses"],
+      ["https://github.com/paparats-app/paparats#readme"],
+      ["https://github.com/paparats-app/paparats/issues"],
+      ["https://github.com/paparats-app/paparats/blob/main/LICENSE"],
     ]);
     expect(router.state.location.pathname).toBe("/settings/about");
   });

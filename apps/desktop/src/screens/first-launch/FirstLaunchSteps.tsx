@@ -13,8 +13,11 @@ import { useSettingsStore } from "@/stores/useSettingsStore";
 import { cx } from "./cx";
 import styles from "./FirstLaunch.module.css";
 
-/** "No account? Create one" opens the sign-up page in the default browser. */
-export const SIGNUP_URL = "https://paparats.app/signup";
+/**
+ * "No account? Create one" (the demo world only: the real catalog has no accounts, D68) opens the
+ * project's page — there is no sign-up service, and no Paparats domain to send anyone to.
+ */
+export const SIGNUP_URL = "https://github.com/paparats-app";
 
 interface StepProps {
   /** The step container; it takes focus when the step appears. */
@@ -238,14 +241,18 @@ export function StepIndicator({
   phase,
   onBack,
   hidden = false,
+  withAccount = true,
 }: {
   phase: FirstLaunchPhase;
   onBack: () => void;
   /** Faded out (before the first step and during the exit): hidden from assistive tech. */
   hidden?: boolean;
+  /** The Account step exists (the catalog turns accounts on, D68). */
+  withAccount?: boolean;
 }) {
   const { t } = useTranslation();
   const k = phaseIndex(phase);
+  const steps = withAccount ? INDICATOR : INDICATOR.filter((s) => s.label !== "common.tabAccount");
   const canBack = phase === "theme" || phase === "signin";
   return (
     <div className={styles.indicator} aria-hidden={hidden || undefined}>
@@ -256,7 +263,7 @@ export function StepIndicator({
         </button>
       )}
       <ol className={styles.steps} aria-label={t("firstLaunch.stepsLabel")}>
-        {INDICATOR.map(({ index, label }) => (
+        {steps.map(({ index, label }) => (
           <li
             key={index}
             className={styles.stepItem}

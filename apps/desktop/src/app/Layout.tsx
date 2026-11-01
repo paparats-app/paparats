@@ -11,6 +11,7 @@ import { OfflineBanner } from "./OfflineBanner";
 import { Sidebar } from "./Sidebar";
 import { ToastHost } from "./ToastHost";
 import { TopBar } from "./TopBar";
+import { useCatalogRefreshes } from "./useCatalogRefreshes";
 import { useDeepLinks } from "./useDeepLinks";
 import { useTrayActions } from "./useTrayActions";
 import { WindowControls } from "./WindowControls";
@@ -36,6 +37,7 @@ export function Layout() {
   // paparats:// links and the tray's "Check for updates" navigate like the sidebar does.
   useDeepLinks();
   useTrayActions();
+  useCatalogRefreshes();
   // A control that disappears with its row or block hands the focus to its neighbour (D61).
   const restoreFocus = useFocusRescue(contentRef);
 

@@ -10,23 +10,25 @@ export const PRINCIPLES: ReadonlyArray<{ id: "p1" | "p2" | "p3" | "p4"; icon: Ic
   { id: "p4", icon: "leaf" },
 ];
 
+/** The project's own pages on GitHub (D68): no Paparats website or domain exists. */
+const REPO = "https://github.com/paparats-app/paparats";
+
 /** Website, Documentation, Get support, Report an issue — opened in the default browser. */
 export const ABOUT_LINKS: ReadonlyArray<{
   id: "website" | "docs" | "support" | "report";
   url: string;
 }> = [
-  { id: "website", url: "https://paparats.app/" },
-  { id: "docs", url: "https://paparats.app/docs" },
-  { id: "support", url: "https://paparats.app/support" },
-  { id: "report", url: "https://paparats.app/issues" },
+  { id: "website", url: REPO },
+  { id: "docs", url: `${REPO}#readme` },
+  { id: "support", url: `${REPO}/discussions` },
+  { id: "report", url: `${REPO}/issues` },
 ];
 
-/** Footer: Terms of Service, Privacy Policy, Licenses. */
+/** Footer: Privacy Policy and the License (Paparats has no terms of service to show). */
 export const LEGAL_LINKS: ReadonlyArray<{
   id: "terms" | "privacyPolicy" | "licenses";
   url: string;
 }> = [
-  { id: "terms", url: "https://paparats.app/terms" },
-  { id: "privacyPolicy", url: "https://paparats.app/privacy" },
-  { id: "licenses", url: "https://paparats.app/licenses" },
+  { id: "privacyPolicy", url: `${REPO}/blob/main/PRIVACY.md` },
+  { id: "licenses", url: `${REPO}/blob/main/LICENSE` },
 ];

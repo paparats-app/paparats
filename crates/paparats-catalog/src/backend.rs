@@ -88,7 +88,7 @@ mod tests {
     #[test]
     fn the_flag_picks_the_strategy() {
         let storage = Arc::new(Storage::open_in_memory().unwrap());
-        let config = RemoteConfig::new("https://cdn.paparats.app/v1", keys());
+        let config = RemoteConfig::new("https://paparats-app.github.io/v1", keys());
 
         let mock = from_flags(false, Arc::clone(&storage), config.clone()).unwrap();
         assert!(!mock.is_remote());
@@ -109,7 +109,7 @@ mod tests {
             from_flags(true, Arc::clone(&storage), unkeyed),
             Err(CatalogError::NoTrustedKeys)
         ));
-        let insecure = config.with_base_url("http://cdn.paparats.app/v1/");
+        let insecure = config.with_base_url("http://paparats-app.github.io/v1/");
         assert!(matches!(
             from_flags(true, storage, insecure),
             Err(CatalogError::InsecureUrl(_))

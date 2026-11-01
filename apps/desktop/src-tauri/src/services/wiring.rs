@@ -1,5 +1,6 @@
-//! Which strategy serves each service: the simulated mock world (the default) or, per
-//! `PAPARATS_REAL` flag ([`crate::flags`]), the real inventory, installer, catalog and sign-in.
+//! Which strategy serves each service: the real inventory, installer and catalog (the default,
+//! [`RealFlags::RELEASE`]), the simulated demo world (`--demo`) or, per `PAPARATS_REAL` flag
+//! ([`crate::flags`]), any mix including real sign-in.
 //! A real strategy that cannot be set up (no pinned catalog key, no Credential Manager) is logged
 //! and replaced by its simulated counterpart, so the app always starts; [`Strategies::flags`]
 //! then tells what actually runs.
@@ -87,8 +88,8 @@ impl Strategies {
         })
     }
 
-    /// The strategies `flags` asks for (everything simulated when no flag is set — exactly the
-    /// default run).
+    /// The strategies `flags` asks for (everything simulated when no flag is set: the demo
+    /// world).
     pub fn from_flags(
         flags: RealFlags,
         catalog_env: &CatalogEnv,
@@ -296,15 +297,38 @@ mod tests {
     }
 
     #[test]
-    fn a_catalog_without_keys_falls_back_to_the_embedded_one() {
+    fn a_catalog_with_bad_keys_falls_back_to_the_embedded_one() {
         let storage = Arc::new(Storage::open_in_memory().unwrap());
         let dir = tempfile::tempdir().unwrap();
         let flags = RealFlags {
             catalog: true,
             ..RealFlags::default()
         };
+        let broken = CatalogEnv {
+            base_url: None,
+            keys: Some("dev:???".into()),
+        };
         let s = Strategies::from_flags(
             flags,
+            &broken,
+            &storage,
+            &RealPaths {
+                downloads: dir.path().to_path_buf(),
+            },
+            Arc::new(NoBrowser),
+        )
+        .unwrap();
+        assert!(!s.flags.catalog, "the remote catalog could not start");
+        assert!(!s.catalog.is_remote());
+        assert_eq!(s.catalog.catalog().unwrap().apps.len(), 32);
+    }
+
+    #[test]
+    fn the_release_flags_run_the_remote_catalog() {
+        let storage = Arc::new(Storage::open_in_memory().unwrap());
+        let dir = tempfile::tempdir().unwrap();
+        let s = Strategies::from_flags(
+            RealFlags::RELEASE,
             &CatalogEnv::default(),
             &storage,
             &RealPaths {
@@ -313,8 +337,8 @@ mod tests {
             Arc::new(NoBrowser),
         )
         .unwrap();
-        assert!(!s.flags.catalog, "no pinned key: not running");
-        assert!(!s.catalog.is_remote());
-        assert_eq!(s.catalog.catalog().unwrap().apps.len(), 32);
+        assert!(s.flags.catalog, "the pinned keys start the remote catalog");
+        assert!(s.catalog.is_remote());
+        assert!(!s.auth.is_real());
     }
 }

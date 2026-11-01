@@ -239,8 +239,9 @@ Three switches decide what runs behind the same UI:
 | --- | --- | --- | --- |
 | `pnpm dev`, then open `http://localhost:1420` in a browser | **mock** (automatic outside Tauri) | none | In memory from `fixtures/*.json`, reset on reload; "today" is 2026-09-15; settings and the first-run record in the page's `localStorage` |
 | `PAPARATS_MOCK=1 pnpm tauri dev` | **mock**, inside the real shell | Rust runs the native shell (window, tray, links, single instance); the services are not called | as above, in the WebView2 profile's `localStorage` |
-| `pnpm tauri dev` (default) | **tauri** | Rust core on the **simulated world**: embedded catalog, stored inventory, simulated transfers and installs, local sign-in | `paparats.db` seeded once from the fixtures; real local "today"; `settings.json` ([Local data](#local-data)) |
-| `PAPARATS_REAL=… pnpm tauri dev` | **tauri** | Rust core with real strategies swapped in ([Real strategies](#real-strategies)) | as above, plus this PC's registry, installers, CDN, browser sign-in |
+| `pnpm tauri dev` (default) | **tauri** | Rust core, **real**: the signed catalog from GitHub Pages, this PC's installed apps, real downloads and installs; no sign-in | `library.db`, empty on first run (the official catalog followed); real local "today"; `settings.json` ([Local data](#local-data)) |
+| `pnpm tauri dev -- -- --demo` or `PAPARATS_DEMO=1` | **tauri** | Rust core on the **demo world**: embedded catalog, stored inventory, simulated transfers and installs, local sign-in | `paparats.db` seeded once from the fixtures |
+| `PAPARATS_REAL=… pnpm tauri dev` | **tauri** | Rust core with the named real strategies only ([Real strategies](#real-strategies)) | as above for the parts that stay simulated |
 
 ```powershell
 # PowerShell: the variable stays set for the session, so remove it afterwards
@@ -255,18 +256,22 @@ PAPARATS_MOCK=1 pnpm tauri dev
 - `PAPARATS_MOCK` is read by Vite when the dev server or a build starts (`vite.config.ts ›
   __PAPARATS_MOCK__`, `platform/runtime.ts › shouldUseMockServices`). Never set it for
   `pnpm tauri build`, or the release will ship on mock services.
-- `PAPARATS_REAL` is read by the Rust core once at startup, so it has no visible effect together
-  with `PAPARATS_MOCK=1`.
+- `PAPARATS_REAL`, `PAPARATS_DEMO` and `--demo` are read by the Rust core once at startup, so they
+  have no visible effect together with `PAPARATS_MOCK=1`. An installed Paparats runs the demo
+  world when started as `Paparats.exe --demo`.
 - A production UI build served in a browser (`pnpm build`, then
   `pnpm --filter @paparats/desktop preview`) also runs on the mock chunk.
 
 ## Real strategies
 
-By default the app runs on the **mock world**: the prototype's data set and timings (embedded
-catalog, a stored inventory, simulated downloads and installs, local sign-in). The real
-implementations sit behind one environment variable, `PAPARATS_REAL`, read once at startup
-(`apps/desktop/src-tauri/src/flags.rs`, wired in `src-tauri/src/services/wiring.rs`). Nothing in
-the UI changes; without the variable the app behaves exactly as before.
+By default the app is **real**: `inventory`, `install` and `catalog` below run, and `account`
+does not (there is no account service). `--demo` or `PAPARATS_DEMO=1` runs the **demo world**
+instead: the prototype's data set and timings (embedded catalog, a stored inventory, simulated
+downloads and installs, local sign-in). `PAPARATS_REAL` picks the real strategies one by one and
+wins over both. All three are read once at startup (`apps/desktop/src-tauri/src/flags.rs`, wired
+in `src-tauri/src/services/wiring.rs`). The real catalog's `platform.json` turns off the surfaces
+that need a server — Pro, the account, Ideas, channels and reviews — and the UI hides them
+(D68).
 
 ```powershell
 $env:PAPARATS_REAL = "inventory"          # one strategy
@@ -289,14 +294,14 @@ PAPARATS_REAL=inventory pnpm tauri dev
 
 Unknown names are ignored with a warning in the log (`%LOCALAPPDATA%\com.paparats.desktop\logs`).
 A strategy that cannot start is logged and replaced by its simulated counterpart, so the app
-always starts. The log names the real strategies actually running
-(`real strategies (PAPARATS_REAL)`). Nothing is installed for real without both `catalog` and
-`install`. No release catalog key exists yet, so today real installs only come from a development
-CDN (below).
+always starts. The log names the real strategies actually running (`real strategies`). Nothing is
+installed for real without both `catalog` and `install`.
 
-**The remote catalog needs keys.** No release signing key is pinned yet, so `catalog` alone falls
-back to the embedded catalog. A development build (`pnpm tauri dev`) can be pointed at a CDN you
-signed yourself; release builds ignore these two variables.
+**The remote catalog.** It comes from `https://paparats-app.github.io/catalog/v1/`, built and
+signed by the bot of [`paparats-app/catalog`](https://github.com/paparats-app/catalog) (D67). The
+client pins two keys in `OFFICIAL_KEYS` (`crates/paparats-catalog/src/remote/mod.rs`): the primary
+one that signs the catalog and an offline backup. A development build (`pnpm tauri dev`) can be
+pointed at a catalog you signed yourself; release builds ignore these two variables.
 
 ```powershell
 $env:PAPARATS_SIGNING_KEY = (node scripts/sign-manifest.mjs --generate-key)   # keep it secret
@@ -552,21 +557,22 @@ without developer mode.
 The complete, current list is in `docs/progress.md`: each milestone's "Known gaps" and the
 Release entry. The reasons are in `docs/decisions.md`. The main ones:
 
-- **Not yet production-keyed.**
-  - No release catalog signing key is pinned, so real installs only come from a development CDN.
-  - The updater public key is a placeholder, and nothing downloads or installs an update.
-  - Local builds are unsigned without credentials.
-  - No release is published yet: CI builds the installer but does not create a GitHub Release.
-- **No server APIs.** Profile edits, devices, two-factor, purchases, the idea gift, problem
-  reports and the ideas board are local only.
-- **Failures are quiet.** The handoff has no copy for a failed download, purchase, subscribe or
-  similar action, so these return without a message (D8, D36, D38–D45). The Library ignores an
-  uninstall refusal under `PAPARATS_REAL`.
-- **Not designed yet.** Creating collections, Install location › Change…, Network proxy ›
-  Configure…, Change photo, Password › Change…, Export and Delete account are no-ops, as in the
-  prototype. Installs are per user only.
-- **Not exercised on this machine.** The NSIS installer was built but not installed end to end.
-  Real MSI/EXE/MSIX installs are covered only by the `#[ignore]`d tests.
+- **Installers are author-signed or nothing.** Local builds of Paparats itself are not
+  code-signed, so Windows SmartScreen warns about the installer.
+- **First run needs the network.** The catalog is fetched from GitHub Pages and cached; no
+  signed snapshot is built in yet, so the very first start without a connection shows an empty
+  store.
+- **No server APIs.** Pro, the account, Ideas, channels and reviews exist only in the demo world
+  (`--demo`); the real catalog turns them off (D68). Problem reports go to the app's GitHub
+  issues.
+- **Failures are quiet.** The handoff has no copy for a failed download or similar action, so
+  these return without a message (D8, D36, D38–D45). Uninstalling an app Paparats did not
+  install is refused: remove it in Windows Settings.
+- **Settings that do nothing yet** (D64) are listed only in Developer mode: automatic updates,
+  metered networks, notifications, install location, shortcuts and the rest. "Check for updates"
+  works: it is how often the catalog refreshes in the background.
+- **Not exercised on this machine.** Real MSI/EXE/MSIX installs are covered by the `#[ignore]`d
+  tests and by the catalog's smoke installs on a GitHub runner.
 - **Rendering.** Russian Cyrillic renders ≈ 2–3 % narrower than in the prototype (bundled
   `@fontsource/onest` versus the prototype's Google Fonts build).
 - **Developer build quirk.** Tray › Quit under `pnpm tauri dev` ends the CLI with

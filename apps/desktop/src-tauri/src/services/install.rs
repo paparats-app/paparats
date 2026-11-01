@@ -1,4 +1,7 @@
-//! InstallService: the library (inventory + favorites + collections).
+//! InstallService: the library (inventory + favorites + collections), and opening an installed
+//! app or its folder.
+
+use std::path::{Path, PathBuf};
 
 use paparats_core::Library;
 
@@ -60,18 +63,58 @@ impl AppState {
         self.get_library().await
     }
 
-    /// Launches an installed app. Not wired yet (D24): the simulated world has nothing to launch,
-    /// and the real inventory knows the install folder but not which program to start.
-    pub fn open_app(&self, app_id: &str) -> AppResult<()> {
-        tracing::debug!(app = %app_id, "open (not wired yet)");
-        Ok(())
+    /// Starts an installed app: the Start-menu shortcut of a portable app Paparats installed,
+    /// else the program Windows lists for it (`DisplayIcon`). The demo world has nothing to start
+    /// (D24); an app whose program is unknown is `not_found` (the UI says so).
+    pub async fn open_app(&self, app_id: &str) -> AppResult<()> {
+        if !self.flags.inventory {
+            tracing::debug!(app = %app_id, "open: nothing to start in the demo world");
+            return Ok(());
+        }
+        let target = match self.installer.shortcut(app_id) {
+            Some(shortcut) => Some(shortcut),
+            None => {
+                let id = app_id.to_owned();
+                self.read_inventory(move |i| i.locate(&id))
+                    .await?
+                    .into_iter()
+                    .find_map(|d| d.program.filter(|p| p.is_file()))
+            }
+        };
+        let target =
+            target.ok_or_else(|| AppError::not_found(format!("the program of {app_id}")))?;
+        shell_open(&target)
     }
 
-    /// Opens the app's install folder in Explorer. Not wired yet (D24).
-    pub fn open_install_folder(&self, app_id: &str) -> AppResult<()> {
-        tracing::debug!(app = %app_id, "open install folder (not wired yet)");
-        Ok(())
+    /// Opens the app's folder in Explorer: where Windows says it is installed, or its version
+    /// folder for a portable app.
+    pub async fn open_install_folder(&self, app_id: &str) -> AppResult<()> {
+        if !self.flags.inventory {
+            tracing::debug!(app = %app_id, "open folder: nothing to show in the demo world");
+            return Ok(());
+        }
+        let id = app_id.to_owned();
+        let dir: Option<PathBuf> = self
+            .read_inventory(move |i| i.locate(&id))
+            .await?
+            .into_iter()
+            .find_map(|d| d.install_dir.filter(|dir| dir.is_dir()));
+        let dir = dir.ok_or_else(|| AppError::not_found(format!("the folder of {app_id}")))?;
+        shell_open(&dir)
     }
+}
+
+/// Hands a file or folder to Explorer, which starts a program or shortcut and shows a folder,
+/// without elevation and without a shell command line (one argument, never parsed).
+fn shell_open(target: &Path) -> AppResult<()> {
+    if !target.is_absolute() {
+        return Err(AppError::invalid("not an absolute path"));
+    }
+    std::process::Command::new("explorer.exe")
+        .arg(target)
+        .spawn()
+        .map(drop)
+        .map_err(|e| AppError::internal_message(&format!("could not start Explorer: {e}")))
 }
 
 #[cfg(test)]
@@ -108,8 +151,9 @@ mod tests {
         let lib = s.uninstall("obsidian").await.unwrap();
         assert_eq!(lib.installed.len(), 13, "idempotent");
 
-        s.open_app("vscode").unwrap();
-        s.open_install_folder("vscode").unwrap();
+        // The demo world starts nothing and opens nothing, without an error.
+        s.open_app("vscode").await.unwrap();
+        s.open_install_folder("vscode").await.unwrap();
     }
 
     /// An inventory that sees a fixed set of apps — the real one on a PC where uninstalling did
@@ -144,6 +188,8 @@ mod tests {
     #[tokio::test]
     async fn the_library_lists_what_the_inventory_finds() {
         let storage = Arc::new(Storage::open_in_memory().unwrap());
+        // The demo data set, as if this database came from the demo world.
+        storage.seed_from_fixtures().unwrap();
         let vlc = InstalledApp {
             app_id: "vlc".into(),
             version: "3.0.23".into(),
@@ -178,6 +224,16 @@ mod tests {
         assert_eq!(s.get_library().await.unwrap().installed.len(), 1);
         // Not installed at all: nothing to do.
         assert_eq!(s.uninstall("krita").await.unwrap().installed.len(), 1);
+
+        // This inventory knows no program or folder: Open and Folder say so instead of guessing.
+        assert!(matches!(
+            s.open_app("vlc").await,
+            Err(AppError::NotFound(_))
+        ));
+        assert!(matches!(
+            s.open_install_folder("vlc").await,
+            Err(AppError::NotFound(_))
+        ));
     }
 
     #[tokio::test]

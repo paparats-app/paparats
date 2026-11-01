@@ -157,7 +157,7 @@ mod tests {
     fn urls_must_be_allowlisted_and_https() {
         let allow = list(&["127.0.0.1", "downloads.kvetka.example"]);
         let ok = |u: &str| check_url(&allow, &Url::parse(u).unwrap());
-        assert!(ok("https://cdn.paparats.app/v1/catalog.json").is_ok());
+        assert!(ok("https://paparats-app.github.io/v1/catalog.json").is_ok());
         assert!(ok("https://downloads.kvetka.example/m.json").is_ok());
         assert!(ok("http://127.0.0.1:8080/catalog.json").is_ok());
         assert!(matches!(
@@ -165,15 +165,15 @@ mod tests {
             Err(CatalogError::HostNotAllowed(h)) if h == "evil.example"
         ));
         assert!(matches!(
-            ok("http://cdn.paparats.app/v1/catalog.json"),
+            ok("http://paparats-app.github.io/v1/catalog.json"),
             Err(CatalogError::InsecureUrl(_))
         ));
         assert!(matches!(
-            ok("ftp://cdn.paparats.app/x"),
+            ok("ftp://paparats-app.github.io/x"),
             Err(CatalogError::InvalidUrl(_))
         ));
         assert!(matches!(
-            ok("https://user:pw@cdn.paparats.app/x"),
+            ok("https://user:pw@paparats-app.github.io/x"),
             Err(CatalogError::InvalidUrl(_))
         ));
         // Loopback over HTTP still needs the allowlist.
@@ -201,7 +201,10 @@ mod tests {
         })
         .join();
         assert!(matches!(
-            check_url(&allow, &Url::parse("https://cdn.paparats.app/x").unwrap()),
+            check_url(
+                &allow,
+                &Url::parse("https://paparats-app.github.io/x").unwrap()
+            ),
             Err(CatalogError::HostNotAllowed(_))
         ));
     }

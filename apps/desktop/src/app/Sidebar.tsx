@@ -8,9 +8,11 @@ import { ProPill } from "@/components/ProPill";
 import { releaseNotes } from "@/domain/ideas";
 import { usePro } from "@/hooks/usePro";
 import { useUpdates } from "@/hooks/useUpdates";
+import { useFeatures } from "@/hooks/useFeatures";
 import { useViewAs } from "@/hooks/useViewAs";
 import { useFormat } from "@/i18n/format";
 import { useIdeas } from "@/queries";
+import type { Features } from "@/services/types";
 import { useNav, type NavTarget, type Section } from "./navigation";
 import styles from "./Sidebar.module.css";
 
@@ -38,6 +40,12 @@ const SECONDARY: readonly Item[] = [
   { id: "settings", icon: "settings" },
 ];
 
+/** Items that exist only when the catalog turns their feature on (D68). */
+const FEATURE_OF: Partial<Record<SidebarSection, keyof Features>> = {
+  ideas: "ideas",
+  subscription: "pro",
+};
+
 /** The sidebar's Browse item resets every filter (the curated view); other items just go. */
 function targetOf(id: SidebarSection): NavTarget {
   return id === "browse" ? { to: "browse", filters: {} } : { to: id };
@@ -54,9 +62,15 @@ export function Sidebar() {
   const { go, section } = useNav();
   const updates = useUpdates().count;
   const { isPro } = usePro();
+  const features = useFeatures();
   const viewAs = useViewAs();
   const ideas = useIdeas().data;
   const notes = useMemo(() => releaseNotes(ideas ?? [], viewAs).length, [ideas, viewAs]);
+
+  const shown = ({ id }: Item) => {
+    const feature = FEATURE_OF[id];
+    return feature === undefined || features[feature];
+  };
 
   const badge = (id: SidebarSection) => {
     if (id === "updates" && updates > 0) {
@@ -102,9 +116,9 @@ export function Sidebar() {
         </span>
       </button>
 
-      <ul className={styles.list}>{PRIMARY.map(renderItem)}</ul>
+      <ul className={styles.list}>{PRIMARY.filter(shown).map(renderItem)}</ul>
       <div className={styles.divider} role="presentation" />
-      <ul className={styles.list}>{SECONDARY.map(renderItem)}</ul>
+      <ul className={styles.list}>{SECONDARY.filter(shown).map(renderItem)}</ul>
 
       <div className={styles.spacer} />
       <img className={styles.watermark} src={fernWatermark} alt="" aria-hidden="true" />

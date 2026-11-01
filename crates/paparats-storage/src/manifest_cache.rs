@@ -177,7 +177,7 @@ mod tests {
     #[test]
     fn manifest_cache_round_trip() {
         let s = Storage::open_in_memory().unwrap();
-        let url = "https://cdn.paparats.app/v1/catalog.json";
+        let url = "https://paparats-app.github.io/v1/catalog.json";
         assert_eq!(s.cached_manifest(url).unwrap(), None);
         assert!(!s.touch_cached_manifest(url, "2026-09-16").unwrap());
 

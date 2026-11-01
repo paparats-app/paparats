@@ -14,7 +14,7 @@ use super::text::{IsoDate, Localized};
 pub enum TrustLevel {
     /// The Paparats catalog: curated, tested and signed by Paparats.
     Official,
-    /// Author reviewed by Paparats; files mirrored by Paparats.
+    /// Author reviewed by Paparats; files from the author's own releases.
     Verified,
     /// Anyone can publish; files come straight from the author's server.
     Community,
@@ -39,15 +39,12 @@ pub enum ChannelKind {
     Curated,
 }
 
-/// Where a channel's binaries are served from.
+/// Where a channel's binaries are served from. Paparats mirrors nothing: every file comes from
+/// its author's own releases (D68). One variant today; the field stays so a manifest can say so.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Type)]
 #[serde(rename_all = "lowercase")]
 pub enum FileHost {
-    /// Paparats CDN.
-    Paparats,
-    /// Author's server plus a Paparats mirror.
-    Mirrored,
-    /// Author's server only.
+    /// The author's own releases (GitHub Releases for the official catalog).
     Author,
 }
 

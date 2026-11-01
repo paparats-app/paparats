@@ -239,11 +239,11 @@ mod tests {
             Err(AuthError::HostNotAllowed(_))
         ));
         assert!(matches!(
-            OAuthClient::new(config("http://api.paparats.app", &[])),
+            OAuthClient::new(config("http://api.paparats.app", &["api.paparats.app"])),
             Err(AuthError::InsecureUrl(_))
         ));
         assert!(matches!(
-            OAuthClient::new(config("ftp://api.paparats.app", &[])),
+            OAuthClient::new(config("ftp://api.paparats.app", &["api.paparats.app"])),
             Err(AuthError::InvalidUrl(_))
         ));
         assert!(matches!(
@@ -254,7 +254,11 @@ mod tests {
 
     #[test]
     fn endpoints_sit_at_the_origin_root() {
-        let c = OAuthClient::new(config("https://api.paparats.app/some/prefix", &[])).unwrap();
+        let c = OAuthClient::new(config(
+            "https://api.paparats.app/some/prefix",
+            &["api.paparats.app"],
+        ))
+        .unwrap();
         assert_eq!(c.token_url.as_str(), "https://api.paparats.app/oauth/token");
         assert_eq!(
             c.revoke_url.as_str(),

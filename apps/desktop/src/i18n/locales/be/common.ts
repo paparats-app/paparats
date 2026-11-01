@@ -61,6 +61,7 @@ export const common: LocaleCatalog<typeof En> = {
   mottoB: "Тыя ж інструменты. Новыя магчымасці.",
   mottoC: "Добрыя інструменты. Святлейшыя дні.",
   opening: "Адкрываем {{app}}…",
+  openFailed: "Не атрымалася знайсці, як запусціць {{app}}. Адкрыйце праграму з меню «Пуск».",
   uninstalled: "{{app}} выдалена",
   downloading: "Загрузка",
   queued: "У чарзе",

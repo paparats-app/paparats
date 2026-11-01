@@ -1,6 +1,6 @@
 //! Payloads of the remote manifests (inside a [`crate::ManifestEnvelope`]).
 //!
-//! Layout on the CDN, relative to the configured base URL (`https://cdn.paparats.app/v1/`):
+//! Layout on the CDN, relative to the configured base URL (`https://paparats-app.github.io/v1/`):
 //!
 //! | File            | Signed by        | Payload                                            |
 //! |-----------------|------------------|----------------------------------------------------|

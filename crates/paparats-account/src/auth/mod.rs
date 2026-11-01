@@ -135,14 +135,15 @@ pub struct OAuthConfig {
 }
 
 impl OAuthConfig {
-    /// The production account API (`https://api.paparats.app`, [`hosts::ACCOUNT_API`]).
+    /// The production account API (`https://api.paparats.app`, [`hosts::ACCOUNT_API`]), allowed
+    /// explicitly: it is not a first-party host while no account service exists.
     pub fn production() -> Self {
         Self {
             api_base: format!("https://{}", hosts::ACCOUNT_API),
             client_id: CLIENT_ID.to_owned(),
             redirect_uri: REDIRECT_URI.to_owned(),
             scope: None,
-            allowlist: Allowlist::new(),
+            allowlist: Allowlist::new().with(hosts::ACCOUNT_API),
             use_env_proxy: true,
             timeout: Duration::from_secs(20),
         }
@@ -178,7 +179,8 @@ mod tests {
         assert_eq!(config.api_base, "https://api.paparats.app");
         assert_eq!(config.redirect_uri, "paparats://auth/callback");
         assert_eq!(config.client_id, CLIENT_ID);
-        assert!(hosts::is_first_party(hosts::ACCOUNT_API));
+        assert!(config.allowlist.is_allowed(hosts::ACCOUNT_API));
+        assert!(!hosts::is_first_party(hosts::ACCOUNT_API));
         assert_eq!(CREDENTIAL_SERVICE, "Paparats");
     }
 

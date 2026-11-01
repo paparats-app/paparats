@@ -262,7 +262,7 @@ fn releases(channel_id: &str, generated: &str) -> ChannelManifest {
         "kvetka" => ("shell", "downloads.kvetka.example"),
         "vitrazh" => ("vitrazhtweaker", "vitrazh.example"),
         "fossfriends" => ("rufus", "files.fossfriends.org"),
-        _ => ("obsidian", "cdn.paparats.app"),
+        _ => ("obsidian", "paparats-app.github.io"),
     };
     ChannelManifest {
         channel_id: channel_id.into(),

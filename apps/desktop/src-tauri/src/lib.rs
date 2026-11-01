@@ -18,16 +18,19 @@ mod window;
 mod ipc_tests;
 
 pub use error::{AppError, AppResult};
-pub use events::{DeepLinkEvent, DownloadProgressEvent, DownloadStateEvent, TrayActionEvent};
+pub use events::{
+    CatalogChangedEvent, DeepLinkEvent, DownloadProgressEvent, DownloadStateEvent, TrayActionEvent,
+};
 
 use std::sync::Arc;
 use std::time::Duration;
 
 use paparats_core as core;
+use paparats_core::UpdateSchedule;
 use tauri::{AppHandle, Manager, RunEvent, WindowEvent};
 use tauri_plugin_deep_link::DeepLinkExt;
 use tauri_plugin_opener::OpenerExt;
-use tauri_specta::{Builder, collect_commands, collect_events};
+use tauri_specta::{Builder, Event, collect_commands, collect_events};
 
 use crate::flags::{CatalogEnv, RealFlags};
 use crate::services::{Browser, RealPaths, Strategies};
@@ -39,7 +42,10 @@ use crate::window::{MAIN_WINDOW, MainWindow, TauriShellHost};
 pub const BINDINGS_PATH: &str = "../src/bindings.ts";
 
 /// File name of the local database inside the app data directory.
-pub const DATABASE_FILE: &str = "paparats.db";
+pub const DATABASE_FILE: &str = "library.db";
+
+/// The demo world's database (`--demo`), the one 0.0.1 seeded from the mock data set.
+pub const DEMO_DATABASE_FILE: &str = "paparats.db";
 
 /// Folder of real downloads (partial and verified packages) in the app's local data directory.
 pub const DOWNLOADS_DIR: &str = "downloads";
@@ -118,7 +124,8 @@ pub fn specta_builder<R: tauri::Runtime>() -> Builder<R> {
             DownloadProgressEvent,
             DownloadStateEvent,
             DeepLinkEvent,
-            TrayActionEvent
+            TrayActionEvent,
+            CatalogChangedEvent
         ])
         .typ::<core::Catalog>()
         .typ::<core::ChannelInfo>()
@@ -182,8 +189,16 @@ fn init_state(app: &mut tauri::App) -> Result<RealFlags, Box<dyn std::error::Err
         Err(e) => eprintln!("Paparats: file logging is disabled: {e}"),
     }
     // Read here and nowhere else, once logging runs (unknown names are logged).
-    let flags = RealFlags::from_env();
-    let db_path = app.path().app_data_dir()?.join(DATABASE_FILE);
+    let args: Vec<String> = std::env::args().collect();
+    let flags = RealFlags::from_env(&args);
+    // The demo world keeps its own database (0.0.1 wrote the demo data to it), so switching
+    // between the two never mixes made-up apps into the real library.
+    let db_file = if flags.is_simulated() {
+        DEMO_DATABASE_FILE
+    } else {
+        DATABASE_FILE
+    };
+    let db_path = app.path().app_data_dir()?.join(db_file);
     let paths = RealPaths {
         downloads: app.path().app_local_data_dir()?.join(DOWNLOADS_DIR),
     };
@@ -196,9 +211,45 @@ fn init_state(app: &mut tauri::App) -> Result<RealFlags, Box<dyn std::error::Err
         })?;
     let running = state.flags();
     tauri::async_runtime::spawn(state.startup());
+    if running.catalog {
+        refresh_on_schedule(
+            app.handle().clone(),
+            app.path().app_data_dir()?.join(SETTINGS_FILE),
+        );
+    }
     app.manage(state);
     tracing::info!(version = env!("CARGO_PKG_VERSION"), "Paparats started");
     Ok(running)
+}
+
+/// How long the catalog waits between background refreshes ("Check for updates" in Settings).
+fn refresh_period(schedule: UpdateSchedule) -> Duration {
+    const HOUR: u64 = 60 * 60;
+    Duration::from_secs(match schedule {
+        UpdateSchedule::Hourly => HOUR,
+        UpdateSchedule::Daily => 24 * HOUR,
+        UpdateSchedule::Weekly => 7 * 24 * HOUR,
+    })
+}
+
+/// Refreshes the remote catalog in the background, as often as the stored "Check for updates"
+/// setting says (read again before every wait), and tells the UI when it did, so the Updates
+/// badge and the library follow without a restart.
+fn refresh_on_schedule(handle: AppHandle, settings: std::path::PathBuf) {
+    tauri::async_runtime::spawn(async move {
+        loop {
+            let schedule = StoredSettings::read(&settings).schedule;
+            tokio::time::sleep(refresh_period(schedule)).await;
+            let Some(state) = handle.try_state::<services::AppState>() else {
+                continue;
+            };
+            if state.refresh().await
+                && let Err(e) = CatalogChangedEvent.emit(&handle)
+            {
+                tracing::warn!(error = %e, "could not tell the UI about the new catalog");
+            }
+        }
+    });
 }
 
 /// The native shell: window, tray, login entry and `paparats://` links. The window stays hidden

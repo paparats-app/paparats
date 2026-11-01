@@ -101,7 +101,7 @@ describe("M4 account surfaces in the shell", () => {
     expect(profileProCard("Free plan").getByRole("button", { name: "Upgrade" })).toBeEnabled();
   });
 
-  it("Settings: all ten sections open; theme and language apply to the whole window at once", async () => {
+  it("Settings: every listed section opens; theme and language apply to the whole window at once", async () => {
     const user = userEvent.setup();
     await start();
     await user.click(navItem(/^Settings/));
@@ -111,9 +111,7 @@ describe("M4 account surfaces in the shell", () => {
       "General",
       "Updates",
       "Downloads",
-      "Apps",
       "Sources",
-      "Notifications",
       "Privacy",
       "Account",
       "Advanced",

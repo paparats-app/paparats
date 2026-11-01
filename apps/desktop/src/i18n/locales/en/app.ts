@@ -34,9 +34,26 @@ export const app = {
   alsoIn: "Also offered by {{channels}}.",
   srcRule: "Paparats installs and updates from the most trusted channel that offers an app.",
   srcVerifiedNote:
-    "From {{channel}}, a verified channel. Paparats reviewed the author and mirrors the files; the app itself is the author’s.",
+    "From {{channel}}, a verified channel. Paparats reviewed the author; the files come from the author’s own releases.",
   srcCommunityNote:
     "From {{channel}}, a community channel. Not reviewed by Paparats; downloaded from the author’s server.",
+  early: "Early version",
+  byPaparatsAuthor: "By the author of Paparats",
+  unsignedNote:
+    "The author does not sign the installer. Paparats checks the file against the SHA-256 the catalog pinned.",
+  needsAdminNote: "The installer asks for administrator rights.",
+  project: "Project",
+  repository: "Repository",
+  stars: "GitHub stars",
+  projectAge: "Project age",
+  projectAgeNew: "Less than a month",
+  projectAgeMonths_one: "{{count, number}} month",
+  projectAgeMonths_other: "{{count, number}} months",
+  projectAgeYears_one: "{{count, number}} year",
+  projectAgeYears_other: "{{count, number}} years",
+  homepage: "Website",
+  supportAuthor: "Support the author",
+  notesFromGitHub: "Release notes from GitHub, in the author’s words.",
   notFound: "App not found",
   notFoundHint: "It may have been removed from the catalog.",
 } as const;

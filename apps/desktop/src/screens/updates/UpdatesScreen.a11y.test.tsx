@@ -1,7 +1,8 @@
 // Updates, keyboard only: the tab order through the banner and the rows, the expanders, the
 // switch, and Update all → Pause all / Cancel all → Update all keeping the focus where the pressed
 // button was, with the batch progress bar reporting its value.
-import { screen, waitFor, within } from "@testing-library/react";
+import { act, screen, waitFor, within } from "@testing-library/react";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 import {
   expectNamedControls,
   expectTabOrder,
@@ -53,6 +54,10 @@ describe("Updates a11y", () => {
     expect(show).toHaveAttribute("aria-expanded", "false");
     expect(show).toHaveFocus();
 
+    // The switch is a Developer mode row (D68).
+    await act(async () => {
+      await useSettingsStore.getState().update({ dev: true });
+    });
     const auto = screen.getByRole("switch", { name: "Automatic updates" });
     const before = auto.getAttribute("aria-checked");
     auto.focus();

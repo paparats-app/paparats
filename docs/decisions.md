@@ -1555,3 +1555,45 @@ point at someone's site.
   four Home slides (one leads to the Rising shelf), three Browse banners from the shelf. Icons
   are the apps' own, cropped and scaled to 256 px; 7-Zip has none in its repository and shows
   the monogram.
+
+### D68 — Release 0.1: the real app by default, and nothing made up
+- **Real by default.** Without arguments the app runs the real catalog, inventory and installer
+  (`RealFlags::RELEASE`); sign-in stays off, as no account service exists. `--demo` or
+  `PAPARATS_DEMO=1` runs the demo world of the design; `PAPARATS_REAL` still picks strategies one
+  by one. The demo keeps the database 0.0.1 seeded (`paparats.db`); the real app starts its own
+  (`library.db`) empty, following only the official catalog and signed out
+  (`Storage::seed_local`), so made-up apps never mix into a real library.
+- **Hosts and keys.** The catalog comes from `https://paparats-app.github.io/catalog/v1/`, and
+  `OFFICIAL_KEYS` pins the primary key and an offline backup (`bcf96ab55a435d41`,
+  `ab4411fc923bfada`). First-party hosts are only `paparats-app.github.io`, `github.com` and the
+  two hosts GitHub redirects release downloads to; the `paparats.app` hosts are gone (we do not
+  own that domain), and the account API is allowed explicitly only for the development-only real
+  sign-in. About's links and the demo's sign-up link go to GitHub; `PRIVACY.md` lists every
+  request. The CSP's `img-src` admits `https://paparats-app.github.io` for the catalog's icons
+  (D64 foresaw this).
+- **Features.** `platform.json › features` hides what has no server behind it: Pro (sidebar item,
+  badges, Pro notes, Browse's price filter), the account (avatar, Settings › Account, the
+  first-launch Account step), Ideas (sidebar, idea links on app pages, "Suggest an improvement"),
+  channels (Settings › Sources, source chips and notes, channel pages) and reviews. Routes to a
+  hidden screen land on Home (`FeatureGate`). In the mock world everything is on from the first
+  frame; in the real app nothing is shown until the platform file says so, so nothing flashes.
+- **App pages of the real catalog.** No placeholder screenshots; no generated version history,
+  only the current release with the author's notes from GitHub; GitHub facts instead of ratings:
+  repository, stars, the project's age, website, "Support the author" links from `FUNDING.yml`;
+  chips for an early (0.x) version on the Rising shelf and for the author of Paparats; notes when
+  the author signs nothing (the file is checked against the pinned SHA-256) and when the
+  installer asks for administrator rights. "Report a problem" opens the project's issues.
+- **No mirrors.** `FileHost` keeps only `author`: every file comes from its author's own
+  releases. The "mirrored by Paparats" and "Paparats CDN" texts are gone in three languages,
+  as are the demo's `files: mirrored` values.
+- **Settings that do nothing yet** (D64) are hidden outside Developer mode, and so are sections
+  left empty (Apps, Notifications) and Updates' automatic-updates switch. "Check for updates"
+  now works: the core refreshes the remote catalog that often and emits `catalog://changed`,
+  and the UI reloads the catalog, the platform file, the library and the channels.
+- **Open and Folder** (D24) work in the real app: Open starts a portable app's Start-menu
+  shortcut (from its receipt) or the program Windows lists in `DisplayIcon`, Folder shows the
+  install folder; both hand one path to Explorer. When neither is known a toast says so. The
+  demo world still does nothing here.
+- **Deferred.** A signed catalog snapshot built into the installer for an offline first run;
+  uninstalling apps installed outside Paparats; Windows notifications; automatic updates of
+  other apps.

@@ -114,6 +114,7 @@ export const commands = {
 
 /** Events */
 export const events = {
+  catalogChanged: makeEvent<CatalogChangedEvent>("catalog://changed"),
   downloadProgress: makeEvent<DownloadProgressEvent>("download://progress"),
   downloadState: makeEvent<DownloadStateEvent>("download://state"),
   shellDeepLink: makeEvent<DeepLinkEvent>("shell://deep-link"),
@@ -295,6 +296,12 @@ export type Catalog = {
   genericNotes: Localized<string[]>;
   reviewPool: Review[];
 };
+
+/**
+ *  `catalog://changed` — a background refresh brought a newer catalog: the UI reloads the
+ *  catalog, the platform file and the library (the update badge follows).
+ */
+export type CatalogChangedEvent = null;
 
 export type Category = {
   id: CategoryId;
@@ -478,14 +485,13 @@ export type Features = {
   reviews: boolean;
 };
 
-/**  Where a channel's binaries are served from. */
+/**
+ *  Where a channel's binaries are served from. Paparats mirrors nothing: every file comes from
+ *  its author's own releases (D68). One variant today; the field stays so a manifest can say so.
+ */
 export type FileHost =
-  /**  Paparats CDN. */
-  | "paparats"
-  /**  Author's server plus a Paparats mirror. */
-  | "mirrored"
-  /**  Author's server only. */
-  | "author";
+  /**  The author's own releases (GitHub Releases for the official catalog). */
+  "author";
 
 export type HeroSlide = {
   kicker: Localized<string>;
@@ -798,7 +804,7 @@ export type TrayActionEvent = TrayAction;
 export type TrustLevel =
   /**  The Paparats catalog: curated, tested and signed by Paparats. */
   | "official"
-  /**  Author reviewed by Paparats; files mirrored by Paparats. */
+  /**  Author reviewed by Paparats; files from the author's own releases. */
   | "verified"
   /**  Anyone can publish; files come straight from the author's server. */
   | "community";

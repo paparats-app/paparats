@@ -1,7 +1,12 @@
-//! `PAPARATS_REAL` — the one place that decides which real strategies replace the simulated ones
-//! (M7). Without the variable the app runs on the mock world exactly as before.
+//! The one place that decides which real strategies replace the simulated ones.
 //!
-//! The value is a list of names separated by commas, semicolons, `+` or whitespace, in any case:
+//! By default the app is real: the catalog from GitHub Pages, the installed apps from Windows and
+//! real installs ([`RealFlags::RELEASE`]; sign-in stays off, there is no account service yet).
+//! `--demo` on the command line or `PAPARATS_DEMO=1` runs the demo world from the design
+//! instead: the mock catalog, library and account with the prototype's timings (D68).
+//! `PAPARATS_REAL` picks the real strategies one by one (M7, development), overriding both.
+//!
+//! Its value is a list of names separated by commas, semicolons, `+` or whitespace, in any case:
 //!
 //! | name        | real strategy                                                             |
 //! |-------------|---------------------------------------------------------------------------|
@@ -19,8 +24,12 @@
 
 use paparats_catalog::{CatalogError, KeyRing, RemoteConfig};
 
-/// The variable that switches real strategies on.
+/// The variable that picks real strategies one by one.
 pub const ENV_REAL: &str = "PAPARATS_REAL";
+/// The variable that runs the demo world (`1`, `true` or `yes`).
+pub const ENV_DEMO: &str = "PAPARATS_DEMO";
+/// The command-line switch that runs the demo world.
+pub const ARG_DEMO: &str = "--demo";
 /// Development override of the official manifests' base URL.
 pub const ENV_CATALOG_URL: &str = "PAPARATS_CATALOG_URL";
 /// Development override of the pinned official keys (`id:key[,id:key]`, base64 or hex keys).
@@ -44,6 +53,14 @@ impl RealFlags {
         account: true,
     };
 
+    /// What the app runs by default: everything real except sign-in.
+    pub const RELEASE: Self = Self {
+        inventory: true,
+        install: true,
+        catalog: true,
+        account: false,
+    };
+
     /// Parses the value of `PAPARATS_REAL`; also returns the names it did not recognise.
     pub fn parse(value: &str) -> (Self, Vec<String>) {
         let mut flags = Self::default();
@@ -65,16 +82,33 @@ impl RealFlags {
         (flags, unknown)
     }
 
-    /// Reads `PAPARATS_REAL` from the environment (unset or not Unicode = nothing real).
-    pub fn from_env() -> Self {
-        let Ok(value) = std::env::var(ENV_REAL) else {
-            return Self::default();
-        };
-        let (flags, unknown) = Self::parse(&value);
-        for name in &unknown {
-            tracing::warn!(name = %name, "{ENV_REAL}: unknown strategy ignored");
+    /// The strategies for this launch: `PAPARATS_REAL` when set, else the demo world for
+    /// `--demo` / `PAPARATS_DEMO`, else [`RealFlags::RELEASE`].
+    pub fn from_env(args: &[String]) -> Self {
+        let demo_env = std::env::var(ENV_DEMO).ok();
+        Self::choose(
+            std::env::var(ENV_REAL).ok().as_deref(),
+            demo_env.as_deref(),
+            args,
+        )
+    }
+
+    fn choose(real: Option<&str>, demo_env: Option<&str>, args: &[String]) -> Self {
+        if let Some(value) = real {
+            let (flags, unknown) = Self::parse(value);
+            for name in &unknown {
+                tracing::warn!(name = %name, "{ENV_REAL}: unknown strategy ignored");
+            }
+            return flags;
         }
-        flags
+        let demo_env = demo_env.is_some_and(|v| {
+            matches!(v.trim().to_ascii_lowercase().as_str(), "1" | "true" | "yes")
+        });
+        if demo_env || args.iter().any(|a| a == ARG_DEMO) {
+            Self::default()
+        } else {
+            Self::RELEASE
+        }
     }
 
     /// Whether everything is simulated (the default run).
@@ -187,6 +221,25 @@ mod tests {
     }
 
     #[test]
+    fn real_by_default_demo_on_request() {
+        let none: [String; 0] = [];
+        assert_eq!(RealFlags::choose(None, None, &none), RealFlags::RELEASE);
+        const { assert!(!RealFlags::RELEASE.account, "no account service yet") };
+        let demo = ["paparats.exe".to_owned(), ARG_DEMO.to_owned()];
+        assert!(RealFlags::choose(None, None, &demo).is_simulated());
+        assert!(RealFlags::choose(None, Some("1"), &none).is_simulated());
+        assert!(RealFlags::choose(None, Some(" Yes "), &none).is_simulated());
+        assert_eq!(
+            RealFlags::choose(None, Some("0"), &none),
+            RealFlags::RELEASE
+        );
+        // PAPARATS_REAL wins over both.
+        let only_inventory = RealFlags::choose(Some("inventory"), Some("1"), &demo);
+        assert!(only_inventory.inventory && !only_inventory.catalog);
+        assert!(RealFlags::choose(Some(""), None, &none).is_simulated());
+    }
+
+    #[test]
     fn unknown_names_are_reported() {
         let (flags, unknown) = RealFlags::parse("install, telemetry, 1");
         assert!(flags.install && !flags.inventory);
@@ -195,12 +248,12 @@ mod tests {
 
     #[test]
     fn catalog_overrides() {
-        // No release key is pinned yet: production alone has nothing to verify with.
+        // Production pins the official keys.
         assert!(matches!(
             CatalogEnv::default()
                 .remote_config()
                 .map(|c| c.official_keys.is_empty()),
-            Ok(true)
+            Ok(false)
         ));
         // RFC 8032, test 1: a valid Ed25519 public key.
         const KEY: &str = "d75a980182b10ab7d54bfed3c964073a0ee172f3daa62325af021a68f707511a";

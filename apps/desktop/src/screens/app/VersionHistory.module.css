@@ -113,3 +113,14 @@
 .toggle:focus-visible {
   outline-offset: calc(-1 * var(--focus-ring-w));
 }
+
+/* Real catalog: where the notes come from, in place of the toggle (D68). */
+.source {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 var(--sp-18);
+  border-top: 1px solid var(--line);
+  color: var(--text3);
+  font-size: var(--fs-secondary);
+}

@@ -447,6 +447,7 @@ fn locate_tells_where_apps_were_found() {
             kind: MatchKind::DisplayName,
             version: Some("1.4.2".into()),
             install_dir: None,
+            program: None,
         }]
     );
     let bitwarden = inv.locate("bitwarden").unwrap();

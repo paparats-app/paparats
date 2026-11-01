@@ -99,4 +99,11 @@ pub trait Installer: Send + Sync + 'static {
 
     /// Removes an installed app from this PC.
     fn uninstall<'a>(&'a self, app: &'a InstalledApp) -> BoxFuture<'a, Result<(), InstallError>>;
+
+    /// What starts an app Paparats installed itself: the Start-menu shortcut of a portable app.
+    /// `None` when there is nothing of its own to start (an installer's app: the inventory knows
+    /// its program from Windows).
+    fn shortcut(&self, _app_id: &str) -> Option<std::path::PathBuf> {
+        None
+    }
 }

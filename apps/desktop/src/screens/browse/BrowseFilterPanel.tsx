@@ -8,7 +8,7 @@ import {
   FilterRadioOptions,
 } from "@/components/FilterPanel";
 import type { BrowseSort } from "@/domain/apps";
-import { useChannelContext, useVisibleApps } from "@/hooks";
+import { useChannelContext, useFeatures, useVisibleApps } from "@/hooks";
 import { useFormat } from "@/i18n/format";
 import { useCatalog } from "@/queries";
 import { selectBrowseFilters, useBrowseStore, type BrowseState } from "@/stores/useBrowseStore";
@@ -37,6 +37,7 @@ export function BrowseFilterPanel() {
   const categories = useCatalog().data?.categories;
   const apps = useVisibleApps();
   const ctx = useChannelContext();
+  const features = useFeatures();
   const filters = useBrowseStore(useShallow(selectBrowseFilters));
   const filterQuery = useBrowseStore((s) => s.filterQuery);
   const actions = useBrowseStore(useShallow(selectActions));
@@ -80,14 +81,16 @@ export function BrowseFilterPanel() {
           />
         ))}
       </FilterGroup>
-      <FilterGroup label={t("browse.price")}>
-        <FilterCheckOption label={t("browse.priceFree")} checked disabled onChange={ALWAYS_ON} />
-        <FilterCheckOption
-          label={t("browse.pricePro")}
-          checked={filters.pro}
-          onChange={() => actions.togglePro()}
-        />
-      </FilterGroup>
+      {features.pro && (
+        <FilterGroup label={t("browse.price")}>
+          <FilterCheckOption label={t("browse.priceFree")} checked disabled onChange={ALWAYS_ON} />
+          <FilterCheckOption
+            label={t("browse.pricePro")}
+            checked={filters.pro}
+            onChange={() => actions.togglePro()}
+          />
+        </FilterGroup>
+      )}
       <FilterGroup label={t("browse.platform")}>
         <FilterCheckOption label={t("browse.platWindows")} checked disabled onChange={ALWAYS_ON} />
         <FilterCheckOption

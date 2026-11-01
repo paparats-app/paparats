@@ -76,7 +76,7 @@ describe("AppScreen", () => {
     expect(within(header()).getByRole("button", { name: "Kvetka" })).toBeInTheDocument();
     expect(
       screen.getByText(
-        "From Kvetka, a verified channel. Paparats reviewed the author and mirrors the files; the app itself is the author’s.",
+        "From Kvetka, a verified channel. Paparats reviewed the author; the files come from the author’s own releases.",
       ),
     ).toBeInTheDocument();
     expect(screen.getByText("A context menu editor without registry hacks")).toBeInTheDocument();

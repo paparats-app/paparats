@@ -4,6 +4,7 @@ export * from "./apps";
 export * from "./channels";
 export * from "./dates";
 export * from "./ideas";
+export * from "./project";
 export * from "./settings";
 export * from "./text";
 export * from "./versions";

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useParams } from "react-router";
 import { EmptyState } from "@/components/EmptyState";
 import { PLACEHOLDER_SHOTS, ScreenshotViewer } from "@/components/ScreenshotViewer";
-import { useAppIndex } from "@/hooks";
+import { useAppIndex, useFeatures } from "@/hooks";
 import { useCatalog } from "@/queries";
 import { BackLink } from "@/screens/shared";
 import type { App, Catalog } from "@/services/types";
@@ -18,7 +18,9 @@ import styles from "./AppScreen.module.css";
 /**
  * App detail page (`/app/:appId`, prototype lines 967–1118): header with the primary action,
  * screenshots, about + details, ratings and reviews, version history and "More in “…”".
- * Back returns to the section the page was opened from.
+ * Back returns to the section the page was opened from. An app from the real catalog has no
+ * screenshots yet (the demo's are placeholders), and reviews show only when the catalog turns
+ * them on (D68).
  */
 export function AppScreen() {
   const { appId = "" } = useParams();
@@ -46,27 +48,33 @@ function AppNotFound() {
 function AppPage({ app, catalog }: { app: App; catalog: Catalog }) {
   const { t } = useTranslation();
   const [shot, setShot] = useState(0);
+  const features = useFeatures();
+  const placeholderShots = !app.source;
   return (
     <div className={styles.page}>
       <BackLink label={t("common.back")} />
       <AppHeader app={app} />
 
-      <h2 className={`${styles.heading} ${styles.shotsHeading}`}>{t("app.screenshots")}</h2>
-      <ScreenshotViewer
-        shots={PLACEHOLDER_SHOTS}
-        index={shot}
-        onIndexChange={setShot}
-        tint={app.tint}
-        previousLabel={t("common.previous")}
-        nextLabel={t("common.next")}
-      />
+      {placeholderShots && (
+        <>
+          <h2 className={`${styles.heading} ${styles.shotsHeading}`}>{t("app.screenshots")}</h2>
+          <ScreenshotViewer
+            shots={PLACEHOLDER_SHOTS}
+            index={shot}
+            onIndexChange={setShot}
+            tint={app.tint}
+            previousLabel={t("common.previous")}
+            nextLabel={t("common.next")}
+          />
+        </>
+      )}
 
       <div className={styles.columns}>
         <AppAbout app={app} />
         <AppDetails app={app} />
       </div>
 
-      <AppReviews app={app} reviewPool={catalog.reviewPool} />
+      {features.reviews && <AppReviews app={app} reviewPool={catalog.reviewPool} />}
       <VersionHistory app={app} catalog={catalog} />
       <MoreInCollection app={app} collections={catalog.collections} />
     </div>

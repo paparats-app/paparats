@@ -54,6 +54,26 @@ const SECTIONS: Record<SettingsRowSectionId, { label: string; rows: string[] }> 
   },
 };
 
+/** Rows stored but not acted on yet (D64): listed only in Developer mode (D68). */
+const STUB_ROWS = new Set([
+  "App recommendations",
+  "Automatic updates",
+  "Download on metered networks",
+  "Notify when updates are ready",
+  "Install location",
+  "Keep installers after install",
+  "Install for current user only",
+  "Create desktop shortcuts",
+  "Open apps after install",
+  "Updates installed",
+  "New apps in the catalog",
+  "Play a sound",
+  "Send crash reports",
+  "Network proxy",
+  "Prefer portable builds",
+]);
+const shown = (rows: string[]) => rows.filter((row) => !STUB_ROWS.has(row));
+
 const DEV_ROWS = [
   "View Ideas as a channel developer",
   "Simulate offline",
@@ -79,9 +99,10 @@ async function openSettings(route = "/settings", services?: MockServices) {
 }
 
 describe("SettingsScreen", () => {
-  it("renders the title, the ten sections and General by default", async () => {
+  it("renders the title, the sections with working rows and General by default", async () => {
     await openSettings();
     expect(screen.getByText("Customize your experience.")).toBeInTheDocument();
+    // Apps and Notifications have nothing working yet: Developer mode lists them (below).
     expect(
       within(sectionNav())
         .getAllByRole("button")
@@ -90,9 +111,7 @@ describe("SettingsScreen", () => {
       "General",
       "Updates",
       "Downloads",
-      "Apps",
       "Sources",
-      "Notifications",
       "Privacy",
       "Account",
       "Advanced",
@@ -100,18 +119,26 @@ describe("SettingsScreen", () => {
     ]);
     expect(navItem("General")).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("heading", { level: 2, name: "General" })).toBeInTheDocument();
-    expect(rowTitles("General")).toEqual(SECTIONS.general.rows);
+    expect(rowTitles("General")).toEqual(shown(SECTIONS.general.rows));
   });
 
-  it("every row-card section renders its rows", async () => {
+  it("every row-card section renders its rows; Developer mode shows the full design", async () => {
     const user = userEvent.setup();
     const { router } = await openSettings("/settings/about");
-    for (const [id, { label, rows }] of Object.entries(SECTIONS)) {
+    const visit = async (id: string, label: string, rows: string[]) => {
       await user.click(navItem(label));
       expect(router.state.location.pathname).toBe(`/settings/${id}`);
       expect(navItem(label)).toHaveAttribute("aria-current", "page");
       expect(screen.getByRole("heading", { level: 2, name: label })).toBeInTheDocument();
       await waitFor(() => expect(rowTitles(label)).toEqual(rows));
+    };
+    for (const [id, { label, rows }] of Object.entries(SECTIONS)) {
+      if (shown(rows).length > 0) await visit(id, label, shown(rows));
+    }
+    await user.click(navItem("Advanced"));
+    await user.click(screen.getByRole("switch", { name: "Developer mode" }));
+    for (const [id, { label, rows }] of Object.entries(SECTIONS)) {
+      await visit(id, label, id === "advanced" ? [...rows, ...DEV_ROWS] : rows);
     }
     // Picking a section swaps the panel without a navigation (no skeleton, no scroll reset).
     expect(useUiStore.getState().navCount).toBe(0);
@@ -121,8 +148,13 @@ describe("SettingsScreen", () => {
     expect(settingsSectionOf("/settings/privacy")).toBe("privacy");
     expect(settingsSectionOf("/settings")).toBe("general");
     expect(settingsSectionOf("/settings/nope")).toBe("general");
+    await openSettings("/settings/privacy");
+    expect(rowTitles("Privacy")).toEqual(shown(SECTIONS.privacy.rows));
+  });
+
+  it("a section with nothing to show falls back to General", async () => {
     await openSettings("/settings/notifications");
-    expect(rowTitles("Notifications")).toEqual(SECTIONS.notifications.rows);
+    expect(screen.getByRole("heading", { level: 2, name: "General" })).toBeInTheDocument();
   });
 
   it("theme and language apply instantly", async () => {
@@ -163,12 +195,11 @@ describe("SettingsScreen", () => {
     expect(useSettingsStore.getState().settings.animations).toBe(false);
     expect(document.documentElement.dataset.motion).toBe("off");
 
-    await user.click(navItem("Notifications"));
-    const sound = screen.getByRole("switch", { name: "Play a sound" });
-    await user.click(sound);
-    expect(sound).toBeChecked();
+    const tray = screen.getByRole("switch", { name: "Minimize to system tray" });
+    await user.click(tray);
+    expect(tray).not.toBeChecked();
     // Persisted through SettingsService.
-    await waitFor(async () => expect((await services.settings.getSettings()).nSound).toBe(true));
+    await waitFor(async () => expect((await services.settings.getSettings()).tray).toBe(false));
   });
 
   it("undoes Start on Windows login when the system refuses it", async () => {
@@ -224,7 +255,10 @@ describe("SettingsScreen", () => {
 
   it("the install location shows the path; Change… does nothing (as in the prototype)", async () => {
     const user = userEvent.setup();
-    await openSettings("/settings/downloads");
+    await openSettings("/settings/advanced");
+    // A row that does nothing yet: listed in Developer mode only.
+    await user.click(screen.getByRole("switch", { name: "Developer mode" }));
+    await user.click(navItem("Downloads"));
     expect(screen.getByText("C:\\Program Files\\Paparats")).toBeInTheDocument();
     const before = useSettingsStore.getState().settings;
     await user.click(screen.getByRole("button", { name: "Change…" }));
@@ -273,13 +307,13 @@ describe("SettingsScreen", () => {
   it("developer tools show only in developer mode and work", async () => {
     const user = userEvent.setup();
     const { router } = await openSettings("/settings/advanced");
-    expect(rowTitles("Advanced")).toEqual(SECTIONS.advanced.rows);
-    // Network proxy's "Configure…" does nothing, as in the prototype.
-    await user.click(screen.getByRole("button", { name: "Configure…" }));
-    expect(toast()).toBeUndefined();
+    expect(rowTitles("Advanced")).toEqual(shown(SECTIONS.advanced.rows));
 
     await user.click(screen.getByRole("switch", { name: "Developer mode" }));
     expect(rowTitles("Advanced")).toEqual([...SECTIONS.advanced.rows, ...DEV_ROWS]);
+    // Network proxy's "Configure…" does nothing, as in the prototype.
+    await user.click(screen.getByRole("button", { name: "Configure…" }));
+    expect(toast()).toBeUndefined();
 
     await user.click(screen.getByRole("switch", { name: "View Ideas as a channel developer" }));
     expect(useSettingsStore.getState().settings.viewAsDeveloper).toBe(true);
@@ -289,7 +323,7 @@ describe("SettingsScreen", () => {
     expect(useFirstLaunchStore.getState().replayRequested).toBe(1);
 
     await user.click(screen.getByRole("switch", { name: "Developer mode" }));
-    expect(rowTitles("Advanced")).toEqual(SECTIONS.advanced.rows);
+    expect(rowTitles("Advanced")).toEqual(shown(SECTIONS.advanced.rows));
 
     await user.click(screen.getByRole("switch", { name: "Developer mode" }));
     await user.click(screen.getByRole("button", { name: /^Component gallery/ }));

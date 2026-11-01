@@ -10,9 +10,11 @@ FIRST_LAUNCH_SPEC.md = onboarding, `Paparats Prototype.dc.html` = clickable refe
 - `pnpm install` — install; `pnpm tauri dev` — run; `pnpm tauri build` — NSIS installer
 - `pnpm typecheck` · `pnpm lint` · `pnpm test` (Vitest)
 - `cargo fmt --check` · `cargo clippy --all-targets -- -D warnings` · `cargo test`
-- `PAPARATS_MOCK=1 pnpm tauri dev` — mock services with the prototype's data and timings
-- `PAPARATS_REAL=inventory,install,catalog,account` (or `all`) `pnpm tauri dev` — real strategies
-  instead of simulated ones (README › Real strategies, `docs/decisions.md` D52–D57)
+- `pnpm tauri dev` runs the real app: catalog from GitHub Pages, this PC's apps, real installs (D68)
+- `PAPARATS_DEMO=1 pnpm tauri dev` (or the `--demo` argument) — the demo world in the Rust core;
+  `PAPARATS_MOCK=1 pnpm tauri dev` — the UI's in-memory mock services
+- `PAPARATS_REAL=inventory,install,catalog,account` (or `all`) `pnpm tauri dev` — exactly these real
+  strategies (README › Real strategies, `docs/decisions.md` D52–D57)
 - `pnpm specta` — regenerate TypeScript bindings from Rust commands/events (tauri-specta)
 
 ## Layout

@@ -44,3 +44,19 @@
   gap: 7px;
   padding: 0 var(--sp-12) 0 var(--sp-10);
 }
+
+/* Repository and website: a link-styled button in the value column (D68). */
+.link {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mint);
+  font: inherit;
+  text-align: start;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.link:hover {
+  text-decoration: underline;
+}

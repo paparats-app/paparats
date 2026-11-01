@@ -29,29 +29,33 @@ export function UpdatesAside() {
   const { go } = useNav();
   const ids = { auto: useId(), autoHint: useId(), history: useId() };
   const auto = useSettingsStore((s) => s.settings.auto);
+  // Automatic updates are stored but not acted on yet: Developer mode only, as in Settings (D68).
+  const dev = useSettingsStore((s) => s.settings.dev);
   const update = useSettingsStore((s) => s.update);
   const historyOpen = useUpdatesStore((s) => s.historyOpen);
   const toggleHistory = useUpdatesStore((s) => s.toggleHistory);
 
   return (
     <aside className={styles.aside}>
-      <div className={styles.sideCard}>
-        <Icon name="refresh-cw" size={22} className={styles.sideIcon} />
-        <div className={styles.sideText}>
-          <div id={ids.auto} className={styles.sideTitle}>
-            {t("updates.autoUpdates")}
+      {dev && (
+        <div className={styles.sideCard}>
+          <Icon name="refresh-cw" size={22} className={styles.sideIcon} />
+          <div className={styles.sideText}>
+            <div id={ids.auto} className={styles.sideTitle}>
+              {t("updates.autoUpdates")}
+            </div>
+            <div id={ids.autoHint} className={styles.sideHint}>
+              {t("updates.autoUpdatesHint")}
+            </div>
           </div>
-          <div id={ids.autoHint} className={styles.sideHint}>
-            {t("updates.autoUpdatesHint")}
-          </div>
+          <Toggle
+            checked={auto}
+            onChange={(checked) => void update({ auto: checked })}
+            aria-labelledby={ids.auto}
+            aria-describedby={ids.autoHint}
+          />
         </div>
-        <Toggle
-          checked={auto}
-          onChange={(checked) => void update({ auto: checked })}
-          aria-labelledby={ids.auto}
-          aria-describedby={ids.autoHint}
-        />
-      </div>
+      )}
 
       <button
         type="button"

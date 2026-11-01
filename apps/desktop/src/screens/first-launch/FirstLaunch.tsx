@@ -18,6 +18,7 @@ import fernUrl from "@/assets/images/paparats-fern-watermark.webp";
 import markUrl from "@/assets/images/paparats-mark-light.webp";
 import { pathOf } from "@/app/navigation";
 import { Icon } from "@/components/Icon";
+import { useFeatures } from "@/hooks/useFeatures";
 import { useAccountActions } from "@/queries";
 import {
   FIRST_LAUNCH_EXIT_MS,
@@ -257,6 +258,8 @@ function Scene({ phase, run, motion, signInOnly, onLater, onSignIn }: SceneProps
   const scale = sceneScale(viewport.width, viewport.height);
   const frame = sceneFrame(phase, heroTarget(viewport.height, scale));
   const { skip, next, back } = useFirstLaunchStore.getState();
+  // Without accounts (the real catalog, D68) Appearance is the last step: it finishes the intro.
+  const { account } = useFeatures();
 
   // Commit the seed styles before anything changes: at startup the window may still be hidden (it
   // appears after the first paint), and a layer whose first computed style were already `fern`
@@ -374,7 +377,9 @@ function Scene({ phase, run, motion, signInOnly, onLater, onSignIn }: SceneProps
           </div>
           <div className={styles.panel}>
             {phase === "lang" && <LanguageStep stepRef={stepRef} onContinue={next} />}
-            {phase === "theme" && <AppearanceStep stepRef={stepRef} onContinue={next} />}
+            {phase === "theme" && (
+              <AppearanceStep stepRef={stepRef} onContinue={account ? next : onLater} />
+            )}
             {phase === "signin" && (
               <AccountStep
                 stepRef={stepRef}
@@ -388,7 +393,9 @@ function Scene({ phase, run, motion, signInOnly, onLater, onSignIn }: SceneProps
             )}
           </div>
         </Stage>
-        {!signInOnly && <StepIndicator phase={phase} onBack={back} hidden={!frame.panel} />}
+        {!signInOnly && (
+          <StepIndicator phase={phase} onBack={back} hidden={!frame.panel} withAccount={account} />
+        )}
       </div>
 
       {/* The window is frameless and the scene covers the shell's drag strip: an invisible one

@@ -78,13 +78,13 @@ pub async fn install_uninstall(state: St<'_>, app_id: String) -> AppResult<Libra
 #[tauri::command]
 #[specta::specta]
 pub async fn install_open(state: St<'_>, app_id: String) -> AppResult<()> {
-    state.open_app(&app_id)
+    state.open_app(&app_id).await
 }
 
 #[tauri::command]
 #[specta::specta]
 pub async fn install_open_folder(state: St<'_>, app_id: String) -> AppResult<()> {
-    state.open_install_folder(&app_id)
+    state.open_install_folder(&app_id).await
 }
 
 // --- downloads -----------------------------------------------------------------------------

@@ -171,6 +171,9 @@ fn publish(cdn: &Cdn) {
 /// simulated installs).
 fn remote_state(cdn: &Cdn, downloads: &std::path::Path) -> (Arc<AppState>, Arc<Recorder>) {
     let storage = Arc::new(Storage::open_in_memory().unwrap());
+    // The followed channels and the account of the demo data set (a real first run follows only
+    // the official catalog).
+    storage.seed_from_fixtures().unwrap();
     let key = paparats_catalog::hex::encode(official().verifying_key().as_bytes());
     let env = CatalogEnv {
         base_url: Some(cdn.url("/v1/")),

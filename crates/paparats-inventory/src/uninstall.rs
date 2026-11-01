@@ -105,6 +105,24 @@ impl UninstallEntry {
     }
 }
 
+impl UninstallEntry {
+    /// The program the app starts with: the `.exe` its `DisplayIcon` names, unless that is an
+    /// uninstaller or lives under `%windir%` or an installer cache. What "Open" runs.
+    pub fn program(&self, folders: &KnownFolders) -> Option<PathBuf> {
+        let file = self.display_icon.as_deref().and_then(icon_file)?;
+        let exe = file
+            .extension()
+            .is_some_and(|e| e.eq_ignore_ascii_case("exe"));
+        let name = file
+            .file_name()
+            .map(|n| n.to_string_lossy().to_lowercase())
+            .unwrap_or_default();
+        let uninstaller = name.starts_with("unins") || name.contains("uninstall");
+        let dir = file.parent()?;
+        (exe && !uninstaller && usable_dir(dir, folders)).then_some(file)
+    }
+}
+
 fn usable_dir(dir: &Path, folders: &KnownFolders) -> bool {
     if dir.as_os_str().is_empty() || (!dir.is_absolute() && !looks_absolute(dir)) {
         return false;
@@ -601,5 +619,39 @@ mod tests {
             "\"C:\\ProgramData\\Package Cache\\{GUID}\\setup.exe\" /uninstall",
         ));
         assert_eq!(cache.install_dir(&folders), None);
+    }
+
+    #[test]
+    fn the_program_comes_from_the_display_icon() {
+        let folders = KnownFolders {
+            windows: Some(PathBuf::from(r"C:\Windows")),
+            ..KnownFolders::default()
+        };
+        let entry = |icon: &str| {
+            let k = key("a")
+                .with_str("DisplayName", "X")
+                .with_str("DisplayIcon", icon);
+            UninstallEntry::parse(RegRoot::CurrentUser, &k).unwrap()
+        };
+        assert_eq!(
+            entry(r"C:\Program Files\7-Zip\7zFM.exe,0").program(&folders),
+            Some(PathBuf::from(r"C:\Program Files\7-Zip\7zFM.exe"))
+        );
+        assert_eq!(
+            entry(r#""C:\Apps\X\X.EXE""#).program(&folders),
+            Some(PathBuf::from(r"C:\Apps\X\X.EXE"))
+        );
+        // Not something to start: an icon file, an uninstaller, a system tool.
+        assert_eq!(entry(r"C:\Apps\X\app.ico").program(&folders), None);
+        assert_eq!(entry(r"C:\Apps\X\unins000.exe,0").program(&folders), None);
+        assert_eq!(entry(r"C:\Apps\X\Uninstall X.exe").program(&folders), None);
+        assert_eq!(
+            entry(r"C:\Windows\System32\msiexec.exe").program(&folders),
+            None
+        );
+        let none =
+            UninstallEntry::parse(RegRoot::CurrentUser, &key("b").with_str("DisplayName", "Y"))
+                .unwrap();
+        assert_eq!(none.program(&folders), None);
     }
 }

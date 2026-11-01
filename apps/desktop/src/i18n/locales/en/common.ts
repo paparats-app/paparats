@@ -56,6 +56,7 @@ export const common = {
   mottoB: "Same tools. New possibilities.",
   mottoC: "Good tools. Brighter days.",
   opening: "Opening {{app}}…",
+  openFailed: "Couldn’t find how to start {{app}}. Open it from the Start menu.",
   uninstalled: "{{app}} uninstalled",
   downloading: "Downloading",
   queued: "Queued",

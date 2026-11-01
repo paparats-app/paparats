@@ -397,7 +397,7 @@ mod tests {
     #[test]
     fn urls_must_be_allowlisted_and_https() {
         let l = list(&["downloads.kvetka.example", "127.0.0.1"]);
-        assert!(check_url(&l, &url("https://cdn.paparats.app/x.msi")).is_ok());
+        assert!(check_url(&l, &url("https://paparats-app.github.io/x.msi")).is_ok());
         assert!(check_url(&l, &url("https://downloads.kvetka.example/x.msi")).is_ok());
         assert!(check_url(&l, &url("http://127.0.0.1:8080/x")).is_ok());
         assert!(matches!(
@@ -409,7 +409,7 @@ mod tests {
             Err(DownloadError::HostNotAllowed(_))
         ));
         assert!(matches!(
-            check_url(&l, &url("ftp://cdn.paparats.app/x")),
+            check_url(&l, &url("ftp://paparats-app.github.io/x")),
             Err(DownloadError::InvalidUrl(_))
         ));
         assert!(matches!(
@@ -425,21 +425,21 @@ mod tests {
         // A CDN link without an extension, or with another one, still yields what the installer
         // needs.
         assert_eq!(
-            ext(exe(), "https://cdn.paparats.app/dl?id=5").unwrap(),
+            ext(exe(), "https://paparats-app.github.io/dl?id=5").unwrap(),
             "exe"
         );
         assert_eq!(
-            ext(exe(), "https://cdn.paparats.app/setup.bat").unwrap(),
+            ext(exe(), "https://paparats-app.github.io/setup.bat").unwrap(),
             "exe"
         );
         assert_eq!(
-            ext(InstallStrategy::Msi, "https://cdn.paparats.app/x").unwrap(),
+            ext(InstallStrategy::Msi, "https://paparats-app.github.io/x").unwrap(),
             "msi"
         );
         assert_eq!(
             ext(
                 InstallStrategy::PortableZip,
-                "https://cdn.paparats.app/t.7z"
+                "https://paparats-app.github.io/t.7z"
             )
             .unwrap(),
             "zip"
@@ -447,25 +447,32 @@ mod tests {
         assert_eq!(
             ext(
                 InstallStrategy::Msix,
-                "https://cdn.paparats.app/App.MsixBundle"
+                "https://paparats-app.github.io/App.MsixBundle"
             )
             .unwrap(),
             "msixbundle"
         );
         assert_eq!(
-            ext(InstallStrategy::Msix, "https://cdn.paparats.app/app.exe").unwrap(),
+            ext(
+                InstallStrategy::Msix,
+                "https://paparats-app.github.io/app.exe"
+            )
+            .unwrap(),
             "msix"
         );
         assert_eq!(
             ext(
                 InstallStrategy::Simulated,
-                "https://cdn.paparats.app/a.b/f.tar"
+                "https://paparats-app.github.io/a.b/f.tar"
             )
             .unwrap(),
             "tar"
         );
         assert_eq!(
-            ext(InstallStrategy::Simulated, "https://cdn.paparats.app/f"),
+            ext(
+                InstallStrategy::Simulated,
+                "https://paparats-app.github.io/f"
+            ),
             None
         );
     }

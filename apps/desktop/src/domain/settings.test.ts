@@ -5,6 +5,7 @@ import {
   SETTINGS_ROWS,
   SETTINGS_SECTIONS,
   visibleSettingsRows,
+  visibleSettingsSections,
 } from "./settings";
 
 describe("settings schema", () => {
@@ -81,13 +82,43 @@ describe("settings schema", () => {
     });
   });
 
-  it("shows developer tools only in Developer mode", () => {
-    expect(visibleSettingsRows("advanced", { dev: false }).map((r) => r.id)).toEqual([
-      "dev",
-      "proxy",
-      "portable",
-    ]);
+  it("shows developer tools and not-yet-working rows only in Developer mode", () => {
+    expect(visibleSettingsRows("advanced", { dev: false }).map((r) => r.id)).toEqual(["dev"]);
     expect(visibleSettingsRows("advanced", { dev: true })).toHaveLength(7);
-    expect(visibleSettingsRows("general", { dev: false })).toHaveLength(6);
+    expect(visibleSettingsRows("general", { dev: false }).map((r) => r.id)).toEqual([
+      "theme",
+      "language",
+      "startup",
+      "tray",
+      "animations",
+    ]);
+    expect(visibleSettingsRows("general", { dev: true })).toHaveLength(6);
+    expect(visibleSettingsRows("updates", { dev: false }).map((r) => r.id)).toEqual(["schedule"]);
+    expect(visibleSettingsRows("apps", { dev: false })).toEqual([]);
+  });
+
+  it("lists the sections the features and Developer mode leave", () => {
+    const ids = (dev: boolean, account: boolean, channels: boolean) =>
+      visibleSettingsSections({ dev }, { account, channels }).map((s) => s.id);
+    expect(ids(true, true, true)).toHaveLength(10);
+    expect(ids(false, true, true)).toEqual([
+      "general",
+      "updates",
+      "downloads",
+      "sources",
+      "privacy",
+      "account",
+      "advanced",
+      "about",
+    ]);
+    // The real catalog: no accounts, no channels.
+    expect(ids(false, false, false)).toEqual([
+      "general",
+      "updates",
+      "downloads",
+      "privacy",
+      "advanced",
+      "about",
+    ]);
   });
 });

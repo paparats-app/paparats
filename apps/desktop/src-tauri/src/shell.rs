@@ -8,7 +8,7 @@ use std::path::Path;
 use std::sync::Mutex;
 use std::sync::atomic::{AtomicBool, Ordering};
 
-use paparats_core::{Locale, Settings, ThemePreference};
+use paparats_core::{Locale, Settings, ThemePreference, UpdateSchedule};
 use serde_json::Value;
 
 use crate::deep_link::{self, AuthCallback, DeepLink, DeepLinkTarget};
@@ -200,6 +200,8 @@ pub struct StoredSettings {
     pub tray: bool,
     pub startup: bool,
     pub theme: ThemePreference,
+    /// How often the catalog refreshes in the background.
+    pub schedule: UpdateSchedule,
 }
 
 impl Default for StoredSettings {
@@ -210,6 +212,7 @@ impl Default for StoredSettings {
             tray: defaults.tray,
             startup: defaults.startup,
             theme: defaults.theme,
+            schedule: defaults.schedule,
         }
     }
 }
@@ -229,6 +232,7 @@ impl StoredSettings {
         pick(map.get("tray"), &mut stored.tray);
         pick(map.get("startup"), &mut stored.startup);
         pick(map.get("theme"), &mut stored.theme);
+        pick(map.get("schedule"), &mut stored.schedule);
         stored
     }
 
@@ -488,7 +492,7 @@ mod tests {
         assert_eq!(defaults.theme, ThemePreference::Dark);
 
         let s = StoredSettings::from_json(
-            r#"{"locale":"be","tray":false,"startup":false,"theme":"light","parallel":4}"#,
+            r#"{"locale":"be","tray":false,"startup":false,"theme":"light","parallel":4,"schedule":"weekly"}"#,
         );
         assert_eq!(
             s,
@@ -496,7 +500,8 @@ mod tests {
                 locale: Locale::Be,
                 tray: false,
                 startup: false,
-                theme: ThemePreference::Light
+                theme: ThemePreference::Light,
+                schedule: UpdateSchedule::Weekly,
             }
         );
         // Wrong types and unknown values fall back to the defaults, key by key.

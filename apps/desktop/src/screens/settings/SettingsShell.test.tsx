@@ -56,7 +56,7 @@ describe("Settings in the shell", () => {
       "aria-current",
       "page",
     );
-    expect(screen.getByRole("switch", { name: "Automatic updates" })).toBeInTheDocument();
+    expect(screen.getByText("Check for updates")).toBeInTheDocument();
   });
 
   it("reopens the section last shown from the sidebar, as the prototype's `section` state", async () => {

@@ -24,6 +24,7 @@ export const library: LocaleCatalog<typeof En> = {
   installedCount_other: "Установлено {{count, number}} приложения",
   uninstall: "Удалить",
   openFolder: "Открыть папку",
+  folderNotFound: "Не удалось найти папку {{app}}.",
   backToCollections: "Все коллекции",
   downloads: "Загрузки",
   noFavorites: "Пока нет избранных",

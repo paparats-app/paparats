@@ -24,6 +24,7 @@ export const library: LocaleCatalog<typeof En> = {
   installedCount_other: "Усталявана {{count, number}} праграмы",
   uninstall: "Выдаліць",
   openFolder: "Адкрыць тэчку",
+  folderNotFound: "Не атрымалася знайсці тэчку {{app}}.",
   backToCollections: "Усе калекцыі",
   downloads: "Загрузкі",
   noFavorites: "Пакуль няма абраных",

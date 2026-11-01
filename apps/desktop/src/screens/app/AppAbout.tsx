@@ -4,7 +4,7 @@ import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
 import { Icon } from "@/components/Icon";
 import { pickText } from "@/domain/text";
-import { useLocale, useViewAs } from "@/hooks";
+import { useFeatures, useLocale, useViewAs } from "@/hooks";
 import { useAccount, useIdeas } from "@/queries";
 import type { App, Idea } from "@/services/types";
 import page from "./AppScreen.module.css";
@@ -12,13 +12,16 @@ import styles from "./AppAbout.module.css";
 
 /**
  * About: the long description, the Pro features card (Pro apps), the ideas this app grew from and
- * the link to its open ideas (prototype lines 1018–1038).
+ * the link to its open ideas (prototype lines 1018–1038). Pro and ideas only when the catalog
+ * turns them on (D68).
  */
 export function AppAbout({ app }: { app: App }) {
   const { t } = useTranslation();
   const locale = useLocale();
   const { go } = useNav();
-  const ideas = useIdeas().data ?? [];
+  const features = useFeatures();
+  const allIdeas = useIdeas().data;
+  const ideas = features.ideas ? (allIdeas ?? []) : [];
   const origins = ideas.filter(
     (i) =>
       i.status === "released" &&
@@ -33,7 +36,7 @@ export function AppAbout({ app }: { app: App }) {
       <h2 className={`${page.heading} ${styles.heading}`}>{t("app.about")}</h2>
       <p className={styles.long}>{pickText(app.long, locale)}</p>
 
-      {app.pro && (
+      {features.pro && app.pro && (
         <Card tone="mint" radius={12} className={styles.pro}>
           <Icon name="crown" size={22} className={styles.proIcon} />
           <div className={styles.proText}>

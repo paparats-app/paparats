@@ -18,8 +18,6 @@ export const KIND_KEY = {
 
 /** Who serves the files (the channel page's Files row). */
 export const HOST_KEY = {
-  paparats: "sources.hostPaparats",
-  mirrored: "sources.hostMirrored",
   author: "sources.hostAuthor",
 } as const satisfies Record<FileHost, string>;
 

@@ -73,10 +73,10 @@ describe("ChannelScreen", () => {
     expect(detail("Trust")).toBe("Official");
     expect(detail("Type")).toBe("Catalog");
     expect(detail("Author")).toBe("Paparats");
-    expect(detail("Address")).toBe("paparats.app/catalog");
-    expect(detail("Files")).toBe("Paparats CDN");
+    expect(detail("Address")).toBe("paparats-app.github.io/catalog");
+    expect(detail("Files")).toBe("The author’s own releases");
     expect(detail("Review")).toBeNull();
-    expect(detail("Support")).toBe("paparats.app/support");
+    expect(detail("Support")).toBe("github.com/paparats-app/catalog/issues");
     expect(detail("Last sync")).toBe("today");
     expect(within(details()).queryByText(/Not reviewed by Paparats/)).toBeNull();
 
@@ -102,7 +102,7 @@ describe("ChannelScreen", () => {
     // Reachable: no stale callout.
     expect(top.queryByText(/hasn’t answered/)).toBeNull();
 
-    expect(detail("Files")).toBe("Author + Paparats mirror");
+    expect(detail("Files")).toBe("The author’s own releases");
     expect(detail("Review")).toBe("Paparats team, 12 March 2026");
     expect(detail("Support")).toBe("kvetka.example/support");
     expect(detail("Last sync")).toBe("yesterday");
@@ -162,7 +162,7 @@ describe("ChannelScreen", () => {
     expect(top.getByText("960 subscribers")).toBeInTheDocument();
     expect(top.queryByText("Subscribed")).toBeNull();
     expect(top.queryByRole("button", { name: "Sync now" })).toBeNull();
-    expect(detail("Files")).toBe("Author’s server");
+    expect(detail("Files")).toBe("The author’s own releases");
     expect(detail("Review")).toBe("Not reviewed");
     expect(detail("Last sync")).toBe("Not synced yet");
     expect(

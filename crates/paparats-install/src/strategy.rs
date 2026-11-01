@@ -481,6 +481,15 @@ impl Installer for StrategyInstaller {
             }
         })
     }
+
+    fn shortcut(&self, app_id: &str) -> Option<std::path::PathBuf> {
+        match self.receipts.load(app_id).ok().flatten()? {
+            Receipt::PortableZip { shortcut, .. } | Receipt::PortableExe { shortcut, .. } => {
+                shortcut.filter(|path| path.is_file())
+            }
+            _ => None,
+        }
+    }
 }
 
 #[cfg(test)]

@@ -6,5 +6,6 @@ export function createMockCatalogService(world: MockWorld, ctx: MockContext): Ca
   return {
     getCatalog: () => ctx.respond(() => world.catalog),
     getPlatform: () => ctx.respond(() => world.platform),
+    onChanged: () => () => undefined,
   };
 }

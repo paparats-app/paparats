@@ -3,7 +3,9 @@ import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router";
 import { parsePath, pathOf } from "@/app/navigation";
 import { Icon } from "@/components/Icon";
-import { isRowSection, SETTINGS_SECTIONS, type SettingsSectionId } from "@/domain/settings";
+import { isRowSection, visibleSettingsSections, type SettingsSectionId } from "@/domain/settings";
+import { useFeatures } from "@/hooks/useFeatures";
+import { useSettingsStore } from "@/stores/useSettingsStore";
 import { useUiStore } from "@/stores/useUiStore";
 import { AboutPanel } from "./about";
 import { SettingsRowsPanel } from "./SettingsRowsPanel";
@@ -18,7 +20,9 @@ export function settingsSectionOf(pathname: string): SettingsSectionId {
 
 /**
  * Settings (prototype lines 747–796; logic `// settings`): H1 + subtitle, then the 250px section
- * nav beside the panel — Sources and About have their own panels, the other eight a row card.
+ * nav beside the panel — Sources and About have their own panels, the others a row card. Sections
+ * the catalog's features turn off, and row sections with nothing working yet, are not listed
+ * outside Developer mode (D68).
  * Picking a section only swaps the panel, like the prototype's `setState({section})`: the route
  * changes (so a detail page can return to it) without the navigation skeleton or scroll reset.
  * The section shown is remembered, so Settings from the sidebar reopens it (`resolveTarget`).
@@ -27,7 +31,12 @@ export function SettingsScreen() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const section = settingsSectionOf(pathname);
+  const settings = useSettingsStore((s) => s.settings);
+  const features = useFeatures();
+  const sections = visibleSettingsSections(settings, features);
+  const asked = settingsSectionOf(pathname);
+  // A section the catalog or Developer mode hides falls back to General.
+  const section = sections.some((s) => s.id === asked) ? asked : "general";
   const setSettingsSection = useUiStore((s) => s.setSettingsSection);
 
   useEffect(() => setSettingsSection(section), [section, setSettingsSection]);
@@ -42,7 +51,7 @@ export function SettingsScreen() {
       <div className={styles.subtitle}>{t("settings.settingsSub")}</div>
       <div className={styles.columns}>
         <nav className={styles.nav} aria-label={t("settings.sectionsLabel")}>
-          {SETTINGS_SECTIONS.map(({ id, icon }) => {
+          {sections.map(({ id, icon }) => {
             const active = id === section;
             return (
               <button

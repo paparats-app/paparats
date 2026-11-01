@@ -88,7 +88,7 @@ describe("SourcesPanel", () => {
         .map((li) => li.textContent),
     ).toEqual([
       "OfficialThe Paparats catalog. Curated, tested and signed by us.",
-      "VerifiedAuthor and channel reviewed by the Paparats team. Files are mirrored by Paparats; the apps stay the author’s.",
+      "VerifiedAuthor and channel reviewed by the Paparats team. Files come from the author’s own releases.",
       "CommunityNot reviewed by Paparats. Apps download straight from the author’s server.",
     ]);
   });

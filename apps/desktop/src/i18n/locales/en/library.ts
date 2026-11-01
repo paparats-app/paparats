@@ -19,6 +19,7 @@ export const library = {
   installedCount_other: "{{count, number}} apps installed",
   uninstall: "Uninstall",
   openFolder: "Open install folder",
+  folderNotFound: "Couldn’t find the folder of {{app}}.",
   backToCollections: "All collections",
   downloads: "Downloads",
   noFavorites: "No favorites yet",

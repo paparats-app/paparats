@@ -13,6 +13,7 @@ import { ProfileScreen } from "@/screens/profile";
 import { SettingsScreen } from "@/screens/settings";
 import { SubscriptionScreen } from "@/screens/subscription";
 import { UpdatesScreen } from "@/screens/updates";
+import { FeatureGate } from "./FeatureGate";
 import { Layout } from "./Layout";
 
 export const ROUTES: RouteObject[] = [
@@ -26,13 +27,48 @@ export const ROUTES: RouteObject[] = [
       { path: "categories", element: <CategoriesScreen /> },
       { path: "updates", element: <UpdatesScreen /> },
       { path: "library", element: <LibraryScreen /> },
-      { path: "ideas", element: <IdeasScreen /> },
-      { path: "ideas/:ideaId", element: <IdeaScreen /> },
-      { path: "subscription", element: <SubscriptionScreen /> },
+      {
+        path: "ideas",
+        element: (
+          <FeatureGate feature="ideas">
+            <IdeasScreen />
+          </FeatureGate>
+        ),
+      },
+      {
+        path: "ideas/:ideaId",
+        element: (
+          <FeatureGate feature="ideas">
+            <IdeaScreen />
+          </FeatureGate>
+        ),
+      },
+      {
+        path: "subscription",
+        element: (
+          <FeatureGate feature="pro">
+            <SubscriptionScreen />
+          </FeatureGate>
+        ),
+      },
       { path: "settings/:section?", element: <SettingsScreen /> },
-      { path: "profile", element: <ProfileScreen /> },
+      {
+        path: "profile",
+        element: (
+          <FeatureGate feature="account">
+            <ProfileScreen />
+          </FeatureGate>
+        ),
+      },
       { path: "app/:appId", element: <AppScreen /> },
-      { path: "channel/:channelId", element: <ChannelScreen /> },
+      {
+        path: "channel/:channelId",
+        element: (
+          <FeatureGate feature="channels">
+            <ChannelScreen />
+          </FeatureGate>
+        ),
+      },
       // The component gallery is a developer tool: its own chunk, loaded on first visit.
       {
         path: "dev",

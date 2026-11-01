@@ -55,6 +55,11 @@ export interface CatalogService {
   getCatalog(): Promise<Catalog>;
   /** Plans, ecosystem numbers and the client build shown in Settings › About. */
   getPlatform(): Promise<PlatformInfo>;
+  /**
+   * A background refresh brought a newer catalog (the "Check for updates" schedule): reload
+   * what depends on it. Never fires in the mock world.
+   */
+  onChanged(listener: () => void): Unsubscribe;
 }
 
 // ---------------------------------------------------------------------------------------------

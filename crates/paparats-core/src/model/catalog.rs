@@ -109,6 +109,9 @@ pub struct AppSource {
     /// Installing asks for administrator rights.
     #[serde(default)]
     pub needs_admin: bool,
+    /// Made by the author of Paparats (the app page says so, for transparency).
+    #[serde(default)]
+    pub by_paparats_author: bool,
 }
 
 impl App {

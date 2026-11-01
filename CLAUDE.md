@@ -20,6 +20,7 @@ FIRST_LAUNCH_SPEC.md = onboarding, `Paparats Prototype.dc.html` = clickable refe
   `i18n/`, `styles/tokens.css`.
 - `apps/desktop/src-tauri` — Tauri commands, events, plugins, tray, window.
 - `crates/paparats-{core,catalog,download,install,inventory,storage,account}` — Rust core.
+- `crates/paparats-catalog-bot` — the official catalog's bot (`paparats-app/catalog`, D67).
 - `docs/decisions.md` — product/engineering decisions; `docs/progress.md` — milestone log.
 
 ## Rules

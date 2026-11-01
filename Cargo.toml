@@ -43,6 +43,9 @@ chrono = { version = "0.4", default-features = false, features = ["std"] }
 tracing-subscriber = { version = "0.3", default-features = false, features = ["fmt", "std"] }
 tracing-appender = "0.2"
 
+# The catalog bot's app files (catalog repository: apps/<id>.toml, editorial.toml).
+toml = "1"
+
 # Encoding, URLs, patterns, randomness (manifest envelopes, OAuth, detection rules, PKCE)
 base64 = "0.22"
 url = "2"

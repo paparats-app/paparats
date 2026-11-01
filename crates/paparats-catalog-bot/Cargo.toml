@@ -1,0 +1,36 @@
+[package]
+name = "paparats-catalog-bot"
+description = "The catalog bot: resolves the official catalog's apps to their latest GitHub releases (hash, size, signer, antivirus scan) and builds the signed manifests GitHub Pages serves."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "catalog-bot"
+path = "src/main.rs"
+
+[dependencies]
+paparats-core.workspace = true
+paparats-catalog.workspace = true
+# Authenticode (WinVerifyTrust) for EXE/MSI release files; a no-op verdict off Windows.
+paparats-install.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+toml.workspace = true
+regex.workspace = true
+reqwest.workspace = true
+sha2.workspace = true
+base64.workspace = true
+ed25519-dalek.workspace = true
+chrono = { workspace = true, features = ["clock"] }
+tokio = { workspace = true, features = ["rt-multi-thread", "macros", "fs", "io-util", "process"] }
+
+[dev-dependencies]
+tempfile.workspace = true
+
+[lints]
+workspace = true

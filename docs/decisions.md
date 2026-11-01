@@ -1527,3 +1527,31 @@ point at someone's site.
   the button can be pressed again. The tray's "Check for updates" still only reports.
 - **Versions.** The first public build is 0.0.1, the demo world, so 0.1.0 with real installs
   is an update for it.
+
+### D67 — The catalog bot and the `paparats-app/catalog` repository
+- **Where.** The official catalog lives in `paparats-app/catalog`. People edit `apps/<id>.toml`,
+  `editorial.toml` and `icons/<id>.png`; the bot (`crates/paparats-catalog-bot`, binary
+  `catalog-bot`) writes `lock.json`. The catalog's workflows build the bot from the commit named
+  in its `.github/bot-ref`, so the bot and the client share `paparats-core` types and cannot
+  drift apart. GitHub Pages serves the result at `https://paparats-app.github.io/catalog/v1/`.
+- **resolve** (daily, Windows runner): latest stable release (or a tag prefix, or pre-releases
+  when an app file allows them), the file by the app's pattern, SHA-256 against GitHub's
+  `digest`, Authenticode with the signer pinned on first sight (`signer = "auto"`), Microsoft
+  Defender. A signer change, a broken or missing signature without `signer = "none"`, a digest
+  mismatch or a scanner hit hold the release back and keep the shipped one.
+- **Quarantine.** A newer release that passes waits 48 hours as `pending` before it ships; if a
+  newer one appears meanwhile, that one starts its own wait. An app new to the catalog ships at
+  once, because a person has just reviewed it. The bot commits `lock.json` itself (no pull
+  request): its history is the audit log. Held releases, failures, archived repositories and
+  Rising projects without a release for 120 days go to one "Bot: needs attention" issue.
+- **build**: the four manifests (`channels.json`, `catalog.json`, `platform.json`,
+  `official.json`) signed with the catalog key from the `catalog` environment, plus the icons.
+  The platform file turns off Pro, accounts, Ideas, channels and reviews. Every package pins the
+  file's hash and the signer the bot saw; `unsigned` and `machineWide` come from the lock and the
+  app file. The "early" badge is shown only on the Rising shelf, so mature 0.x apps such as
+  PowerToys are not called early.
+- **Starter content.** 53 apps: the 30 of the starter list and 23 Rising projects, texts in
+  en/be/ru, collections (rising, essential, creators, developers, private, desktop, learn-play),
+  four Home slides (one leads to the Rising shelf), three Browse banners from the shelf. Icons
+  are the apps' own, cropped and scaled to 256 px; 7-Zip has none in its repository and shows
+  the monogram.

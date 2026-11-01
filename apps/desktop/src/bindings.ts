@@ -264,6 +264,8 @@ export type AppSource = {
   unsigned?: boolean;
   /**  Installing asks for administrator rights. */
   needsAdmin?: boolean;
+  /**  Made by the author of Paparats (the app page says so, for transparency). */
+  byPaparatsAuthor?: boolean;
 };
 
 /**  Featured-app slide on Browse. */

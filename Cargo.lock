@@ -2948,6 +2948,27 @@ dependencies = [
 ]
 
 [[package]]
+name = "paparats-catalog-bot"
+version = "0.0.1"
+dependencies = [
+ "base64 0.22.1",
+ "chrono",
+ "ed25519-dalek",
+ "paparats-catalog",
+ "paparats-core",
+ "paparats-install",
+ "regex",
+ "reqwest",
+ "serde",
+ "serde_json",
+ "sha2 0.11.0",
+ "tempfile",
+ "thiserror 2.0.20",
+ "tokio",
+ "toml 1.1.6+spec-1.1.0",
+]
+
+[[package]]
 name = "paparats-core"
 version = "0.0.1"
 dependencies = [

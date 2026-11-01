@@ -6,8 +6,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        This tracker is for the desktop client. Ideas for a specific app in the catalog belong on
-        the in-app Ideas board.
+        This tracker is for the desktop client. To suggest an app for the catalog, use
+        [paparats-app/catalog](https://github.com/paparats-app/catalog/issues/new/choose); ideas
+        for an app itself belong in that app's own repository.
   - type: textarea
     id: problem
     attributes:

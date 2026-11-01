@@ -1,0 +1,11 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Suggest an app for the catalog
+    url: https://github.com/paparats-app/catalog/issues/new/choose
+    about: Apps and young projects for the Rising shelf are suggested in the catalog repository.
+  - name: Questions and ideas
+    url: https://github.com/paparats-app/paparats/discussions
+    about: Ask, share and discuss in Discussions.
+  - name: A security problem
+    url: https://github.com/paparats-app/paparats/security/advisories/new
+    about: Report it privately, please.

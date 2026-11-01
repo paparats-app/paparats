@@ -857,8 +857,12 @@ of Paparats itself is not code-signed.
 - The catalog's smoke install (D69) installs every app on Windows Server 2022 and 2025, updates
   it from its previous release where there is one, checks that the client's inventory finds it
   and that "Open" has something to start, and uninstalls it through the client's own path. On
-  2026-11-01: 52 of 53 apps pass on Server 2025 (DeskBox's uninstaller leaves its entry,
-  `paparats-app/catalog#2`; 7-Zip and Git ship with the runner image and are skipped).
+  2026-11-01, on both Server 2022 and 2025: every app installs, updates from its previous release
+  and is found, and "Open" starts each one; every uninstall works but DeskBox's, whose Inno
+  uninstaller waits on a dialog of its own (`paparats-app/catalog#2`). 7-Zip and Git ship with
+  the runner images and are skipped.
 - "Open" starts MSIX apps; Inno Setup uninstalls write a log.
-- `self-update.yml` verifies the client's update from any published release to the latest one.
+- `self-update.yml` verifies the client's update from any published release to the latest one:
+  0.0.1 → 0.1.1 and 0.1.0 → 0.1.1 pass (the update offered, its signature verified with the
+  older release's key, installed over it, the new version read back).
 

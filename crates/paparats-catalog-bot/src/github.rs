@@ -146,6 +146,30 @@ impl GitHub {
             .ok_or_else(|| BotError::Http(format!("{repo}: no matching release")))
     }
 
+    /// The newest release before `tag` that `source` would accept (smoke: the update test).
+    pub async fn previous_release(
+        &self,
+        source: &SourceSpec,
+        tag: &str,
+    ) -> Result<Option<ReleaseInfo>, BotError> {
+        let repo = &source.repo;
+        let releases: Vec<ReleaseInfo> = self
+            .json(&format!("/repos/{repo}/releases?per_page=30"))
+            .await?
+            .unwrap_or_default();
+        Ok(releases
+            .into_iter()
+            .filter(|r| !r.draft && (source.prerelease || !r.prerelease))
+            .filter(|r| {
+                source
+                    .tag_prefix
+                    .as_deref()
+                    .is_none_or(|p| r.tag_name.starts_with(p))
+            })
+            .skip_while(|r| r.tag_name != tag)
+            .nth(1))
+    }
+
     /// `FUNDING.yml` of the repository, else of the owner's `.github` repository.
     pub async fn funding_file(&self, repo: &str) -> Result<Option<String>, BotError> {
         let owner = repo.split('/').next().unwrap_or_default();

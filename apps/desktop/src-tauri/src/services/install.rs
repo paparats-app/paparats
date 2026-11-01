@@ -6,7 +6,7 @@ use std::time::Duration;
 
 use paparats_core::Library;
 use paparats_install::{InstallError, RegisteredUninstall};
-use paparats_inventory::{Detected, Origin, RegRoot};
+use paparats_inventory::{Detected, LaunchTarget, Origin, RegRoot};
 
 use super::AppState;
 use crate::error::{AppError, AppResult};
@@ -109,7 +109,7 @@ impl AppState {
     }
 
     /// Starts an installed app: the Start-menu shortcut of a portable app Paparats installed,
-    /// else the program Windows lists for it (`DisplayIcon`). The demo world has nothing to start
+    /// else the program Windows lists for it (`DisplayIcon`), else an MSIX package's app. The demo world has nothing to start
     /// (D24); an app whose program is unknown is `not_found` (the UI says so).
     pub async fn open_app(&self, app_id: &str) -> AppResult<()> {
         if !self.flags.inventory {
@@ -117,18 +117,20 @@ impl AppState {
             return Ok(());
         }
         let target = match self.installer.shortcut(app_id) {
-            Some(shortcut) => Some(shortcut),
+            Some(shortcut) => Some(LaunchTarget::Program(shortcut)),
             None => {
                 let id = app_id.to_owned();
                 self.read_inventory(move |i| i.locate(&id))
                     .await?
                     .into_iter()
-                    .find_map(|d| d.program.filter(|p| p.is_file()))
+                    .find_map(|d| d.launch_target())
             }
         };
-        let target =
-            target.ok_or_else(|| AppError::not_found(format!("the program of {app_id}")))?;
-        shell_open(&target)
+        match target {
+            Some(LaunchTarget::Program(program)) => shell_open(&program),
+            Some(LaunchTarget::PackagedApp(app)) => start_explorer(app.as_ref()),
+            None => Err(AppError::not_found(format!("the program of {app_id}"))),
+        }
     }
 
     /// Opens the app's folder in Explorer: where Windows says it is installed, or its version
@@ -180,6 +182,11 @@ fn shell_open(target: &Path) -> AppResult<()> {
     if !target.is_absolute() {
         return Err(AppError::invalid("not an absolute path"));
     }
+    start_explorer(target.as_os_str())
+}
+
+/// Explorer with one argument: a path, or `shell:AppsFolder\<family>!<app>` for a packaged app.
+fn start_explorer(target: &std::ffi::OsStr) -> AppResult<()> {
     std::process::Command::new("explorer.exe")
         .arg(target)
         .spawn()

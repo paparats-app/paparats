@@ -170,7 +170,8 @@ impl RegisteredUninstall {
         let kind = if quiet {
             "quiet"
         } else if is_inno_uninstaller(&name) {
-            for flag in ["/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART"] {
+            // `/LOG` leaves `Setup Log … .txt` in %TEMP%: what to read when an uninstall fails.
+            for flag in ["/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/LOG"] {
                 if !has(&argv, flag) {
                     argv.push(flag.to_owned());
                 }
@@ -268,7 +269,7 @@ mod tests {
         assert_eq!(inno.kind, "inno");
         assert_eq!(
             args_of(&inno),
-            ["/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART"]
+            ["/VERYSILENT", "/SUPPRESSMSGBOXES", "/NORESTART", "/LOG"]
         );
 
         // Squirrel (Flow Launcher, Kando).

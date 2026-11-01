@@ -648,3 +648,54 @@ MSIX alone: {n:?} packages in {} ms",
     }
     assert!(report.errors.is_empty(), "{:?}", report.errors);
 }
+
+#[test]
+fn open_starts_the_program_or_the_packaged_app() {
+    let dir = tempfile::tempdir().unwrap();
+    let exe = dir.path().join("app.exe");
+    std::fs::write(&exe, b"MZ").unwrap();
+    let found = |origin: Origin, program: Option<PathBuf>| Detected {
+        app_id: "x".into(),
+        origin,
+        kind: MatchKind::DisplayName,
+        version: None,
+        install_dir: Some(dir.path().to_path_buf()),
+        program,
+    };
+    let entry = Origin::Uninstall {
+        root: RegRoot::CurrentUser,
+        key: "x".into(),
+        windows_installer: false,
+        uninstall_string: None,
+        quiet_uninstall_string: None,
+    };
+    assert_eq!(
+        found(entry.clone(), Some(exe.clone())).launch_target(),
+        Some(LaunchTarget::Program(exe))
+    );
+    let gone = dir.path().join("gone.exe");
+    assert_eq!(found(entry, Some(gone)).launch_target(), None);
+
+    let msix = || Origin::Msix {
+        family_name: "Seelen.SeelenUI_p6yyn03m1894e".into(),
+        name: "Seelen.SeelenUI_2.8.10.0_x64__p6yyn03m1894e".into(),
+    };
+    assert_eq!(found(msix(), None).launch_target(), None, "no manifest");
+    std::fs::write(
+        dir.path().join("AppxManifest.xml"),
+        r#"<Package><Applications><Application Id="Seelen.UI" Executable="seelen-ui.exe" EntryPoint="Windows.FullTrustApplication"><uap:VisualElements/></Application></Applications></Package>"#,
+    )
+    .unwrap();
+    assert_eq!(
+        found(msix(), None).launch_target(),
+        Some(LaunchTarget::PackagedApp(
+            r"shell:AppsFolder\Seelen.SeelenUI_p6yyn03m1894e!Seelen.UI".into()
+        ))
+    );
+    std::fs::write(
+        dir.path().join("AppxManifest.xml"),
+        r#"<Application Id="bad id&amp;" Executable="x.exe">"#,
+    )
+    .unwrap();
+    assert_eq!(found(msix(), None).launch_target(), None, "not a plain id");
+}

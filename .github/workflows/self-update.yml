@@ -1,0 +1,79 @@
+name: Self-update
+
+# Checks that an installed Paparats updates itself to the latest release, as the updater does:
+# installs an older release, reads `latest.json` from the endpoint that version is built with,
+# verifies the update's minisign signature with the key that version carries, installs the
+# update over it and reads the installed version back. Run by hand after publishing a release.
+
+on:
+  workflow_dispatch:
+    inputs:
+      from:
+        description: "The installed version to update from, e.g. 0.1.0"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  update:
+    name: Update from ${{ inputs.from }}
+    runs-on: windows-latest
+    timeout-minutes: 30
+    env:
+      FROM: ${{ inputs.from }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+
+      - name: Install the older release
+        shell: pwsh
+        run: |
+          gh release download "v$env:FROM" --pattern "*_x64-setup.exe" --dir old
+          $setup = (Get-ChildItem old\*_x64-setup.exe).FullName
+          $p = Start-Process -FilePath $setup -ArgumentList '/S' -Wait -PassThru
+          if ($p.ExitCode) { throw "the $env:FROM installer exited with $($p.ExitCode)" }
+          $entry = Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*' |
+            Where-Object DisplayName -eq 'Paparats'
+          if ($entry.DisplayVersion -ne $env:FROM) { throw "installed: '$($entry.DisplayVersion)'" }
+          "Installed Paparats $env:FROM in $($entry.InstallLocation)"
+
+      - name: What the updater of the older release sees
+        shell: pwsh
+        run: |
+          git show "v$($env:FROM):apps/desktop/src-tauri/tauri.conf.json" | Set-Content -Encoding utf8 old-conf.json
+          $conf = Get-Content old-conf.json -Raw | ConvertFrom-Json
+          $endpoint = $conf.plugins.updater.endpoints[0]
+          $latest = Invoke-RestMethod $endpoint
+          $platform = $latest.platforms.'windows-x86_64'
+          if ([version]$latest.version -le [version]$env:FROM) { throw "no newer version: $($latest.version)" }
+          Invoke-WebRequest $platform.url -OutFile update-setup.exe
+          "TO=$($latest.version)" | Add-Content $env:GITHUB_ENV
+          "PUBKEY=$($conf.plugins.updater.pubkey)" | Add-Content $env:GITHUB_ENV
+          Set-Content -NoNewline update.sig $platform.signature
+          "Offered $($latest.version) from $endpoint"
+
+      - name: Verify the update with the older release's key
+        shell: pwsh
+        run: node scripts/verify-update.mjs --file update-setup.exe --signature (Get-Content update.sig -Raw) --pubkey $env:PUBKEY
+
+      - name: Install the update over it
+        shell: pwsh
+        run: |
+          $p = Start-Process -FilePath update-setup.exe -ArgumentList '/S', '/UPDATE' -Wait -PassThru
+          if ($p.ExitCode) { throw "the update installer exited with $($p.ExitCode)" }
+          $entry = Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\*' |
+            Where-Object DisplayName -eq 'Paparats'
+          if ($entry.DisplayVersion -ne $env:TO) { throw "installed after the update: '$($entry.DisplayVersion)'" }
+          $dir = if ($entry.InstallLocation) { $entry.InstallLocation.Trim('"') } else { Join-Path $env:LOCALAPPDATA 'Paparats' }
+          $exe = Get-ChildItem $dir -Filter *.exe | Where-Object Name -notlike 'uninstall*' | Select-Object -First 1
+          $version = $exe.VersionInfo.ProductVersion
+          "## Self-update: $env:FROM → $env:TO`n`nSignature verified with the $env:FROM key; the installed entry and ``$($exe.Name)`` read $version." |
+            Add-Content $env:GITHUB_STEP_SUMMARY
+          if (-not $version.StartsWith($env:TO)) { throw "Paparats.exe is $version" }

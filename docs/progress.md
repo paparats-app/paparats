@@ -851,3 +851,14 @@ installed outside Paparats), silently where its kind is known.
 
 Known gaps: no Windows notifications; automatic updates of other apps do not run; the installer
 of Paparats itself is not code-signed.
+
+## 0.1.1 — Checked on real Windows (2026-11-01)
+
+- The catalog's smoke install (D69) installs every app on Windows Server 2022 and 2025, updates
+  it from its previous release where there is one, checks that the client's inventory finds it
+  and that "Open" has something to start, and uninstalls it through the client's own path. On
+  2026-11-01: 52 of 53 apps pass on Server 2025 (DeskBox's uninstaller leaves its entry,
+  `paparats-app/catalog#2`; 7-Zip and Git ship with the runner image and are skipped).
+- "Open" starts MSIX apps; Inno Setup uninstalls write a log.
+- `self-update.yml` verifies the client's update from any published release to the latest one.
+

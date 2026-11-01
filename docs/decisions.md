@@ -1608,3 +1608,20 @@ point at someone's site.
   to 90 s for the entry to go, since NSIS uninstallers finish in the background
   (`paparats-install/src/registered.rs`). The catalog's smoke install runs the same path.
 - **Deferred.** Windows notifications; automatic updates of other apps.
+
+### D69 — Checking 0.1 on real Windows: smoke installs instead of a test-apps channel
+- The release plan foresaw `paparats-app/testapps`, a channel of tiny installers per strategy
+  for end-to-end CI. The catalog's weekly smoke install covers the same ground with the real
+  apps, so the test channel is not built: NSIS per-user (Tauri, electron-builder), Inno per-user
+  and per-machine, MSI per-user and per-machine, WiX Burn, Squirrel, MSIX, portable ZIP, single
+  EXE, signed and unsigned files. Each app installs, then (where a previous release has a file
+  matching the pattern) installs the previous release first and updates over it, is found by the
+  client's inventory, has something for "Open" to start, and uninstalls through the client's
+  path. It runs on Windows Server 2022 (the Windows 10 generation) and 2025 (Windows 11).
+- **Open for MSIX packages** starts `shell:AppsFolder\<family>!<application id>`, the id read
+  from the package's `AppxManifest.xml` (`Detected::launch_target`). Inno Setup uninstalls get
+  `/LOG`, and the smoke summary shows the log's tail when an uninstall fails.
+- **Self-update** is verified by a workflow that installs the previous release, takes
+  `latest.json` from the updater endpoint, checks the update's minisign signature with the key
+  the installed version carries, installs the update over it and reads the installed version
+  back (`.github/workflows/self-update.yml`).

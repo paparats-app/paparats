@@ -23,8 +23,8 @@ use paparats_storage::{Storage, StorageError};
 
 pub use detect::{DetectionRules, MatchKind, RuleError};
 pub use registry::{
-    DEFAULT_SCAN_TTL, Detected, Origin, RegistryInventory, ScanReport, Sources, Today,
-    default_portable_root,
+    DEFAULT_SCAN_TTL, Detected, LaunchTarget, Origin, RegistryInventory, ScanReport, Sources,
+    Today, default_portable_root,
 };
 pub use source::{
     DiskProbe, EmptyRegistry, FolderProbe, KnownFolders, MemoryRegistry, MsixPackage, NoFolders,

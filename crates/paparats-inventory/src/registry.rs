@@ -160,6 +160,57 @@ pub struct Detected {
     pub program: Option<PathBuf>,
 }
 
+/// What "Open" starts for an app the inventory found.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum LaunchTarget {
+    /// A program file (an installer's app).
+    Program(PathBuf),
+    /// A packaged app, started through `shell:AppsFolder\<family>!<application id>`.
+    PackagedApp(String),
+}
+
+impl Detected {
+    /// How to start the app found here: the program its Uninstall entry names, or an MSIX
+    /// package's first application (from its `AppxManifest.xml`). `None` when neither is known.
+    pub fn launch_target(&self) -> Option<LaunchTarget> {
+        match &self.origin {
+            Origin::Uninstall { .. } => self
+                .program
+                .clone()
+                .filter(|p| p.is_file())
+                .map(LaunchTarget::Program),
+            Origin::Msix { family_name, .. } => {
+                let manifest = self.install_dir.as_ref()?.join("AppxManifest.xml");
+                let text = std::fs::read_to_string(manifest).ok()?;
+                let id = application_id(&text)?;
+                plain(family_name).then(|| {
+                    LaunchTarget::PackagedApp(format!(r"shell:AppsFolder\{family_name}!{id}"))
+                })
+            }
+            Origin::Portable => None,
+        }
+    }
+}
+
+/// Letters, digits, `.`, `_` and `-`: what package family names and application ids are made of.
+fn plain(text: &str) -> bool {
+    !text.is_empty()
+        && text
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || matches!(c, '.' | '_' | '-'))
+}
+
+/// The `Id` of the first `<Application>` in an `AppxManifest.xml`.
+fn application_id(manifest: &str) -> Option<&str> {
+    let at = manifest.find("<Application ")?;
+    let rest = &manifest[at..];
+    let rest = &rest[..rest.find('>')?];
+    let start = rest.find(" Id=\"")? + 5;
+    let end = rest[start..].find('"')? + start;
+    let id = &rest[start..end];
+    plain(id).then_some(id)
+}
+
 /// Everything one scan saw — for diagnostics and the machine test. Holds paths and names of the
 /// user's programs: print it locally, never log it.
 #[derive(Debug, Clone, Default)]

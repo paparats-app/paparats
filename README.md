@@ -29,6 +29,20 @@ agent) are in `CLAUDE.md`. Where things live and what they are
 called is in `docs/architecture.md`. Judgement calls and every divergence from the design are
 recorded in `docs/decisions.md` (with an index at the top).
 
+## Install
+
+1. Download `Paparats_<version>_x64-setup.exe` from the
+   [latest release](https://github.com/paparats-app/paparats/releases/latest) (Windows 10 or 11,
+   x64). `SHA256SUMS` next to it lists the file's hash.
+2. Run it. It installs for the current user, without administrator rights. The installer is not
+   code-signed yet, so Windows SmartScreen may warn: choose **More info** → **Run anyway**.
+3. Paparats updates itself: Settings › About › Check for updates offers each new release, and the
+   update is verified against the key built into the app.
+
+Uninstall it in Windows Settings › Apps. `Paparats.exe --demo` opens the demo world of the design
+instead of the real catalog. What the app sends over the network is listed in
+[PRIVACY.md](PRIVACY.md): requests to GitHub only.
+
 ## Quick start
 
 The fastest way to see the client is the UI alone in a browser, on the mock services. It needs

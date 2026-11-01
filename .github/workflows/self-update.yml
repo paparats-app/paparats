@@ -24,13 +24,10 @@ jobs:
       FROM: ${{ inputs.from }}
       GH_TOKEN: ${{ github.token }}
     steps:
+      # The runner's own Node.js runs scripts/verify-update.mjs (no packages needed).
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 24
 
       - name: Install the older release
         shell: pwsh

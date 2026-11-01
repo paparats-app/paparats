@@ -4,6 +4,7 @@
 //! catalog-bot validate <catalog-dir>
 //! catalog-bot resolve  <catalog-dir> [--only <id>]… [--summary <file.md>] [--quarantine-hours <n>]
 //! catalog-bot build    <catalog-dir> --out <site-dir> [--base-url <url>] [--unsigned]
+//! catalog-bot smoke    <catalog-dir> [--only <id>]… [--summary <file.md>]
 //! ```
 //!
 //! - `validate` checks the app files and `editorial.toml`.
@@ -16,12 +17,16 @@
 //!   the environment, never from an argument: `PAPARATS_SIGNING_KEY` (the 32-byte Ed25519 seed,
 //!   hex or base64) and `PAPARATS_SIGNING_KEY_ID` (default: the key's fingerprint). `--unsigned`
 //!   writes unsigned envelopes for local previews; the client refuses them.
+//! - `smoke` installs every app of the lock for real with the client's installer, checks that the
+//!   client's inventory finds it and uninstalls it. It changes the machine: run it on a throwaway
+//!   Windows runner. It fails when any app fails.
 
 mod build;
 mod github;
 mod lock;
 mod resolve;
 mod scan;
+mod smoke;
 mod spec;
 mod text;
 
@@ -33,7 +38,7 @@ use ed25519_dalek::SigningKey;
 use paparats_catalog::{decode_key_bytes, key_fingerprint};
 
 /// The default `--base-url`: where GitHub Pages serves the catalog repository's site.
-const BASE_URL: &str = "https://paparats-app.github.io/catalog/v1/";
+pub(crate) const BASE_URL: &str = "https://paparats-app.github.io/catalog/v1/";
 
 /// How long a newer release waits before it replaces the shipped one.
 const QUARANTINE_HOURS: i64 = 48;
@@ -99,7 +104,7 @@ struct Args {
 fn parse(args: &[String]) -> Result<Args, BotError> {
     let usage = || {
         BotError::Usage(
-            "usage: catalog-bot validate|resolve|build <catalog-dir> [--only id] [--summary f.md] \
+            "usage: catalog-bot validate|resolve|build|smoke <catalog-dir> [--only id] [--summary f.md] \
              [--out dir] [--base-url url] [--unsigned] [--quarantine-hours n]"
                 .into(),
         )
@@ -212,6 +217,28 @@ async fn run(args: Args) -> Result<(), BotError> {
                     None => "unsigned".to_owned(),
                 }
             );
+            Ok(())
+        }
+        "smoke" => {
+            let lock = lock::load(&lock_path)?;
+            let token = std::env::var("GITHUB_TOKEN").ok().filter(|t| !t.is_empty());
+            let github = github::GitHub::new(token)?;
+            let work = std::env::temp_dir().join(format!("catalog-smoke-{}", std::process::id()));
+            std::fs::create_dir_all(&work).map_err(|e| BotError::io(&work, e))?;
+            let outcomes = smoke::run(&catalog, &lock, &github, &args.only, &args.dir, &work).await;
+            let _ = std::fs::remove_dir_all(&work);
+            let outcomes = outcomes?;
+            let markdown = smoke::markdown(&outcomes);
+            if let Some(path) = &args.summary {
+                std::fs::write(path, &markdown).map_err(|e| BotError::io(path, e))?;
+            }
+            print!("{markdown}");
+            let failed = outcomes.iter().filter(|o| !o.passed()).count();
+            if failed > 0 {
+                return Err(BotError::Usage(format!(
+                    "{failed} app(s) failed the smoke install"
+                )));
+            }
             Ok(())
         }
         other => Err(BotError::Usage(format!("unknown command {other}"))),

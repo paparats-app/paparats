@@ -2957,6 +2957,8 @@ dependencies = [
  "paparats-catalog",
  "paparats-core",
  "paparats-install",
+ "paparats-inventory",
+ "paparats-storage",
  "regex",
  "reqwest",
  "serde",

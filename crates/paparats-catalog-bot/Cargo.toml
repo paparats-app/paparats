@@ -17,6 +17,9 @@ paparats-core.workspace = true
 paparats-catalog.workspace = true
 # Authenticode (WinVerifyTrust) for EXE/MSI release files; a no-op verdict off Windows.
 paparats-install.workspace = true
+# `smoke`: the client's own inventory finds what the client's installer installed.
+paparats-inventory.workspace = true
+paparats-storage.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 thiserror.workspace = true

@@ -87,7 +87,7 @@ windows = "0.62"
 # `IIterable<Uri>` for `AddPackageAsync` (the version `windows` 0.62 itself uses).
 windows-collections = "0.3"
 # Portable ZIP packages (features per crate). 7.x keeps the deflate64 support the installer needs.
-zip = { version = "7.2", default-features = false }
+zip = { version = "9.0", default-features = false }
 # OAuth tokens in the Windows Credential Manager.
 keyring = "4"
 keyring-core = "1"

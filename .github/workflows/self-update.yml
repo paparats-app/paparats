@@ -25,7 +25,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
     steps:
       # The runner's own Node.js runs scripts/verify-update.mjs (no packages needed).
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
